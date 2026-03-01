@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateSessionRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.json</a> &gt; <span class="el_source">CreateSessionRequest.java</span></div><h1>CreateSessionRequest.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.json;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Internal request object for creating a new session.
+ * &lt;p&gt;
+ * This is a low-level class for JSON-RPC communication. For creating sessions,
+ * use
+ * {@link com.github.copilot.sdk.CopilotClient#createSession(SessionConfig)}.
+ *
+ * @see com.github.copilot.sdk.CopilotClient#createSession(SessionConfig)
+ * @see SessionConfig
+ * @since 1.0.0
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+<span class="fc" id="L26">public final class CreateSessionRequest {</span>
+
+    @JsonProperty(&quot;model&quot;)
+    private String model;
+
+    @JsonProperty(&quot;sessionId&quot;)
+    private String sessionId;
+
+    @JsonProperty(&quot;clientName&quot;)
+    private String clientName;
+
+    @JsonProperty(&quot;reasoningEffort&quot;)
+    private String reasoningEffort;
+
+    @JsonProperty(&quot;tools&quot;)
+    private List&lt;ToolDefinition&gt; tools;
+
+    @JsonProperty(&quot;systemMessage&quot;)
+    private SystemMessageConfig systemMessage;
+
+    @JsonProperty(&quot;availableTools&quot;)
+    private List&lt;String&gt; availableTools;
+
+    @JsonProperty(&quot;excludedTools&quot;)
+    private List&lt;String&gt; excludedTools;
+
+    @JsonProperty(&quot;provider&quot;)
+    private ProviderConfig provider;
+
+    @JsonProperty(&quot;requestPermission&quot;)
+    private Boolean requestPermission;
+
+    @JsonProperty(&quot;requestUserInput&quot;)
+    private Boolean requestUserInput;
+
+    @JsonProperty(&quot;hooks&quot;)
+    private Boolean hooks;
+
+    @JsonProperty(&quot;workingDirectory&quot;)
+    private String workingDirectory;
+
+    @JsonProperty(&quot;streaming&quot;)
+    private Boolean streaming;
+
+    @JsonProperty(&quot;mcpServers&quot;)
+    private Map&lt;String, Object&gt; mcpServers;
+
+    @JsonProperty(&quot;envValueMode&quot;)
+    private String envValueMode;
+
+    @JsonProperty(&quot;customAgents&quot;)
+    private List&lt;CustomAgentConfig&gt; customAgents;
+
+    @JsonProperty(&quot;infiniteSessions&quot;)
+    private InfiniteSessionConfig infiniteSessions;
+
+    @JsonProperty(&quot;skillDirectories&quot;)
+    private List&lt;String&gt; skillDirectories;
+
+    @JsonProperty(&quot;disabledSkills&quot;)
+    private List&lt;String&gt; disabledSkills;
+
+    @JsonProperty(&quot;configDir&quot;)
+    private String configDir;
+
+    /** Gets the model name. @return the model */
+    public String getModel() {
+<span class="fc" id="L93">        return model;</span>
+    }
+
+    /** Sets the model name. @param model the model */
+    public void setModel(String model) {
+<span class="fc" id="L98">        this.model = model;</span>
+<span class="fc" id="L99">    }</span>
+
+    /** Gets the session ID. @return the session ID */
+    public String getSessionId() {
+<span class="fc" id="L103">        return sessionId;</span>
+    }
+
+    /** Sets the session ID. @param sessionId the session ID */
+    public void setSessionId(String sessionId) {
+<span class="fc" id="L108">        this.sessionId = sessionId;</span>
+<span class="fc" id="L109">    }</span>
+
+    /** Gets the client name. @return the client name */
+    public String getClientName() {
+<span class="fc" id="L113">        return clientName;</span>
+    }
+
+    /** Sets the client name. @param clientName the client name */
+    public void setClientName(String clientName) {
+<span class="fc" id="L118">        this.clientName = clientName;</span>
+<span class="fc" id="L119">    }</span>
+
+    /** Gets the reasoning effort. @return the reasoning effort level */
+    public String getReasoningEffort() {
+<span class="fc" id="L123">        return reasoningEffort;</span>
+    }
+
+    /**
+     * Sets the reasoning effort. @param reasoningEffort the reasoning effort level
+     */
+    public void setReasoningEffort(String reasoningEffort) {
+<span class="fc" id="L130">        this.reasoningEffort = reasoningEffort;</span>
+<span class="fc" id="L131">    }</span>
+
+    /** Gets the tools. @return the tool definitions */
+    public List&lt;ToolDefinition&gt; getTools() {
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+    }
+
+    /** Sets the tools. @param tools the tool definitions */
+    public void setTools(List&lt;ToolDefinition&gt; tools) {
+<span class="fc" id="L140">        this.tools = tools;</span>
+<span class="fc" id="L141">    }</span>
+
+    /** Gets the system message config. @return the config */
+    public SystemMessageConfig getSystemMessage() {
+<span class="fc" id="L145">        return systemMessage;</span>
+    }
+
+    /** Sets the system message config. @param systemMessage the config */
+    public void setSystemMessage(SystemMessageConfig systemMessage) {
+<span class="fc" id="L150">        this.systemMessage = systemMessage;</span>
+<span class="fc" id="L151">    }</span>
+
+    /** Gets available tools. @return the tool names */
+    public List&lt;String&gt; getAvailableTools() {
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
+    }
+
+    /** Sets available tools. @param availableTools the tool names */
+    public void setAvailableTools(List&lt;String&gt; availableTools) {
+<span class="fc" id="L160">        this.availableTools = availableTools;</span>
+<span class="fc" id="L161">    }</span>
+
+    /** Gets excluded tools. @return the tool names */
+    public List&lt;String&gt; getExcludedTools() {
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
+    }
+
+    /** Sets excluded tools. @param excludedTools the tool names */
+    public void setExcludedTools(List&lt;String&gt; excludedTools) {
+<span class="fc" id="L170">        this.excludedTools = excludedTools;</span>
+<span class="fc" id="L171">    }</span>
+
+    /** Gets the provider config. @return the provider */
+    public ProviderConfig getProvider() {
+<span class="fc" id="L175">        return provider;</span>
+    }
+
+    /** Sets the provider config. @param provider the provider */
+    public void setProvider(ProviderConfig provider) {
+<span class="fc" id="L180">        this.provider = provider;</span>
+<span class="fc" id="L181">    }</span>
+
+    /** Gets request permission flag. @return the flag */
+    public Boolean getRequestPermission() {
+<span class="fc" id="L185">        return requestPermission;</span>
+    }
+
+    /** Sets request permission flag. @param requestPermission the flag */
+    public void setRequestPermission(Boolean requestPermission) {
+<span class="fc" id="L190">        this.requestPermission = requestPermission;</span>
+<span class="fc" id="L191">    }</span>
+
+    /** Gets request user input flag. @return the flag */
+    public Boolean getRequestUserInput() {
+<span class="fc" id="L195">        return requestUserInput;</span>
+    }
+
+    /** Sets request user input flag. @param requestUserInput the flag */
+    public void setRequestUserInput(Boolean requestUserInput) {
+<span class="fc" id="L200">        this.requestUserInput = requestUserInput;</span>
+<span class="fc" id="L201">    }</span>
+
+    /** Gets hooks flag. @return the flag */
+    public Boolean getHooks() {
+<span class="fc" id="L205">        return hooks;</span>
+    }
+
+    /** Sets hooks flag. @param hooks the flag */
+    public void setHooks(Boolean hooks) {
+<span class="fc" id="L210">        this.hooks = hooks;</span>
+<span class="fc" id="L211">    }</span>
+
+    /** Gets working directory. @return the working directory */
+    public String getWorkingDirectory() {
+<span class="fc" id="L215">        return workingDirectory;</span>
+    }
+
+    /** Sets working directory. @param workingDirectory the working directory */
+    public void setWorkingDirectory(String workingDirectory) {
+<span class="fc" id="L220">        this.workingDirectory = workingDirectory;</span>
+<span class="fc" id="L221">    }</span>
+
+    /** Gets streaming flag. @return the flag */
+    public Boolean getStreaming() {
+<span class="fc" id="L225">        return streaming;</span>
+    }
+
+    /** Sets streaming flag. @param streaming the flag */
+    public void setStreaming(Boolean streaming) {
+<span class="fc" id="L230">        this.streaming = streaming;</span>
+<span class="fc" id="L231">    }</span>
+
+    /** Gets MCP servers. @return the servers map */
+    public Map&lt;String, Object&gt; getMcpServers() {
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+    }
+
+    /** Sets MCP servers. @param mcpServers the servers map */
+    public void setMcpServers(Map&lt;String, Object&gt; mcpServers) {
+<span class="fc" id="L240">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L241">    }</span>
+
+    /** Gets MCP environment variable value mode. @return the mode */
+    public String getEnvValueMode() {
+<span class="fc" id="L245">        return envValueMode;</span>
+    }
+
+    /** Sets MCP environment variable value mode. @param envValueMode the mode */
+    public void setEnvValueMode(String envValueMode) {
+<span class="fc" id="L250">        this.envValueMode = envValueMode;</span>
+<span class="fc" id="L251">    }</span>
+
+    /** Gets custom agents. @return the agents */
+    public List&lt;CustomAgentConfig&gt; getCustomAgents() {
+<span class="fc bfc" id="L255" title="All 2 branches covered.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
+    }
+
+    /** Sets custom agents. @param customAgents the agents */
+    public void setCustomAgents(List&lt;CustomAgentConfig&gt; customAgents) {
+<span class="fc" id="L260">        this.customAgents = customAgents;</span>
+<span class="fc" id="L261">    }</span>
+
+    /** Gets infinite sessions config. @return the config */
+    public InfiniteSessionConfig getInfiniteSessions() {
+<span class="fc" id="L265">        return infiniteSessions;</span>
+    }
+
+    /** Sets infinite sessions config. @param infiniteSessions the config */
+    public void setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
+<span class="fc" id="L270">        this.infiniteSessions = infiniteSessions;</span>
+<span class="fc" id="L271">    }</span>
+
+    /** Gets skill directories. @return the skill directories */
+    public List&lt;String&gt; getSkillDirectories() {
+<span class="fc bfc" id="L275" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
+    }
+
+    /** Sets skill directories. @param skillDirectories the directories */
+    public void setSkillDirectories(List&lt;String&gt; skillDirectories) {
+<span class="fc" id="L280">        this.skillDirectories = skillDirectories;</span>
+<span class="fc" id="L281">    }</span>
+
+    /** Gets disabled skills. @return the disabled skill names */
+    public List&lt;String&gt; getDisabledSkills() {
+<span class="fc bfc" id="L285" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
+    }
+
+    /** Sets disabled skills. @param disabledSkills the skill names to disable */
+    public void setDisabledSkills(List&lt;String&gt; disabledSkills) {
+<span class="fc" id="L290">        this.disabledSkills = disabledSkills;</span>
+<span class="fc" id="L291">    }</span>
+
+    /** Gets config directory. @return the config directory path */
+    public String getConfigDir() {
+<span class="fc" id="L295">        return configDir;</span>
+    }
+
+    /** Sets config directory. @param configDir the config directory path */
+    public void setConfigDir(String configDir) {
+<span class="fc" id="L300">        this.configDir = configDir;</span>
+<span class="fc" id="L301">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

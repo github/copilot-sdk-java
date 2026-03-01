@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserInputRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.json</a> &gt; <span class="el_source">UserInputRequest.java</span></div><h1>UserInputRequest.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.json;
+
+import java.util.Collections;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Request for user input from the agent.
+ * &lt;p&gt;
+ * This is sent when the agent uses the ask_user tool to request input from the
+ * user.
+ *
+ * @since 1.0.6
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L22">public class UserInputRequest {</span>
+
+    @JsonProperty(&quot;question&quot;)
+    private String question;
+
+    @JsonProperty(&quot;choices&quot;)
+    private List&lt;String&gt; choices;
+
+    @JsonProperty(&quot;allowFreeform&quot;)
+    private Boolean allowFreeform;
+
+    /**
+     * Gets the question to ask the user.
+     *
+     * @return the question text
+     */
+    public String getQuestion() {
+<span class="fc" id="L39">        return question;</span>
+    }
+
+    /**
+     * Sets the question to ask the user.
+     *
+     * @param question
+     *            the question text
+     * @return this instance for method chaining
+     */
+    public UserInputRequest setQuestion(String question) {
+<span class="fc" id="L50">        this.question = question;</span>
+<span class="fc" id="L51">        return this;</span>
+    }
+
+    /**
+     * Gets the optional choices for multiple choice questions.
+     *
+     * @return the list of choices, or {@code null} for freeform input
+     */
+    public List&lt;String&gt; getChoices() {
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        return choices == null ? null : Collections.unmodifiableList(choices);</span>
+    }
+
+    /**
+     * Sets the choices for multiple choice questions.
+     *
+     * @param choices
+     *            the list of choices
+     * @return this instance for method chaining
+     */
+    public UserInputRequest setChoices(List&lt;String&gt; choices) {
+<span class="fc" id="L71">        this.choices = choices;</span>
+<span class="fc" id="L72">        return this;</span>
+    }
+
+    /**
+     * Returns whether freeform text input is allowed.
+     *
+     * @return {@code true} if freeform input is allowed, {@code null} if not
+     *         specified
+     */
+    public Boolean getAllowFreeform() {
+<span class="nc" id="L82">        return allowFreeform;</span>
+    }
+
+    /**
+     * Sets whether freeform text input is allowed.
+     *
+     * @param allowFreeform
+     *            {@code true} to allow freeform input
+     * @return this instance for method chaining
+     */
+    public UserInputRequest setAllowFreeform(Boolean allowFreeform) {
+<span class="fc" id="L93">        this.allowFreeform = allowFreeform;</span>
+<span class="fc" id="L94">        return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InfiniteSessionConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.json</a> &gt; <span class="el_source">InfiniteSessionConfig.java</span></div><h1>InfiniteSessionConfig.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.json;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Configuration for infinite sessions with automatic context compaction and
+ * workspace persistence.
+ * &lt;p&gt;
+ * When enabled, sessions automatically manage context window limits through
+ * background compaction and persist state to a workspace directory.
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * var infiniteConfig = new InfiniteSessionConfig().setEnabled(true).setBackgroundCompactionThreshold(0.80)
+ * 		.setBufferExhaustionThreshold(0.95);
+ *
+ * var config = new SessionConfig().setInfiniteSessions(infiniteConfig);
+ *
+ * var session = client.createSession(config).get();
+ * }&lt;/pre&gt;
+ *
+ * @see SessionConfig#setInfiniteSessions(InfiniteSessionConfig)
+ * @since 1.0.2
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+<span class="fc" id="L32">public class InfiniteSessionConfig {</span>
+
+    @JsonProperty(&quot;enabled&quot;)
+    private Boolean enabled;
+
+    @JsonProperty(&quot;backgroundCompactionThreshold&quot;)
+    private Double backgroundCompactionThreshold;
+
+    @JsonProperty(&quot;bufferExhaustionThreshold&quot;)
+    private Double bufferExhaustionThreshold;
+
+    /**
+     * Gets whether infinite sessions are enabled.
+     *
+     * @return {@code true} if enabled, {@code null} to use default (true)
+     */
+    public Boolean getEnabled() {
+<span class="fc" id="L49">        return enabled;</span>
+    }
+
+    /**
+     * Sets whether infinite sessions are enabled.
+     * &lt;p&gt;
+     * Default: true
+     *
+     * @param enabled
+     *            {@code true} to enable infinite sessions
+     * @return this config instance for method chaining
+     */
+    public InfiniteSessionConfig setEnabled(Boolean enabled) {
+<span class="fc" id="L62">        this.enabled = enabled;</span>
+<span class="fc" id="L63">        return this;</span>
+    }
+
+    /**
+     * Gets the background compaction threshold.
+     *
+     * @return the threshold (0.0-1.0), or {@code null} to use default
+     */
+    public Double getBackgroundCompactionThreshold() {
+<span class="fc" id="L72">        return backgroundCompactionThreshold;</span>
+    }
+
+    /**
+     * Sets the context utilization threshold at which background compaction starts.
+     * &lt;p&gt;
+     * Compaction runs asynchronously, allowing the session to continue processing.
+     * Default: 0.80
+     *
+     * @param backgroundCompactionThreshold
+     *            the threshold (0.0-1.0)
+     * @return this config instance for method chaining
+     */
+    public InfiniteSessionConfig setBackgroundCompactionThreshold(Double backgroundCompactionThreshold) {
+<span class="fc" id="L86">        this.backgroundCompactionThreshold = backgroundCompactionThreshold;</span>
+<span class="fc" id="L87">        return this;</span>
+    }
+
+    /**
+     * Gets the buffer exhaustion threshold.
+     *
+     * @return the threshold (0.0-1.0), or {@code null} to use default
+     */
+    public Double getBufferExhaustionThreshold() {
+<span class="fc" id="L96">        return bufferExhaustionThreshold;</span>
+    }
+
+    /**
+     * Sets the context utilization threshold at which the session blocks until
+     * compaction completes.
+     * &lt;p&gt;
+     * This prevents context overflow when compaction hasn't finished in time.
+     * Default: 0.95
+     *
+     * @param bufferExhaustionThreshold
+     *            the threshold (0.0-1.0)
+     * @return this config instance for method chaining
+     */
+    public InfiniteSessionConfig setBufferExhaustionThreshold(Double bufferExhaustionThreshold) {
+<span class="fc" id="L111">        this.bufferExhaustionThreshold = bufferExhaustionThreshold;</span>
+<span class="fc" id="L112">        return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

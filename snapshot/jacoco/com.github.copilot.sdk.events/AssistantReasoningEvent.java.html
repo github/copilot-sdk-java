@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssistantReasoningEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.events</a> &gt; <span class="el_source">AssistantReasoningEvent.java</span></div><h1>AssistantReasoningEvent.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.events;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Event: assistant.reasoning
+ *
+ * @since 1.0.0
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L16">public final class AssistantReasoningEvent extends AbstractSessionEvent {</span>
+
+    @JsonProperty(&quot;data&quot;)
+    private AssistantReasoningData data;
+
+    @Override
+    public String getType() {
+<span class="fc" id="L23">        return &quot;assistant.reasoning&quot;;</span>
+    }
+
+    public AssistantReasoningData getData() {
+<span class="fc" id="L27">        return data;</span>
+    }
+
+    public void setData(AssistantReasoningData data) {
+<span class="fc" id="L31">        this.data = data;</span>
+<span class="fc" id="L32">    }</span>
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L35">    public record AssistantReasoningData(@JsonProperty(&quot;reasoningId&quot;) String reasoningId,</span>
+            @JsonProperty(&quot;content&quot;) String content) {
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

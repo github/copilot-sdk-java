@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JsonRpcClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk</a> &gt; <span class="el_source">JsonRpcClient.java</span></div><h1>JsonRpcClient.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.copilot.sdk.json.JsonRpcError;
+import com.github.copilot.sdk.json.JsonRpcRequest;
+import com.github.copilot.sdk.json.JsonRpcResponse;
+
+/**
+ * JSON-RPC 2.0 client implementation for communicating with the Copilot CLI.
+ *
+ * @since 1.0.0
+ */
+class JsonRpcClient implements AutoCloseable {
+
+<span class="fc" id="L42">    private static final Logger LOG = Logger.getLogger(JsonRpcClient.class.getName());</span>
+<span class="fc" id="L43">    private static final ObjectMapper MAPPER = createObjectMapper();</span>
+
+    private final InputStream inputStream;
+    private final OutputStream outputStream;
+    private final Socket socket;
+    private final Process process;
+<span class="fc" id="L49">    private final AtomicLong requestIdCounter = new AtomicLong(0);</span>
+<span class="fc" id="L50">    private final Map&lt;Long, CompletableFuture&lt;JsonNode&gt;&gt; pendingRequests = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L51">    private final Map&lt;String, BiConsumer&lt;String, JsonNode&gt;&gt; notificationHandlers = new ConcurrentHashMap&lt;&gt;();</span>
+    private final ExecutorService readerExecutor;
+<span class="fc" id="L53">    private volatile boolean running = true;</span>
+
+<span class="fc" id="L55">    private JsonRpcClient(InputStream inputStream, OutputStream outputStream, Socket socket, Process process) {</span>
+<span class="fc" id="L56">        this.inputStream = inputStream;</span>
+<span class="fc" id="L57">        this.outputStream = outputStream;</span>
+<span class="fc" id="L58">        this.socket = socket;</span>
+<span class="fc" id="L59">        this.process = process;</span>
+<span class="fc" id="L60">        this.readerExecutor = Executors.newSingleThreadExecutor(r -&gt; {</span>
+<span class="fc" id="L61">            Thread t = new Thread(r, &quot;jsonrpc-reader&quot;);</span>
+<span class="fc" id="L62">            t.setDaemon(true);</span>
+<span class="fc" id="L63">            return t;</span>
+        });
+<span class="fc" id="L65">        startReader();</span>
+<span class="fc" id="L66">    }</span>
+
+    static ObjectMapper createObjectMapper() {
+<span class="fc" id="L69">        var mapper = new ObjectMapper();</span>
+<span class="fc" id="L70">        mapper.registerModule(new JavaTimeModule());</span>
+<span class="fc" id="L71">        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);</span>
+<span class="fc" id="L72">        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);</span>
+<span class="fc" id="L73">        mapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);</span>
+<span class="fc" id="L74">        return mapper;</span>
+    }
+
+    public static ObjectMapper getObjectMapper() {
+<span class="fc" id="L78">        return MAPPER;</span>
+    }
+
+    /**
+     * Creates a JSON-RPC client using stdio with a process.
+     */
+    public static JsonRpcClient fromProcess(Process process) {
+<span class="fc" id="L85">        return new JsonRpcClient(process.getInputStream(), process.getOutputStream(), null, process);</span>
+    }
+
+    /**
+     * Creates a JSON-RPC client using TCP socket.
+     */
+    public static JsonRpcClient fromSocket(Socket socket) throws IOException {
+<span class="fc" id="L92">        return new JsonRpcClient(socket.getInputStream(), socket.getOutputStream(), socket, null);</span>
+    }
+
+    /**
+     * Registers a handler for JSON-RPC method calls (requests/notifications from
+     * server).
+     */
+    public void registerMethodHandler(String method, BiConsumer&lt;String, JsonNode&gt; handler) {
+<span class="fc" id="L100">        notificationHandlers.put(method, handler);</span>
+<span class="fc" id="L101">    }</span>
+
+    /**
+     * Sends a JSON-RPC request and waits for the response.
+     */
+    public &lt;T&gt; CompletableFuture&lt;T&gt; invoke(String method, Object params, Class&lt;T&gt; responseType) {
+<span class="fc" id="L107">        long id = requestIdCounter.incrementAndGet();</span>
+<span class="fc" id="L108">        var future = new CompletableFuture&lt;JsonNode&gt;();</span>
+<span class="fc" id="L109">        pendingRequests.put(id, future);</span>
+
+<span class="fc" id="L111">        var request = new JsonRpcRequest();</span>
+<span class="fc" id="L112">        request.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L113">        request.setId(id);</span>
+<span class="fc" id="L114">        request.setMethod(method);</span>
+<span class="fc" id="L115">        request.setParams(params);</span>
+
+        try {
+<span class="fc" id="L118">            sendMessage(request);</span>
+<span class="fc" id="L119">        } catch (IOException e) {</span>
+<span class="fc" id="L120">            pendingRequests.remove(id);</span>
+<span class="fc" id="L121">            future.completeExceptionally(e);</span>
+<span class="fc" id="L122">        }</span>
+
+<span class="fc" id="L124">        return future.thenApply(result -&gt; {</span>
+            try {
+<span class="fc bfc" id="L126" title="All 4 branches covered.">                if (responseType == Void.class || responseType == void.class) {</span>
+<span class="fc" id="L127">                    return null;</span>
+                }
+<span class="fc" id="L129">                return MAPPER.treeToValue(result, responseType);</span>
+<span class="fc" id="L130">            } catch (JsonProcessingException e) {</span>
+<span class="fc" id="L131">                throw new CompletionException(e);</span>
+            }
+        });
+    }
+
+    /**
+     * Sends a JSON-RPC notification (no response expected).
+     */
+    public void notify(String method, Object params) throws IOException {
+<span class="fc" id="L140">        var notification = new JsonRpcRequest();</span>
+<span class="fc" id="L141">        notification.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L142">        notification.setMethod(method);</span>
+<span class="fc" id="L143">        notification.setParams(params);</span>
+<span class="fc" id="L144">        sendMessage(notification);</span>
+<span class="fc" id="L145">    }</span>
+
+    /**
+     * Sends a JSON-RPC response to a server request.
+     */
+    public void sendResponse(Object id, Object result) throws IOException {
+<span class="fc" id="L151">        var response = new JsonRpcResponse();</span>
+<span class="fc" id="L152">        response.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L153">        response.setId(id);</span>
+<span class="fc" id="L154">        response.setResult(result);</span>
+<span class="fc" id="L155">        sendMessage(response);</span>
+<span class="fc" id="L156">    }</span>
+
+    /**
+     * Sends a JSON-RPC error response to a server request.
+     */
+    public void sendErrorResponse(Object id, int code, String message) throws IOException {
+<span class="fc" id="L162">        var response = new JsonRpcResponse();</span>
+<span class="fc" id="L163">        response.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L164">        response.setId(id);</span>
+<span class="fc" id="L165">        var error = new JsonRpcError();</span>
+<span class="fc" id="L166">        error.setCode(code);</span>
+<span class="fc" id="L167">        error.setMessage(message);</span>
+<span class="fc" id="L168">        response.setError(error);</span>
+<span class="fc" id="L169">        sendMessage(response);</span>
+<span class="fc" id="L170">    }</span>
+
+    private synchronized void sendMessage(Object message) throws IOException {
+<span class="fc" id="L173">        String json = MAPPER.writeValueAsString(message);</span>
+<span class="fc" id="L174">        byte[] content = json.getBytes(StandardCharsets.UTF_8);</span>
+<span class="fc" id="L175">        String header = &quot;Content-Length: &quot; + content.length + &quot;\r\n\r\n&quot;;</span>
+
+<span class="fc" id="L177">        outputStream.write(header.getBytes(StandardCharsets.UTF_8));</span>
+<span class="fc" id="L178">        outputStream.write(content);</span>
+<span class="fc" id="L179">        outputStream.flush();</span>
+
+<span class="fc" id="L181">        LOG.fine(&quot;Sent: &quot; + json);</span>
+<span class="fc" id="L182">    }</span>
+
+    private void startReader() {
+<span class="fc" id="L185">        readerExecutor.submit(() -&gt; {</span>
+            try {
+                // We need to read bytes because Content-Length specifies bytes, not characters.
+                // Using BufferedReader would cause issues with multi-byte UTF-8 characters.
+<span class="fc" id="L189">                var bis = new BufferedInputStream(inputStream);</span>
+
+<span class="fc bfc" id="L191" title="All 2 branches covered.">                while (running) {</span>
+                    // Read headers line by line
+<span class="fc" id="L193">                    int contentLength = -1;</span>
+<span class="fc" id="L194">                    var headerLine = new StringBuilder();</span>
+<span class="fc" id="L195">                    boolean lastWasCR = false;</span>
+<span class="fc" id="L196">                    boolean inHeaders = true;</span>
+
+<span class="fc bfc" id="L198" title="All 2 branches covered.">                    while (inHeaders) {</span>
+<span class="fc" id="L199">                        int b = bis.read();</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">                        if (b == -1) {</span>
+<span class="fc" id="L201">                            return;</span>
+                        }
+
+<span class="fc bfc" id="L204" title="All 2 branches covered.">                        if (b == '\r') {</span>
+<span class="fc" id="L205">                            lastWasCR = true;</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">                        } else if (b == '\n') {</span>
+<span class="fc" id="L207">                            String line = headerLine.toString();</span>
+<span class="fc" id="L208">                            headerLine.setLength(0);</span>
+<span class="fc" id="L209">                            lastWasCR = false;</span>
+
+<span class="fc bfc" id="L211" title="All 2 branches covered.">                            if (line.isEmpty()) {</span>
+                                // End of headers (blank line)
+<span class="fc" id="L213">                                inHeaders = false;</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">                            } else if (line.toLowerCase().startsWith(&quot;content-length:&quot;)) {</span>
+<span class="fc" id="L215">                                contentLength = Integer.parseInt(line.substring(15).trim());</span>
+                            }
+<span class="fc" id="L217">                        } else {</span>
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">                            if (lastWasCR) {</span>
+<span class="nc" id="L219">                                headerLine.append('\r');</span>
+<span class="nc" id="L220">                                lastWasCR = false;</span>
+                            }
+<span class="fc" id="L222">                            headerLine.append((char) b);</span>
+                        }
+<span class="fc" id="L224">                    }</span>
+
+<span class="fc bfc" id="L226" title="All 2 branches covered.">                    if (contentLength &lt;= 0) {</span>
+<span class="fc" id="L227">                        continue;</span>
+                    }
+
+                    // Read content as bytes (Content-Length specifies bytes, not characters)
+<span class="fc" id="L231">                    byte[] buffer = new byte[contentLength];</span>
+<span class="fc" id="L232">                    int read = 0;</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">                    while (read &lt; contentLength) {</span>
+<span class="fc" id="L234">                        int result = bis.read(buffer, read, contentLength - read);</span>
+<span class="pc bpc" id="L235" title="1 of 2 branches missed.">                        if (result == -1) {</span>
+<span class="nc" id="L236">                            return;</span>
+                        }
+<span class="fc" id="L238">                        read += result;</span>
+<span class="fc" id="L239">                    }</span>
+
+<span class="fc" id="L241">                    String content = new String(buffer, StandardCharsets.UTF_8);</span>
+<span class="fc" id="L242">                    LOG.fine(&quot;Received: &quot; + content);</span>
+
+<span class="fc" id="L244">                    handleMessage(content);</span>
+<span class="fc" id="L245">                }</span>
+<span class="fc" id="L246">            } catch (Exception e) {</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">                if (running) {</span>
+<span class="fc" id="L248">                    LOG.log(Level.SEVERE, &quot;Error in JSON-RPC reader&quot;, e);</span>
+                }
+<span class="fc" id="L250">            }</span>
+<span class="fc" id="L251">        });</span>
+<span class="fc" id="L252">    }</span>
+
+    private void handleMessage(String content) {
+        try {
+<span class="fc" id="L256">            JsonNode node = MAPPER.readTree(content);</span>
+
+            // Check if this is a response to our request
+<span class="fc bfc" id="L259" title="All 8 branches covered.">            if (node.has(&quot;id&quot;) &amp;&amp; !node.get(&quot;id&quot;).isNull() &amp;&amp; (node.has(&quot;result&quot;) || node.has(&quot;error&quot;))) {</span>
+<span class="fc" id="L260">                long id = node.get(&quot;id&quot;).asLong();</span>
+<span class="fc" id="L261">                CompletableFuture&lt;JsonNode&gt; future = pendingRequests.remove(id);</span>
+<span class="fc bfc" id="L262" title="All 2 branches covered.">                if (future != null) {</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">                    if (node.has(&quot;error&quot;)) {</span>
+<span class="fc" id="L264">                        JsonNode errorNode = node.get(&quot;error&quot;);</span>
+<span class="fc bfc" id="L265" title="All 2 branches covered.">                        String errorMessage = errorNode.has(&quot;message&quot;)</span>
+<span class="fc" id="L266">                                ? errorNode.get(&quot;message&quot;).asText()</span>
+<span class="fc" id="L267">                                : &quot;Unknown error&quot;;</span>
+<span class="fc bfc" id="L268" title="All 2 branches covered.">                        int errorCode = errorNode.has(&quot;code&quot;) ? errorNode.get(&quot;code&quot;).asInt() : -1;</span>
+<span class="fc" id="L269">                        future.completeExceptionally(new JsonRpcException(errorCode, errorMessage));</span>
+<span class="fc" id="L270">                    } else {</span>
+<span class="fc" id="L271">                        future.complete(node.get(&quot;result&quot;));</span>
+                    }
+                }
+<span class="fc" id="L274">            }</span>
+            // Check if this is a request from server (has method and id)
+<span class="fc bfc" id="L276" title="All 2 branches covered.">            else if (node.has(&quot;method&quot;)) {</span>
+<span class="fc" id="L277">                String method = node.get(&quot;method&quot;).asText();</span>
+<span class="fc" id="L278">                JsonNode params = node.get(&quot;params&quot;);</span>
+<span class="fc bfc" id="L279" title="All 4 branches covered.">                Object id = node.has(&quot;id&quot;) &amp;&amp; !node.get(&quot;id&quot;).isNull() ? node.get(&quot;id&quot;) : null;</span>
+
+<span class="fc" id="L281">                LOG.fine(&quot;Received method: &quot; + method);</span>
+
+<span class="fc" id="L283">                BiConsumer&lt;String, JsonNode&gt; handler = notificationHandlers.get(method);</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">                if (handler != null) {</span>
+                    try {
+                        // Create a context that includes the request ID for responses
+<span class="fc bfc" id="L287" title="All 2 branches covered.">                        handler.accept(id != null ? id.toString() : null, params);</span>
+<span class="fc" id="L288">                    } catch (Exception e) {</span>
+<span class="fc" id="L289">                        LOG.log(Level.SEVERE, &quot;Error handling method &quot; + method, e);</span>
+<span class="fc bfc" id="L290" title="All 2 branches covered.">                        if (id != null) {</span>
+                            try {
+<span class="fc" id="L292">                                sendErrorResponse(id, -32603, e.getMessage());</span>
+<span class="nc" id="L293">                            } catch (IOException ioe) {</span>
+<span class="nc" id="L294">                                LOG.log(Level.SEVERE, &quot;Failed to send error response&quot;, ioe);</span>
+<span class="fc" id="L295">                            }</span>
+                        }
+<span class="fc" id="L297">                    }</span>
+                } else {
+<span class="fc" id="L299">                    LOG.fine(&quot;No handler for method: &quot; + method);</span>
+<span class="fc bfc" id="L300" title="All 2 branches covered.">                    if (id != null) {</span>
+                        try {
+<span class="fc" id="L302">                            sendErrorResponse(id, -32601, &quot;Method not found: &quot; + method);</span>
+<span class="nc" id="L303">                        } catch (IOException ioe) {</span>
+<span class="nc" id="L304">                            LOG.log(Level.SEVERE, &quot;Failed to send error response&quot;, ioe);</span>
+<span class="fc" id="L305">                        }</span>
+                    }
+                }
+            }
+<span class="fc" id="L309">        } catch (JsonProcessingException e) {</span>
+<span class="fc" id="L310">            LOG.log(Level.SEVERE, &quot;Error parsing JSON-RPC message&quot;, e);</span>
+<span class="fc" id="L311">        }</span>
+<span class="fc" id="L312">    }</span>
+
+    @Override
+    public void close() {
+<span class="fc" id="L316">        running = false;</span>
+<span class="fc" id="L317">        readerExecutor.shutdownNow();</span>
+
+        // Cancel all pending requests
+<span class="fc" id="L320">        pendingRequests.forEach((id, future) -&gt; future.completeExceptionally(new IOException(&quot;Client closed&quot;)));</span>
+<span class="fc" id="L321">        pendingRequests.clear();</span>
+
+        try {
+<span class="fc bfc" id="L324" title="All 2 branches covered.">            if (socket != null) {</span>
+<span class="fc" id="L325">                socket.close();</span>
+            }
+<span class="nc" id="L327">        } catch (IOException e) {</span>
+<span class="nc" id="L328">            LOG.log(Level.FINE, &quot;Error closing socket&quot;, e);</span>
+<span class="fc" id="L329">        }</span>
+
+<span class="fc bfc" id="L331" title="All 2 branches covered.">        if (process != null) {</span>
+<span class="fc" id="L332">            process.destroy();</span>
+        }
+<span class="fc" id="L334">    }</span>
+
+    public boolean isConnected() {
+<span class="fc bfc" id="L337" title="All 2 branches covered.">        if (socket != null) {</span>
+<span class="pc bpc" id="L338" title="1 of 4 branches missed.">            return socket.isConnected() &amp;&amp; !socket.isClosed();</span>
+        }
+<span class="pc bpc" id="L340" title="1 of 2 branches missed.">        if (process != null) {</span>
+<span class="fc" id="L341">            return process.isAlive();</span>
+        }
+<span class="nc" id="L343">        return false;</span>
+    }
+
+    public Process getProcess() {
+<span class="fc" id="L347">        return process;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

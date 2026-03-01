@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SessionHooks.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.json</a> &gt; <span class="el_source">SessionHooks.java</span></div><h1>SessionHooks.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.json;
+
+/**
+ * Hook handlers configuration for a session.
+ * &lt;p&gt;
+ * Hooks allow you to intercept and modify various session events including tool
+ * execution, user prompts, and session lifecycle events.
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * var hooks = new SessionHooks().setOnPreToolUse((input, invocation) -&gt; {
+ * 	System.out.println(&quot;Tool being called: &quot; + input.getToolName());
+ * 	return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
+ * }).setOnPostToolUse((input, invocation) -&gt; {
+ * 	System.out.println(&quot;Tool result: &quot; + input.getToolResult());
+ * 	return CompletableFuture.completedFuture(null);
+ * }).setOnUserPromptSubmitted((input, invocation) -&gt; {
+ * 	System.out.println(&quot;User prompt: &quot; + input.prompt());
+ * 	return CompletableFuture.completedFuture(null);
+ * }).setOnSessionStart((input, invocation) -&gt; {
+ * 	System.out.println(&quot;Session started: &quot; + input.source());
+ * 	return CompletableFuture.completedFuture(null);
+ * }).setOnSessionEnd((input, invocation) -&gt; {
+ * 	System.out.println(&quot;Session ended: &quot; + input.reason());
+ * 	return CompletableFuture.completedFuture(null);
+ * });
+ *
+ * var session = client.createSession(new SessionConfig().setHooks(hooks)).get();
+ * }&lt;/pre&gt;
+ *
+ * @since 1.0.6
+ */
+<span class="fc" id="L38">public class SessionHooks {</span>
+
+    private PreToolUseHandler onPreToolUse;
+    private PostToolUseHandler onPostToolUse;
+    private UserPromptSubmittedHandler onUserPromptSubmitted;
+    private SessionStartHandler onSessionStart;
+    private SessionEndHandler onSessionEnd;
+
+    /**
+     * Gets the pre-tool-use handler.
+     *
+     * @return the handler, or {@code null} if not set
+     */
+    public PreToolUseHandler getOnPreToolUse() {
+<span class="fc" id="L52">        return onPreToolUse;</span>
+    }
+
+    /**
+     * Sets the handler called before a tool is executed.
+     *
+     * @param onPreToolUse
+     *            the handler
+     * @return this instance for method chaining
+     */
+    public SessionHooks setOnPreToolUse(PreToolUseHandler onPreToolUse) {
+<span class="fc" id="L63">        this.onPreToolUse = onPreToolUse;</span>
+<span class="fc" id="L64">        return this;</span>
+    }
+
+    /**
+     * Gets the post-tool-use handler.
+     *
+     * @return the handler, or {@code null} if not set
+     */
+    public PostToolUseHandler getOnPostToolUse() {
+<span class="fc" id="L73">        return onPostToolUse;</span>
+    }
+
+    /**
+     * Sets the handler called after a tool has been executed.
+     *
+     * @param onPostToolUse
+     *            the handler
+     * @return this instance for method chaining
+     */
+    public SessionHooks setOnPostToolUse(PostToolUseHandler onPostToolUse) {
+<span class="fc" id="L84">        this.onPostToolUse = onPostToolUse;</span>
+<span class="fc" id="L85">        return this;</span>
+    }
+
+    /**
+     * Gets the user-prompt-submitted handler.
+     *
+     * @return the handler, or {@code null} if not set
+     * @since 1.0.7
+     */
+    public UserPromptSubmittedHandler getOnUserPromptSubmitted() {
+<span class="fc" id="L95">        return onUserPromptSubmitted;</span>
+    }
+
+    /**
+     * Sets the handler called when the user submits a prompt.
+     *
+     * @param onUserPromptSubmitted
+     *            the handler
+     * @return this instance for method chaining
+     * @since 1.0.7
+     */
+    public SessionHooks setOnUserPromptSubmitted(UserPromptSubmittedHandler onUserPromptSubmitted) {
+<span class="fc" id="L107">        this.onUserPromptSubmitted = onUserPromptSubmitted;</span>
+<span class="fc" id="L108">        return this;</span>
+    }
+
+    /**
+     * Gets the session-start handler.
+     *
+     * @return the handler, or {@code null} if not set
+     * @since 1.0.7
+     */
+    public SessionStartHandler getOnSessionStart() {
+<span class="fc" id="L118">        return onSessionStart;</span>
+    }
+
+    /**
+     * Sets the handler called when a session starts.
+     *
+     * @param onSessionStart
+     *            the handler
+     * @return this instance for method chaining
+     * @since 1.0.7
+     */
+    public SessionHooks setOnSessionStart(SessionStartHandler onSessionStart) {
+<span class="fc" id="L130">        this.onSessionStart = onSessionStart;</span>
+<span class="fc" id="L131">        return this;</span>
+    }
+
+    /**
+     * Gets the session-end handler.
+     *
+     * @return the handler, or {@code null} if not set
+     * @since 1.0.7
+     */
+    public SessionEndHandler getOnSessionEnd() {
+<span class="fc" id="L141">        return onSessionEnd;</span>
+    }
+
+    /**
+     * Sets the handler called when a session ends.
+     *
+     * @param onSessionEnd
+     *            the handler
+     * @return this instance for method chaining
+     * @since 1.0.7
+     */
+    public SessionHooks setOnSessionEnd(SessionEndHandler onSessionEnd) {
+<span class="fc" id="L153">        this.onSessionEnd = onSessionEnd;</span>
+<span class="fc" id="L154">        return this;</span>
+    }
+
+    /**
+     * Returns whether any hooks are registered.
+     *
+     * @return {@code true} if at least one hook handler is set
+     */
+    public boolean hasHooks() {
+<span class="pc bpc" id="L163" title="2 of 10 branches missed.">        return onPreToolUse != null || onPostToolUse != null || onUserPromptSubmitted != null || onSessionStart != null</span>
+                || onSessionEnd != null;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

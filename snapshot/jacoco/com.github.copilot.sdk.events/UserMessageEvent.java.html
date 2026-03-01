@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserMessageEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.events</a> &gt; <span class="el_source">UserMessageEvent.java</span></div><h1>UserMessageEvent.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.events;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Event: user.message
+ *
+ * @since 1.0.0
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L19">public final class UserMessageEvent extends AbstractSessionEvent {</span>
+
+    @JsonProperty(&quot;data&quot;)
+    private UserMessageData data;
+
+    @Override
+    public String getType() {
+<span class="fc" id="L26">        return &quot;user.message&quot;;</span>
+    }
+
+    public UserMessageData getData() {
+<span class="fc" id="L30">        return data;</span>
+    }
+
+    public void setData(UserMessageData data) {
+<span class="fc" id="L34">        this.data = data;</span>
+<span class="fc" id="L35">    }</span>
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L38">    public record UserMessageData(@JsonProperty(&quot;content&quot;) String content,</span>
+            @JsonProperty(&quot;transformedContent&quot;) String transformedContent,
+            @JsonProperty(&quot;attachments&quot;) List&lt;Attachment&gt; attachments, @JsonProperty(&quot;source&quot;) String source) {
+
+        /** Returns a defensive copy of the attachments list. */
+        @Override
+        public List&lt;Attachment&gt; attachments() {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
+        }
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L49">        public record Attachment(@JsonProperty(&quot;type&quot;) String type, @JsonProperty(&quot;path&quot;) String path,</span>
+                @JsonProperty(&quot;filePath&quot;) String filePath, @JsonProperty(&quot;displayName&quot;) String displayName,
+                @JsonProperty(&quot;text&quot;) String text, @JsonProperty(&quot;selection&quot;) Selection selection) {
+
+            @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L54">            public record Selection(@JsonProperty(&quot;start&quot;) Position start, @JsonProperty(&quot;end&quot;) Position end) {</span>
+
+                @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L57">                public record Position(@JsonProperty(&quot;line&quot;) int line, @JsonProperty(&quot;character&quot;) int character) {</span>
+                }
+            }
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

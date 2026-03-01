@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SessionConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.json</a> &gt; <span class="el_source">SessionConfig.java</span></div><h1>SessionConfig.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.json;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+/**
+ * Configuration for creating a new Copilot session.
+ * &lt;p&gt;
+ * This class provides options for customizing session behavior, including model
+ * selection, tool registration, system message customization, and more. All
+ * setter methods return {@code this} for method chaining.
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * var config = new SessionConfig().setModel(&quot;gpt-5&quot;).setStreaming(true).setSystemMessage(
+ * 		new SystemMessageConfig().setMode(SystemMessageMode.APPEND).setContent(&quot;Be concise in your responses.&quot;));
+ *
+ * var session = client.createSession(config).get();
+ * }&lt;/pre&gt;
+ *
+ * @see com.github.copilot.sdk.CopilotClient#createSession(SessionConfig)
+ * @since 1.0.0
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+<span class="fc" id="L34">public class SessionConfig {</span>
+
+    private String sessionId;
+    private String clientName;
+    private String model;
+    private String reasoningEffort;
+    private List&lt;ToolDefinition&gt; tools;
+    private SystemMessageConfig systemMessage;
+    private List&lt;String&gt; availableTools;
+    private List&lt;String&gt; excludedTools;
+    private ProviderConfig provider;
+    private PermissionHandler onPermissionRequest;
+    private UserInputHandler onUserInputRequest;
+    private SessionHooks hooks;
+    private String workingDirectory;
+    private boolean streaming;
+    private Map&lt;String, Object&gt; mcpServers;
+    private List&lt;CustomAgentConfig&gt; customAgents;
+    private InfiniteSessionConfig infiniteSessions;
+    private List&lt;String&gt; skillDirectories;
+    private List&lt;String&gt; disabledSkills;
+    private String configDir;
+
+    /**
+     * Gets the custom session ID.
+     *
+     * @return the session ID, or {@code null} to generate automatically
+     */
+    public String getSessionId() {
+<span class="fc" id="L63">        return sessionId;</span>
+    }
+
+    /**
+     * Sets a custom session ID.
+     * &lt;p&gt;
+     * If not provided, a unique session ID will be generated automatically.
+     *
+     * @param sessionId
+     *            the custom session ID
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setSessionId(String sessionId) {
+<span class="fc" id="L76">        this.sessionId = sessionId;</span>
+<span class="fc" id="L77">        return this;</span>
+    }
+
+    /**
+     * Gets the client name used to identify the application using the SDK.
+     *
+     * @return the client name, or {@code null} if not set
+     */
+    public String getClientName() {
+<span class="fc" id="L86">        return clientName;</span>
+    }
+
+    /**
+     * Sets the client name to identify the application using the SDK.
+     * &lt;p&gt;
+     * This value is included in the User-Agent header for API requests.
+     *
+     * @param clientName
+     *            the client name
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setClientName(String clientName) {
+<span class="fc" id="L99">        this.clientName = clientName;</span>
+<span class="fc" id="L100">        return this;</span>
+    }
+
+    /**
+     * Gets the AI model to use.
+     *
+     * @return the model name
+     */
+    public String getModel() {
+<span class="fc" id="L109">        return model;</span>
+    }
+
+    /**
+     * Sets the AI model to use for this session.
+     * &lt;p&gt;
+     * Examples: &quot;gpt-5&quot;, &quot;claude-sonnet-4.5&quot;, &quot;o3-mini&quot;.
+     *
+     * @param model
+     *            the model name
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setModel(String model) {
+<span class="fc" id="L122">        this.model = model;</span>
+<span class="fc" id="L123">        return this;</span>
+    }
+
+    /**
+     * Gets the reasoning effort level.
+     *
+     * @return the reasoning effort level (&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;, or &quot;xhigh&quot;)
+     */
+    public String getReasoningEffort() {
+<span class="fc" id="L132">        return reasoningEffort;</span>
+    }
+
+    /**
+     * Sets the reasoning effort level for models that support it.
+     * &lt;p&gt;
+     * Valid values: &quot;low&quot;, &quot;medium&quot;, &quot;high&quot;, &quot;xhigh&quot;. Only applies to models where
+     * {@code capabilities.supports.reasoningEffort} is true.
+     *
+     * @param reasoningEffort
+     *            the reasoning effort level
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setReasoningEffort(String reasoningEffort) {
+<span class="nc" id="L146">        this.reasoningEffort = reasoningEffort;</span>
+<span class="nc" id="L147">        return this;</span>
+    }
+
+    /**
+     * Gets the custom tools for this session.
+     *
+     * @return the list of tool definitions
+     */
+    public List&lt;ToolDefinition&gt; getTools() {
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+    }
+
+    /**
+     * Sets custom tools that the assistant can invoke during the session.
+     * &lt;p&gt;
+     * Tools allow the assistant to call back into your application to perform
+     * actions or retrieve information.
+     *
+     * @param tools
+     *            the list of tool definitions
+     * @return this config instance for method chaining
+     * @see ToolDefinition
+     */
+    public SessionConfig setTools(List&lt;ToolDefinition&gt; tools) {
+<span class="fc" id="L171">        this.tools = tools;</span>
+<span class="fc" id="L172">        return this;</span>
+    }
+
+    /**
+     * Gets the system message configuration.
+     *
+     * @return the system message config
+     */
+    public SystemMessageConfig getSystemMessage() {
+<span class="fc" id="L181">        return systemMessage;</span>
+    }
+
+    /**
+     * Sets the system message configuration.
+     * &lt;p&gt;
+     * The system message controls the behavior and personality of the assistant.
+     * Use {@link com.github.copilot.sdk.SystemMessageMode#APPEND} to add
+     * instructions while preserving default behavior, or
+     * {@link com.github.copilot.sdk.SystemMessageMode#REPLACE} to fully customize.
+     *
+     * @param systemMessage
+     *            the system message configuration
+     * @return this config instance for method chaining
+     * @see SystemMessageConfig
+     */
+    public SessionConfig setSystemMessage(SystemMessageConfig systemMessage) {
+<span class="fc" id="L198">        this.systemMessage = systemMessage;</span>
+<span class="fc" id="L199">        return this;</span>
+    }
+
+    /**
+     * Gets the list of allowed tool names.
+     *
+     * @return the list of available tool names
+     */
+    public List&lt;String&gt; getAvailableTools() {
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
+    }
+
+    /**
+     * Sets the list of tool names that are allowed in this session.
+     * &lt;p&gt;
+     * When specified, only tools in this list will be available to the assistant.
+     *
+     * @param availableTools
+     *            the list of allowed tool names
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setAvailableTools(List&lt;String&gt; availableTools) {
+<span class="fc" id="L221">        this.availableTools = availableTools;</span>
+<span class="fc" id="L222">        return this;</span>
+    }
+
+    /**
+     * Gets the list of excluded tool names.
+     *
+     * @return the list of excluded tool names
+     */
+    public List&lt;String&gt; getExcludedTools() {
+<span class="fc bfc" id="L231" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
+    }
+
+    /**
+     * Sets the list of tool names to exclude from this session.
+     * &lt;p&gt;
+     * Tools in this list will not be available to the assistant.
+     *
+     * @param excludedTools
+     *            the list of tool names to exclude
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setExcludedTools(List&lt;String&gt; excludedTools) {
+<span class="fc" id="L244">        this.excludedTools = excludedTools;</span>
+<span class="fc" id="L245">        return this;</span>
+    }
+
+    /**
+     * Gets the custom API provider configuration.
+     *
+     * @return the provider configuration
+     */
+    public ProviderConfig getProvider() {
+<span class="fc" id="L254">        return provider;</span>
+    }
+
+    /**
+     * Sets a custom API provider for BYOK (Bring Your Own Key) scenarios.
+     * &lt;p&gt;
+     * This allows using your own OpenAI, Azure OpenAI, or other compatible API
+     * endpoints instead of the default Copilot backend.
+     *
+     * @param provider
+     *            the provider configuration
+     * @return this config instance for method chaining
+     * @see ProviderConfig
+     */
+    public SessionConfig setProvider(ProviderConfig provider) {
+<span class="fc" id="L269">        this.provider = provider;</span>
+<span class="fc" id="L270">        return this;</span>
+    }
+
+    /**
+     * Gets the permission request handler.
+     *
+     * @return the permission handler
+     */
+    public PermissionHandler getOnPermissionRequest() {
+<span class="fc" id="L279">        return onPermissionRequest;</span>
+    }
+
+    /**
+     * Sets a handler for permission requests from the assistant.
+     * &lt;p&gt;
+     * When the assistant needs permission to perform certain actions, this handler
+     * will be invoked to approve or deny the request.
+     *
+     * @param onPermissionRequest
+     *            the permission handler
+     * @return this config instance for method chaining
+     * @see PermissionHandler
+     */
+    public SessionConfig setOnPermissionRequest(PermissionHandler onPermissionRequest) {
+<span class="fc" id="L294">        this.onPermissionRequest = onPermissionRequest;</span>
+<span class="fc" id="L295">        return this;</span>
+    }
+
+    /**
+     * Gets the user input request handler.
+     *
+     * @return the user input handler
+     */
+    public UserInputHandler getOnUserInputRequest() {
+<span class="fc" id="L304">        return onUserInputRequest;</span>
+    }
+
+    /**
+     * Sets a handler for user input requests from the agent.
+     * &lt;p&gt;
+     * When provided, enables the ask_user tool for the agent to request user input.
+     *
+     * @param onUserInputRequest
+     *            the user input handler
+     * @return this config instance for method chaining
+     * @see UserInputHandler
+     */
+    public SessionConfig setOnUserInputRequest(UserInputHandler onUserInputRequest) {
+<span class="fc" id="L318">        this.onUserInputRequest = onUserInputRequest;</span>
+<span class="fc" id="L319">        return this;</span>
+    }
+
+    /**
+     * Gets the hook handlers configuration.
+     *
+     * @return the session hooks
+     */
+    public SessionHooks getHooks() {
+<span class="fc" id="L328">        return hooks;</span>
+    }
+
+    /**
+     * Sets hook handlers for session lifecycle events.
+     * &lt;p&gt;
+     * Hooks allow you to intercept and modify tool execution behavior.
+     *
+     * @param hooks
+     *            the hooks configuration
+     * @return this config instance for method chaining
+     * @see SessionHooks
+     */
+    public SessionConfig setHooks(SessionHooks hooks) {
+<span class="fc" id="L342">        this.hooks = hooks;</span>
+<span class="fc" id="L343">        return this;</span>
+    }
+
+    /**
+     * Gets the working directory for the session.
+     *
+     * @return the working directory path
+     */
+    public String getWorkingDirectory() {
+<span class="fc" id="L352">        return workingDirectory;</span>
+    }
+
+    /**
+     * Sets the working directory for the session.
+     *
+     * @param workingDirectory
+     *            the working directory path
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setWorkingDirectory(String workingDirectory) {
+<span class="nc" id="L363">        this.workingDirectory = workingDirectory;</span>
+<span class="nc" id="L364">        return this;</span>
+    }
+
+    /**
+     * Returns whether streaming is enabled.
+     *
+     * @return {@code true} if streaming is enabled
+     */
+    public boolean isStreaming() {
+<span class="fc" id="L373">        return streaming;</span>
+    }
+
+    /**
+     * Sets whether to enable streaming of response chunks.
+     * &lt;p&gt;
+     * When enabled, the session will emit {@code AssistantMessageDeltaEvent} events
+     * as the response is generated, allowing for real-time display of partial
+     * responses.
+     *
+     * @param streaming
+     *            {@code true} to enable streaming
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setStreaming(boolean streaming) {
+<span class="fc" id="L388">        this.streaming = streaming;</span>
+<span class="fc" id="L389">        return this;</span>
+    }
+
+    /**
+     * Gets the MCP server configurations.
+     *
+     * @return the MCP servers map
+     */
+    public Map&lt;String, Object&gt; getMcpServers() {
+<span class="fc bfc" id="L398" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+    }
+
+    /**
+     * Sets MCP (Model Context Protocol) server configurations.
+     * &lt;p&gt;
+     * MCP servers extend the assistant's capabilities by providing additional
+     * context sources and tools.
+     *
+     * @param mcpServers
+     *            the MCP servers configuration map
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setMcpServers(Map&lt;String, Object&gt; mcpServers) {
+<span class="fc" id="L412">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L413">        return this;</span>
+    }
+
+    /**
+     * Gets the custom agent configurations.
+     *
+     * @return the list of custom agent configurations
+     */
+    public List&lt;CustomAgentConfig&gt; getCustomAgents() {
+<span class="fc bfc" id="L422" title="All 2 branches covered.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
+    }
+
+    /**
+     * Sets custom agent configurations.
+     * &lt;p&gt;
+     * Custom agents allow extending the assistant with specialized behaviors and
+     * capabilities.
+     *
+     * @param customAgents
+     *            the list of custom agent configurations
+     * @return this config instance for method chaining
+     * @see CustomAgentConfig
+     */
+    public SessionConfig setCustomAgents(List&lt;CustomAgentConfig&gt; customAgents) {
+<span class="fc" id="L437">        this.customAgents = customAgents;</span>
+<span class="fc" id="L438">        return this;</span>
+    }
+
+    /**
+     * Gets the infinite sessions configuration.
+     *
+     * @return the infinite sessions config
+     */
+    public InfiniteSessionConfig getInfiniteSessions() {
+<span class="fc" id="L447">        return infiniteSessions;</span>
+    }
+
+    /**
+     * Sets the infinite session configuration for persistent workspaces and
+     * automatic compaction.
+     * &lt;p&gt;
+     * When enabled (default), sessions automatically manage context limits and
+     * persist state to a workspace directory. The workspace contains checkpoints/,
+     * plan.md, and files/ subdirectories.
+     *
+     * @param infiniteSessions
+     *            the infinite sessions configuration
+     * @return this config instance for method chaining
+     * @see InfiniteSessionConfig
+     */
+    public SessionConfig setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
+<span class="fc" id="L464">        this.infiniteSessions = infiniteSessions;</span>
+<span class="fc" id="L465">        return this;</span>
+    }
+
+    /**
+     * Gets the skill directories.
+     *
+     * @return the list of skill directory paths
+     */
+    public List&lt;String&gt; getSkillDirectories() {
+<span class="fc bfc" id="L474" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
+    }
+
+    /**
+     * Sets the skill directories for loading custom skills.
+     * &lt;p&gt;
+     * Skills are loaded from SKILL.md files in subdirectories of the specified
+     * directories. Each skill subdirectory should contain a SKILL.md file with YAML
+     * frontmatter defining the skill metadata.
+     *
+     * @param skillDirectories
+     *            the list of skill directory paths
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setSkillDirectories(List&lt;String&gt; skillDirectories) {
+<span class="fc" id="L489">        this.skillDirectories = skillDirectories;</span>
+<span class="fc" id="L490">        return this;</span>
+    }
+
+    /**
+     * Gets the disabled skill names.
+     *
+     * @return the list of disabled skill names
+     */
+    public List&lt;String&gt; getDisabledSkills() {
+<span class="fc bfc" id="L499" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
+    }
+
+    /**
+     * Sets the list of skill names to disable.
+     * &lt;p&gt;
+     * Skills in this list will not be applied to the session, even if they are
+     * found in the skill directories.
+     *
+     * @param disabledSkills
+     *            the list of skill names to disable
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setDisabledSkills(List&lt;String&gt; disabledSkills) {
+<span class="fc" id="L513">        this.disabledSkills = disabledSkills;</span>
+<span class="fc" id="L514">        return this;</span>
+    }
+
+    /**
+     * Gets the custom configuration directory.
+     *
+     * @return the config directory path
+     */
+    public String getConfigDir() {
+<span class="fc" id="L523">        return configDir;</span>
+    }
+
+    /**
+     * Sets a custom configuration directory for the session.
+     * &lt;p&gt;
+     * This allows using a specific directory for session configuration instead of
+     * the default location.
+     *
+     * @param configDir
+     *            the configuration directory path
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setConfigDir(String configDir) {
+<span class="fc" id="L537">        this.configDir = configDir;</span>
+<span class="fc" id="L538">        return this;</span>
+    }
+
+    /**
+     * Creates a shallow clone of this {@code SessionConfig} instance.
+     * &lt;p&gt;
+     * Mutable collection properties are copied into new collection instances so
+     * that modifications to those collections on the clone do not affect the
+     * original. Other reference-type properties (like provider configuration,
+     * system messages, hooks, infinite session configuration, and handlers) are not
+     * deep-cloned; the original and the clone will share those objects.
+     *
+     * @return a clone of this config instance
+     */
+    @Override
+    public SessionConfig clone() {
+<span class="fc" id="L554">        SessionConfig copy = new SessionConfig();</span>
+<span class="fc" id="L555">        copy.sessionId = this.sessionId;</span>
+<span class="fc" id="L556">        copy.clientName = this.clientName;</span>
+<span class="fc" id="L557">        copy.model = this.model;</span>
+<span class="fc" id="L558">        copy.reasoningEffort = this.reasoningEffort;</span>
+<span class="pc bpc" id="L559" title="1 of 2 branches missed.">        copy.tools = this.tools != null ? new ArrayList&lt;&gt;(this.tools) : null;</span>
+<span class="fc" id="L560">        copy.systemMessage = this.systemMessage;</span>
+<span class="fc bfc" id="L561" title="All 2 branches covered.">        copy.availableTools = this.availableTools != null ? new ArrayList&lt;&gt;(this.availableTools) : null;</span>
+<span class="pc bpc" id="L562" title="1 of 2 branches missed.">        copy.excludedTools = this.excludedTools != null ? new ArrayList&lt;&gt;(this.excludedTools) : null;</span>
+<span class="fc" id="L563">        copy.provider = this.provider;</span>
+<span class="fc" id="L564">        copy.onPermissionRequest = this.onPermissionRequest;</span>
+<span class="fc" id="L565">        copy.onUserInputRequest = this.onUserInputRequest;</span>
+<span class="fc" id="L566">        copy.hooks = this.hooks;</span>
+<span class="fc" id="L567">        copy.workingDirectory = this.workingDirectory;</span>
+<span class="fc" id="L568">        copy.streaming = this.streaming;</span>
+<span class="pc bpc" id="L569" title="1 of 2 branches missed.">        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap&lt;&gt;(this.mcpServers) : null;</span>
+<span class="pc bpc" id="L570" title="1 of 2 branches missed.">        copy.customAgents = this.customAgents != null ? new ArrayList&lt;&gt;(this.customAgents) : null;</span>
+<span class="fc" id="L571">        copy.infiniteSessions = this.infiniteSessions;</span>
+<span class="pc bpc" id="L572" title="1 of 2 branches missed.">        copy.skillDirectories = this.skillDirectories != null ? new ArrayList&lt;&gt;(this.skillDirectories) : null;</span>
+<span class="pc bpc" id="L573" title="1 of 2 branches missed.">        copy.disabledSkills = this.disabledSkills != null ? new ArrayList&lt;&gt;(this.disabledSkills) : null;</span>
+<span class="fc" id="L574">        copy.configDir = this.configDir;</span>
+<span class="fc" id="L575">        return copy;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

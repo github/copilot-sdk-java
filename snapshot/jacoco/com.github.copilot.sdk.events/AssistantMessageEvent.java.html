@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AssistantMessageEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.events</a> &gt; <span class="el_source">AssistantMessageEvent.java</span></div><h1>AssistantMessageEvent.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.events;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Event representing a complete message from the assistant.
+ * &lt;p&gt;
+ * This event is fired when the assistant has finished generating a response.
+ * For streaming responses, use {@link AssistantMessageDeltaEvent} instead.
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * session.on(event -&gt; {
+ * 	if (event instanceof AssistantMessageEvent msg) {
+ * 		String content = msg.getData().content();
+ * 		System.out.println(&quot;Assistant: &quot; + content);
+ * 	}
+ * });
+ * }&lt;/pre&gt;
+ *
+ * @see AssistantMessageDeltaEvent
+ * @see AbstractSessionEvent
+ * @since 1.0.0
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L35">public final class AssistantMessageEvent extends AbstractSessionEvent {</span>
+
+    @JsonProperty(&quot;data&quot;)
+    private AssistantMessageData data;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return &quot;assistant.message&quot;
+     */
+    @Override
+    public String getType() {
+<span class="fc" id="L47">        return &quot;assistant.message&quot;;</span>
+    }
+
+    /**
+     * Gets the message data.
+     *
+     * @return the message data containing content and tool requests
+     */
+    public AssistantMessageData getData() {
+<span class="fc" id="L56">        return data;</span>
+    }
+
+    /**
+     * Sets the message data.
+     *
+     * @param data
+     *            the message data
+     */
+    public void setData(AssistantMessageData data) {
+<span class="fc" id="L66">        this.data = data;</span>
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * Contains the assistant message content and metadata.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L73">    public record AssistantMessageData(@JsonProperty(&quot;messageId&quot;) String messageId,</span>
+            @JsonProperty(&quot;content&quot;) String content, @JsonProperty(&quot;toolRequests&quot;) List&lt;ToolRequest&gt; toolRequests,
+            @JsonProperty(&quot;parentToolCallId&quot;) String parentToolCallId,
+            @JsonProperty(&quot;reasoningOpaque&quot;) String reasoningOpaque,
+            @JsonProperty(&quot;reasoningText&quot;) String reasoningText,
+            @JsonProperty(&quot;encryptedContent&quot;) String encryptedContent) {
+
+        /** Returns a defensive copy of the tool requests list. */
+        @Override
+        public List&lt;ToolRequest&gt; toolRequests() {
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">            return toolRequests == null ? null : Collections.unmodifiableList(toolRequests);</span>
+        }
+
+        /**
+         * Represents a request from the assistant to invoke a tool.
+         */
+        @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="fc" id="L90">        public record ToolRequest(@JsonProperty(&quot;toolCallId&quot;) String toolCallId, @JsonProperty(&quot;name&quot;) String name,</span>
+                @JsonProperty(&quot;arguments&quot;) Object arguments) {
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

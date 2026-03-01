@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CopilotClientOptions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.json</a> &gt; <span class="el_source">CopilotClientOptions.java</span></div><h1>CopilotClientOptions.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.json;
+
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+/**
+ * Configuration options for creating a
+ * {@link com.github.copilot.sdk.CopilotClient}.
+ * &lt;p&gt;
+ * This class provides a fluent API for configuring how the client connects to
+ * and manages the Copilot CLI server. All setter methods return {@code this}
+ * for method chaining.
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * var options = new CopilotClientOptions().setCliPath(&quot;/usr/local/bin/copilot&quot;).setLogLevel(&quot;debug&quot;)
+ * 		.setAutoStart(true);
+ *
+ * var client = new CopilotClient(options);
+ * }&lt;/pre&gt;
+ *
+ * @see com.github.copilot.sdk.CopilotClient
+ * @since 1.0.0
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+<span class="fc" id="L32">public class CopilotClientOptions {</span>
+
+    private String cliPath;
+    private String[] cliArgs;
+    private String cwd;
+    private int port;
+<span class="fc" id="L38">    private boolean useStdio = true;</span>
+    private String cliUrl;
+<span class="fc" id="L40">    private String logLevel = &quot;info&quot;;</span>
+<span class="fc" id="L41">    private boolean autoStart = true;</span>
+<span class="fc" id="L42">    private boolean autoRestart = true;</span>
+    private Map&lt;String, String&gt; environment;
+    private String gitHubToken;
+    private Boolean useLoggedInUser;
+
+    /**
+     * Gets the path to the Copilot CLI executable.
+     *
+     * @return the CLI path, or {@code null} to use &quot;copilot&quot; from PATH
+     */
+    public String getCliPath() {
+<span class="fc" id="L53">        return cliPath;</span>
+    }
+
+    /**
+     * Sets the path to the Copilot CLI executable.
+     *
+     * @param cliPath
+     *            the path to the CLI executable, or {@code null} to use &quot;copilot&quot;
+     *            from PATH
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setCliPath(String cliPath) {
+<span class="fc" id="L65">        this.cliPath = cliPath;</span>
+<span class="fc" id="L66">        return this;</span>
+    }
+
+    /**
+     * Gets the extra CLI arguments.
+     *
+     * @return the extra arguments to pass to the CLI
+     */
+    public String[] getCliArgs() {
+<span class="fc" id="L75">        return cliArgs;</span>
+    }
+
+    /**
+     * Sets extra arguments to pass to the CLI process.
+     * &lt;p&gt;
+     * These arguments are prepended before SDK-managed flags.
+     *
+     * @param cliArgs
+     *            the extra arguments to pass
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setCliArgs(String[] cliArgs) {
+<span class="fc" id="L88">        this.cliArgs = cliArgs;</span>
+<span class="fc" id="L89">        return this;</span>
+    }
+
+    /**
+     * Gets the working directory for the CLI process.
+     *
+     * @return the working directory path
+     */
+    public String getCwd() {
+<span class="fc" id="L98">        return cwd;</span>
+    }
+
+    /**
+     * Sets the working directory for the CLI process.
+     *
+     * @param cwd
+     *            the working directory path
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setCwd(String cwd) {
+<span class="fc" id="L109">        this.cwd = cwd;</span>
+<span class="fc" id="L110">        return this;</span>
+    }
+
+    /**
+     * Gets the TCP port for the CLI server.
+     *
+     * @return the port number, or 0 for a random port
+     */
+    public int getPort() {
+<span class="fc" id="L119">        return port;</span>
+    }
+
+    /**
+     * Sets the TCP port for the CLI server to listen on.
+     * &lt;p&gt;
+     * This is only used when {@link #isUseStdio()} is {@code false}.
+     *
+     * @param port
+     *            the port number, or 0 for a random port
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setPort(int port) {
+<span class="fc" id="L132">        this.port = port;</span>
+<span class="fc" id="L133">        return this;</span>
+    }
+
+    /**
+     * Returns whether to use stdio transport instead of TCP.
+     *
+     * @return {@code true} to use stdio (default), {@code false} to use TCP
+     */
+    public boolean isUseStdio() {
+<span class="fc" id="L142">        return useStdio;</span>
+    }
+
+    /**
+     * Sets whether to use stdio transport instead of TCP.
+     * &lt;p&gt;
+     * Stdio transport is more efficient and is the default. TCP transport can be
+     * useful for debugging or connecting to remote servers.
+     *
+     * @param useStdio
+     *            {@code true} to use stdio, {@code false} to use TCP
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setUseStdio(boolean useStdio) {
+<span class="fc" id="L156">        this.useStdio = useStdio;</span>
+<span class="fc" id="L157">        return this;</span>
+    }
+
+    /**
+     * Gets the URL of an existing CLI server to connect to.
+     *
+     * @return the CLI server URL, or {@code null} to spawn a new process
+     */
+    public String getCliUrl() {
+<span class="fc" id="L166">        return cliUrl;</span>
+    }
+
+    /**
+     * Sets the URL of an existing CLI server to connect to.
+     * &lt;p&gt;
+     * When provided, the client will not spawn a CLI process but will connect to
+     * the specified URL instead. Format: &quot;host:port&quot; or &quot;http://host:port&quot;.
+     * &lt;p&gt;
+     * &lt;strong&gt;Note:&lt;/strong&gt; This is mutually exclusive with
+     * {@link #setUseStdio(boolean)} and {@link #setCliPath(String)}.
+     *
+     * @param cliUrl
+     *            the CLI server URL to connect to
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setCliUrl(String cliUrl) {
+<span class="fc" id="L183">        this.cliUrl = cliUrl;</span>
+<span class="fc" id="L184">        return this;</span>
+    }
+
+    /**
+     * Gets the log level for the CLI process.
+     *
+     * @return the log level (default: &quot;info&quot;)
+     */
+    public String getLogLevel() {
+<span class="fc" id="L193">        return logLevel;</span>
+    }
+
+    /**
+     * Sets the log level for the CLI process.
+     * &lt;p&gt;
+     * Valid levels include: &quot;error&quot;, &quot;warn&quot;, &quot;info&quot;, &quot;debug&quot;, &quot;trace&quot;.
+     *
+     * @param logLevel
+     *            the log level
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setLogLevel(String logLevel) {
+<span class="fc" id="L206">        this.logLevel = logLevel;</span>
+<span class="fc" id="L207">        return this;</span>
+    }
+
+    /**
+     * Returns whether the client should automatically start the server.
+     *
+     * @return {@code true} to auto-start (default), {@code false} for manual start
+     */
+    public boolean isAutoStart() {
+<span class="fc" id="L216">        return autoStart;</span>
+    }
+
+    /**
+     * Sets whether the client should automatically start the CLI server when the
+     * first request is made.
+     *
+     * @param autoStart
+     *            {@code true} to auto-start, {@code false} for manual start
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setAutoStart(boolean autoStart) {
+<span class="fc" id="L228">        this.autoStart = autoStart;</span>
+<span class="fc" id="L229">        return this;</span>
+    }
+
+    /**
+     * Returns whether the client should automatically restart the server on crash.
+     *
+     * @return {@code true} to auto-restart (default), {@code false} otherwise
+     */
+    public boolean isAutoRestart() {
+<span class="nc" id="L238">        return autoRestart;</span>
+    }
+
+    /**
+     * Sets whether the client should automatically restart the CLI server if it
+     * crashes unexpectedly.
+     *
+     * @param autoRestart
+     *            {@code true} to auto-restart, {@code false} otherwise
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setAutoRestart(boolean autoRestart) {
+<span class="nc" id="L250">        this.autoRestart = autoRestart;</span>
+<span class="nc" id="L251">        return this;</span>
+    }
+
+    /**
+     * Gets the environment variables for the CLI process.
+     *
+     * @return the environment variables map
+     */
+    public Map&lt;String, String&gt; getEnvironment() {
+<span class="fc" id="L260">        return environment;</span>
+    }
+
+    /**
+     * Sets environment variables to pass to the CLI process.
+     * &lt;p&gt;
+     * When set, these environment variables replace the inherited environment.
+     *
+     * @param environment
+     *            the environment variables map
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setEnvironment(Map&lt;String, String&gt; environment) {
+<span class="fc" id="L273">        this.environment = environment;</span>
+<span class="fc" id="L274">        return this;</span>
+    }
+
+    /**
+     * Gets the GitHub token for authentication.
+     *
+     * @return the GitHub token, or {@code null} to use other authentication methods
+     */
+    public String getGitHubToken() {
+<span class="fc" id="L283">        return gitHubToken;</span>
+    }
+
+    /**
+     * Sets the GitHub token to use for authentication.
+     * &lt;p&gt;
+     * When provided, the token is passed to the CLI server via environment
+     * variable. This takes priority over other authentication methods.
+     *
+     * @param gitHubToken
+     *            the GitHub token
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setGitHubToken(String gitHubToken) {
+<span class="fc" id="L297">        this.gitHubToken = gitHubToken;</span>
+<span class="fc" id="L298">        return this;</span>
+    }
+
+    /**
+     * Gets the GitHub token for authentication.
+     *
+     * @return the GitHub token, or {@code null} to use other authentication methods
+     * @deprecated Use {@link #getGitHubToken()} instead.
+     */
+    @Deprecated
+    public String getGithubToken() {
+<span class="nc" id="L309">        return gitHubToken;</span>
+    }
+
+    /**
+     * Sets the GitHub token to use for authentication.
+     *
+     * @param githubToken
+     *            the GitHub token
+     * @return this options instance for method chaining
+     * @deprecated Use {@link #setGitHubToken(String)} instead.
+     */
+    @Deprecated
+    public CopilotClientOptions setGithubToken(String githubToken) {
+<span class="nc" id="L322">        this.gitHubToken = githubToken;</span>
+<span class="nc" id="L323">        return this;</span>
+    }
+
+    /**
+     * Returns whether to use the logged-in user for authentication.
+     *
+     * @return {@code true} to use logged-in user auth, {@code false} to use only
+     *         explicit tokens, or {@code null} to use default behavior
+     */
+    public Boolean getUseLoggedInUser() {
+<span class="fc" id="L333">        return useLoggedInUser;</span>
+    }
+
+    /**
+     * Sets whether to use the logged-in user for authentication.
+     * &lt;p&gt;
+     * When true, the CLI server will attempt to use stored OAuth tokens or gh CLI
+     * auth. When false, only explicit tokens (gitHubToken or environment variables)
+     * are used. Default: true (but defaults to false when gitHubToken is provided).
+     *
+     * @param useLoggedInUser
+     *            {@code true} to use logged-in user auth, {@code false} otherwise
+     * @return this options instance for method chaining
+     */
+    public CopilotClientOptions setUseLoggedInUser(Boolean useLoggedInUser) {
+<span class="fc" id="L348">        this.useLoggedInUser = useLoggedInUser;</span>
+<span class="fc" id="L349">        return this;</span>
+    }
+
+    /**
+     * Creates a shallow clone of this {@code CopilotClientOptions} instance.
+     * &lt;p&gt;
+     * Array properties (like {@code cliArgs}) are copied into new arrays so that
+     * modifications to the clone do not affect the original. The
+     * {@code environment} map is also copied to a new map instance. Other
+     * reference-type properties are shared between the original and clone.
+     *
+     * @return a clone of this options instance
+     */
+    @Override
+    public CopilotClientOptions clone() {
+<span class="fc" id="L364">        CopilotClientOptions copy = new CopilotClientOptions();</span>
+<span class="fc" id="L365">        copy.cliPath = this.cliPath;</span>
+<span class="fc bfc" id="L366" title="All 2 branches covered.">        copy.cliArgs = this.cliArgs != null ? this.cliArgs.clone() : null;</span>
+<span class="fc" id="L367">        copy.cwd = this.cwd;</span>
+<span class="fc" id="L368">        copy.port = this.port;</span>
+<span class="fc" id="L369">        copy.useStdio = this.useStdio;</span>
+<span class="fc" id="L370">        copy.cliUrl = this.cliUrl;</span>
+<span class="fc" id="L371">        copy.logLevel = this.logLevel;</span>
+<span class="fc" id="L372">        copy.autoStart = this.autoStart;</span>
+<span class="fc" id="L373">        copy.autoRestart = this.autoRestart;</span>
+<span class="fc bfc" id="L374" title="All 2 branches covered.">        copy.environment = this.environment != null ? new java.util.HashMap&lt;&gt;(this.environment) : null;</span>
+<span class="fc" id="L375">        copy.gitHubToken = this.gitHubToken;</span>
+<span class="fc" id="L376">        copy.useLoggedInUser = this.useLoggedInUser;</span>
+<span class="fc" id="L377">        return copy;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomAgentConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot Community SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.json</a> &gt; <span class="el_source">CustomAgentConfig.java</span></div><h1>CustomAgentConfig.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.json;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Configuration for a custom agent in a Copilot session.
+ * &lt;p&gt;
+ * Custom agents extend the capabilities of the base Copilot assistant with
+ * specialized behavior, tools, and prompts. Each agent can be referenced in
+ * messages using the {@code @agent-name} mention syntax.
+ *
+ * &lt;h2&gt;Example Usage&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * var agent = new CustomAgentConfig().setName(&quot;code-reviewer&quot;).setDisplayName(&quot;Code Reviewer&quot;)
+ * 		.setDescription(&quot;Reviews code for best practices&quot;).setPrompt(&quot;You are a code review expert...&quot;)
+ * 		.setTools(List.of(&quot;read_file&quot;, &quot;search_code&quot;));
+ *
+ * var config = new SessionConfig().setCustomAgents(List.of(agent));
+ * }&lt;/pre&gt;
+ *
+ * @see SessionConfig#setCustomAgents(List)
+ * @since 1.0.0
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+<span class="fc" id="L35">public class CustomAgentConfig {</span>
+
+    @JsonProperty(&quot;name&quot;)
+    private String name;
+
+    @JsonProperty(&quot;displayName&quot;)
+    private String displayName;
+
+    @JsonProperty(&quot;description&quot;)
+    private String description;
+
+    @JsonProperty(&quot;tools&quot;)
+    private List&lt;String&gt; tools;
+
+    @JsonProperty(&quot;prompt&quot;)
+    private String prompt;
+
+    @JsonProperty(&quot;mcpServers&quot;)
+    private Map&lt;String, Object&gt; mcpServers;
+
+    @JsonProperty(&quot;infer&quot;)
+    private Boolean infer;
+
+    /**
+     * Gets the unique identifier name for this agent.
+     *
+     * @return the agent name used for {@code @mentions}
+     */
+    public String getName() {
+<span class="fc" id="L64">        return name;</span>
+    }
+
+    /**
+     * Sets the unique identifier name for this agent.
+     * &lt;p&gt;
+     * This name is used to mention the agent in messages (e.g.,
+     * {@code @code-reviewer}).
+     *
+     * @param name
+     *            the agent identifier (alphanumeric and hyphens)
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setName(String name) {
+<span class="fc" id="L78">        this.name = name;</span>
+<span class="fc" id="L79">        return this;</span>
+    }
+
+    /**
+     * Gets the human-readable display name.
+     *
+     * @return the display name shown to users
+     */
+    public String getDisplayName() {
+<span class="fc" id="L88">        return displayName;</span>
+    }
+
+    /**
+     * Sets the human-readable display name.
+     *
+     * @param displayName
+     *            the friendly name for the agent
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setDisplayName(String displayName) {
+<span class="fc" id="L99">        this.displayName = displayName;</span>
+<span class="fc" id="L100">        return this;</span>
+    }
+
+    /**
+     * Gets the agent description.
+     *
+     * @return the description of what this agent does
+     */
+    public String getDescription() {
+<span class="fc" id="L109">        return description;</span>
+    }
+
+    /**
+     * Sets a description of the agent's capabilities.
+     * &lt;p&gt;
+     * This helps users understand when to use this agent.
+     *
+     * @param description
+     *            the agent description
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setDescription(String description) {
+<span class="fc" id="L122">        this.description = description;</span>
+<span class="fc" id="L123">        return this;</span>
+    }
+
+    /**
+     * Gets the list of tool names available to this agent.
+     *
+     * @return the list of tool identifiers
+     */
+    public List&lt;String&gt; getTools() {
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+    }
+
+    /**
+     * Sets the tools available to this agent.
+     * &lt;p&gt;
+     * These can reference both built-in tools and custom tools registered in the
+     * session.
+     *
+     * @param tools
+     *            the list of tool names
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setTools(List&lt;String&gt; tools) {
+<span class="fc" id="L146">        this.tools = tools;</span>
+<span class="fc" id="L147">        return this;</span>
+    }
+
+    /**
+     * Gets the system prompt for this agent.
+     *
+     * @return the agent's system prompt
+     */
+    public String getPrompt() {
+<span class="fc" id="L156">        return prompt;</span>
+    }
+
+    /**
+     * Sets the system prompt that defines this agent's behavior.
+     * &lt;p&gt;
+     * This prompt is used to customize the agent's responses and capabilities.
+     *
+     * @param prompt
+     *            the system prompt
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setPrompt(String prompt) {
+<span class="fc" id="L169">        this.prompt = prompt;</span>
+<span class="fc" id="L170">        return this;</span>
+    }
+
+    /**
+     * Gets the MCP server configurations for this agent.
+     *
+     * @return the MCP servers map
+     */
+    public Map&lt;String, Object&gt; getMcpServers() {
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+    }
+
+    /**
+     * Sets MCP (Model Context Protocol) servers available to this agent.
+     *
+     * @param mcpServers
+     *            the MCP server configurations
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setMcpServers(Map&lt;String, Object&gt; mcpServers) {
+<span class="fc" id="L190">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L191">        return this;</span>
+    }
+
+    /**
+     * Gets whether inference mode is enabled.
+     *
+     * @return the infer flag, or {@code null} if not set
+     */
+    public Boolean getInfer() {
+<span class="fc" id="L200">        return infer;</span>
+    }
+
+    /**
+     * Sets whether to enable inference mode for this agent.
+     *
+     * @param infer
+     *            {@code true} to enable inference mode
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setInfer(Boolean infer) {
+<span class="fc" id="L211">        this.infer = infer;</span>
+<span class="fc" id="L212">        return this;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
