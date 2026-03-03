@@ -31,15 +31,18 @@ All scripts write/read a `.merge-env` file (git-ignored) to share state (branch 
 1. Run `./.github/scripts/upstream-sync/merge-upstream-start.sh` (creates branch, clones upstream, shows summary)
 2. Run `./.github/scripts/upstream-sync/merge-upstream-diff.sh` (analyze changes)
 3. Update README with minimum CLI version requirement
-4. Port changes to Java SDK (commit as you go)
-5. Run `./.github/scripts/build/format-and-test.sh` frequently while porting
-6. Update documentation
-7. Run `./.github/scripts/upstream-sync/merge-upstream-finish.sh` (final test + push)
-8. Finalize Pull Request (see note below about coding agent vs. manual workflow)
+4. Identify upstream changes to port
+5. Apply changes to Java SDK (commit as you go)
+6. Port/adjust tests from upstream changes
+7. Run `./.github/scripts/build/format-and-test.sh` frequently while porting
+8. Build the package
+9. Update documentation (**required for every user-facing upstream change**)
+10. Run `./.github/scripts/upstream-sync/merge-upstream-finish.sh` (final test + push) and finalize Pull Request (see note below about coding agent vs. manual workflow)
+11. Perform final review before handing off
 
 ---
 
-## Steps 1-2: Initialize and Analyze
+## Step 1: Initialize Upstream Sync
 
 Run the start script to create a branch, update the CLI, clone the upstream repo, and see a summary of new commits:
 
@@ -53,7 +56,9 @@ This writes a `.merge-env` file used by the other scripts. It outputs:
 - The upstream dir path
 - A short log of upstream commits since `.lastmerge`
 
-Then run the diff script for a detailed breakdown by area:
+## Step 2: Analyze Upstream Changes
+
+Run the diff script for a detailed breakdown by area:
 
 ```bash
 ./.github/scripts/upstream-sync/merge-upstream-diff.sh          # stat only
@@ -104,7 +109,7 @@ For each change in the upstream diff, determine:
 
 > **⚠️ Important:** When adding new documentation pages, always update `src/site/site.xml` to include them in the navigation menu.
 
-## Step 7: Apply Changes to Java SDK
+## Step 5: Apply Changes to Java SDK
 
 When porting changes:
 
@@ -168,7 +173,7 @@ Follow the existing Java SDK patterns:
 - **Match the style of surrounding code** - Consistency with existing code is more important than upstream patterns
 - **Prefer existing abstractions** - If the Java SDK already solves a problem differently than .NET, keep the Java approach
 
-## Step 7.5: Port Tests
+## Step 6: Port Tests
 
 After porting implementation changes, **always check for new or updated tests** in the upstream repository:
 
@@ -215,7 +220,7 @@ If tests fail with errors like `TypeError: Cannot read properties of undefined`,
 
 Commit tests separately or together with their corresponding implementation changes.
 
-## Step 8: Format and Run Tests
+## Step 7: Format and Run Tests
 
 After applying changes, use the convenience script:
 
@@ -246,7 +251,7 @@ Or for quicker iteration during porting:
 - **Null handling**: Add null checks where C# had nullable types
 - **JSON serialization**: Verify Jackson annotations are correct
 
-## Step 9: Build the Package
+## Step 8: Build the Package
 
 Once tests pass, build the complete package:
 
@@ -259,9 +264,11 @@ Verify:
 - No warnings (if possible)
 - JAR file is generated in `target/`
 
-## Step 10: Update Documentation
+## Step 9: Update Documentation
 
 **Documentation is critical for new features.** Every new feature ported from upstream must be documented before the merge is complete.
+Review and complete this documentation checklist before proceeding to Step 10.
+If you determine no docs changes are needed, document that decision and rationale in the PR body under a clear heading (for example, `Documentation Impact`).
 
 ### Documentation Checklist
 
@@ -316,7 +323,7 @@ Ensure consistency across all documentation files:
 - Code examples should use the same patterns and be tested
 - Links to Javadoc should use correct paths (`apidocs/...`)
 
-## Steps 11-12: Finish, Push, and Finalize Pull Request
+## Step 10: Finish, Push, and Finalize Pull Request
 
 Run the finish script which updates `.lastmerge`, runs a final build, and pushes the branch:
 
@@ -378,7 +385,7 @@ Ports changes from the official Copilot SDK ([github/copilot-sdk](https://github
 - Code formatted with Spotless
 ```
 
-## Step 13: Final Review
+## Step 11: Final Review
 
 Before finishing:
 
@@ -411,6 +418,7 @@ Before finishing:
   - [ ] `src/site/markdown/documentation.md` updated for new basic usage
   - [ ] `src/site/markdown/advanced.md` updated for new advanced features
   - [ ] Javadoc added/updated for new public APIs
+- [ ] If no documentation files were changed for user-facing upstream changes, PR body explicitly explains why documentation changes were not needed
 - [ ] `src/site/site.xml` updated if new documentation pages were added
 - [ ] `.lastmerge` file updated with new commit hash
 - [ ] Branch pushed to remote
@@ -429,4 +437,3 @@ Before finishing:
 - Uses JUnit 5 for testing
 - **Java SDK design decisions take precedence over upstream patterns**
 - **Adapt upstream changes to fit Java idioms, not the other way around**
-
