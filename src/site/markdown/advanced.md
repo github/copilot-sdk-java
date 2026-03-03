@@ -15,9 +15,11 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
 - [File Attachments](#File_Attachments)
 - [Bring Your Own Key (BYOK)](#Bring_Your_Own_Key_BYOK)
 - [Infinite Sessions](#Infinite_Sessions)
+  - [Manual Compaction](#Manual_Compaction)
   - [Compaction Events](#Compaction_Events)
 - [MCP Servers](#MCP_Servers)
 - [Custom Agents](#Custom_Agents)
+  - [Programmatic Agent Selection](#Programmatic_Agent_Selection)
 - [Skills Configuration](#Skills_Configuration)
   - [Loading Skills](#Loading_Skills)
   - [Disabling Skills](#Disabling_Skills)
@@ -317,6 +319,14 @@ var session = client.createSession(
 var workspace = session.getWorkspacePath();
 ```
 
+### Manual Compaction
+
+Trigger compaction immediately when you want to reduce context usage before the automatic threshold is reached:
+
+```java
+session.compact().get();
+```
+
 ### Compaction Events
 
 When compaction occurs, the session emits events that you can listen for:
@@ -418,6 +428,24 @@ var session = client.createSession(
 ```
 
 See [CustomAgentConfig](apidocs/com/github/copilot/sdk/json/CustomAgentConfig.html) Javadoc for full details.
+
+### Programmatic Agent Selection
+
+You can inspect and switch agents at runtime:
+
+```java
+var available = session.listAgents().get();
+
+var current = session.getCurrentAgent().get();
+if (current != null) {
+    System.out.println("Current agent: " + current.name());
+}
+
+var selected = session.selectAgent("reviewer").get();
+System.out.println("Selected: " + selected.name());
+
+session.deselectAgent().get(); // Return to the default agent
+```
 
 ---
 
