@@ -14,7 +14,7 @@
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://copilot-community-sdk.github.io/copilot-sdk-java/latest/)
 [![Javadoc](https://javadoc.io/badge2/io.github.copilot-community-sdk/copilot-sdk/javadoc.svg?q=1)](https://javadoc.io/doc/io.github.copilot-community-sdk/copilot-sdk/latest/index.html)
 
-## Overview
+## Background
 
 > ⚠️ **Disclaimer:** This is an **unofficial, community-driven SDK** and is **not supported or endorsed by GitHub**. This SDK may change in breaking ways. Use at your own risk.
 
@@ -166,6 +166,10 @@ See [SECURITY.md](SECURITY.md) for reporting security vulnerabilities.
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+## Acknowledgement
+
+- Initially developed with Copilot and [Bruno Borges](https://www.linkedin.com/in/brunocborges/).
 
 ## Star History
 
