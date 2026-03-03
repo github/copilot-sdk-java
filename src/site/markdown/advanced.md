@@ -66,7 +66,7 @@ var lookupTool = ToolDefinition.create(
 );
 
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setTools(List.of(lookupTool))
 ).get();
 ```
@@ -85,7 +85,7 @@ Use `APPEND` mode to add constraints while keeping default guardrails:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setSystemMessage(new SystemMessageConfig()
             .setMode(SystemMessageMode.APPEND)
             .setContent("""
@@ -103,7 +103,7 @@ Use `REPLACE` mode for complete control (removes default guardrails):
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setSystemMessage(new SystemMessageConfig()
             .setMode(SystemMessageMode.REPLACE)
             .setContent("You are a helpful coding assistant."))
@@ -164,7 +164,7 @@ Supported providers:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setProvider(new ProviderConfig()
             .setType("openai")
             .setBaseUrl("https://api.openai.com/v1")
@@ -178,7 +178,7 @@ Some providers require bearer token authentication instead of API keys:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setProvider(new ProviderConfig()
             .setType("openai")
             .setBaseUrl("https://my-custom-endpoint.example.com/v1")
@@ -194,7 +194,7 @@ var session = client.createSession(
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setProvider(new ProviderConfig()
             .setType("openai")
             .setBaseUrl("http://localhost:<PORT>/v1"))
@@ -248,7 +248,7 @@ When enabled (default), the session automatically compacts older messages as the
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setInfiniteSessions(new InfiniteSessionConfig()
             .setEnabled(true)
             .setBackgroundCompactionThreshold(0.80)  // Start compacting at 80%
@@ -295,7 +295,7 @@ Map<String, Object> server = Map.of(
 );
 
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setMcpServers(Map.of("filesystem", server))
 ).get();
 ```
@@ -317,7 +317,7 @@ var reviewer = new CustomAgentConfig()
     .setTools(List.of("read_file", "search_code"));
 
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setCustomAgents(List.of(reviewer))
 ).get();
 
@@ -355,7 +355,7 @@ var agents = List.of(
 );
 
 var session = client.createSession(
-    new SessionConfig().setCustomAgents(agents)
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setCustomAgents(agents)
 ).get();
 ```
 
@@ -373,7 +373,7 @@ Skills are loaded from `SKILL.md` files in subdirectories of the specified skill
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setSkillDirectories(List.of("/path/to/skills"))
 ).get();
 ```
@@ -397,7 +397,7 @@ Disable specific skills by name:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setSkillDirectories(List.of("/path/to/skills"))
         .setDisabledSkills(List.of("my-skill"))
 ).get();
@@ -411,7 +411,7 @@ Use a custom configuration directory for session settings:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setConfigDir("/path/to/custom/config")
 ).get();
 ```
@@ -426,7 +426,7 @@ Handle user input requests when the AI uses the `ask_user` tool to gather inform
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setOnUserInputRequest((request, invocation) -> {
             System.out.println("Agent asks: " + request.getQuestion());
             
@@ -471,7 +471,7 @@ Approve or deny permission requests from the AI.
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setOnPermissionRequest((request, invocation) -> {
             // Inspect request and approve/deny
             var result = new PermissionRequestResult();
@@ -499,7 +499,7 @@ var hooks = new SessionHooks()
     });
 
 var session = client.createSession(
-    new SessionConfig().setHooks(hooks)
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setHooks(hooks)
 ).get();
 ```
 

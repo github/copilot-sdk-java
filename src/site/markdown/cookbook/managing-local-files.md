@@ -48,7 +48,7 @@ public class ManagingLocalFiles {
 
             // Create session
             var session = client.createSession(
-                new SessionConfig().setModel("gpt-5")).get();
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get();
 
             // Set up event handlers
             var done = new CountDownLatch(1);
@@ -168,7 +168,7 @@ public class InteractiveFileOrganizer {
             client.start().get();
 
             var session = client.createSession(
-                new SessionConfig().setModel("gpt-5")).get();
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get();
 
             session.on(AssistantMessageEvent.class, msg -> 
                 System.out.println("\nCopilot: " + msg.getData().getContent())

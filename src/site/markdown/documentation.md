@@ -36,7 +36,7 @@ try (var client = new CopilotClient()) {
     client.start().get();
 
     var session = client.createSession(
-        new SessionConfig().setModel("gpt-4.1")
+        new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-4.1")
     ).get();
 
     var response = session.sendAndWait("Explain Java records in one sentence").get();
@@ -232,7 +232,7 @@ Enable streaming to receive response chunks as they're generated:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setModel("gpt-4.1")
         .setStreaming(true)
 ).get();
@@ -343,7 +343,7 @@ for (var model : models) {
 
 ```java
 var session = client.createSession(
-    new SessionConfig().setModel("claude-sonnet-4")
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("claude-sonnet-4")
 ).get();
 ```
 
@@ -355,7 +355,7 @@ For models that support it, control how much effort the model spends reasoning b
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setModel("o3-mini")
         .setReasoningEffort("high")
 ).get();
@@ -382,7 +382,7 @@ Restrict the session to only specific tools:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setAvailableTools(List.of("read_file", "search_code", "list_dir"))
 ).get();
 ```
@@ -395,7 +395,7 @@ Allow all tools except specific ones:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setExcludedTools(List.of("execute_command", "write_file"))
 ).get();
 ```
@@ -410,7 +410,7 @@ Tool filtering applies to built-in tools. Your custom tools (registered via `set
 var lookupTool = ToolDefinition.create("lookup_issue", "Fetch issue", schema, handler);
 
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setTools(List.of(lookupTool))           // Custom tool always available
         .setAvailableTools(List.of("read_file")) // Only allow read_file from built-ins
 ).get();
@@ -424,7 +424,7 @@ Set the working directory for file operations in the session:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setWorkingDirectory("/path/to/project")
 ).get();
 ```
@@ -553,11 +553,11 @@ session.send(new MessageOptions()
 
 ```java
 var session1 = client.createSession(
-    new SessionConfig().setModel("gpt-4.1")
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-4.1")
 ).get();
 
 var session2 = client.createSession(
-    new SessionConfig().setModel("claude-sonnet-4")
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("claude-sonnet-4")
 ).get();
 
 // Send messages concurrently
@@ -578,7 +578,7 @@ var lastSessionId = client.getLastSessionId().get();
 var sessions = client.listSessions().get();
 
 // Resume a session
-var session = client.resumeSession(lastSessionId).get();
+var session = client.resumeSession(lastSessionId, new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
 ```
 
 ### Resume Options
@@ -606,7 +606,7 @@ When resuming a session, you can optionally reconfigure many settings. This is u
 
 ```java
 // Resume with a different model
-var config = new ResumeSessionConfig()
+var config = new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
     .setModel("claude-sonnet-4")    // Switch to a different model
     .setReasoningEffort("high");    // Increase reasoning effort
 
@@ -655,7 +655,7 @@ Complete list of all `SessionConfig` options for `createSession()`:
 Use `clone()` to copy a base configuration before making per-session changes:
 
 ```java
-var base = new SessionConfig()
+var base = new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
     .setModel("gpt-4.1")
     .setStreaming(true);
 

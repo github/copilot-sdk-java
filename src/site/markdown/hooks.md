@@ -35,7 +35,7 @@ var hooks = new SessionHooks()
     });
 
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setModel("gpt-4.1")
         .setHooks(hooks)
 ).get();
@@ -333,7 +333,7 @@ public class HooksExample {
                 });
             
             var session = client.createSession(
-                new SessionConfig()
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
                     .setModel("gpt-4.1")
                     .setHooks(hooks)
             ).get();
@@ -370,7 +370,7 @@ var hooks = new SessionHooks()
 
 if (hooks.hasHooks()) {
     var session = client.createSession(
-        new SessionConfig().setHooks(hooks)
+        new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setHooks(hooks)
     ).get();
 }
 ```

@@ -42,7 +42,7 @@ public class PersistingSessions {
 
             // Create session with a memorable ID
             var session = client.createSession(
-                new SessionConfig()
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
                     .setSessionId("user-123-conversation")
                     .setModel("gpt-5")
             ).get();
@@ -73,7 +73,7 @@ public class ResumeSession {
             client.start().get();
 
             // Resume the previous session
-            var session = client.resumeSession("user-123-conversation").get();
+            var session = client.resumeSession("user-123-conversation", new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
 
             session.on(AssistantMessageEvent.class, msg -> 
                 System.out.println(msg.getData().getContent())
@@ -135,7 +135,7 @@ public class SessionHistory {
         try (var client = new CopilotClient()) {
             client.start().get();
 
-            var session = client.resumeSession("user-123-conversation").get();
+            var session = client.resumeSession("user-123-conversation", new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
 
             var messages = session.getMessages().get();
             for (var event : messages) {
@@ -184,7 +184,7 @@ public class SessionManager {
                     System.out.print("Enter session ID: ");
                     String sessionId = scanner.nextLine();
                     session = client.createSession(
-                        new SessionConfig()
+                        new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
                             .setSessionId(sessionId)
                             .setModel("gpt-5")
                     ).get();
@@ -195,7 +195,7 @@ public class SessionManager {
                     System.out.print("Enter session ID to resume: ");
                     String resumeId = scanner.nextLine();
                     try {
-                        session = client.resumeSession(resumeId).get();
+                        session = client.resumeSession(resumeId, new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
                         System.out.println("Resumed session: " + resumeId);
                     } catch (Exception ex) {
                         System.err.println("Failed to resume session: " + ex.getMessage());
@@ -264,13 +264,13 @@ public class CheckSession {
             
             if (sessionExists(client, sessionId)) {
                 System.out.println("Session exists, resuming...");
-                var session = client.resumeSession(sessionId).get();
+                var session = client.resumeSession(sessionId, new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
                 // ... use session ...
                 session.close();
             } else {
                 System.out.println("Session doesn't exist, creating new one...");
                 var session = client.createSession(
-                    new SessionConfig().setSessionId(sessionId).setModel("gpt-5")
+                    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setSessionId(sessionId).setModel("gpt-5")
                 ).get();
                 // ... use session ...
                 session.close();

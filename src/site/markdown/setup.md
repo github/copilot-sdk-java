@@ -22,7 +22,7 @@ The simplest setup uses the Copilot CLI already signed in on your development ma
 try (var client = new CopilotClient()) {
     client.start().get();
     var session = client.createSession(
-        new SessionConfig().setModel("gpt-4.1")
+        new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-4.1")
     ).get();
     // Use session...
 }
@@ -54,7 +54,7 @@ var options = new CopilotClientOptions()
 try (var client = new CopilotClient(options)) {
     client.start().get();
     var session = client.createSession(
-        new SessionConfig().setModel("gpt-4.1")
+        new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-4.1")
     ).get();
     // Requests are made on behalf of the authenticated user
 }

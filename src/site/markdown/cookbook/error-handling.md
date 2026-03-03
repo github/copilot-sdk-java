@@ -41,7 +41,7 @@ public class BasicErrorHandling {
             client.start().get();
 
             var session = client.createSession(
-                new SessionConfig().setModel("gpt-5")).get();
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get();
 
             session.on(AssistantMessageEvent.class, msg -> {
                 System.out.println(msg.getData().getContent());
@@ -206,7 +206,7 @@ public class TryWithResources {
             client.start().get();
 
             try (var session = client.createSession(
-                    new SessionConfig().setModel("gpt-5")).get()) {
+                    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get()) {
 
                 session.on(AssistantMessageEvent.class, msg -> {
                     System.out.println(msg.getData().getContent());
@@ -251,7 +251,7 @@ public class ToolErrorHandling {
             client.start().get();
 
             var session = client.createSession(
-                new SessionConfig().setTools(List.of(errorTool))).get();
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setTools(List.of(errorTool))).get();
 
             session.on(AssistantMessageEvent.class, msg -> {
                 System.out.println(msg.getData().getContent());

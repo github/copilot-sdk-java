@@ -17,7 +17,7 @@ Map<String, Object> server = Map.of(
 );
 
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setMcpServers(Map.of("filesystem", server))
 ).get();
 
@@ -83,7 +83,7 @@ Combine tools from several sources.
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setMcpServers(Map.of(
             "filesystem", filesystemServer,
             "github", githubServer,

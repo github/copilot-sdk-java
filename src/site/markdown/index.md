@@ -47,7 +47,7 @@ public class Example {
             client.start().get();
             
             var session = client.createSession(
-                new SessionConfig().setModel("claude-sonnet-4.5")
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("claude-sonnet-4.5")
             ).get();
 
             var done = new CompletableFuture<Void>();
@@ -93,7 +93,7 @@ class hello {
     public static void main(String[] args) throws Exception {
         try (var client = new CopilotClient()) {
             client.start().get();
-            var session = client.createSession(new SessionConfig()).get();
+            var session = client.createSession(new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
             var done = new CompletableFuture<Void>();
             session.on(AssistantMessageEvent.class, msg -> {
                 System.out.print(msg.getData().getContent());

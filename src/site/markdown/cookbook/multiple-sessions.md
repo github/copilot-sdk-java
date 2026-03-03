@@ -42,11 +42,11 @@ public class MultipleSessions {
 
             // Create multiple independent sessions
             var session1 = client.createSession(
-                new SessionConfig().setModel("gpt-5")).get();
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get();
             var session2 = client.createSession(
-                new SessionConfig().setModel("gpt-5")).get();
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get();
             var session3 = client.createSession(
-                new SessionConfig().setModel("claude-sonnet-4.5")).get();
+                new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("claude-sonnet-4.5")).get();
 
             // Set up event handlers for each session
             session1.on(AssistantMessageEvent.class, msg -> 
@@ -90,7 +90,7 @@ Use custom IDs for easier tracking:
 
 ```java
 var session = client.createSession(
-    new SessionConfig()
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
         .setSessionId("user-123-chat")
         .setModel("gpt-5")
 ).get();
@@ -129,9 +129,9 @@ public class ParallelSessions {
     public static void runParallelSessions(CopilotClient client) throws Exception {
         // Create sessions in parallel
         var sessionFutures = List.of(
-            client.createSession(new SessionConfig().setModel("gpt-5")),
-            client.createSession(new SessionConfig().setModel("gpt-5")),
-            client.createSession(new SessionConfig().setModel("claude-sonnet-4.5"))
+            client.createSession(new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")),
+            client.createSession(new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")),
+            client.createSession(new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("claude-sonnet-4.5"))
         );
 
         // Wait for all sessions to be created
