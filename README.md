@@ -139,7 +139,7 @@ This SDK tracks the official [Copilot SDK](https://github.com/github/copilot-sdk
 
 ```bash
 # Clone the repository
-git clone https://github.com/copilot-community-sdk/copilot-sdk-java.git
+git clone https://github.com/github/copilot-sdk-java.git
 cd copilot-sdk-java
 
 # Enable git hooks for code formatting
@@ -150,6 +150,18 @@ mvn clean verify
 ```
 
 The tests require the official [copilot-sdk](https://github.com/github/copilot-sdk) test harness, which is automatically cloned during build.
+
+## Support
+
+See [SUPPORT.md](SUPPORT.md) for how to file issues and get help.
+
+## Code of Conduct
+
+This project has adopted the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for details.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for reporting security vulnerabilities.
 
 ## License
 
