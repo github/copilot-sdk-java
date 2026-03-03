@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 > **Upstream sync:** [`github/copilot-sdk@dcd86c1`](https://github.com/github/copilot-sdk/commit/dcd86c189501ce1b46b787ca60d90f3f315f3079)
 
+## [1.0.10] - 2026-03-03
+
+> **Upstream sync:** [`github/copilot-sdk@dcd86c1`](https://github.com/github/copilot-sdk/commit/dcd86c189501ce1b46b787ca60d90f3f315f3079)
 ### Added
 
 - `CopilotSession.setModel(String)` — changes the model for an existing session mid-conversation; the new model takes effect for the next message, and conversation history is preserved (upstream: [`bd98e3a`](https://github.com/github/copilot-sdk/commit/bd98e3a))
@@ -406,7 +409,10 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 - Pre-commit hook for Spotless code formatting
 - Comprehensive API documentation
 
-[Unreleased]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.9...HEAD
+[Unreleased]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.10...HEAD
+[1.0.10]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.9...v1.0.10
+[Unreleased]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.10...HEAD
+[1.0.10]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/copilot-community-sdk/copilot-sdk-java/compare/v1.0.6...v1.0.7
