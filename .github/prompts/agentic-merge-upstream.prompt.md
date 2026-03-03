@@ -37,13 +37,12 @@ All scripts write/read a `.merge-env` file (git-ignored) to share state (branch 
 7. Run `./.github/scripts/build/format-and-test.sh` frequently while porting
 8. Build the package
 9. Update documentation (**required for every user-facing upstream change**)
-10. Run `./.github/scripts/upstream-sync/merge-upstream-finish.sh` (final test + push)
-11. Finalize Pull Request (see note below about coding agent vs. manual workflow)
-12. Perform final review before handing off
+10. Run `./.github/scripts/upstream-sync/merge-upstream-finish.sh` (final test + push) and finalize Pull Request (see note below about coding agent vs. manual workflow)
+11. Perform final review before handing off
 
 ---
 
-## Steps 1-2: Initialize and Analyze
+## Step 1: Initialize Upstream Sync
 
 Run the start script to create a branch, update the CLI, clone the upstream repo, and see a summary of new commits:
 
@@ -57,7 +56,9 @@ This writes a `.merge-env` file used by the other scripts. It outputs:
 - The upstream dir path
 - A short log of upstream commits since `.lastmerge`
 
-Then run the diff script for a detailed breakdown by area:
+## Step 2: Analyze Upstream Changes
+
+Run the diff script for a detailed breakdown by area:
 
 ```bash
 ./.github/scripts/upstream-sync/merge-upstream-diff.sh          # stat only
@@ -266,8 +267,8 @@ Verify:
 ## Step 9: Update Documentation
 
 **Documentation is critical for new features.** Every new feature ported from upstream must be documented before the merge is complete.
-Do not proceed to the finish/push step until this documentation checklist is complete.
-If you determine no docs changes are needed, explicitly document that decision and rationale in the PR body.
+Review and complete this documentation checklist before proceeding to Step 10.
+If you determine no docs changes are needed, document that decision and rationale in the PR body under a clear heading (for example, `Documentation Impact`).
 
 ### Documentation Checklist
 
@@ -322,7 +323,7 @@ Ensure consistency across all documentation files:
 - Code examples should use the same patterns and be tested
 - Links to Javadoc should use correct paths (`apidocs/...`)
 
-## Steps 10-11: Finish, Push, and Finalize Pull Request
+## Step 10: Finish, Push, and Finalize Pull Request
 
 Run the finish script which updates `.lastmerge`, runs a final build, and pushes the branch:
 
@@ -384,7 +385,7 @@ Ports changes from the official Copilot SDK ([github/copilot-sdk](https://github
 - Code formatted with Spotless
 ```
 
-## Step 12: Final Review
+## Step 11: Final Review
 
 Before finishing:
 
@@ -417,7 +418,7 @@ Before finishing:
   - [ ] `src/site/markdown/documentation.md` updated for new basic usage
   - [ ] `src/site/markdown/advanced.md` updated for new advanced features
   - [ ] Javadoc added/updated for new public APIs
-- [ ] If no documentation files were changed, PR body explicitly explains why documentation changes were not needed
+- [ ] If no documentation files were changed for user-facing upstream changes, PR body explicitly explains why documentation changes were not needed
 - [ ] `src/site/site.xml` updated if new documentation pages were added
 - [ ] `.lastmerge` file updated with new commit hash
 - [ ] Branch pushed to remote
