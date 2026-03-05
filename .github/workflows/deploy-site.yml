@@ -222,7 +222,7 @@ jobs:
         run: |
           cd site
           
-          REPO_URL="https://github.com/copilot-community-sdk/copilot-sdk-java"
+          REPO_URL="https://github.com/github/copilot-sdk-java"
           
           # Get versions from git tags (already sorted by version, descending)
           VERSIONS=$(git -C .. tag -l | grep -E '^v?[0-9]+\.[0-9]+' | sed 's/^v//' | sort -Vr)

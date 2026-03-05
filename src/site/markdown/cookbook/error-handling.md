@@ -30,7 +30,7 @@ jbang BasicErrorHandling.java
 
 **Code:**
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -62,7 +62,7 @@ public class BasicErrorHandling {
 ## Handling specific error types
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -99,7 +99,7 @@ public class SpecificErrorHandling {
 ## Timeout handling
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -130,7 +130,7 @@ public class TimeoutHandling {
 ## Aborting a request
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -163,7 +163,7 @@ public class AbortRequest {
 ## Graceful shutdown
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -195,7 +195,7 @@ public class GracefulShutdown {
 ## Try-with-resources pattern
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -225,7 +225,7 @@ public class TryWithResources {
 ## Handling tool errors
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;

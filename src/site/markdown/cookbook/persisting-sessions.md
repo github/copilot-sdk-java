@@ -30,7 +30,7 @@ jbang PersistingSessions.java
 
 **Code:**
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -125,7 +125,7 @@ public class DeleteSession {
 ## Getting session history
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -158,7 +158,7 @@ public class SessionHistory {
 ## Complete example with session management
 
 ```java
-//DEPS io.github.copilot-community-sdk:copilot-sdk:1.0.9
+//DEPS com.github:copilot-sdk:0.1.30
 import java.util.Scanner;
 
 public class SessionManager {

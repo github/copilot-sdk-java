@@ -1,18 +1,18 @@
 # Copilot SDK for Java
 
-[![Build](https://github.com/copilot-community-sdk/copilot-sdk-java/actions/workflows/build-test.yml/badge.svg)](https://github.com/copilot-community-sdk/copilot-sdk-java/actions/workflows/build-test.yml)
-[![Site](https://github.com/copilot-community-sdk/copilot-sdk-java/actions/workflows/deploy-site.yml/badge.svg)](https://github.com/copilot-community-sdk/copilot-sdk-java/actions/workflows/deploy-site.yml)
-[![Coverage](.github/badges/jacoco.svg)](https://copilot-community-sdk.github.io/copilot-sdk-java/snapshot/jacoco/index.html)
-[![Documentation](https://img.shields.io/badge/docs-online-brightgreen)](https://copilot-community-sdk.github.io/copilot-sdk-java/)
+[![Build](https://github.com/github/copilot-sdk-java/actions/workflows/build-test.yml/badge.svg)](https://github.com/github/copilot-sdk-java/actions/workflows/build-test.yml)
+[![Site](https://github.com/github/copilot-sdk-java/actions/workflows/deploy-site.yml/badge.svg)](https://github.com/github/copilot-sdk-java/actions/workflows/deploy-site.yml)
+[![Coverage](.github/badges/jacoco.svg)](https://github.github.io/copilot-sdk-java/snapshot/jacoco/index.html)
+[![Documentation](https://img.shields.io/badge/docs-online-brightgreen)](https://github.github.io/copilot-sdk-java/)
 [![Java 17+](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 #### Latest release
-[![GitHub Release Date](https://img.shields.io/github/release-date/copilot-community-sdk/copilot-sdk-java)](https://github.com/copilot-community-sdk/copilot-sdk-java/releases)
-[![GitHub Release](https://img.shields.io/github/v/release/copilot-community-sdk/copilot-sdk-java)](https://github.com/copilot-community-sdk/copilot-sdk-java/releases)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.copilot-community-sdk/copilot-sdk)](https://central.sonatype.com/artifact/io.github.copilot-community-sdk/copilot-sdk)
-[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://copilot-community-sdk.github.io/copilot-sdk-java/latest/)
-[![Javadoc](https://javadoc.io/badge2/io.github.copilot-community-sdk/copilot-sdk/javadoc.svg?q=1)](https://javadoc.io/doc/io.github.copilot-community-sdk/copilot-sdk/latest/index.html)
+[![GitHub Release Date](https://img.shields.io/github/release-date/github/copilot-sdk-java)](https://github.com/github/copilot-sdk-java/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/github/copilot-sdk-java)](https://github.com/github/copilot-sdk-java/releases)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github/copilot-sdk)](https://central.sonatype.com/artifact/com.github/copilot-sdk)
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://github.github.io/copilot-sdk-java/latest/)
+[![Javadoc](https://javadoc.io/badge2/com.github/copilot-sdk/javadoc.svg?q=1)](https://javadoc.io/doc/com.github/copilot-sdk/latest/index.html)
 
 ## Background
 
@@ -31,16 +31,16 @@ Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build A
 
 ```xml
 <dependency>
-    <groupId>io.github.copilot-community-sdk</groupId>
+    <groupId>com.github</groupId>
     <artifactId>copilot-sdk</artifactId>
-    <version>1.0.10</version>
+    <version>0.1.30</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-implementation 'io.github.copilot-community-sdk:copilot-sdk:1.0.10'
+implementation 'com.github:copilot-sdk:0.1.30'
 ```
 
 ## Quick Start
@@ -93,18 +93,18 @@ See the full source of [`jbang-example.java`](jbang-example.java) for a complete
 Or run it directly from the repository:
 
 ```bash
-jbang https://github.com/copilot-community-sdk/copilot-sdk-java/blob/latest/jbang-example.java
+jbang https://github.com/github/copilot-sdk-java/blob/latest/jbang-example.java
 ```
 
 ## Documentation
 
-📚 **[Full Documentation](https://copilot-community-sdk.github.io/copilot-sdk-java/)** — Complete API reference, advanced usage examples, and guides.
+📚 **[Full Documentation](https://github.github.io/copilot-sdk-java/)** — Complete API reference, advanced usage examples, and guides.
 
 ### Quick Links
 
-- [Getting Started](https://copilot-community-sdk.github.io/copilot-sdk-java/latest/documentation.html)
-- [Javadoc API Reference](https://copilot-community-sdk.github.io/copilot-sdk-java/latest/apidocs/)
-- [MCP Servers Integration](https://copilot-community-sdk.github.io/copilot-sdk-java/latest/mcp.html)
+- [Getting Started](https://github.github.io/copilot-sdk-java/documentation.html)
+- [Javadoc API Reference](https://github.github.io/copilot-sdk-java/apidocs/)
+- [MCP Servers Integration](https://github.github.io/copilot-sdk-java/mcp.html)
 - [Cookbook](src/site/markdown/cookbook/) — Practical recipes for common use cases
 
 ## Projects Using This SDK
@@ -139,7 +139,7 @@ This SDK tracks the official [Copilot SDK](https://github.com/github/copilot-sdk
 
 ```bash
 # Clone the repository
-git clone https://github.com/copilot-community-sdk/copilot-sdk-java.git
+git clone https://github.com/github/copilot-sdk-java.git
 cd copilot-sdk-java
 
 # Enable git hooks for code formatting
@@ -173,6 +173,6 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=copilot-community-sdk/copilot-sdk-java&type=Date)](https://www.star-history.com/#copilot-community-sdk/copilot-sdk-java&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=github/copilot-sdk-java&type=Date)](https://www.star-history.com/#github/copilot-sdk-java&Date)
 
 ⭐ Drop a star if you find this useful!

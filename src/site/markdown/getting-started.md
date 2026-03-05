@@ -37,7 +37,7 @@ Add the dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>io.github.copilot-community-sdk</groupId>
+    <groupId>com.github</groupId>
     <artifactId>copilot-sdk</artifactId>
     <version>${project.version}</version>
 </dependency>
@@ -48,7 +48,7 @@ Add the dependency to your `pom.xml`:
 Add the dependency to your `build.gradle`:
 
 ```groovy
-implementation 'io.github.copilot-community-sdk:copilot-sdk:${project.version}'
+implementation 'com.github:copilot-sdk:${project.version}'
 ```
 
 ### JBang (Quick Start)
@@ -56,7 +56,7 @@ implementation 'io.github.copilot-community-sdk:copilot-sdk:${project.version}'
 For the fastest way to try the SDK without setting up a project, use [JBang](https://www.jbang.dev/). Create a file named `HelloCopilot.java` with the following header, and then proceed to Step 2 by appending the proposed content into this same file.
 
 ```bash
-//DEPS io.github.copilot-community-sdk:copilot-sdk:${project.version}
+//DEPS com.github:copilot-sdk:${project.version}
 ```
 
 ## Step 2: Send Your First Message

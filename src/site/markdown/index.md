@@ -21,7 +21,7 @@ Add the dependency to your project:
 
 ```xml
 <dependency>
-    <groupId>io.github.copilot-community-sdk</groupId>
+    <groupId>com.github</groupId>
     <artifactId>copilot-sdk</artifactId>
     <version>${project.version}</version>
 </dependency>
@@ -30,7 +30,7 @@ Add the dependency to your project:
 **Gradle:**
 
 ```groovy
-implementation 'io.github.copilot-community-sdk:copilot-sdk:${project.version}'
+implementation 'com.github:copilot-sdk:${project.version}'
 ```
 
 ### Quick Example
@@ -83,7 +83,7 @@ You can quickly try the SDK without setting up a full project using [JBang](http
 
 # Create a simple script
 cat > hello-copilot.java << 'EOF'
-//DEPS io.github.copilot-community-sdk:copilot-sdk:${project.version}
+//DEPS com.github:copilot-sdk:${project.version}
 import com.github.copilot.sdk.*;
 import com.github.copilot.sdk.events.*;
 import com.github.copilot.sdk.json.*;
@@ -112,6 +112,6 @@ jbang hello-copilot.java
 
 ## Source Code
 
-- [GitHub Repository](https://github.com/copilot-community-sdk/copilot-sdk-java)
-- [Issue Tracker](https://github.com/copilot-community-sdk/copilot-sdk-java/issues)
-- [Contributing Guide](https://github.com/copilot-community-sdk/copilot-sdk-java/blob/main/CONTRIBUTING.md)
+- [GitHub Repository](https://github.com/github/copilot-sdk-java)
+- [Issue Tracker](https://github.com/github/copilot-sdk-java/issues)
+- [Contributing Guide](https://github.com/github/copilot-sdk-java/blob/main/CONTRIBUTING.md)

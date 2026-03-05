@@ -21,7 +21,7 @@
                 <href>index.html</href>
             </topBarIcon>
             <gitHub>
-                <projectId>copilot-community-sdk/copilot-sdk-java</projectId>
+                <projectId>github/copilot-sdk-java</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>gray</ribbonColor>
             </gitHub>

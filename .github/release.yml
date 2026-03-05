@@ -3,7 +3,7 @@
 
 changelog:
   header: |
-    📋 **Full Changelog**: See [CHANGELOG.md](https://github.com/copilot-community-sdk/copilot-sdk-java/blob/main/CHANGELOG.md) for detailed release notes.
+    📋 **Full Changelog**: See [CHANGELOG.md](https://github.com/github/copilot-sdk-java/blob/main/CHANGELOG.md) for detailed release notes.
   exclude:
     labels:
       - ignore-for-release

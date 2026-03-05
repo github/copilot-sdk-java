@@ -175,7 +175,7 @@ jobs:
             - name: Create GitHub Release
               run: |
                   VERSION="${{ needs.publish-maven.outputs.version }}"
-                  GROUP_ID="io.github.copilot-community-sdk"
+                  GROUP_ID="com.github"
                   ARTIFACT_ID="copilot-sdk"
                   CURRENT_TAG="v${VERSION}"
 
