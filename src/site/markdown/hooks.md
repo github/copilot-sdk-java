@@ -1,6 +1,6 @@
 # Session Hooks
 
-> ⚠️ **Disclaimer:** This is an **unofficial, community-driven SDK** and is **not supported or endorsed by GitHub**. Use at your own risk.
+> ⚠️ **Disclaimer:** This SDK tracks the pre-GA GitHub Copilot SDKs for .NET and nodejs. This SDK may change in breaking ways. Use at your own risk.
 
 Session hooks allow you to intercept and modify tool execution, user prompts, and session lifecycle events. Use hooks to implement custom logic like logging, security controls, or context injection.
 

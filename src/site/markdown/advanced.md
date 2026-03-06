@@ -1,6 +1,6 @@
 # Advanced Usage
 
-> ⚠️ **Disclaimer:** This is an **unofficial, community-driven SDK** and is **not supported or endorsed by GitHub**. Use at your own risk.
+> ⚠️ **Disclaimer:** This SDK tracks the pre-GA GitHub Copilot SDKs for .NET and nodejs. This SDK may change in breaking ways. Use at your own risk.
 
 This guide covers advanced scenarios for extending and customizing your Copilot integration.
 

@@ -1,6 +1,6 @@
 # Copilot Instructions for copilot-sdk-java
 
-A Java SDK for programmatic control of GitHub Copilot CLI. This is a community-driven port of the official .NET SDK, targeting Java 17+.
+A Java SDK for programmatic control of GitHub Copilot CLI. This is a port of the official .NET SDK, targeting Java 17+.
 
 ## About These Instructions
 

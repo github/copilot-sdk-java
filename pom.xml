@@ -10,7 +10,7 @@
     <version>0.1.30-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>GitHub Copilot Community SDK :: Java</name>
+    <name>GitHub Copilot SDK :: Java</name>
     <description>SDK for programmatic control of GitHub Copilot CLI</description>
     <url>https://github.com/github/copilot-sdk-java</url>
 
@@ -23,8 +23,8 @@
 
     <developers>
         <developer>
-            <name>GitHub Copilot Community SDK</name>
-            <organization>GitHub Copilot Community SDK</organization>
+            <name>GitHub Copilot SDK</name>
+            <organization>GitHub Copilot SDK</organization>
             <organizationUrl>https://github.com/github</organizationUrl>
         </developer>
     </developers>
