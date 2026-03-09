@@ -617,8 +617,14 @@ See [ResumeSessionConfig](apidocs/com/github/copilot/sdk/json/ResumeSessionConfi
 
 ### Clean Up Sessions
 
+Closing a session releases its in-memory resources but **preserves session data on disk**, so
+it can be resumed later. Use `deleteSession()` to permanently remove session data from disk:
+
 ```java
-// Delete a specific session
+// Close a session (releases in-memory resources; session can be resumed later)
+session.close();
+
+// Permanently delete a session and all its data from disk (cannot be resumed)
 client.deleteSession(sessionId).get();
 ```
 
