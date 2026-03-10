@@ -4,7 +4,7 @@
 [![Site](https://github.com/copilot-community-sdk/copilot-sdk-java/actions/workflows/deploy-site.yml/badge.svg)](https://github.com/copilot-community-sdk/copilot-sdk-java/actions/workflows/deploy-site.yml)
 [![Coverage](.github/badges/jacoco.svg)](https://copilot-community-sdk.github.io/copilot-sdk-java/snapshot/jacoco/index.html)
 [![Documentation](https://img.shields.io/badge/docs-online-brightgreen)](https://copilot-community-sdk.github.io/copilot-sdk-java/)
-[![Java 17+](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Java 21+](https://img.shields.io/badge/Java-21%2B-blue?logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 #### Latest release
@@ -24,7 +24,7 @@ Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build A
 
 ### Requirements
 
-- Java 17 or later
+- Java 21 or later
 - GitHub Copilot CLI 0.0.411-1 or later installed and in PATH (or provide custom `cliPath`)
 
 ### Maven
