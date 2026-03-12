@@ -73,6 +73,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class CopilotSDK {
     public static void main(String[] args) throws Exception {
+        var lastMessage = new String[]{null};
+
         // Create and start client
         try (var client = new CopilotClient()) {
             client.start().get();
@@ -81,9 +83,11 @@ public class CopilotSDK {
             var session = client.createSession(
                 new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("claude-sonnet-4.5")).get();
 
+
             // Handle assistant message events
             session.on(AssistantMessageEvent.class, msg -> {
-                System.out.println(msg.getData().content());
+                lastMessage[0] = msg.getData().content();
+                System.out.println(lastMessage[0]);
             });
 
             // Handle session usage info events
@@ -100,6 +104,9 @@ public class CopilotSDK {
             // and wait for completion
             completable.get();
         }
+
+        boolean success = lastMessage[0] != null && lastMessage[0].contains("4");
+        System.exit(success ? 0 : -1);
     }
 }
 ```
