@@ -303,7 +303,7 @@ for (var event : history) {
         case AssistantMessageEvent assistant -> 
             System.out.println("Assistant: " + assistant.getData().content());
         case ToolExecutionCompleteEvent tool -> 
-            System.out.println("Tool: " + tool.getData().toolName());
+            System.out.println("Tool: " + tool.getData().toolCallId());
         default -> { }
     }
 }
