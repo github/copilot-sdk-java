@@ -63,16 +63,16 @@ public class CopilotSDK {
 
             // Handle assistant message events
             session.on(AssistantMessageEvent.class, msg -> {
-                System.out.println(msg.getData().getContent());
+                System.out.println(msg.getData().content());
             });
 
             // Handle session usage info events
             session.on(SessionUsageInfoEvent.class, usage -> {
                 var data = usage.getData();
                 System.out.println("\n--- Usage Metrics ---");
-                System.out.println("Current tokens: " + (int) data.getCurrentTokens());
-                System.out.println("Token limit: " + (int) data.getTokenLimit());
-                System.out.println("Messages count: " + (int) data.getMessagesLength());
+                System.out.println("Current tokens: " + (int) data.currentTokens());
+                System.out.println("Token limit: " + (int) data.tokenLimit());
+                System.out.println("Messages count: " + (int) data.messagesLength());
             });
 
             // Send a message

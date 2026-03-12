@@ -124,7 +124,7 @@ session.createSession(new SessionConfig()
 Sessions emit typed events via `session.on()`:
 
 ```java
-session.on(AssistantMessageEvent.class, msg -> System.out.println(msg.getData().getContent()));
+session.on(AssistantMessageEvent.class, msg -> System.out.println(msg.getData().content()));
 session.on(SessionIdleEvent.class, idle -> done.complete(null));
 ```
 

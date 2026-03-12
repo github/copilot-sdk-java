@@ -48,7 +48,7 @@ public class PersistingSessions {
             ).get();
 
             session.on(AssistantMessageEvent.class, msg -> 
-                System.out.println(msg.getData().getContent())
+                System.out.println(msg.getData().content())
             );
 
             session.sendAndWait(new MessageOptions()
@@ -76,7 +76,7 @@ public class ResumeSession {
             var session = client.resumeSession("user-123-conversation", new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
 
             session.on(AssistantMessageEvent.class, msg -> 
-                System.out.println(msg.getData().getContent())
+                System.out.println(msg.getData().content())
             );
 
             // Previous context is restored
@@ -141,7 +141,7 @@ public class SessionHistory {
             for (var event : messages) {
                 // Print different event types appropriately
                 if (event instanceof AssistantMessageEvent msg) {
-                    System.out.printf("[assistant] %s%n", msg.getData().getContent());
+                    System.out.printf("[assistant] %s%n", msg.getData().content());
                 } else if (event instanceof UserMessageEvent userMsg) {
                     System.out.printf("[user] %s%n", userMsg.getData().content());
                 } else {
@@ -218,7 +218,7 @@ public class SessionManager {
 
             if (session != null) {
                 session.on(AssistantMessageEvent.class, msg -> 
-                    System.out.println("\nCopilot: " + msg.getData().getContent())
+                    System.out.println("\nCopilot: " + msg.getData().content())
                 );
 
                 // Interactive conversation loop

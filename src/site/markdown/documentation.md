@@ -40,7 +40,7 @@ try (var client = new CopilotClient()) {
     ).get();
 
     var response = session.sendAndWait("Explain Java records in one sentence").get();
-    System.out.println(response.getData().getContent());
+    System.out.println(response.getData().content());
 
     session.close();
 }
@@ -58,7 +58,7 @@ For straightforward interactions, use `sendAndWait()`:
 
 ```java
 var response = session.sendAndWait("What is the capital of France?").get();
-System.out.println(response.getData().getContent());
+System.out.println(response.getData().content());
 ```
 
 ### Event-Based Processing
@@ -103,7 +103,7 @@ var done = new CompletableFuture<Void>();
 
 // Type-safe event handlers (recommended)
 session.on(AssistantMessageEvent.class, msg -> {
-    System.out.println("Response: " + msg.getData().getContent());
+    System.out.println("Response: " + msg.getData().content());
 });
 
 session.on(SessionErrorEvent.class, err -> {
@@ -124,7 +124,7 @@ You can also use a single handler for all events:
 session.on(event -> {
     switch (event) {
         case AssistantMessageEvent msg -> 
-            System.out.println("Response: " + msg.getData().getContent());
+            System.out.println("Response: " + msg.getData().content());
         case SessionErrorEvent err -> 
             System.err.println("Error: " + err.getData().message());
         case SessionIdleEvent idle -> 
@@ -299,11 +299,11 @@ var history = session.getMessages().get();
 for (var event : history) {
     switch (event) {
         case UserMessageEvent user -> 
-            System.out.println("User: " + user.getData().getContent());
+            System.out.println("User: " + user.getData().content());
         case AssistantMessageEvent assistant -> 
-            System.out.println("Assistant: " + assistant.getData().getContent());
+            System.out.println("Assistant: " + assistant.getData().content());
         case ToolExecutionCompleteEvent tool -> 
-            System.out.println("Tool: " + tool.getData().getToolName());
+            System.out.println("Tool: " + tool.getData().toolCallId());
         default -> { }
     }
 }
@@ -596,8 +596,8 @@ var session2 = client.createSession(
 var future1 = session1.sendAndWait("Summarize REST APIs");
 var future2 = session2.sendAndWait("Summarize GraphQL");
 
-System.out.println("GPT: " + future1.get().getData().getContent());
-System.out.println("Claude: " + future2.get().getData().getContent());
+System.out.println("GPT: " + future1.get().getData().content());
+System.out.println("Claude: " + future2.get().getData().content());
 ```
 
 ### Resume a Previous Session
