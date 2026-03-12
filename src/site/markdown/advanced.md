@@ -339,7 +339,7 @@ session.on(SessionCompactionStartEvent.class, start -> {
 });
 session.on(SessionCompactionCompleteEvent.class, complete -> {
     var data = complete.getData();
-    System.out.println("Compaction completed - success: " + data.isSuccess() 
+    System.out.println("Compaction completed - success: " + data.success() 
         + ", tokens removed: " + data.tokensRemoved());
 });
 ```
