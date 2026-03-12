@@ -108,6 +108,18 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>com.github.copilot.sdk.java</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
             <!-- Clone or update the official copilot-sdk repository for test resources, and copy image to site -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
