@@ -4,3 +4,4 @@ examples-test/
 .merge-env
 blog-copilotsdk/
 .claude/worktrees
+smoke-test
