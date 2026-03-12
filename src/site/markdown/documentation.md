@@ -162,6 +162,9 @@ The SDK supports event types organized by category. All events extend `AbstractS
 | `SessionInfoEvent` | `session.info` | Informational message from the session |
 | `SessionShutdownEvent` | `session.shutdown` | Session is shutting down (includes reason and exit code) |
 | `SessionModelChangeEvent` | `session.model_change` | The model was changed mid-session |
+| `SessionModeChangedEvent` | `session.mode_changed` | Session mode changed (e.g., plan mode) |
+| `SessionPlanChangedEvent` | `session.plan_changed` | Session plan was updated |
+| `SessionWorkspaceFileChangedEvent` | `session.workspace_file_changed` | A file in the workspace was modified |
 | `SessionHandoffEvent` | `session.handoff` | Session handed off to another agent |
 | `SessionTruncationEvent` | `session.truncation` | Context was truncated due to limits |
 | `SessionSnapshotRewindEvent` | `session.snapshot_rewind` | Session rewound to a previous snapshot |
@@ -220,7 +223,36 @@ The SDK supports event types organized by category. All events extend `AbstractS
 | `HookStartEvent` | `hook.start` | Hook execution started |
 | `HookEndEvent` | `hook.end` | Hook execution completed |
 | `SystemMessageEvent` | `system.message` | System-level message |
+| `SystemNotificationEvent` | `system.notification` | System notification (informational) |
 | `SkillInvokedEvent` | `skill.invoked` | A skill was invoked |
+
+### External Tool Events
+
+| Event | Type String | Description |
+|-------|-------------|-------------|
+| `ExternalToolRequestedEvent` | `external_tool.requested` | An external tool invocation was requested |
+| `ExternalToolCompletedEvent` | `external_tool.completed` | An external tool invocation completed |
+
+### Permission Events
+
+| Event | Type String | Description |
+|-------|-------------|-------------|
+| `PermissionRequestedEvent` | `permission.requested` | A permission request was issued |
+| `PermissionCompletedEvent` | `permission.completed` | A permission request was resolved |
+
+### Command Events
+
+| Event | Type String | Description |
+|-------|-------------|-------------|
+| `CommandQueuedEvent` | `command.queued` | A command was queued for execution |
+| `CommandCompletedEvent` | `command.completed` | A queued command completed |
+
+### Plan Mode Events
+
+| Event | Type String | Description |
+|-------|-------------|-------------|
+| `ExitPlanModeRequestedEvent` | `exit_plan_mode.requested` | Exit from plan mode was requested |
+| `ExitPlanModeCompletedEvent` | `exit_plan_mode.completed` | Exit from plan mode completed |
 
 See the [events package Javadoc](apidocs/com/github/copilot/sdk/events/package-summary.html) for detailed event data structures.
 
@@ -598,9 +630,12 @@ When resuming a session, you can optionally reconfigure many settings. This is u
 | `configDir` | Override configuration directory |
 | `mcpServers` | Configure MCP servers |
 | `customAgents` | Configure custom agents |
+| `agent` | Pre-select a custom agent at session start |
 | `skillDirectories` | Directories to load skills from |
 | `disabledSkills` | Skills to disable |
 | `infiniteSessions` | Configure infinite session behavior |
+| `disableResume` | When `true`, creates a new session instead of resuming |
+| `onEvent` | Event handler registered before session resumption |
 
 **Example: Changing Model on Resume**
 
@@ -637,6 +672,7 @@ Complete list of all `SessionConfig` options for `createSession()`:
 | Option | Type | Description | Guide |
 |--------|------|-------------|-------|
 | `sessionId` | String | Custom session ID (auto-generated if omitted) | — |
+| `clientName` | String | Client name for User-Agent identification | — |
 | `model` | String | AI model to use | [Choosing a Model](#Choosing_a_Model) |
 | `reasoningEffort` | String | Reasoning depth: `"low"`, `"medium"`, `"high"`, `"xhigh"` | [Reasoning Effort](#Reasoning_Effort) |
 | `tools` | List&lt;ToolDefinition&gt; | Custom tools the assistant can invoke | [Custom Tools](advanced.html#Custom_Tools) |
@@ -651,10 +687,12 @@ Complete list of all `SessionConfig` options for `createSession()`:
 | `streaming` | boolean | Enable streaming response chunks | [Streaming Responses](#Streaming_Responses) |
 | `mcpServers` | Map&lt;String, Object&gt; | MCP server configurations | [MCP Servers](mcp.html) |
 | `customAgents` | List&lt;CustomAgentConfig&gt; | Custom agent definitions | [Custom Agents](advanced.html#Custom_Agents) |
+| `agent` | String | Pre-select a custom agent at session start | [Custom Agents](advanced.html#Custom_Agents) |
 | `infiniteSessions` | InfiniteSessionConfig | Auto-compaction for long conversations | [Infinite Sessions](advanced.html#Infinite_Sessions) |
 | `skillDirectories` | List&lt;String&gt; | Directories to load skills from | [Skills](advanced.html#Skills_Configuration) |
 | `disabledSkills` | List&lt;String&gt; | Skills to disable by name | [Skills](advanced.html#Skills_Configuration) |
 | `configDir` | String | Custom configuration directory | [Config Dir](advanced.html#Custom_Configuration_Directory) |
+| `onEvent` | Consumer&lt;AbstractSessionEvent&gt; | Event handler registered before session creation | [Early Event Registration](advanced.html#Early_Event_Registration) |
 
 ### Cloning SessionConfig
 

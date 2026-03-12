@@ -24,6 +24,8 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
   - [Loading Skills](#Loading_Skills)
   - [Disabling Skills](#Disabling_Skills)
 - [Custom Configuration Directory](#Custom_Configuration_Directory)
+- [Session Logging](#Session_Logging)
+- [Early Event Registration](#Early_Event_Registration)
 - [User Input Handling](#User_Input_Handling)
 - [Permission Handling](#Permission_Handling)
 - [Session Hooks](#Session_Hooks)
@@ -503,6 +505,54 @@ var session = client.createSession(
 ```
 
 This is useful when you need to isolate session configuration or use different settings for different environments.
+
+---
+
+## Session Logging
+
+Send log messages to the session for debugging, status updates, or UI feedback.
+
+```java
+// Simple log message (defaults to "info" level)
+session.log("Processing step 1 of 3").get();
+
+// Log with explicit level and ephemeral flag
+session.log("Downloading dependencies...", "info", true).get();
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `message` | String | The log message text |
+| `level` | String | Log level: `"info"`, `"warning"`, `"error"` |
+| `ephemeral` | Boolean | If `true`, the message is transient and may not be persisted |
+
+Use cases:
+- Displaying progress in a UI while the session processes a request
+- Sending status updates to the session log
+- Debugging session behavior with contextual messages
+
+See [CopilotSession.log()](apidocs/com/github/copilot/sdk/CopilotSession.html#log(java.lang.String)) Javadoc for details.
+
+---
+
+## Early Event Registration
+
+Register an event handler *before* the `session.create` RPC is issued, ensuring no early events are missed.
+
+When you register handlers with `session.on()` after `createSession()` returns, you may miss events emitted during session creation (e.g., `SessionStartEvent`). Use `SessionConfig.setOnEvent()` to guarantee delivery of all events from the very start:
+
+```java
+var events = new CopyOnWriteArrayList<AbstractSessionEvent>();
+
+var session = client.createSession(
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setOnEvent(events::add)  // Registered before session.create RPC
+).get();
+
+// events list now includes SessionStartEvent and any other early events
+```
+
+This is equivalent to calling `session.on(handler)` immediately after creation, but executes earlier in the lifecycle. The same option is available on `ResumeSessionConfig.setOnEvent()` for resumed sessions.
 
 ---
 

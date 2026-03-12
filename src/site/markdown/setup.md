@@ -349,6 +349,7 @@ Complete list of `CopilotClientOptions` settings:
 | `logLevel` | String | CLI log level | `"info"` |
 | `environment` | Map | Environment variables | inherited |
 | `cwd` | String | Working directory | current dir |
+| `onListModels` | Supplier | Custom model listing implementation | `null` (use CLI) |
 
 ### Extra CLI Arguments
 
