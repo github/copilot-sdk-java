@@ -44,7 +44,7 @@ public class BasicErrorHandling {
                 new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get();
 
             session.on(AssistantMessageEvent.class, msg -> {
-                System.out.println(msg.getData().getContent());
+                System.out.println(msg.getData().content());
             });
 
             session.sendAndWait(new MessageOptions()
@@ -110,7 +110,7 @@ public class TimeoutHandling {
     public static void sendWithTimeout(CopilotSession session) {
         try {
             session.on(AssistantMessageEvent.class, msg -> {
-                System.out.println(msg.getData().getContent());
+                System.out.println(msg.getData().content());
             });
 
             // Wait up to 30 seconds for response
@@ -209,7 +209,7 @@ public class TryWithResources {
                     new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("gpt-5")).get()) {
 
                 session.on(AssistantMessageEvent.class, msg -> {
-                    System.out.println(msg.getData().getContent());
+                    System.out.println(msg.getData().content());
                 });
 
                 session.sendAndWait(new MessageOptions()
@@ -254,7 +254,7 @@ public class ToolErrorHandling {
                 new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setTools(List.of(errorTool))).get();
 
             session.on(AssistantMessageEvent.class, msg -> {
-                System.out.println(msg.getData().getContent());
+                System.out.println(msg.getData().content());
             });
 
             // Session continues even when tool fails

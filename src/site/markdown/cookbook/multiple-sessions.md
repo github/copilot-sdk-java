@@ -50,11 +50,11 @@ public class MultipleSessions {
 
             // Set up event handlers for each session
             session1.on(AssistantMessageEvent.class, msg -> 
-                System.out.println("Session 1: " + msg.getData().getContent()));
+                System.out.println("Session 1: " + msg.getData().content()));
             session2.on(AssistantMessageEvent.class, msg -> 
-                System.out.println("Session 2: " + msg.getData().getContent()));
+                System.out.println("Session 2: " + msg.getData().content()));
             session3.on(AssistantMessageEvent.class, msg -> 
-                System.out.println("Session 3: " + msg.getData().getContent()));
+                System.out.println("Session 3: " + msg.getData().content()));
 
             // Each session maintains its own conversation history
             session1.send(new MessageOptions()

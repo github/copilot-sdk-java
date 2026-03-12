@@ -22,7 +22,7 @@ var session = client.createSession(
 ).get();
 
 var result = session.sendAndWait("List files in the directory").get();
-System.out.println(result.getData().getContent());
+System.out.println(result.getData().content());
 ```
 
 > **Tip:** Browse the [MCP Servers Directory](https://github.com/modelcontextprotocol/servers) for community servers like GitHub, SQLite, and Puppeteer.

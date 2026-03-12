@@ -52,7 +52,7 @@ public class Example {
 
             var done = new CompletableFuture<Void>();
             session.on(AssistantMessageEvent.class, msg -> {
-                System.out.println(msg.getData().getContent());
+                System.out.println(msg.getData().content());
             });
             session.on(SessionIdleEvent.class, idle -> done.complete(null));
 
@@ -96,7 +96,7 @@ class hello {
             var session = client.createSession(new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
             var done = new CompletableFuture<Void>();
             session.on(AssistantMessageEvent.class, msg -> {
-                System.out.print(msg.getData().getContent());
+                System.out.print(msg.getData().content());
             });
             session.on(SessionIdleEvent.class, idle -> done.complete(null));
             session.send(new MessageOptions().setPrompt("Say hello!")).get();
