@@ -22,7 +22,7 @@ Add the dependency to your project:
 ```xml
 <dependency>
     <groupId>com.github</groupId>
-    <artifactId>copilot-sdk</artifactId>
+    <artifactId>copilot-sdk-java</artifactId>
     <version>${project.version}</version>
 </dependency>
 ```
@@ -30,7 +30,7 @@ Add the dependency to your project:
 **Gradle:**
 
 ```groovy
-implementation 'com.github:copilot-sdk:${project.version}'
+implementation 'com.github:copilot-sdk-java:${project.version}'
 ```
 
 ### Quick Example
