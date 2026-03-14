@@ -1,4 +1,4 @@
-# Build Your First Copilot-Powered App
+!# Build Your First Copilot-Powered App
 
 In this tutorial, you'll use the Copilot SDK for Java to build a command-line assistant. You'll start with the basics, add streaming responses, then add custom tools - giving Copilot the ability to call your code.
 
@@ -56,7 +56,7 @@ implementation 'com.github:copilot-sdk:${project.version}'
 For the fastest way to try the SDK without setting up a project, use [JBang](https://www.jbang.dev/). Create a file named `HelloCopilot.java` with the following header, and then proceed to Step 2 by appending the proposed content into this same file.
 
 ```bash
-//DEPS com.github:copilot-sdk:${project.version}
+//DEPS com.github:copilot-sdk-java:${project.version}
 ```
 
 ## Step 2: Send Your First Message
