@@ -110,6 +110,36 @@ var session = client.createSession(
 ).get();
 ```
 
+### Skipping Permission Prompts for Safe Tools
+
+For tools that are inherently safe (e.g., read-only lookups), you can skip the CLI permission
+prompt by using `ToolDefinition.createWithSkipPermission()`. The CLI will invoke the tool
+directly without presenting a permission request.
+
+```java
+var safeLookupTool = ToolDefinition.createWithSkipPermission(
+    "safe_lookup",
+    "Look up a value by ID — read-only, no side effects",
+    Map.of(
+        "type", "object",
+        "properties", Map.of(
+            "id", Map.of("type", "string", "description", "Lookup ID")
+        ),
+        "required", List.of("id")
+    ),
+    invocation -> {
+        String id = (String) invocation.getArguments().get("id");
+        return CompletableFuture.completedFuture("Value for " + id);
+    }
+);
+
+var session = client.createSession(
+    new SessionConfig()
+        .setTools(List.of(safeLookupTool))
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+```
+
 ---
 
 ## Switching Models Mid-Session
@@ -125,6 +155,9 @@ var session = client.createSession(
 
 // Switch to a different model mid-conversation
 session.setModel("gpt-4.1").get();
+
+// Switch model and set reasoning effort at the same time
+session.setModel("claude-sonnet-4.6", "high").get();
 
 // Next message will use the new model
 session.sendAndWait(new MessageOptions().setPrompt("Continue with the new model")).get();
@@ -624,6 +657,10 @@ The `PermissionRequestResultKind` class provides well-known constants for common
 | `PermissionRequestResultKind.DENIED_BY_RULES` | `"denied-by-rules"` | Denied by policy rules |
 | `PermissionRequestResultKind.DENIED_COULD_NOT_REQUEST_FROM_USER` | `"denied-no-approval-rule-and-could-not-request-from-user"` | No rule and user could not be prompted |
 | `PermissionRequestResultKind.DENIED_INTERACTIVELY_BY_USER` | `"denied-interactively-by-user"` | User denied interactively |
+| `PermissionRequestResultKind.NO_RESULT` | `"no-result"` | Leave the request unanswered (pass to another handler) |
+
+Use `NO_RESULT` in extension scenarios where your handler is not responsible for a particular
+permission request and wants to let another handler (or the CLI default) handle it instead.
 
 You can also pass a raw string to `setKind(String)` for custom or extension values. Use
 [`PermissionHandler.APPROVE_ALL`](apidocs/com/github/copilot/sdk/json/PermissionHandler.html) to approve all
@@ -890,22 +927,22 @@ session.setEventErrorHandler(null);
 
 ### Event Error Policy
 
-By default, the SDK propagates errors and stops dispatch on the first handler
-error (`EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS`). You can opt in to
-**suppress** errors so that all handlers execute despite errors:
+By default, the SDK **suppresses** handler errors and continues dispatching to all remaining
+handlers (`EventErrorPolicy.SUPPRESS_AND_LOG_ERRORS`). Errors are always logged at `WARNING`
+level. You can opt in to the strict **propagate** policy to stop dispatch on the first error:
 
 ```java
-session.setEventErrorPolicy(EventErrorPolicy.SUPPRESS_AND_LOG_ERRORS);
+session.setEventErrorPolicy(EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS);
 ```
 
 The `EventErrorHandler` (if set) is always invoked regardless of the policy —
 the policy only controls whether remaining handlers execute after the error
-handler returns. Errors are always logged at `WARNING` level.
+handler returns.
 
 | Policy | Behavior |
 |---|---|
-| `PROPAGATE_AND_LOG_ERRORS` (default) | Log the error; dispatch halts after the first error |
-| `SUPPRESS_AND_LOG_ERRORS` | Log the error; all remaining handlers execute |
+| `SUPPRESS_AND_LOG_ERRORS` (default) | Log the error; all remaining handlers execute |
+| `PROPAGATE_AND_LOG_ERRORS` | Log the error; dispatch halts after the first error |
 
 You can combine both for full control:
 
@@ -919,14 +956,43 @@ session.setEventErrorHandler((event, ex) ->
 Or switch policies dynamically:
 
 ```java
-// Start strict (propagate errors, stop dispatch)
-session.setEventErrorPolicy(EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS);
-
-// Later, switch to lenient mode (suppress errors, continue)
+// Lenient (suppress errors, continue) — the default
 session.setEventErrorPolicy(EventErrorPolicy.SUPPRESS_AND_LOG_ERRORS);
+
+// Strict: stop dispatch on first error
+session.setEventErrorPolicy(EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS);
 ```
 
 See [EventErrorPolicy](apidocs/com/github/copilot/sdk/EventErrorPolicy.html) and [EventErrorHandler](apidocs/com/github/copilot/sdk/EventErrorHandler.html) Javadoc for details.
+
+---
+
+## OpenTelemetry Support
+
+Enable distributed tracing for the Copilot CLI server by setting a `TelemetryConfig` on
+`CopilotClientOptions`. When configured, the CLI is started with OpenTelemetry instrumentation
+enabled, producing traces for each request.
+
+```java
+var client = new CopilotClient(
+    new CopilotClientOptions()
+        .setTelemetry(new TelemetryConfig()
+            .setOtlpEndpoint("http://localhost:4318")
+            .setExporterType("otlp-http"))
+);
+```
+
+### TelemetryConfig Options
+
+| Option | Environment Variable | Description |
+|--------|----------------------|-------------|
+| `setOtlpEndpoint(String)` | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP exporter endpoint URL |
+| `setFilePath(String)` | `COPILOT_OTEL_FILE_EXPORTER_PATH` | File path for the file exporter |
+| `setExporterType(String)` | `COPILOT_OTEL_EXPORTER_TYPE` | Exporter type: `"otlp-http"` or `"file"` |
+| `setSourceName(String)` | `COPILOT_OTEL_SOURCE_NAME` | Source name for telemetry spans |
+| `setCaptureContent(Boolean)` | `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT` | Whether to capture message content |
+
+See [TelemetryConfig](apidocs/com/github/copilot/sdk/json/TelemetryConfig.html) Javadoc for details.
 
 ---
 

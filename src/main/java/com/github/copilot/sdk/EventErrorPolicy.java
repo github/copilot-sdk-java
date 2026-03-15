@@ -29,11 +29,12 @@ package com.github.copilot.sdk;
  * <b>Example:</b>
  *
  * <pre>{@code
- * // Default: propagate errors (stop dispatch on first error, log the error)
- * session.setEventErrorPolicy(EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS);
- *
- * // Opt-in to suppress errors (continue dispatching, log each error)
+ * // Default: suppress errors (continue dispatching after errors, log each
+ * // error)
  * session.setEventErrorPolicy(EventErrorPolicy.SUPPRESS_AND_LOG_ERRORS);
+ *
+ * // Opt-in to propagate errors (stop dispatch on first error, log the error)
+ * session.setEventErrorPolicy(EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS);
  * }</pre>
  *
  * @see CopilotSession#setEventErrorPolicy(EventErrorPolicy)
@@ -44,7 +45,7 @@ public enum EventErrorPolicy {
 
     /**
      * Suppress errors: log the error and continue dispatching to remaining
-     * listeners.
+     * listeners (default).
      * <p>
      * When a handler throws an exception, the error is logged at
      * {@link java.util.logging.Level#WARNING} and remaining handlers still execute.
@@ -54,8 +55,7 @@ public enum EventErrorPolicy {
     SUPPRESS_AND_LOG_ERRORS,
 
     /**
-     * Propagate errors: log the error and stop dispatch on first listener error
-     * (default).
+     * Propagate errors: log the error and stop dispatch on first listener error.
      * <p>
      * When a handler throws an exception, the error is logged at
      * {@link java.util.logging.Level#WARNING} and no further handlers are invoked.
