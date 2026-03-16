@@ -16,13 +16,13 @@
     <div class="hero-bg"></div>
     <div class="hero-content">
       <h1>Copilot SDK for <span class="gradient-text">Java</span></h1>
-      <p class="hero-subtitle">An unofficial, community-driven SDK for building AI-powered tools with GitHub Copilot's agentic runtime.</p>
+      <p class="hero-subtitle">The official SDK for building AI-powered tools with GitHub Copilot's agentic runtime.</p>
       <div class="header-buttons">
-        <a href="https://github.com/copilot-community-sdk/copilot-sdk-java" class="btn btn-github">
+        <a href="https://github.com/github/copilot-sdk-java" class="btn btn-github">
           <svg height="20" width="20" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
           View on GitHub
         </a>
-        <a href="https://central.sonatype.com/artifact/io.github.copilot-community-sdk/copilot-sdk" class="btn btn-maven">
+        <a href="https://central.sonatype.com/artifact/com.github/copilot-sdk" class="btn btn-maven">
           <svg height="20" width="20" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
           View on Maven Central
         </a>
@@ -32,8 +32,12 @@
 
   <main class="container">
 
-    <div class="alert alert-warning">
-      ⚠️ <strong>Disclaimer:</strong> This is an <strong>unofficial, community-driven SDK</strong> and is <strong>not supported or endorsed by GitHub</strong>. Use at your own risk.
+      <div class="alert alert-warning">
+          ⚠️ <strong>Disclaimer:</strong> This is the official Java SDK for GitHub Copilot. This repository treats the official .NET and nodejs SDKs for GitHub Copilot as reference implementations. These SDKS are all officially supported as GitHub open source projects. The Java implementation follows the backward compatibility guarantees offered by the reference implementations. As such this implementation may introduce breaking changes, according to the policy declared by the reference implementations. Use at your own risk.
+    </div>
+
+      <div class="alert alert-warning">
+          ⚠️ <strong>Artifact versioning plan:</strong>Releases of this implementation track releases of the reference implementation. For each release of the reference implementation, there may follow a corresponding relase of this implementation with the same number as the reference implementation. Release identifiers of the reference implementation are in the form `vMaj.Min.Micro`. For example v0.1.32. The corresponding maven version for the release will be `Maj.Min.Micro-java.N`, where `Maj`, `Min` and `Micro` are the corresponding numbers for the reference impementation release, and `N` is a monotonically increasing sequence number starting with 0 for each release. See the corrseponding architectural decision record for more information in the `docs/adr` directory of the source code.
     </div>
 
     <div class="alert alert-info">
@@ -43,7 +47,7 @@
     <div class="section">
       <h2 class="section-title">Available Versions</h2>
       <ul class="version-list">
-        <li><span class="version-name">Development (main branch)</span><span class="version-links"><a href="./snapshot/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/blob/main/CHANGELOG.md" class="release-link">changelog ↗</a><span class="badge snapshot">snapshot</span></span></li><li class="latest-version"><span class="version-name">Version 1.0.9</span><span class="version-links"><a href="./1.0.9/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.9" class="release-link">release notes ↗</a><span class="badge latest">latest</span></span></li>
+        <li><span class="version-name">Development (main branch)</span><span class="version-links"><a href="./snapshot/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/blob/main/CHANGELOG.md" class="release-link">changelog ↗</a><span class="badge snapshot">snapshot</span></span></li><li class="latest-version"><span class="version-name">Version 1.0.9</span><span class="version-links"><a href="./1.0.9/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.9" class="release-link">release notes ↗</a><span class="badge latest">latest</span></span></li>
       </ul>
 
       <div class="collapsible">
@@ -52,7 +56,7 @@
         </button>
         <div class="collapsible-content">
           <ul class="older-list">
-            <li><span>1.0.8</span><span class="older-links"><a href="./1.0.8/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.8" class="release-link">release notes ↗</a></span></li><li><span>1.0.7</span><span class="older-links"><a href="./1.0.7/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.7" class="release-link">release notes ↗</a></span></li><li><span>1.0.6</span><span class="older-links"><a href="./1.0.6/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.6" class="release-link">release notes ↗</a></span></li><li><span>1.0.5</span><span class="older-links"><a href="./1.0.5/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.5" class="release-link">release notes ↗</a></span></li><li><span>1.0.4</span><span class="older-links"><a href="./1.0.4/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.4" class="release-link">release notes ↗</a></span></li><li><span>1.0.3</span><span class="older-links"><a href="./1.0.3/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.3" class="release-link">release notes ↗</a></span></li><li><span>1.0.2</span><span class="older-links"><a href="./1.0.2/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.2" class="release-link">release notes ↗</a></span></li><li><span>1.0.1</span><span class="older-links"><a href="./1.0.1/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.1" class="release-link">release notes ↗</a></span></li><li><span>1.0.0</span><span class="older-links"><a href="./1.0.0/" class="doc-link">documentation ↗</a><a href="https://github.com/copilot-community-sdk/copilot-sdk-java/releases/tag/v1.0.0" class="release-link">release notes ↗</a></span></li>
+            <li><span>1.0.8</span><span class="older-links"><a href="./1.0.8/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.8" class="release-link">release notes ↗</a></span></li><li><span>1.0.7</span><span class="older-links"><a href="./1.0.7/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.7" class="release-link">release notes ↗</a></span></li><li><span>1.0.6</span><span class="older-links"><a href="./1.0.6/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.6" class="release-link">release notes ↗</a></span></li><li><span>1.0.5</span><span class="older-links"><a href="./1.0.5/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.5" class="release-link">release notes ↗</a></span></li><li><span>1.0.4</span><span class="older-links"><a href="./1.0.4/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.4" class="release-link">release notes ↗</a></span></li><li><span>1.0.3</span><span class="older-links"><a href="./1.0.3/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.3" class="release-link">release notes ↗</a></span></li><li><span>1.0.2</span><span class="older-links"><a href="./1.0.2/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.2" class="release-link">release notes ↗</a></span></li><li><span>1.0.1</span><span class="older-links"><a href="./1.0.1/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.1" class="release-link">release notes ↗</a></span></li><li><span>1.0.0</span><span class="older-links"><a href="./1.0.0/" class="doc-link">documentation ↗</a><a href="https://github.com/github/copilot-sdk-java/releases/tag/v1.0.0" class="release-link">release notes ↗</a></span></li>
           </ul>
         </div>
       </div>
@@ -71,13 +75,13 @@
 
     <footer class="footer">
       <div class="footer-links">
-        <a href="https://github.com/copilot-community-sdk/copilot-sdk-java">GitHub Repository</a>
+        <a href="https://github.com/github/copilot-sdk-java">GitHub Repository</a>
         <span class="sep">·</span>
-        <a href="https://central.sonatype.com/artifact/io.github.copilot-community-sdk/copilot-sdk">Maven Central</a>
+        <a href="https://central.sonatype.com/artifact/com.github/copilot-sdk">Maven Central</a>
         <span class="sep">·</span>
-        <a href="https://github.com/copilot-community-sdk/copilot-sdk-java/blob/main/LICENSE">MIT License</a>
+        <a href="https://github.com/github/copilot-sdk-java/blob/main/LICENSE">MIT License</a>
       </div>
-      <p class="built-with">Built with ❤️ by <a href="https://github.com/brunoborges">Bruno Borges</a> and GitHub Copilot</p>
+      <p class="built-with">Built with ❤️ by Microsoft and GitHub Copilot</p>
     </footer>
 
   </main>
