@@ -743,12 +743,13 @@ var session = client.createSession(new SessionConfig()
     .setModel("gpt-5")
     .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
     .setHooks(new SessionHooks()
-        .setOnPreToolUse(hook -> {
-            System.out.println("About to execute tool: " + hook);
-            return CompletableFuture.completedFuture(null);
+        .setOnPreToolUse((input, invocation) -> {
+            System.out.println("About to execute tool: " + input);
+            var decision = new PreToolUseHookOutput().setKind("allow");
+            return CompletableFuture.completedFuture(decision);
         })
-        .setOnPostToolUse(hook -> {
-            System.out.println("Tool execution complete: " + hook);
+        .setOnPostToolUse((output, invocation) -> {
+            System.out.println("Tool execution complete: " + output);
             return CompletableFuture.completedFuture(null);
         }))
 ).get();
