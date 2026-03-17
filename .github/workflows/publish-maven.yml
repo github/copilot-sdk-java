@@ -82,6 +82,11 @@ jobs:
                     DEV_VERSION="${{ inputs.developmentVersion }}"
                   else
                     # Split version: supports both "0.1.32" and "0.1.32-java.0" formats
+                    # Validate RELEASE_VERSION format explicitly to provide clear errors
+                    if ! echo "$RELEASE_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?$'; then
+                      echo "Error: RELEASE_VERSION '$RELEASE_VERSION' is invalid. Expected format: M.M.P or M.M.P-java.N (e.g., 1.2.3 or 1.2.3-java.0)." >&2
+                      exit 1
+                    fi
                     # Extract the base M.M.P portion (before any qualifier)
                     BASE_VERSION=$(echo "$RELEASE_VERSION" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
                     QUALIFIER=$(echo "$RELEASE_VERSION" | sed "s|^${BASE_VERSION}||")
