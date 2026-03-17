@@ -26,6 +26,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * because no approval rule was found and the user could not be prompted.</li>
  * <li>{@link #DENIED_INTERACTIVELY_BY_USER} — the permission was denied
  * interactively by the user.</li>
+ * <li>{@link #NO_RESULT} — leave the pending permission request unanswered (v3
+ * protocol only).</li>
  * </ul>
  *
  * @see PermissionRequestResult
@@ -50,6 +52,20 @@ public final class PermissionRequestResultKind {
     /** The permission was denied interactively by the user. */
     public static final PermissionRequestResultKind DENIED_INTERACTIVELY_BY_USER = new PermissionRequestResultKind(
             "denied-interactively-by-user");
+
+    /**
+     * Leave the pending permission request unanswered (no-op).
+     * <p>
+     * When a permission handler returns this kind, the SDK does not send any
+     * response to the server — the permission request stays pending. This is useful
+     * in multi-client scenarios where a secondary client wants to signal that it
+     * does not own the decision.
+     * <p>
+     * <strong>Note:</strong> Returning this kind is only valid when the session is
+     * connected to a protocol v3 server (broadcast model). Returning it against a
+     * v2 server will result in an error.
+     */
+    public static final PermissionRequestResultKind NO_RESULT = new PermissionRequestResultKind("no-result");
 
     private final String value;
 

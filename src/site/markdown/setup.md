@@ -345,11 +345,12 @@ Complete list of `CopilotClientOptions` settings:
 | `useStdio` | boolean | Use stdio transport | `true` |
 | `port` | int | TCP port for CLI | `0` (random) |
 | `autoStart` | boolean | Auto-start server | `true` |
-| `autoRestart` | boolean | Auto-restart on crash | `true` |
+| `autoRestart` | boolean | ~~Auto-restart on crash~~ (deprecated, no effect) | `false` |
 | `logLevel` | String | CLI log level | `"info"` |
 | `environment` | Map | Environment variables | inherited |
 | `cwd` | String | Working directory | current dir |
 | `onListModels` | Supplier | Custom model listing implementation | `null` (use CLI) |
+| `telemetry` | TelemetryConfig | OpenTelemetry configuration | `null` (disabled) |
 
 ### Extra CLI Arguments
 
@@ -383,6 +384,53 @@ try (var client = new CopilotClient(options)) {
 ```
 
 This is useful for configuring proxy servers, custom CA certificates, or any environment-specific settings the CLI needs.
+
+## OpenTelemetry Configuration
+
+Enable OpenTelemetry tracing for the CLI server by setting a [`TelemetryConfig`](apidocs/com/github/copilot/sdk/json/TelemetryConfig.html) on the client options.
+When set, the CLI server is started with OpenTelemetry instrumentation enabled.
+
+### OTLP Exporter (HTTP)
+
+```java
+var options = new CopilotClientOptions()
+    .setTelemetry(new TelemetryConfig()
+        .setOtlpEndpoint("http://localhost:4318")
+        .setExporterType("otlp-http")
+        .setSourceName("my-app"));
+
+try (var client = new CopilotClient(options)) {
+    client.start().get();
+    // CLI server exports OpenTelemetry traces to the OTLP endpoint
+}
+```
+
+### File Exporter
+
+```java
+var options = new CopilotClientOptions()
+    .setTelemetry(new TelemetryConfig()
+        .setFilePath("/tmp/traces.json")
+        .setExporterType("file"));
+```
+
+### Capturing Message Content
+
+To include message content in telemetry spans (disabled by default for privacy):
+
+```java
+var telemetry = new TelemetryConfig()
+    .setOtlpEndpoint("http://localhost:4318")
+    .setCaptureContent(true);
+```
+
+| Property | Environment Variable | Description |
+|---|---|---|
+| `otlpEndpoint` | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP exporter endpoint URL |
+| `filePath` | `COPILOT_OTEL_FILE_EXPORTER_PATH` | Output file path for file exporter |
+| `exporterType` | `COPILOT_OTEL_EXPORTER_TYPE` | Exporter type: `"otlp-http"` or `"file"` |
+| `sourceName` | `COPILOT_OTEL_SOURCE_NAME` | Source name for telemetry spans |
+| `captureContent` | `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT` | Whether to capture message content |
 
 ## Best Practices
 

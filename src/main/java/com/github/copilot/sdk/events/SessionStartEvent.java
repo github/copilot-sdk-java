@@ -36,6 +36,7 @@ public final class SessionStartEvent extends AbstractSessionEvent {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record SessionStartData(@JsonProperty("sessionId") String sessionId, @JsonProperty("version") double version,
             @JsonProperty("producer") String producer, @JsonProperty("copilotVersion") String copilotVersion,
-            @JsonProperty("startTime") OffsetDateTime startTime, @JsonProperty("selectedModel") String selectedModel) {
+            @JsonProperty("startTime") OffsetDateTime startTime, @JsonProperty("selectedModel") String selectedModel,
+            @JsonProperty("reasoningEffort") String reasoningEffort) {
     }
 }

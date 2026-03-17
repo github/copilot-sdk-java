@@ -2380,4 +2380,82 @@ public class SessionEventParserTest {
         assertNotNull(event.getData());
         assertTrue(event.getData().content().contains("Agent completed"));
     }
+
+    @Test
+    void testParseSessionBackgroundTasksChangedEvent() throws Exception {
+        String json = """
+                {
+                    "type": "session.background_tasks_changed",
+                    "data": {}
+                }
+                """;
+
+        var event = (SessionBackgroundTasksChangedEvent) parseJson(json);
+        assertNotNull(event);
+        assertEquals("session.background_tasks_changed", event.getType());
+        assertNotNull(event.getData());
+    }
+
+    @Test
+    void testParseSessionToolsUpdatedEvent() throws Exception {
+        String json = """
+                {
+                    "type": "session.tools_updated",
+                    "data": {
+                        "model": "gpt-4.1"
+                    }
+                }
+                """;
+
+        var event = (SessionToolsUpdatedEvent) parseJson(json);
+        assertNotNull(event);
+        assertEquals("session.tools_updated", event.getType());
+        assertNotNull(event.getData());
+        assertEquals("gpt-4.1", event.getData().model());
+    }
+
+    @Test
+    void testParseExternalToolRequestedEvent_withTraceparent() throws Exception {
+        String json = """
+                {
+                    "type": "external_tool.requested",
+                    "data": {
+                        "requestId": "req-123",
+                        "sessionId": "sess-456",
+                        "toolCallId": "call-789",
+                        "toolName": "grep",
+                        "arguments": {},
+                        "traceparent": "00-abc123-def456-01",
+                        "tracestate": "vendor=value"
+                    }
+                }
+                """;
+
+        var event = (ExternalToolRequestedEvent) parseJson(json);
+        assertNotNull(event);
+        assertEquals("00-abc123-def456-01", event.getData().traceparent());
+        assertEquals("vendor=value", event.getData().tracestate());
+    }
+
+    @Test
+    void testParseSessionModelChangeEvent_withReasoningEffort() throws Exception {
+        String json = """
+                {
+                    "type": "session.model_change",
+                    "data": {
+                        "previousModel": "gpt-4.1",
+                        "newModel": "claude-sonnet-4.5",
+                        "previousReasoningEffort": "low",
+                        "reasoningEffort": "high"
+                    }
+                }
+                """;
+
+        var event = (SessionModelChangeEvent) parseJson(json);
+        assertNotNull(event);
+        assertEquals("gpt-4.1", event.getData().previousModel());
+        assertEquals("claude-sonnet-4.5", event.getData().newModel());
+        assertEquals("low", event.getData().previousReasoningEffort());
+        assertEquals("high", event.getData().reasoningEffort());
+    }
 }

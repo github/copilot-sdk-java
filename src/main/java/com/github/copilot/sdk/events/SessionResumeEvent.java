@@ -35,6 +35,7 @@ public final class SessionResumeEvent extends AbstractSessionEvent {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record SessionResumeData(@JsonProperty("resumeTime") OffsetDateTime resumeTime,
-            @JsonProperty("eventCount") double eventCount) {
+            @JsonProperty("eventCount") double eventCount, @JsonProperty("selectedModel") String selectedModel,
+            @JsonProperty("reasoningEffort") String reasoningEffort) {
     }
 }

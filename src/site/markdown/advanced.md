@@ -108,6 +108,31 @@ var session = client.createSession(
 ).get();
 ```
 
+### Skipping Permission for Safe Tools
+
+If your tool performs only safe, read-only operations that don't require user approval, use
+`ToolDefinition.createSkipPermission()` to bypass the permission flow entirely:
+
+```java
+var safeLookup = ToolDefinition.createSkipPermission(
+    "safe_lookup",
+    "Read-only data lookup that requires no approval",
+    Map.of(
+        "type", "object",
+        "properties", Map.of(
+            "id", Map.of("type", "string", "description", "Record identifier")
+        ),
+        "required", List.of("id")
+    ),
+    invocation -> {
+        String id = (String) invocation.getArguments().get("id");
+        return CompletableFuture.completedFuture(lookupRecord(id));
+    }
+);
+```
+
+When `skipPermission` is set, the CLI will not call the permission handler for this tool's invocations.
+
 ---
 
 ## Switching Models Mid-Session
@@ -124,9 +149,14 @@ var session = client.createSession(
 // Switch to a different model mid-conversation
 session.setModel("gpt-4.1").get();
 
+// Switch to a model with a specific reasoning effort level
+session.setModel("claude-sonnet-4.5", "high").get();
+
 // Next message will use the new model
 session.sendAndWait(new MessageOptions().setPrompt("Continue with the new model")).get();
 ```
+
+The optional `reasoningEffort` parameter accepts `"low"`, `"medium"`, `"high"`, or `"xhigh"`.
 
 The session emits a [`SessionModelChangeEvent`](apidocs/com/github/copilot/sdk/events/SessionModelChangeEvent.html)
 when the switch completes, which you can observe with `session.on(SessionModelChangeEvent.class, event -> ...)`.
@@ -622,6 +652,10 @@ The `PermissionRequestResultKind` class provides well-known constants for common
 | `PermissionRequestResultKind.DENIED_BY_RULES` | `"denied-by-rules"` | Denied by policy rules |
 | `PermissionRequestResultKind.DENIED_COULD_NOT_REQUEST_FROM_USER` | `"denied-no-approval-rule-and-could-not-request-from-user"` | No rule and user could not be prompted |
 | `PermissionRequestResultKind.DENIED_INTERACTIVELY_BY_USER` | `"denied-interactively-by-user"` | User denied interactively |
+| `PermissionRequestResultKind.NO_RESULT` | `"no-result"` | Leave the request unanswered (v3 protocol only) |
+
+The `NO_RESULT` kind is useful in multi-client scenarios (protocol v3) where a secondary client
+wants to signal that it does not own the permission decision and should let another client respond.
 
 You can also pass a raw string to `setKind(String)` for custom or extension values. Use
 [`PermissionHandler.APPROVE_ALL`](apidocs/com/github/copilot/sdk/json/PermissionHandler.html) to approve all

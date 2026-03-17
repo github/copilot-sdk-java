@@ -44,7 +44,8 @@ public final class AssistantUsageEvent extends AbstractSessionEvent {
             @JsonProperty("apiCallId") String apiCallId, @JsonProperty("providerCallId") String providerCallId,
             @JsonProperty("parentToolCallId") String parentToolCallId,
             @JsonProperty("quotaSnapshots") Map<String, Object> quotaSnapshots,
-            @JsonProperty("copilotUsage") CopilotUsage copilotUsage) {
+            @JsonProperty("copilotUsage") CopilotUsage copilotUsage,
+            @JsonProperty("reasoningEffort") String reasoningEffort) {
 
         /** Returns a defensive copy of the quota snapshots map. */
         @Override

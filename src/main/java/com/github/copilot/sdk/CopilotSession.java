@@ -709,6 +709,11 @@ public final class CopilotSession implements AutoCloseable {
                 invocation.setSessionId(sessionId);
                 handler.handle(permissionRequest, invocation).thenAccept(result -> {
                     try {
+                        if (PermissionRequestResultKind.NO_RESULT
+                                .equals(new PermissionRequestResultKind(result.getKind()))) {
+                            // "no-result" means leave the request unanswered — no RPC call.
+                            return;
+                        }
                         rpc.invoke("session.permissions.handlePendingPermissionRequest",
                                 Map.of("sessionId", sessionId, "requestId", requestId, "result", result), Object.class);
                     } catch (Exception e) {
@@ -801,7 +806,17 @@ public final class CopilotSession implements AutoCloseable {
             PermissionRequest request = MAPPER.treeToValue(permissionRequestData, PermissionRequest.class);
             var invocation = new PermissionInvocation();
             invocation.setSessionId(sessionId);
-            return handler.handle(request, invocation).exceptionally(ex -> {
+            return handler.handle(request, invocation).thenApply(result -> {
+                if (PermissionRequestResultKind.NO_RESULT.equals(new PermissionRequestResultKind(result.getKind()))) {
+                    throw new IllegalStateException(
+                            "Permission handlers cannot return 'no-result' when connected to a protocol v2 server.");
+                }
+                return result;
+            }).exceptionally(ex -> {
+                if (ex instanceof IllegalStateException ise && ise.getMessage() != null
+                        && ise.getMessage().contains("no-result")) {
+                    throw (IllegalStateException) ex;
+                }
                 LOG.log(Level.SEVERE, "Permission handler threw an exception", ex);
                 PermissionRequestResult result = new PermissionRequestResult();
                 result.setKind("denied-no-approval-rule-and-could-not-request-from-user");
@@ -1000,8 +1015,39 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture<Void> setModel(String model) {
+        return setModel(model, null);
+    }
+
+    /**
+     * Changes the model and reasoning effort for this session.
+     * <p>
+     * The new model and reasoning effort take effect for the next message.
+     * Conversation history is preserved.
+     *
+     * <pre>{@code
+     * session.setModel("claude-sonnet-4.6", "high").get();
+     * }</pre>
+     *
+     * @param model
+     *            the model ID to switch to (e.g., {@code "gpt-4.1"})
+     * @param reasoningEffort
+     *            the reasoning effort level ({@code "low"}, {@code "medium"},
+     *            {@code "high"}, {@code "xhigh"}), or {@code null} to use the
+     *            model's default
+     * @return a future that completes when the model switch is acknowledged
+     * @throws IllegalStateException
+     *             if this session has been terminated
+     * @since 1.1.0
+     */
+    public CompletableFuture<Void> setModel(String model, String reasoningEffort) {
         ensureNotTerminated();
-        return rpc.invoke("session.model.switchTo", Map.of("sessionId", sessionId, "modelId", model), Void.class);
+        var params = new java.util.LinkedHashMap<String, Object>();
+        params.put("sessionId", sessionId);
+        params.put("modelId", model);
+        if (reasoningEffort != null) {
+            params.put("reasoningEffort", reasoningEffort);
+        }
+        return rpc.invoke("session.model.switchTo", params, Void.class);
     }
 
     /**

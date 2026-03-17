@@ -8,33 +8,30 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Event: session.model_change
+ * Event: session.background_tasks_changed
  *
- * @since 1.0.0
+ * @since 1.1.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class SessionModelChangeEvent extends AbstractSessionEvent {
+public final class SessionBackgroundTasksChangedEvent extends AbstractSessionEvent {
 
     @JsonProperty("data")
-    private SessionModelChangeData data;
+    private SessionBackgroundTasksChangedData data;
 
     @Override
     public String getType() {
-        return "session.model_change";
+        return "session.background_tasks_changed";
     }
 
-    public SessionModelChangeData getData() {
+    public SessionBackgroundTasksChangedData getData() {
         return data;
     }
 
-    public void setData(SessionModelChangeData data) {
+    public void setData(SessionBackgroundTasksChangedData data) {
         this.data = data;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public record SessionModelChangeData(@JsonProperty("previousModel") String previousModel,
-            @JsonProperty("newModel") String newModel,
-            @JsonProperty("previousReasoningEffort") String previousReasoningEffort,
-            @JsonProperty("reasoningEffort") String reasoningEffort) {
+    public record SessionBackgroundTasksChangedData() {
     }
 }

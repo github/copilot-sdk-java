@@ -322,40 +322,46 @@ public class ToolsTest {
     }
 
     /**
-     * Verifies that a custom tool can override a built-in CLI tool with the same
-     * name when {@code overridesBuiltInTool} is set to {@code true}.
+     * Verifies that a tool with {@code skipPermission=true} is invoked without
+     * triggering the permission handler.
      *
-     * @see Snapshot: tools/overrides_built_in_tool_with_custom_tool
+     * @see Snapshot: tools/skippermission_sent_in_tool_definition
      */
     @Test
-    void testOverridesBuiltInToolWithCustomTool() throws Exception {
-        ctx.configureForTest("tools", "overrides_built_in_tool_with_custom_tool");
+    void testSkipPermissionSentInToolDefinition() throws Exception {
+        ctx.configureForTest("tools", "skippermission_sent_in_tool_definition");
 
         var parameters = new HashMap<String, Object>();
         var properties = new HashMap<String, Object>();
-        properties.put("query", Map.of("type", "string", "description", "Search query"));
+        properties.put("id", Map.of("type", "string", "description", "Lookup ID"));
         parameters.put("type", "object");
         parameters.put("properties", properties);
-        parameters.put("required", List.of("query"));
+        parameters.put("required", List.of("id"));
 
-        ToolDefinition customGrep = ToolDefinition.createOverride("grep", "A custom grep implementation", parameters,
-                (invocation) -> {
+        boolean[] didRunPermissionRequest = {false};
+
+        ToolDefinition safeLookup = ToolDefinition.createSkipPermission("safe_lookup", "A tool that skips permission",
+                parameters, (invocation) -> {
                     Map<String, Object> args = invocation.getArguments();
-                    String query = (String) args.get("query");
-                    return CompletableFuture.completedFuture("CUSTOM_GREP_RESULT: " + query);
+                    String id = (String) args.get("id");
+                    return CompletableFuture.completedFuture("RESULT: " + id);
                 });
 
         try (CopilotClient client = ctx.createClient()) {
-            CopilotSession session = client.createSession(new SessionConfig().setTools(List.of(customGrep))
-                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
+            CopilotSession session = client.createSession(
+                    new SessionConfig().setTools(List.of(safeLookup)).setOnPermissionRequest((request, invocation) -> {
+                        didRunPermissionRequest[0] = true;
+                        return CompletableFuture.completedFuture(new PermissionRequestResult().setKind("approved"));
+                    })).get();
 
             AssistantMessageEvent response = session
-                    .sendAndWait(new MessageOptions().setPrompt("Use grep to search for the word 'hello'"))
+                    .sendAndWait(new MessageOptions().setPrompt("Use safe_lookup to look up 'test123'"))
                     .get(60, TimeUnit.SECONDS);
 
             assertNotNull(response);
-            assertTrue(response.getData().content().contains("CUSTOM_GREP_RESULT"),
-                    "Response should contain CUSTOM_GREP_RESULT: " + response.getData().content());
+            assertTrue(response.getData().content().contains("RESULT"),
+                    "Response should contain RESULT: " + response.getData().content());
+            assertFalse(didRunPermissionRequest[0], "Permission handler should not be called for skipPermission tool");
 
             session.close();
         }

@@ -38,6 +38,7 @@ public final class ExternalToolRequestedEvent extends AbstractSessionEvent {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record ExternalToolRequestedData(@JsonProperty("requestId") String requestId,
             @JsonProperty("sessionId") String sessionId, @JsonProperty("toolCallId") String toolCallId,
-            @JsonProperty("toolName") String toolName, @JsonProperty("arguments") Object arguments) {
+            @JsonProperty("toolName") String toolName, @JsonProperty("arguments") Object arguments,
+            @JsonProperty("traceparent") String traceparent, @JsonProperty("tracestate") String tracestate) {
     }
 }
