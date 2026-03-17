@@ -389,11 +389,11 @@ new SessionConfig()
     .setOnPermissionRequest((request, invocation) -> {
         if ("dangerous-action".equals(request.getKind())) {
             return CompletableFuture.completedFuture(
-                new PermissionRequestResult().setKind("user-denied")
+                new PermissionRequestResult().setKind(PermissionRequestResultKind.DENIED)
             );
         }
         return CompletableFuture.completedFuture(
-            new PermissionRequestResult().setKind("user-approved")
+            new PermissionRequestResult().setKind(PermissionRequestResultKind.APPROVED)
         );
     })
 ```
