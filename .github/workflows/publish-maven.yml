@@ -184,7 +184,7 @@ jobs:
               run: |
                   VERSION="${{ needs.publish-maven.outputs.version }}"
                   GROUP_ID="com.github"
-                  ARTIFACT_ID="copilot-sdk"
+                  ARTIFACT_ID="copilot-sdk-java"
                   CURRENT_TAG="v${VERSION}"
 
                   if gh release view "${CURRENT_TAG}" >/dev/null 2>&1; then
