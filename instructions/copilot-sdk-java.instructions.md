@@ -150,7 +150,7 @@ var session = client.resumeSession(sessionId, new ResumeSessionConfig()
 - `session.abort()` - Abort current processing
 - `session.getMessages()` - Get all events/messages
 - `session.setModel(modelId)` - Switch to a different model
-- `session.log(message)` / `session.logWarning(message)` / `session.logError(message)` - Log to session timeline
+- `session.log(message)` / `session.log(message, "warning", false)` / `session.log(message, "error", false)` - Log to session timeline with level `"info"`, `"warning"`, or `"error"`
 - `session.close()` - Clean up resources
 
 ## Event Handling
