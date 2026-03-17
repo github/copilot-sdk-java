@@ -60,7 +60,7 @@ Snapshot builds of the next development version are published to Maven Central S
 ### Gradle
 
 ```groovy
-implementation 'com.github:copilot-sdk-java:0.1.32'
+implementation 'com.github:copilot-sdk-java:0.1.32-java.0'
 ```
 
 ## Quick Start

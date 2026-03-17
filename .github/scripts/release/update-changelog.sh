@@ -53,7 +53,7 @@ BEGIN {
 }
 
 # Capture the repository URL from the first version link
-links_section && repo_url == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+\]:/ {
+links_section && repo_url == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?\]:/ {
     match($0, /(https:\/\/github\.com\/[^\/]+\/[^\/]+)\//, arr)
     if (arr[1] != "") {
         repo_url = arr[1]
@@ -87,8 +87,8 @@ skip_old_upstream && /^> \*\*Upstream sync:\*\*/ { next }
 skip_old_upstream && !/^[[:space:]]*$/ && !/^> \*\*Upstream sync:\*\*/ { skip_old_upstream = 0 }
 
 # Capture the first version link to get the previous version
-links_section && first_version_link == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+\]:/ {
-    match($0, /\[([0-9]+\.[0-9]+\.[0-9]+)\]:/, arr)
+links_section && first_version_link == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?\]:/ {
+    match($0, /\[([0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?)\]:/, arr)
     if (arr[1] != "" && repo_url != "") {
         first_version_link = arr[1]
         # Insert Unreleased and new version links before first version link
@@ -100,7 +100,7 @@ links_section && first_version_link == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+\]:/ {
 # Update existing [Unreleased] link if present
 links_section && /^\[Unreleased\]:/ {
     # Get the previous version and repo URL from the existing link
-    match($0, /(https:\/\/github\.com\/[^\/]+\/[^\/]+)\/compare\/v([0-9]+\.[0-9]+\.[0-9]+)\.\.\.HEAD/, arr)
+    match($0, /(https:\/\/github\.com\/[^\/]+\/[^\/]+)\/compare\/v([0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?)\.\.\.HEAD/, arr)
     if (arr[1] != "" && arr[2] != "") {
         print "[Unreleased]: " arr[1] "/compare/v" version "...HEAD"
         print "[" version "]: " arr[1] "/compare/v" arr[2] "...v" version

@@ -81,10 +81,13 @@ jobs:
                   if [ -n "${{ inputs.developmentVersion }}" ]; then
                     DEV_VERSION="${{ inputs.developmentVersion }}"
                   else
-                    # Increment patch version and add -SNAPSHOT
-                    IFS='.' read -r MAJOR MINOR PATCH <<< "$RELEASE_VERSION"
+                    # Split version: supports both "0.1.32" and "0.1.32-java.0" formats
+                    # Extract the base M.M.P portion (before any qualifier)
+                    BASE_VERSION=$(echo "$RELEASE_VERSION" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+')
+                    QUALIFIER=$(echo "$RELEASE_VERSION" | sed "s|^${BASE_VERSION}||")
+                    IFS='.' read -r MAJOR MINOR PATCH <<< "$BASE_VERSION"
                     NEXT_PATCH=$((PATCH + 1))
-                    DEV_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}-SNAPSHOT"
+                    DEV_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}${QUALIFIER}-SNAPSHOT"
                   fi
                   echo "Next development version: $DEV_VERSION"
                   
@@ -109,12 +112,12 @@ jobs:
                   # Update CHANGELOG.md with release version and upstream sync hash
                   ./.github/scripts/release/update-changelog.sh "${VERSION}" "${UPSTREAM_HASH}"
                   
-                  # Update version in README.md
-                  sed -i "s|<version>[0-9]*\.[0-9]*\.[0-9]*</version>|<version>${VERSION}</version>|g" README.md
-                  sed -i "s|copilot-sdk-java:[0-9]*\.[0-9]*\.[0-9]*|copilot-sdk-java:${VERSION}|g" README.md
+                  # Update version in README.md (supports versions like 1.0.0 and 0.1.32-java.0)
+                  sed -i "s|<version>[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}</version>|<version>${VERSION}</version>|g" README.md
+                  sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" README.md
                   
                   # Update version in jbang-example.java
-                  sed -i "s|copilot-sdk-java:[0-9]*\.[0-9]*\.[0-9]*|copilot-sdk-java:${VERSION}|g" jbang-example.java
+                  sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" jbang-example.java
                   
                   # Update version in cookbook files (Maven will filter ${project.version} during site generation,
                   # but we also need the actual version for direct JBang usage)
@@ -190,7 +193,7 @@ jobs:
                   
                   # Get the previous tag for generating notes
                   PREV_TAG=$(git tag --list 'v*' --sort=-version:refname \
-                    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+                    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?$' \
                     | grep -Fxv "${CURRENT_TAG}" \
                     | head -n 1)
                   
