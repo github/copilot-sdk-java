@@ -103,11 +103,12 @@ jobs:
       - name: Create issue and assign to Copilot
         id: create-issue
         if: steps.check.outputs.has_changes == 'true'
+        env:
+          SUMMARY: ${{ steps.check.outputs.summary }}
         run: |
           COMMIT_COUNT="${{ steps.check.outputs.commit_count }}"
           LAST_MERGE="${{ steps.check.outputs.last_merge }}"
           UPSTREAM_HEAD="${{ steps.check.outputs.upstream_head }}"
-          SUMMARY="${{ steps.check.outputs.summary }}"
           DATE=$(date -u +"%Y-%m-%d")
           REPO="${{ github.repository }}"
 
@@ -141,6 +142,8 @@ jobs:
 
       - name: Summary
         if: always()
+        env:
+          SUMMARY: ${{ steps.check.outputs.summary }}
         run: |
           HAS_CHANGES="${{ steps.check.outputs.has_changes }}"
           COMMIT_COUNT="${{ steps.check.outputs.commit_count }}"
@@ -166,7 +169,7 @@ jobs:
               echo "### Recent upstream commits"
               echo ""
               echo '```'
-              echo "${{ steps.check.outputs.summary }}"
+              echo "$SUMMARY"
               echo '```'
             else
               echo "### ⏭️ No changes"
