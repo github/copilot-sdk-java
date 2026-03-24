@@ -89,9 +89,9 @@ Tests use the official copilot-sdk test harness from `https://github.com/github/
 
 ## Key Conventions
 
-### Upstream Merging
+### Reference Implementation Merging
 
-This SDK tracks the official .NET implementation at `github/copilot-sdk`. The `.lastmerge` file contains the last merged upstream commit hash. Use the `agentic-merge-upstream` skill (see `.github/prompts/agentic-merge-upstream.prompt.md`) to port changes.
+This SDK tracks the official .NET implementation at `github/copilot-sdk`. The `.lastmerge` file contains the last merged reference implementation commit hash. Use the `agentic-merge-reference-impl` skill (see `.github/prompts/agentic-merge-reference-impl.prompt.md`) to port changes.
 
 When porting from .NET:
 - Adapt to Java idioms, don't copy C# patterns directly
@@ -278,7 +278,7 @@ The repository has a pre-commit hook (`.githooks/pre-commit`) that is **automati
 - Include tests for new functionality
 - Update documentation if adding/changing public APIs
 - Reference related issues using `#issue-number`
-- For upstream merges, follow the `agentic-merge-upstream` skill workflow
+- For reference implementation merges, follow the `agentic-merge-reference-impl` skill workflow
 
 ## Development Workflow
 
@@ -301,7 +301,7 @@ The release process is automated via the `publish-maven.yml` GitHub Actions work
    - Updates version comparison links at the bottom of CHANGELOG.md
    - Injects the upstream SDK commit hash (from `.lastmerge`) as a `> **Upstream sync:**` blockquote in both the new `[Unreleased]` section and the released version section
 
-2. **Upstream Sync Tracking**: Each release records which commit from the official `github/copilot-sdk` it is synced to:
+2. **Reference Implementation Sync Tracking**: Each release records which commit from the official `github/copilot-sdk` it is synced to:
    - The `.lastmerge` file is read during the release workflow
    - The commit hash is injected into `CHANGELOG.md` under the release heading
    - Format: `> **Upstream sync:** [\`github/copilot-sdk@SHORT_HASH\`](link-to-commit)`

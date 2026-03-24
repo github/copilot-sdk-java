@@ -19,7 +19,7 @@ We'd love your help with:
  * Making the SDK more idiomatic and nice to use for Java developers
  * Improving documentation
 
-If you have ideas for entirely new features, please post an issue or start a discussion. We're very open to new features but need to make sure they align with the direction of the upstream [Copilot SDK](https://github.com/github/copilot-sdk) and can be maintained in sync. Note that this repo periodically merges upstream changes — see the [README](README.md#agentic-upstream-merge-and-sync) for details on how that works.
+If you have ideas for entirely new features, please post an issue or start a discussion. We're very open to new features but need to make sure they align with the direction of the [Copilot SDK](https://github.com/github/copilot-sdk) reference implementation and can be maintained in sync. Note that this repo periodically merges reference implementation changes — see the [README](README.md#agentic-reference-implementation-merge-and-sync) for details on how that works.
 
 ## Prerequisites for running and testing code
 
