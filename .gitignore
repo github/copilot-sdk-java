@@ -6,3 +6,4 @@ blog-copilotsdk/
 .claude/worktrees
 smoke-test
 *job-logs.txt
+temporary-prompts/
