@@ -371,4 +371,80 @@ public class ClosedSessionGuardTest {
             });
         }
     }
+
+    /**
+     * Verifies that listMcpServers() throws IllegalStateException after session is
+     * terminated.
+     */
+    @Test
+    void testListMcpServersThrowsAfterTermination() throws Exception {
+        ctx.configureForTest("session", "should_receive_session_events");
+
+        try (CopilotClient client = ctx.createClient()) {
+            CopilotSession session = client.createSession(new SessionConfig()
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("fake-test-model")).get();
+            session.close();
+
+            assertThrows(IllegalStateException.class, () -> {
+                session.listMcpServers();
+            });
+        }
+    }
+
+    /**
+     * Verifies that enableMcpServer() throws IllegalStateException after session is
+     * terminated.
+     */
+    @Test
+    void testEnableMcpServerThrowsAfterTermination() throws Exception {
+        ctx.configureForTest("session", "should_receive_session_events");
+
+        try (CopilotClient client = ctx.createClient()) {
+            CopilotSession session = client.createSession(new SessionConfig()
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("fake-test-model")).get();
+            session.close();
+
+            assertThrows(IllegalStateException.class, () -> {
+                session.enableMcpServer("my-server");
+            });
+        }
+    }
+
+    /**
+     * Verifies that disableMcpServer() throws IllegalStateException after session
+     * is terminated.
+     */
+    @Test
+    void testDisableMcpServerThrowsAfterTermination() throws Exception {
+        ctx.configureForTest("session", "should_receive_session_events");
+
+        try (CopilotClient client = ctx.createClient()) {
+            CopilotSession session = client.createSession(new SessionConfig()
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("fake-test-model")).get();
+            session.close();
+
+            assertThrows(IllegalStateException.class, () -> {
+                session.disableMcpServer("my-server");
+            });
+        }
+    }
+
+    /**
+     * Verifies that reloadMcpServers() throws IllegalStateException after session
+     * is terminated.
+     */
+    @Test
+    void testReloadMcpServersThrowsAfterTermination() throws Exception {
+        ctx.configureForTest("session", "should_receive_session_events");
+
+        try (CopilotClient client = ctx.createClient()) {
+            CopilotSession session = client.createSession(new SessionConfig()
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setModel("fake-test-model")).get();
+            session.close();
+
+            assertThrows(IllegalStateException.class, () -> {
+                session.reloadMcpServers();
+            });
+        }
+    }
 }

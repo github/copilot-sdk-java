@@ -35,6 +35,7 @@ import com.github.copilot.sdk.events.SessionIdleEvent;
 import com.github.copilot.sdk.json.AgentInfo;
 import com.github.copilot.sdk.json.GetMessagesResponse;
 import com.github.copilot.sdk.json.HookInvocation;
+import com.github.copilot.sdk.json.McpServerInfo;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.PermissionInvocation;
@@ -1276,6 +1277,74 @@ public final class CopilotSession implements AutoCloseable {
     }
 
     /**
+     * Lists the MCP servers configured for this session, including their connection
+     * status.
+     *
+     * @return a future that resolves with the list of MCP server info objects
+     * @throws IllegalStateException
+     *             if this session has been terminated
+     * @since 1.0.0
+     */
+    public CompletableFuture<List<McpServerInfo>> listMcpServers() {
+        ensureNotTerminated();
+        return rpc.invoke("session.mcp.list", Map.of("sessionId", sessionId), McpListResponse.class)
+                .thenApply(response -> response.servers() != null
+                        ? Collections.unmodifiableList(response.servers())
+                        : Collections.emptyList());
+    }
+
+    /**
+     * Enables a previously disabled MCP server in this session.
+     *
+     * @param serverName
+     *            the name of the MCP server to enable (the key used in the
+     *            {@link com.github.copilot.sdk.json.SessionConfig#setMcpServers(java.util.Map)}
+     *            map)
+     * @return a future that completes when the server has been enabled
+     * @throws IllegalStateException
+     *             if this session has been terminated
+     * @since 1.0.0
+     */
+    public CompletableFuture<Void> enableMcpServer(String serverName) {
+        ensureNotTerminated();
+        return rpc.invoke("session.mcp.enable", Map.of("sessionId", sessionId, "serverName", serverName), Void.class);
+    }
+
+    /**
+     * Disables an MCP server in this session without removing its configuration.
+     * <p>
+     * A disabled server can be re-enabled later via
+     * {@link #enableMcpServer(String)}.
+     *
+     * @param serverName
+     *            the name of the MCP server to disable
+     * @return a future that completes when the server has been disabled
+     * @throws IllegalStateException
+     *             if this session has been terminated
+     * @since 1.0.0
+     */
+    public CompletableFuture<Void> disableMcpServer(String serverName) {
+        ensureNotTerminated();
+        return rpc.invoke("session.mcp.disable", Map.of("sessionId", sessionId, "serverName", serverName), Void.class);
+    }
+
+    /**
+     * Reloads all MCP servers in this session.
+     * <p>
+     * This disconnects and reconnects all configured MCP servers, which can be
+     * useful to pick up configuration changes or recover from failed connections.
+     *
+     * @return a future that completes when the reload is initiated
+     * @throws IllegalStateException
+     *             if this session has been terminated
+     * @since 1.0.0
+     */
+    public CompletableFuture<Void> reloadMcpServers() {
+        ensureNotTerminated();
+        return rpc.invoke("session.mcp.reload", Map.of("sessionId", sessionId), Void.class);
+    }
+
+    /**
      * Verifies that this session has not yet been terminated.
      *
      * @throws IllegalStateException
@@ -1328,6 +1397,12 @@ public final class CopilotSession implements AutoCloseable {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     private record AgentSelectResponse(@JsonProperty("agent") AgentInfo agent) {
+    }
+
+    // ===== Internal response types for MCP API =====
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private record McpListResponse(@JsonProperty("servers") List<McpServerInfo> servers) {
     }
 
 }

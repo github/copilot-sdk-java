@@ -55,7 +55,7 @@ public abstract sealed class AbstractSessionEvent permits
         SessionModelChangeEvent, SessionModeChangedEvent, SessionPlanChangedEvent, SessionWorkspaceFileChangedEvent,
         SessionHandoffEvent, SessionTruncationEvent, SessionSnapshotRewindEvent, SessionUsageInfoEvent,
         SessionCompactionStartEvent, SessionCompactionCompleteEvent, SessionShutdownEvent, SessionContextChangedEvent,
-        SessionTaskCompleteEvent,
+        SessionTaskCompleteEvent, SessionMcpServersLoadedEvent, SessionMcpServerStatusChangedEvent,
         // Assistant events
         AssistantTurnStartEvent, AssistantIntentEvent, AssistantReasoningEvent, AssistantReasoningDeltaEvent,
         AssistantMessageEvent, AssistantMessageDeltaEvent, AssistantStreamingDeltaEvent, AssistantTurnEndEvent,

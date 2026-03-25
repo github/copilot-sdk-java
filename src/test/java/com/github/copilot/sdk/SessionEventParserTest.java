@@ -2385,4 +2385,57 @@ public class SessionEventParserTest {
         assertNotNull(event.getData());
         assertTrue(event.getData().content().contains("Agent completed"));
     }
+
+    @Test
+    void testParseSessionMcpServersLoadedEvent() throws Exception {
+        String json = """
+                {
+                    "type": "session.mcp_servers_loaded",
+                    "data": {
+                        "servers": [
+                            {"name": "filesystem", "status": "connected", "source": "user"},
+                            {"name": "github", "status": "failed", "error": "auth failed"},
+                            {"name": "database", "status": "pending"}
+                        ]
+                    }
+                }
+                """;
+
+        var event = (SessionMcpServersLoadedEvent) parseJson(json);
+        assertNotNull(event);
+        assertEquals("session.mcp_servers_loaded", event.getType());
+        assertNotNull(event.getData());
+        var servers = event.getData().getServers();
+        assertNotNull(servers);
+        assertEquals(3, servers.size());
+        assertEquals("filesystem", servers.get(0).getName());
+        assertEquals("connected", servers.get(0).getStatus());
+        assertEquals("user", servers.get(0).getSource());
+        assertNull(servers.get(0).getError());
+        assertEquals("github", servers.get(1).getName());
+        assertEquals("failed", servers.get(1).getStatus());
+        assertEquals("auth failed", servers.get(1).getError());
+        assertEquals("database", servers.get(2).getName());
+        assertEquals("pending", servers.get(2).getStatus());
+    }
+
+    @Test
+    void testParseSessionMcpServerStatusChangedEvent() throws Exception {
+        String json = """
+                {
+                    "type": "session.mcp_server_status_changed",
+                    "data": {
+                        "serverName": "filesystem",
+                        "status": "connected"
+                    }
+                }
+                """;
+
+        var event = (SessionMcpServerStatusChangedEvent) parseJson(json);
+        assertNotNull(event);
+        assertEquals("session.mcp_server_status_changed", event.getType());
+        assertNotNull(event.getData());
+        assertEquals("filesystem", event.getData().getServerName());
+        assertEquals("connected", event.getData().getStatus());
+    }
 }

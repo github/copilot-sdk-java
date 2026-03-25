@@ -52,6 +52,14 @@
  * execution progress update</li>
  * </ul>
  *
+ * <h3>MCP Server Events</h3>
+ * <ul>
+ * <li>{@link com.github.copilot.sdk.events.SessionMcpServersLoadedEvent} - MCP
+ * servers have been initialized</li>
+ * <li>{@link com.github.copilot.sdk.events.SessionMcpServerStatusChangedEvent}
+ * - An MCP server's connection status changed</li>
+ * </ul>
+ *
  * <h3>Subagent Events</h3>
  * <ul>
  * <li>{@link com.github.copilot.sdk.events.SubagentSelectedEvent} - Subagent

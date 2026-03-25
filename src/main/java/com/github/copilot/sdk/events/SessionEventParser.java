@@ -66,6 +66,8 @@ public class SessionEventParser {
         TYPE_MAP.put("session.compaction_complete", SessionCompactionCompleteEvent.class);
         TYPE_MAP.put("session.context_changed", SessionContextChangedEvent.class);
         TYPE_MAP.put("session.task_complete", SessionTaskCompleteEvent.class);
+        TYPE_MAP.put("session.mcp_servers_loaded", SessionMcpServersLoadedEvent.class);
+        TYPE_MAP.put("session.mcp_server_status_changed", SessionMcpServerStatusChangedEvent.class);
         TYPE_MAP.put("user.message", UserMessageEvent.class);
         TYPE_MAP.put("pending_messages.modified", PendingMessagesModifiedEvent.class);
         TYPE_MAP.put("assistant.turn_start", AssistantTurnStartEvent.class);
