@@ -124,10 +124,9 @@ jobs:
                   # Update version in jbang-example.java
                   sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" jbang-example.java
                   
-                  # Update version in cookbook files (Maven will filter ${project.version} during site generation,
-                  # but we also need the actual version for direct JBang usage)
+                  # Update version in cookbook files (hardcoded for direct GitHub browsing and JBang usage)
                   find src/site/markdown/cookbook -name "*.md" -type f -exec \
-                    sed -i "s|\${project.version}|${VERSION}|g" {} \;
+                    sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" {} \;
                   
                   # Commit the documentation changes before release:prepare (requires clean working directory)
                   git add CHANGELOG.md README.md jbang-example.java src/site/markdown/cookbook/
