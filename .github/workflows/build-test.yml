@@ -33,6 +33,7 @@ jobs:
   java-sdk:
     name: "Java SDK Tests"
     needs: smoke-test
+    if: ${{ always() && needs.smoke-test.result != 'failure' }}
 
     runs-on: ubuntu-latest
     defaults:
