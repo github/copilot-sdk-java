@@ -19,9 +19,7 @@ on:
   merge_group:
 
 permissions:
-  contents: write
-  checks: write
-  pull-requests: write
+  contents: read
 
 jobs:
 
@@ -35,6 +33,10 @@ jobs:
     name: "Java SDK Tests"
     needs: smoke-test
     if: ${{ always() && needs.smoke-test.result != 'failure' }}
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
 
     runs-on: ubuntu-latest
     defaults:
