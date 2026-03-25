@@ -205,8 +205,9 @@
 <h2>Basic Usage</h2>
 <p>Create a client, start a session, and send a message:</p>
 
-<pre class="prettyprint"><code class="language-java">import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.json.*;
+<pre class="prettyprint"><code class="language-java">import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
 
 try (var client = new CopilotClient()) {
     client.start().get();

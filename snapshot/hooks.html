@@ -532,8 +532,11 @@ var session = client.createSession(
 <h2>Complete Example</h2>
 <p>Combining multiple hooks for comprehensive session control:</p>
 
-<pre class="prettyprint"><code class="language-java">import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.json.*;
+<pre class="prettyprint"><code class="language-java">import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.PreToolUseHookOutput;
+import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.sdk.json.SessionHooks;
 import java.util.concurrent.CompletableFuture;
 
 public class HooksExample {

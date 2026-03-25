@@ -223,9 +223,12 @@
 </code></pre></section><section><a id="Quick_Example"></a>
 <h3>Quick Example</h3>
 
-<pre class="prettyprint"><code class="language-java">import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+<pre class="prettyprint"><code class="language-java">import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
 import java.util.concurrent.CompletableFuture;
 
 public class Example {
@@ -279,9 +282,12 @@ public class Example {
 # Create a simple script
 cat &gt; hello-copilot.java &lt;&lt; 'EOF'
 //DEPS com.github:copilot-sdk-java:0.1.33-java.0-SNAPSHOT
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
 import java.util.concurrent.CompletableFuture;
 
 class hello {

@@ -205,10 +205,17 @@ jbang PRVisualization.java github/copilot-sdk
 <h2>Full example: PRVisualization.java</h2>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
-import java.io.*;
+import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.events.ToolExecutionStartEvent;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.sdk.json.SystemMessageConfig;
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.regex.Pattern;
 
 public class PRVisualization {

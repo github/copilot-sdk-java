@@ -206,9 +206,14 @@ jbang ManagingLocalFiles.java
 <p><strong>Code:</strong></p>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.events.ToolExecutionCompleteEvent;
+import com.github.copilot.sdk.events.ToolExecutionStartEvent;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 

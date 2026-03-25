@@ -202,9 +202,11 @@ scoop install jbang
 <p><strong>Code:</strong></p>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
 
 public class BasicErrorHandling {
     public static void main(String[] args) {
@@ -232,9 +234,7 @@ public class BasicErrorHandling {
 <h2>Handling specific error types</h2>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotClient;
 import java.util.concurrent.ExecutionException;
 
 public class SpecificErrorHandling {
@@ -267,9 +267,9 @@ public class SpecificErrorHandling {
 <h2>Timeout handling</h2>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotSession;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.json.MessageOptions;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -296,9 +296,8 @@ public class TimeoutHandling {
 <h2>Aborting a request</h2>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotSession;
+import com.github.copilot.sdk.json.MessageOptions;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -327,9 +326,7 @@ public class AbortRequest {
 <h2>Graceful shutdown</h2>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotClient;
 
 public class GracefulShutdown {
     public static void main(String[] args) {
@@ -357,9 +354,11 @@ public class GracefulShutdown {
 <h2>Try-with-resources pattern</h2>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
 
 public class TryWithResources {
     public static void doWork() throws Exception {
@@ -385,9 +384,13 @@ public class TryWithResources {
 <h2>Handling tool errors</h2>
 
 <pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.1.32-java.0
-import com.github.copilot.sdk.*;
-import com.github.copilot.sdk.events.*;
-import com.github.copilot.sdk.json.*;
+import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.sdk.json.ToolDefinition;
+import com.github.copilot.sdk.json.ToolResultObject;
 import java.util.Map;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
