@@ -7,6 +7,7 @@ package com.github.copilot.sdk;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -19,6 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.github.copilot.sdk.events.AbstractSessionEvent;
@@ -690,6 +692,48 @@ public class CopilotSessionTest {
                 // Should throw an error indicating session not found
                 assertTrue(e.getMessage() != null || e.getCause() != null, "Exception should have a message or cause");
             }
+        }
+    }
+
+    /**
+     * Verifies that session metadata can be retrieved by ID.
+     * <p>
+     * TODO: Re-enable once test harness CAPI proxy supports this test's session
+     * lifecycle.
+     *
+     * @see Snapshot: session/should_get_session_metadata
+     */
+    @Disabled("Needs test harness CAPI proxy support")
+    @Test
+    void testShouldGetSessionMetadata() throws Exception {
+        ctx.configureForTest("session", "should_get_session_metadata");
+
+        try (CopilotClient client = ctx.createClient()) {
+            CopilotSession session = client
+                    .createSession(new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
+
+            session.sendAndWait(new MessageOptions().setPrompt("Say hello")).get(60, TimeUnit.SECONDS);
+
+            // Small delay to ensure session file is written to disk
+            Thread.sleep(200);
+
+            // Get metadata for the session we just created
+            var metadata = client.getSessionMetadata(session.getSessionId()).get(30, TimeUnit.SECONDS);
+            assertNotNull(metadata);
+            assertEquals(session.getSessionId(), metadata.getSessionId());
+            assertNotNull(metadata.getStartTime());
+            assertNotNull(metadata.getModifiedTime());
+
+            // Verify context field
+            if (metadata.getContext() != null) {
+                assertNotNull(metadata.getContext().getCwd());
+            }
+
+            // Verify non-existent session returns null
+            var notFound = client.getSessionMetadata("non-existent-session-id").get(30, TimeUnit.SECONDS);
+            assertNull(notFound);
+
+            session.close();
         }
     }
 
