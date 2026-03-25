@@ -19,8 +19,7 @@ on:
   merge_group:
 
 permissions:
-  contents: write
-  checks: write
+  contents: read
 
 jobs:
 
@@ -34,6 +33,10 @@ jobs:
     name: "Java SDK Tests"
     needs: smoke-test
     if: ${{ always() && needs.smoke-test.result != 'failure' }}
+    permissions:
+      contents: write
+      checks: write
+      pull-requests: write
 
     runs-on: ubuntu-latest
     defaults:
@@ -94,19 +97,20 @@ jobs:
             target/surefire-reports/
           retention-days: 1
 
-      - name: Generate and commit JaCoCo badge
+      - name: Generate JaCoCo badge
         if: success() && github.ref == 'refs/heads/main'
-        run: |
-          .github/scripts/generate-coverage-badge.sh
+        run: .github/scripts/generate-coverage-badge.sh
 
-          # Commit if changed
-          if [[ $(git status --porcelain .github/badges/) ]]; then
-            git config --global user.name 'github-actions[bot]'
-            git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add .github/badges/
-            git commit -m "Update JaCoCo coverage badge"
-            git push
-          fi
+      - name: Create PR for JaCoCo badge update
+        if: success() && github.ref == 'refs/heads/main'
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7
+        with:
+          commit-message: "Update JaCoCo coverage badge"
+          title: "Update JaCoCo coverage badge"
+          body: "Automated JaCoCo coverage badge update from CI."
+          branch: auto/update-jacoco-badge
+          add-paths: .github/badges/
+          delete-branch: true
 
       - name: Generate Test Report Summary
         if: always()
