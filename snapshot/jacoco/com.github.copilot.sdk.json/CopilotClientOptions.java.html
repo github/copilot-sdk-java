@@ -42,11 +42,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
     private String cliUrl;
 <span class="fc" id="L43">    private String logLevel = &quot;info&quot;;</span>
 <span class="fc" id="L44">    private boolean autoStart = true;</span>
-<span class="fc" id="L45">    private boolean autoRestart = true;</span>
+    @Deprecated
+    private boolean autoRestart;
     private Map&lt;String, String&gt; environment;
     private String gitHubToken;
     private Boolean useLoggedInUser;
     private Supplier&lt;CompletableFuture&lt;List&lt;ModelInfo&gt;&gt;&gt; onListModels;
+    private TelemetryConfig telemetry;
 
     /**
      * Gets the path to the Copilot CLI executable.
@@ -54,7 +56,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the CLI path, or {@code null} to use &quot;copilot&quot; from PATH
      */
     public String getCliPath() {
-<span class="fc" id="L57">        return cliPath;</span>
+<span class="fc" id="L59">        return cliPath;</span>
     }
 
     /**
@@ -66,8 +68,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setCliPath(String cliPath) {
-<span class="fc" id="L69">        this.cliPath = cliPath;</span>
-<span class="fc" id="L70">        return this;</span>
+<span class="fc" id="L71">        this.cliPath = cliPath;</span>
+<span class="fc" id="L72">        return this;</span>
     }
 
     /**
@@ -76,7 +78,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the extra arguments to pass to the CLI
      */
     public String[] getCliArgs() {
-<span class="fc" id="L79">        return cliArgs;</span>
+<span class="fc" id="L81">        return cliArgs;</span>
     }
 
     /**
@@ -89,8 +91,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setCliArgs(String[] cliArgs) {
-<span class="fc" id="L92">        this.cliArgs = cliArgs;</span>
-<span class="fc" id="L93">        return this;</span>
+<span class="fc" id="L94">        this.cliArgs = cliArgs;</span>
+<span class="fc" id="L95">        return this;</span>
     }
 
     /**
@@ -99,7 +101,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the working directory path
      */
     public String getCwd() {
-<span class="fc" id="L102">        return cwd;</span>
+<span class="fc" id="L104">        return cwd;</span>
     }
 
     /**
@@ -110,8 +112,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setCwd(String cwd) {
-<span class="fc" id="L113">        this.cwd = cwd;</span>
-<span class="fc" id="L114">        return this;</span>
+<span class="fc" id="L115">        this.cwd = cwd;</span>
+<span class="fc" id="L116">        return this;</span>
     }
 
     /**
@@ -120,7 +122,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the port number, or 0 for a random port
      */
     public int getPort() {
-<span class="fc" id="L123">        return port;</span>
+<span class="fc" id="L125">        return port;</span>
     }
 
     /**
@@ -133,8 +135,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setPort(int port) {
-<span class="fc" id="L136">        this.port = port;</span>
-<span class="fc" id="L137">        return this;</span>
+<span class="fc" id="L138">        this.port = port;</span>
+<span class="fc" id="L139">        return this;</span>
     }
 
     /**
@@ -143,7 +145,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return {@code true} to use stdio (default), {@code false} to use TCP
      */
     public boolean isUseStdio() {
-<span class="fc" id="L146">        return useStdio;</span>
+<span class="fc" id="L148">        return useStdio;</span>
     }
 
     /**
@@ -157,8 +159,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setUseStdio(boolean useStdio) {
-<span class="fc" id="L160">        this.useStdio = useStdio;</span>
-<span class="fc" id="L161">        return this;</span>
+<span class="fc" id="L162">        this.useStdio = useStdio;</span>
+<span class="fc" id="L163">        return this;</span>
     }
 
     /**
@@ -167,7 +169,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the CLI server URL, or {@code null} to spawn a new process
      */
     public String getCliUrl() {
-<span class="fc" id="L170">        return cliUrl;</span>
+<span class="fc" id="L172">        return cliUrl;</span>
     }
 
     /**
@@ -184,8 +186,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setCliUrl(String cliUrl) {
-<span class="fc" id="L187">        this.cliUrl = cliUrl;</span>
-<span class="fc" id="L188">        return this;</span>
+<span class="fc" id="L189">        this.cliUrl = cliUrl;</span>
+<span class="fc" id="L190">        return this;</span>
     }
 
     /**
@@ -194,7 +196,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the log level (default: &quot;info&quot;)
      */
     public String getLogLevel() {
-<span class="fc" id="L197">        return logLevel;</span>
+<span class="fc" id="L199">        return logLevel;</span>
     }
 
     /**
@@ -207,8 +209,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setLogLevel(String logLevel) {
-<span class="fc" id="L210">        this.logLevel = logLevel;</span>
-<span class="fc" id="L211">        return this;</span>
+<span class="fc" id="L212">        this.logLevel = logLevel;</span>
+<span class="fc" id="L213">        return this;</span>
     }
 
     /**
@@ -217,7 +219,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return {@code true} to auto-start (default), {@code false} for manual start
      */
     public boolean isAutoStart() {
-<span class="fc" id="L220">        return autoStart;</span>
+<span class="fc" id="L222">        return autoStart;</span>
     }
 
     /**
@@ -229,17 +231,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setAutoStart(boolean autoStart) {
-<span class="fc" id="L232">        this.autoStart = autoStart;</span>
-<span class="fc" id="L233">        return this;</span>
+<span class="fc" id="L234">        this.autoStart = autoStart;</span>
+<span class="fc" id="L235">        return this;</span>
     }
 
     /**
      * Returns whether the client should automatically restart the server on crash.
      *
-     * @return {@code true} to auto-restart (default), {@code false} otherwise
+     * @return the auto-restart flag value (no longer has any effect)
+     * @deprecated This option has no effect and will be removed in a future
+     *             release.
      */
+    @Deprecated
     public boolean isAutoRestart() {
-<span class="nc" id="L242">        return autoRestart;</span>
+<span class="nc" id="L247">        return autoRestart;</span>
     }
 
     /**
@@ -247,12 +252,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * crashes unexpectedly.
      *
      * @param autoRestart
-     *            {@code true} to auto-restart, {@code false} otherwise
+     *            ignored — this option no longer has any effect
      * @return this options instance for method chaining
+     * @deprecated This option has no effect and will be removed in a future
+     *             release.
      */
+    @Deprecated
     public CopilotClientOptions setAutoRestart(boolean autoRestart) {
-<span class="nc" id="L254">        this.autoRestart = autoRestart;</span>
-<span class="nc" id="L255">        return this;</span>
+<span class="nc" id="L262">        this.autoRestart = autoRestart;</span>
+<span class="nc" id="L263">        return this;</span>
     }
 
     /**
@@ -261,7 +269,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the environment variables map
      */
     public Map&lt;String, String&gt; getEnvironment() {
-<span class="fc" id="L264">        return environment;</span>
+<span class="fc" id="L272">        return environment;</span>
     }
 
     /**
@@ -274,8 +282,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setEnvironment(Map&lt;String, String&gt; environment) {
-<span class="fc" id="L277">        this.environment = environment;</span>
-<span class="fc" id="L278">        return this;</span>
+<span class="fc" id="L285">        this.environment = environment;</span>
+<span class="fc" id="L286">        return this;</span>
     }
 
     /**
@@ -284,7 +292,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the GitHub token, or {@code null} to use other authentication methods
      */
     public String getGitHubToken() {
-<span class="fc" id="L287">        return gitHubToken;</span>
+<span class="fc" id="L295">        return gitHubToken;</span>
     }
 
     /**
@@ -298,8 +306,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setGitHubToken(String gitHubToken) {
-<span class="fc" id="L301">        this.gitHubToken = gitHubToken;</span>
-<span class="fc" id="L302">        return this;</span>
+<span class="fc" id="L309">        this.gitHubToken = gitHubToken;</span>
+<span class="fc" id="L310">        return this;</span>
     }
 
     /**
@@ -310,7 +318,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Deprecated
     public String getGithubToken() {
-<span class="nc" id="L313">        return gitHubToken;</span>
+<span class="nc" id="L321">        return gitHubToken;</span>
     }
 
     /**
@@ -323,8 +331,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Deprecated
     public CopilotClientOptions setGithubToken(String githubToken) {
-<span class="nc" id="L326">        this.gitHubToken = githubToken;</span>
-<span class="nc" id="L327">        return this;</span>
+<span class="nc" id="L334">        this.gitHubToken = githubToken;</span>
+<span class="nc" id="L335">        return this;</span>
     }
 
     /**
@@ -334,7 +342,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      *         explicit tokens, or {@code null} to use default behavior
      */
     public Boolean getUseLoggedInUser() {
-<span class="fc" id="L337">        return useLoggedInUser;</span>
+<span class="fc" id="L345">        return useLoggedInUser;</span>
     }
 
     /**
@@ -349,8 +357,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setUseLoggedInUser(Boolean useLoggedInUser) {
-<span class="fc" id="L352">        this.useLoggedInUser = useLoggedInUser;</span>
-<span class="fc" id="L353">        return this;</span>
+<span class="fc" id="L360">        this.useLoggedInUser = useLoggedInUser;</span>
+<span class="fc" id="L361">        return this;</span>
     }
 
     /**
@@ -359,7 +367,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the handler, or {@code null} if not set
      */
     public Supplier&lt;CompletableFuture&lt;List&lt;ModelInfo&gt;&gt;&gt; getOnListModels() {
-<span class="fc" id="L362">        return onListModels;</span>
+<span class="fc" id="L370">        return onListModels;</span>
     }
 
     /**
@@ -374,8 +382,34 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setOnListModels(Supplier&lt;CompletableFuture&lt;List&lt;ModelInfo&gt;&gt;&gt; onListModels) {
-<span class="fc" id="L377">        this.onListModels = onListModels;</span>
-<span class="fc" id="L378">        return this;</span>
+<span class="fc" id="L385">        this.onListModels = onListModels;</span>
+<span class="fc" id="L386">        return this;</span>
+    }
+
+    /**
+     * Gets the OpenTelemetry configuration for the CLI server.
+     *
+     * @return the telemetry config, or {@code null}
+     * @since 1.2.0
+     */
+    public TelemetryConfig getTelemetry() {
+<span class="fc" id="L396">        return telemetry;</span>
+    }
+
+    /**
+     * Sets the OpenTelemetry configuration for the CLI server.
+     * &lt;p&gt;
+     * When set to a non-{@code null} value, the CLI server is started with
+     * OpenTelemetry instrumentation enabled using the provided settings.
+     *
+     * @param telemetry
+     *            the telemetry configuration
+     * @return this options instance for method chaining
+     * @since 1.2.0
+     */
+    public CopilotClientOptions setTelemetry(TelemetryConfig telemetry) {
+<span class="nc" id="L411">        this.telemetry = telemetry;</span>
+<span class="nc" id="L412">        return this;</span>
     }
 
     /**
@@ -390,21 +424,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Override
     public CopilotClientOptions clone() {
-<span class="fc" id="L393">        CopilotClientOptions copy = new CopilotClientOptions();</span>
-<span class="fc" id="L394">        copy.cliPath = this.cliPath;</span>
-<span class="fc bfc" id="L395" title="All 2 branches covered.">        copy.cliArgs = this.cliArgs != null ? this.cliArgs.clone() : null;</span>
-<span class="fc" id="L396">        copy.cwd = this.cwd;</span>
-<span class="fc" id="L397">        copy.port = this.port;</span>
-<span class="fc" id="L398">        copy.useStdio = this.useStdio;</span>
-<span class="fc" id="L399">        copy.cliUrl = this.cliUrl;</span>
-<span class="fc" id="L400">        copy.logLevel = this.logLevel;</span>
-<span class="fc" id="L401">        copy.autoStart = this.autoStart;</span>
-<span class="fc" id="L402">        copy.autoRestart = this.autoRestart;</span>
-<span class="fc bfc" id="L403" title="All 2 branches covered.">        copy.environment = this.environment != null ? new java.util.HashMap&lt;&gt;(this.environment) : null;</span>
-<span class="fc" id="L404">        copy.gitHubToken = this.gitHubToken;</span>
-<span class="fc" id="L405">        copy.useLoggedInUser = this.useLoggedInUser;</span>
-<span class="fc" id="L406">        copy.onListModels = this.onListModels;</span>
-<span class="fc" id="L407">        return copy;</span>
+<span class="fc" id="L427">        CopilotClientOptions copy = new CopilotClientOptions();</span>
+<span class="fc" id="L428">        copy.cliPath = this.cliPath;</span>
+<span class="fc bfc" id="L429" title="All 2 branches covered.">        copy.cliArgs = this.cliArgs != null ? this.cliArgs.clone() : null;</span>
+<span class="fc" id="L430">        copy.cwd = this.cwd;</span>
+<span class="fc" id="L431">        copy.port = this.port;</span>
+<span class="fc" id="L432">        copy.useStdio = this.useStdio;</span>
+<span class="fc" id="L433">        copy.cliUrl = this.cliUrl;</span>
+<span class="fc" id="L434">        copy.logLevel = this.logLevel;</span>
+<span class="fc" id="L435">        copy.autoStart = this.autoStart;</span>
+<span class="fc" id="L436">        copy.autoRestart = this.autoRestart;</span>
+<span class="fc bfc" id="L437" title="All 2 branches covered.">        copy.environment = this.environment != null ? new java.util.HashMap&lt;&gt;(this.environment) : null;</span>
+<span class="fc" id="L438">        copy.gitHubToken = this.gitHubToken;</span>
+<span class="fc" id="L439">        copy.useLoggedInUser = this.useLoggedInUser;</span>
+<span class="fc" id="L440">        copy.onListModels = this.onListModels;</span>
+<span class="fc" id="L441">        copy.telemetry = this.telemetry;</span>
+<span class="fc" id="L442">        return copy;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

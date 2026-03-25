@@ -25,14 +25,23 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * session.send(options).get();
  * }&lt;/pre&gt;
  *
+ * &lt;h2&gt;Blob Attachment Example&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * var options = new MessageOptions().setPrompt(&quot;Describe this image&quot;).setAttachments(List.of(new BlobAttachment()
+ * 		.setData(&quot;iVBORw0KGgoAAAANSUhEUg...&quot;).setMimeType(&quot;image/png&quot;).setDisplayName(&quot;screenshot.png&quot;)));
+ *
+ * session.send(options).get();
+ * }&lt;/pre&gt;
+ *
  * @see com.github.copilot.sdk.CopilotSession#send(MessageOptions)
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L32">public class MessageOptions {</span>
+<span class="fc" id="L41">public class MessageOptions {</span>
 
     private String prompt;
-    private List&lt;Attachment&gt; attachments;
+    private List&lt;MessageAttachment&gt; attachments;
     private String mode;
 
     /**
@@ -41,7 +50,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the prompt text
      */
     public String getPrompt() {
-<span class="fc" id="L44">        return prompt;</span>
+<span class="fc" id="L53">        return prompt;</span>
     }
 
     /**
@@ -52,33 +61,39 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setPrompt(String prompt) {
-<span class="fc" id="L55">        this.prompt = prompt;</span>
-<span class="fc" id="L56">        return this;</span>
+<span class="fc" id="L64">        this.prompt = prompt;</span>
+<span class="fc" id="L65">        return this;</span>
     }
 
     /**
-     * Gets the file attachments.
+     * Gets the attachments.
      *
      * @return the list of attachments
      */
-    public List&lt;Attachment&gt; getAttachments() {
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
+    public List&lt;MessageAttachment&gt; getAttachments() {
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
     }
 
     /**
-     * Sets file attachments to include with the message.
+     * Sets attachments to include with the message.
      * &lt;p&gt;
-     * Attachments provide additional context to the assistant, such as source code
-     * files, documents, or other relevant files.
+     * Attachments provide additional context to the assistant. Supported types:
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link Attachment} — file, directory, code selection, or GitHub
+     * reference&lt;/li&gt;
+     * &lt;li&gt;{@link BlobAttachment} — inline base64-encoded binary data (e.g. images)
+     * &lt;/li&gt;
+     * &lt;/ul&gt;
      *
      * @param attachments
-     *            the list of file attachments
+     *            the list of attachments
      * @return this options instance for method chaining
      * @see Attachment
+     * @see BlobAttachment
      */
-    public MessageOptions setAttachments(List&lt;Attachment&gt; attachments) {
-<span class="nc" id="L80">        this.attachments = attachments;</span>
-<span class="nc" id="L81">        return this;</span>
+    public MessageOptions setAttachments(List&lt;? extends MessageAttachment&gt; attachments) {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        this.attachments = attachments != null ? new ArrayList&lt;&gt;(attachments) : null;</span>
+<span class="fc" id="L96">        return this;</span>
     }
 
     /**
@@ -95,8 +110,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setMode(String mode) {
-<span class="fc" id="L98">        this.mode = mode;</span>
-<span class="fc" id="L99">        return this;</span>
+<span class="fc" id="L113">        this.mode = mode;</span>
+<span class="fc" id="L114">        return this;</span>
     }
 
     /**
@@ -105,7 +120,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the delivery mode
      */
     public String getMode() {
-<span class="fc" id="L108">        return mode;</span>
+<span class="fc" id="L123">        return mode;</span>
     }
 
     /**
@@ -120,11 +135,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Override
     public MessageOptions clone() {
-<span class="fc" id="L123">        MessageOptions copy = new MessageOptions();</span>
-<span class="fc" id="L124">        copy.prompt = this.prompt;</span>
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
-<span class="fc" id="L126">        copy.mode = this.mode;</span>
-<span class="fc" id="L127">        return copy;</span>
+<span class="fc" id="L138">        MessageOptions copy = new MessageOptions();</span>
+<span class="fc" id="L139">        copy.prompt = this.prompt;</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
+<span class="fc" id="L141">        copy.mode = this.mode;</span>
+<span class="fc" id="L142">        return copy;</span>
     }
 
 }

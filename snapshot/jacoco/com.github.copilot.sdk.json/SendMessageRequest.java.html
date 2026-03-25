@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     private String prompt;
 
     @JsonProperty(&quot;attachments&quot;)
-    private List&lt;Attachment&gt; attachments;
+    private List&lt;MessageAttachment&gt; attachments;
 
     @JsonProperty(&quot;mode&quot;)
     private String mode;
@@ -57,12 +57,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 <span class="fc" id="L57">    }</span>
 
     /** Gets the attachments. @return the list of attachments */
-    public List&lt;Attachment&gt; getAttachments() {
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
+    public List&lt;MessageAttachment&gt; getAttachments() {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
     }
 
     /** Sets the attachments. @param attachments the list of attachments */
-    public void setAttachments(List&lt;Attachment&gt; attachments) {
+    public void setAttachments(List&lt;MessageAttachment&gt; attachments) {
 <span class="fc" id="L66">        this.attachments = attachments;</span>
 <span class="fc" id="L67">    }</span>
 

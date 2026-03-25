@@ -4,10 +4,18 @@
 
 package com.github.copilot.sdk;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+
 import com.github.copilot.sdk.json.CreateSessionRequest;
 import com.github.copilot.sdk.json.ResumeSessionConfig;
 import com.github.copilot.sdk.json.ResumeSessionRequest;
+import com.github.copilot.sdk.json.SectionOverride;
+import com.github.copilot.sdk.json.SectionOverrideAction;
 import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.sdk.json.SystemMessageConfig;
 
 /**
  * Builds JSON-RPC request objects from session configuration.
@@ -23,6 +31,58 @@ final class SessionRequestBuilder {
     }
 
     /**
+     * Extracts transform callbacks from a {@link SystemMessageConfig} and returns a
+     * wire-safe copy of the config alongside the extracted callbacks.
+     * &lt;p&gt;
+     * When the system message mode is {@link SystemMessageMode#CUSTOMIZE} and some
+     * sections have {@link SectionOverride#getTransform() transform} callbacks set,
+     * this method:
+     * &lt;ol&gt;
+     * &lt;li&gt;Removes the callbacks from the wire config (they must not be
+     * serialized).&lt;/li&gt;
+     * &lt;li&gt;Replaces each transform section with
+     * {@link SectionOverrideAction#TRANSFORM} in the wire config.&lt;/li&gt;
+     * &lt;li&gt;Returns the callbacks so they can be registered with the session.&lt;/li&gt;
+     * &lt;/ol&gt;
+     *
+     * @param systemMessage
+     *            the system message config, may be {@code null}
+     * @return an {@link ExtractedTransforms} containing the wire-safe config and
+     *         any extracted callbacks
+     */
+    static ExtractedTransforms extractTransformCallbacks(SystemMessageConfig systemMessage) {
+<span class="fc bfc" id="L54" title="All 4 branches covered.">        if (systemMessage == null || systemMessage.getMode() != SystemMessageMode.CUSTOMIZE</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">                || systemMessage.getSections() == null) {</span>
+<span class="fc" id="L56">            return new ExtractedTransforms(systemMessage, null);</span>
+        }
+
+<span class="fc" id="L59">        Map&lt;String, Function&lt;String, CompletableFuture&lt;String&gt;&gt;&gt; callbacks = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">        Map&lt;String, SectionOverride&gt; wireSections = new HashMap&lt;&gt;();</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (Map.Entry&lt;String, SectionOverride&gt; entry : systemMessage.getSections().entrySet()) {</span>
+<span class="fc" id="L63">            String sectionId = entry.getKey();</span>
+<span class="fc" id="L64">            SectionOverride override = entry.getValue();</span>
+
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (override.getTransform() != null) {</span>
+<span class="fc" id="L67">                callbacks.put(sectionId, override.getTransform());</span>
+<span class="fc" id="L68">                wireSections.put(sectionId, new SectionOverride().setAction(SectionOverrideAction.TRANSFORM));</span>
+            } else {
+<span class="fc" id="L70">                wireSections.put(sectionId, override);</span>
+            }
+<span class="fc" id="L72">        }</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (callbacks.isEmpty()) {</span>
+<span class="fc" id="L75">            return new ExtractedTransforms(systemMessage, null);</span>
+        }
+
+        // Build a wire-safe copy of the system message with callbacks removed
+<span class="fc" id="L79">        var wireConfig = new SystemMessageConfig().setMode(systemMessage.getMode())</span>
+<span class="fc" id="L80">                .setContent(systemMessage.getContent()).setSections(wireSections);</span>
+
+<span class="fc" id="L82">        return new ExtractedTransforms(wireConfig, callbacks);</span>
+    }
+
+    /**
      * Builds a CreateSessionRequest from the given configuration.
      *
      * @param config
@@ -32,72 +92,12 @@ final class SessionRequestBuilder {
      * @return the built request object
      */
     static CreateSessionRequest buildCreateRequest(SessionConfig config, String sessionId) {
-<span class="fc" id="L35">        var request = new CreateSessionRequest();</span>
-        // Always request permission callbacks to enable deny-by-default behavior
-<span class="fc" id="L37">        request.setRequestPermission(true);</span>
-        // Always send envValueMode=direct for MCP servers
-<span class="fc" id="L39">        request.setEnvValueMode(&quot;direct&quot;);</span>
-<span class="fc" id="L40">        request.setSessionId(sessionId);</span>
-<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (config == null) {</span>
-<span class="fc" id="L42">            return request;</span>
-        }
-
-<span class="fc" id="L45">        request.setModel(config.getModel());</span>
-<span class="fc" id="L46">        request.setClientName(config.getClientName());</span>
-<span class="fc" id="L47">        request.setReasoningEffort(config.getReasoningEffort());</span>
-<span class="fc" id="L48">        request.setTools(config.getTools());</span>
-<span class="fc" id="L49">        request.setSystemMessage(config.getSystemMessage());</span>
-<span class="fc" id="L50">        request.setAvailableTools(config.getAvailableTools());</span>
-<span class="fc" id="L51">        request.setExcludedTools(config.getExcludedTools());</span>
-<span class="fc" id="L52">        request.setProvider(config.getProvider());</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">        request.setRequestUserInput(config.getOnUserInputRequest() != null ? true : null);</span>
-<span class="fc bfc" id="L54" title="All 4 branches covered.">        request.setHooks(config.getHooks() != null &amp;&amp; config.getHooks().hasHooks() ? true : null);</span>
-<span class="fc" id="L55">        request.setWorkingDirectory(config.getWorkingDirectory());</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">        request.setStreaming(config.isStreaming() ? true : null);</span>
-<span class="fc" id="L57">        request.setMcpServers(config.getMcpServers());</span>
-<span class="fc" id="L58">        request.setCustomAgents(config.getCustomAgents());</span>
-<span class="fc" id="L59">        request.setAgent(config.getAgent());</span>
-<span class="fc" id="L60">        request.setInfiniteSessions(config.getInfiniteSessions());</span>
-<span class="fc" id="L61">        request.setSkillDirectories(config.getSkillDirectories());</span>
-<span class="fc" id="L62">        request.setDisabledSkills(config.getDisabledSkills());</span>
-<span class="fc" id="L63">        request.setConfigDir(config.getConfigDir());</span>
-
-<span class="fc" id="L65">        return request;</span>
-    }
-
-    /**
-     * Builds a CreateSessionRequest from the given configuration.
-     *
-     * @param config
-     *            the session configuration (may be null)
-     * @return the built request object
-     * @deprecated Use {@link #buildCreateRequest(SessionConfig, String)} instead.
-     */
-    @Deprecated
-    static CreateSessionRequest buildCreateRequest(SessionConfig config) {
-<span class="pc bpc" id="L78" title="1 of 4 branches missed.">        String sessionId = (config != null &amp;&amp; config.getSessionId() != null)</span>
-<span class="nc" id="L79">                ? config.getSessionId()</span>
-<span class="fc" id="L80">                : java.util.UUID.randomUUID().toString();</span>
-<span class="fc" id="L81">        return buildCreateRequest(config, sessionId);</span>
-    }
-
-    /**
-     * Builds a ResumeSessionRequest from the given session ID and configuration.
-     *
-     * @param sessionId
-     *            the ID of the session to resume
-     * @param config
-     *            the resume configuration (may be null)
-     * @return the built request object
-     */
-    static ResumeSessionRequest buildResumeRequest(String sessionId, ResumeSessionConfig config) {
-<span class="fc" id="L94">        var request = new ResumeSessionRequest();</span>
-<span class="fc" id="L95">        request.setSessionId(sessionId);</span>
+<span class="fc" id="L95">        var request = new CreateSessionRequest();</span>
         // Always request permission callbacks to enable deny-by-default behavior
 <span class="fc" id="L97">        request.setRequestPermission(true);</span>
         // Always send envValueMode=direct for MCP servers
 <span class="fc" id="L99">        request.setEnvValueMode(&quot;direct&quot;);</span>
-
+<span class="fc" id="L100">        request.setSessionId(sessionId);</span>
 <span class="fc bfc" id="L101" title="All 2 branches covered.">        if (config == null) {</span>
 <span class="fc" id="L102">            return request;</span>
         }
@@ -113,17 +113,77 @@ final class SessionRequestBuilder {
 <span class="fc bfc" id="L113" title="All 2 branches covered.">        request.setRequestUserInput(config.getOnUserInputRequest() != null ? true : null);</span>
 <span class="fc bfc" id="L114" title="All 4 branches covered.">        request.setHooks(config.getHooks() != null &amp;&amp; config.getHooks().hasHooks() ? true : null);</span>
 <span class="fc" id="L115">        request.setWorkingDirectory(config.getWorkingDirectory());</span>
-<span class="fc" id="L116">        request.setConfigDir(config.getConfigDir());</span>
-<span class="fc bfc" id="L117" title="All 2 branches covered.">        request.setDisableResume(config.isDisableResume() ? true : null);</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">        request.setStreaming(config.isStreaming() ? true : null);</span>
-<span class="fc" id="L119">        request.setMcpServers(config.getMcpServers());</span>
-<span class="fc" id="L120">        request.setCustomAgents(config.getCustomAgents());</span>
-<span class="fc" id="L121">        request.setAgent(config.getAgent());</span>
-<span class="fc" id="L122">        request.setSkillDirectories(config.getSkillDirectories());</span>
-<span class="fc" id="L123">        request.setDisabledSkills(config.getDisabledSkills());</span>
-<span class="fc" id="L124">        request.setInfiniteSessions(config.getInfiniteSessions());</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        request.setStreaming(config.isStreaming() ? true : null);</span>
+<span class="fc" id="L117">        request.setMcpServers(config.getMcpServers());</span>
+<span class="fc" id="L118">        request.setCustomAgents(config.getCustomAgents());</span>
+<span class="fc" id="L119">        request.setAgent(config.getAgent());</span>
+<span class="fc" id="L120">        request.setInfiniteSessions(config.getInfiniteSessions());</span>
+<span class="fc" id="L121">        request.setSkillDirectories(config.getSkillDirectories());</span>
+<span class="fc" id="L122">        request.setDisabledSkills(config.getDisabledSkills());</span>
+<span class="fc" id="L123">        request.setConfigDir(config.getConfigDir());</span>
 
-<span class="fc" id="L126">        return request;</span>
+<span class="fc" id="L125">        return request;</span>
+    }
+
+    /**
+     * Builds a CreateSessionRequest from the given configuration.
+     *
+     * @param config
+     *            the session configuration (may be null)
+     * @return the built request object
+     * @deprecated Use {@link #buildCreateRequest(SessionConfig, String)} instead.
+     */
+    @Deprecated
+    static CreateSessionRequest buildCreateRequest(SessionConfig config) {
+<span class="pc bpc" id="L138" title="1 of 4 branches missed.">        String sessionId = (config != null &amp;&amp; config.getSessionId() != null)</span>
+<span class="nc" id="L139">                ? config.getSessionId()</span>
+<span class="fc" id="L140">                : java.util.UUID.randomUUID().toString();</span>
+<span class="fc" id="L141">        return buildCreateRequest(config, sessionId);</span>
+    }
+
+    /**
+     * Builds a ResumeSessionRequest from the given session ID and configuration.
+     *
+     * @param sessionId
+     *            the ID of the session to resume
+     * @param config
+     *            the resume configuration (may be null)
+     * @return the built request object
+     */
+    static ResumeSessionRequest buildResumeRequest(String sessionId, ResumeSessionConfig config) {
+<span class="fc" id="L154">        var request = new ResumeSessionRequest();</span>
+<span class="fc" id="L155">        request.setSessionId(sessionId);</span>
+        // Always request permission callbacks to enable deny-by-default behavior
+<span class="fc" id="L157">        request.setRequestPermission(true);</span>
+        // Always send envValueMode=direct for MCP servers
+<span class="fc" id="L159">        request.setEnvValueMode(&quot;direct&quot;);</span>
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (config == null) {</span>
+<span class="fc" id="L162">            return request;</span>
+        }
+
+<span class="fc" id="L165">        request.setModel(config.getModel());</span>
+<span class="fc" id="L166">        request.setClientName(config.getClientName());</span>
+<span class="fc" id="L167">        request.setReasoningEffort(config.getReasoningEffort());</span>
+<span class="fc" id="L168">        request.setTools(config.getTools());</span>
+<span class="fc" id="L169">        request.setSystemMessage(config.getSystemMessage());</span>
+<span class="fc" id="L170">        request.setAvailableTools(config.getAvailableTools());</span>
+<span class="fc" id="L171">        request.setExcludedTools(config.getExcludedTools());</span>
+<span class="fc" id="L172">        request.setProvider(config.getProvider());</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        request.setRequestUserInput(config.getOnUserInputRequest() != null ? true : null);</span>
+<span class="fc bfc" id="L174" title="All 4 branches covered.">        request.setHooks(config.getHooks() != null &amp;&amp; config.getHooks().hasHooks() ? true : null);</span>
+<span class="fc" id="L175">        request.setWorkingDirectory(config.getWorkingDirectory());</span>
+<span class="fc" id="L176">        request.setConfigDir(config.getConfigDir());</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        request.setDisableResume(config.isDisableResume() ? true : null);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        request.setStreaming(config.isStreaming() ? true : null);</span>
+<span class="fc" id="L179">        request.setMcpServers(config.getMcpServers());</span>
+<span class="fc" id="L180">        request.setCustomAgents(config.getCustomAgents());</span>
+<span class="fc" id="L181">        request.setAgent(config.getAgent());</span>
+<span class="fc" id="L182">        request.setSkillDirectories(config.getSkillDirectories());</span>
+<span class="fc" id="L183">        request.setDisabledSkills(config.getDisabledSkills());</span>
+<span class="fc" id="L184">        request.setInfiniteSessions(config.getInfiniteSessions());</span>
+
+<span class="fc" id="L186">        return request;</span>
     }
 
     /**
@@ -135,26 +195,26 @@ final class SessionRequestBuilder {
      *            the session configuration
      */
     static void configureSession(CopilotSession session, SessionConfig config) {
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if (config == null) {</span>
-<span class="nc" id="L139">            return;</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">        if (config == null) {</span>
+<span class="nc" id="L199">            return;</span>
         }
 
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (config.getTools() != null) {</span>
-<span class="fc" id="L143">            session.registerTools(config.getTools());</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        if (config.getTools() != null) {</span>
+<span class="fc" id="L203">            session.registerTools(config.getTools());</span>
         }
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (config.getOnPermissionRequest() != null) {</span>
-<span class="fc" id="L146">            session.registerPermissionHandler(config.getOnPermissionRequest());</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">        if (config.getOnPermissionRequest() != null) {</span>
+<span class="fc" id="L206">            session.registerPermissionHandler(config.getOnPermissionRequest());</span>
         }
-<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (config.getOnUserInputRequest() != null) {</span>
-<span class="fc" id="L149">            session.registerUserInputHandler(config.getOnUserInputRequest());</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (config.getOnUserInputRequest() != null) {</span>
+<span class="fc" id="L209">            session.registerUserInputHandler(config.getOnUserInputRequest());</span>
         }
-<span class="fc bfc" id="L151" title="All 2 branches covered.">        if (config.getHooks() != null) {</span>
-<span class="fc" id="L152">            session.registerHooks(config.getHooks());</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        if (config.getHooks() != null) {</span>
+<span class="fc" id="L212">            session.registerHooks(config.getHooks());</span>
         }
-<span class="pc bpc" id="L154" title="1 of 2 branches missed.">        if (config.getOnEvent() != null) {</span>
-<span class="nc" id="L155">            session.on(config.getOnEvent());</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">        if (config.getOnEvent() != null) {</span>
+<span class="nc" id="L215">            session.on(config.getOnEvent());</span>
         }
-<span class="fc" id="L157">    }</span>
+<span class="fc" id="L217">    }</span>
 
     /**
      * Configures a resumed session with handlers from the given config.
@@ -165,25 +225,25 @@ final class SessionRequestBuilder {
      *            the resume session configuration
      */
     static void configureSession(CopilotSession session, ResumeSessionConfig config) {
-<span class="fc bfc" id="L168" title="All 2 branches covered.">        if (config == null) {</span>
-<span class="fc" id="L169">            return;</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">        if (config == null) {</span>
+<span class="fc" id="L229">            return;</span>
         }
 
-<span class="fc bfc" id="L172" title="All 2 branches covered.">        if (config.getTools() != null) {</span>
-<span class="fc" id="L173">            session.registerTools(config.getTools());</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">        if (config.getTools() != null) {</span>
+<span class="fc" id="L233">            session.registerTools(config.getTools());</span>
         }
-<span class="fc bfc" id="L175" title="All 2 branches covered.">        if (config.getOnPermissionRequest() != null) {</span>
-<span class="fc" id="L176">            session.registerPermissionHandler(config.getOnPermissionRequest());</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        if (config.getOnPermissionRequest() != null) {</span>
+<span class="fc" id="L236">            session.registerPermissionHandler(config.getOnPermissionRequest());</span>
         }
-<span class="fc bfc" id="L178" title="All 2 branches covered.">        if (config.getOnUserInputRequest() != null) {</span>
-<span class="fc" id="L179">            session.registerUserInputHandler(config.getOnUserInputRequest());</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">        if (config.getOnUserInputRequest() != null) {</span>
+<span class="fc" id="L239">            session.registerUserInputHandler(config.getOnUserInputRequest());</span>
         }
-<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (config.getHooks() != null) {</span>
-<span class="fc" id="L182">            session.registerHooks(config.getHooks());</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        if (config.getHooks() != null) {</span>
+<span class="fc" id="L242">            session.registerHooks(config.getHooks());</span>
         }
-<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        if (config.getOnEvent() != null) {</span>
-<span class="nc" id="L185">            session.on(config.getOnEvent());</span>
+<span class="pc bpc" id="L244" title="1 of 2 branches missed.">        if (config.getOnEvent() != null) {</span>
+<span class="nc" id="L245">            session.on(config.getOnEvent());</span>
         }
-<span class="fc" id="L187">    }</span>
+<span class="fc" id="L247">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

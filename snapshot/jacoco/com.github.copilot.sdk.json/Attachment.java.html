@@ -29,7 +29,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="nc" id="L32">public record Attachment(@JsonProperty(&quot;type&quot;) String type, @JsonProperty(&quot;path&quot;) String path,</span>
-        @JsonProperty(&quot;displayName&quot;) String displayName) {
+<span class="fc" id="L32">public record Attachment(@JsonProperty(&quot;type&quot;) String type, @JsonProperty(&quot;path&quot;) String path,</span>
+        @JsonProperty(&quot;displayName&quot;) String displayName) implements MessageAttachment {
+
+    @Override
+    public String getType() {
+<span class="fc" id="L37">        return type;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

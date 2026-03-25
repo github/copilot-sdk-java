@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnknownSessionEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.events</a> &gt; <span class="el_source">UnknownSessionEvent.java</span></div><h1>UnknownSessionEvent.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.events;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+/**
+ * Represents an unrecognized session event type received from the CLI.
+ * &lt;p&gt;
+ * When the CLI sends an event with a type that this SDK does not recognize (for
+ * example, an event type introduced in a newer CLI version), the SDK wraps it
+ * in an {@code UnknownSessionEvent} rather than dropping it. This ensures
+ * forward compatibility: event handlers can simply ignore unknown event types
+ * without the SDK crashing.
+ *
+ * &lt;h2&gt;Example&lt;/h2&gt;
+ *
+ * &lt;pre&gt;{@code
+ * session.on(event -&gt; {
+ * 	if (event instanceof UnknownSessionEvent unknown) {
+ * 		// Ignore events from newer CLI versions
+ * 	}
+ * });
+ * }&lt;/pre&gt;
+ *
+ * @see AbstractSessionEvent
+ * @since 1.2.0
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class UnknownSessionEvent extends AbstractSessionEvent {
+
+    private final String originalType;
+
+    /**
+     * Creates an unknown session event with the given original type string.
+     *
+     * @param originalType
+     *            the event type string received from the CLI; may be {@code null}
+     */
+<span class="fc" id="L42">    public UnknownSessionEvent(String originalType) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        this.originalType = originalType != null ? originalType : &quot;unknown&quot;;</span>
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * No-arg constructor for internal use by the parser.
+     * &lt;p&gt;
+     * Creates an unknown event with {@code &quot;unknown&quot;} as the original type. Callers
+     * that need the original type should use {@link #UnknownSessionEvent(String)}.
+     */
+    UnknownSessionEvent() {
+<span class="fc" id="L53">        this(&quot;unknown&quot;);</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * Returns {@code &quot;unknown&quot;} as the canonical type for all unrecognized events.
+     *
+     * @return always {@code &quot;unknown&quot;}
+     */
+    @Override
+    public String getType() {
+<span class="fc" id="L63">        return &quot;unknown&quot;;</span>
+    }
+
+    /**
+     * Returns the original event type string as received from the CLI.
+     *
+     * @return the original type, never {@code null}
+     */
+    public String getOriginalType() {
+<span class="fc" id="L72">        return originalType;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -51,6 +51,21 @@ public final class PermissionRequestResultKind {
 <span class="fc" id="L51">    public static final PermissionRequestResultKind DENIED_INTERACTIVELY_BY_USER = new PermissionRequestResultKind(</span>
             &quot;denied-interactively-by-user&quot;);
 
+    /**
+     * Leaves the pending permission request unanswered.
+     * &lt;p&gt;
+     * When the SDK is used as an extension and the extension's permission handler
+     * cannot or chooses not to handle a given permission request, it can return
+     * {@code NO_RESULT} to leave the request unanswered, allowing another client to
+     * handle it.
+     * &lt;p&gt;
+     * &lt;strong&gt;Warning:&lt;/strong&gt; This kind is only valid with protocol v3 servers
+     * (broadcast permission model). When connected to a protocol v2 server, the SDK
+     * will throw {@link IllegalStateException} because v2 expects exactly one
+     * response per permission request.
+     */
+<span class="fc" id="L67">    public static final PermissionRequestResultKind NO_RESULT = new PermissionRequestResultKind(&quot;no-result&quot;);</span>
+
     private final String value;
 
     /**
@@ -61,9 +76,9 @@ public final class PermissionRequestResultKind {
      *            the string value; {@code null} is treated as an empty string
      */
     @JsonCreator
-<span class="fc" id="L64">    public PermissionRequestResultKind(String value) {</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        this.value = value != null ? value : &quot;&quot;;</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L79">    public PermissionRequestResultKind(String value) {</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        this.value = value != null ? value : &quot;&quot;;</span>
+<span class="fc" id="L81">    }</span>
 
     /**
      * Returns the underlying string value of this kind.
@@ -72,29 +87,29 @@ public final class PermissionRequestResultKind {
      */
     @JsonValue
     public String getValue() {
-<span class="fc" id="L75">        return value;</span>
+<span class="fc" id="L90">        return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L80">        return value;</span>
+<span class="fc" id="L95">        return value;</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L86">            return true;</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L101">            return true;</span>
         }
-<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (!(obj instanceof PermissionRequestResultKind)) {</span>
-<span class="fc" id="L89">            return false;</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (!(obj instanceof PermissionRequestResultKind)) {</span>
+<span class="fc" id="L104">            return false;</span>
         }
-<span class="fc" id="L91">        PermissionRequestResultKind other = (PermissionRequestResultKind) obj;</span>
-<span class="fc" id="L92">        return value.equalsIgnoreCase(other.value);</span>
+<span class="fc" id="L106">        PermissionRequestResultKind other = (PermissionRequestResultKind) obj;</span>
+<span class="fc" id="L107">        return value.equalsIgnoreCase(other.value);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L97">        return Objects.hashCode(value.toLowerCase(java.util.Locale.ROOT));</span>
+<span class="fc" id="L112">        return Objects.hashCode(value.toLowerCase(java.util.Locale.ROOT));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

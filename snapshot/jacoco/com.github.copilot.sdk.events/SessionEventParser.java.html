@@ -122,14 +122,20 @@ import java.util.Map;
 
 <span class="fc" id="L123">            Class&lt;? extends AbstractSessionEvent&gt; eventClass = TYPE_MAP.get(type);</span>
 <span class="fc bfc" id="L124" title="All 2 branches covered.">            if (eventClass == null) {</span>
-<span class="fc" id="L125">                LOG.fine(&quot;Unknown event type: &quot; + type);</span>
-<span class="fc" id="L126">                return null;</span>
+<span class="fc" id="L125">                LOG.fine(&quot;Unknown event type: &quot; + type + &quot; — returning UnknownSessionEvent for forward compatibility&quot;);</span>
+<span class="fc" id="L126">                UnknownSessionEvent base = MAPPER.treeToValue(node, UnknownSessionEvent.class);</span>
+<span class="fc" id="L127">                UnknownSessionEvent result = new UnknownSessionEvent(type);</span>
+<span class="fc" id="L128">                result.setId(base.getId());</span>
+<span class="fc" id="L129">                result.setTimestamp(base.getTimestamp());</span>
+<span class="fc" id="L130">                result.setParentId(base.getParentId());</span>
+<span class="fc" id="L131">                result.setEphemeral(base.getEphemeral());</span>
+<span class="fc" id="L132">                return result;</span>
             }
 
-<span class="fc" id="L129">            return MAPPER.treeToValue(node, eventClass);</span>
-<span class="fc" id="L130">        } catch (Exception e) {</span>
-<span class="fc" id="L131">            LOG.log(Level.SEVERE, &quot;Failed to parse session event&quot;, e);</span>
-<span class="fc" id="L132">            return null;</span>
+<span class="fc" id="L135">            return MAPPER.treeToValue(node, eventClass);</span>
+<span class="fc" id="L136">        } catch (Exception e) {</span>
+<span class="fc" id="L137">            LOG.log(Level.SEVERE, &quot;Failed to parse session event&quot;, e);</span>
+<span class="fc" id="L138">            return null;</span>
         }
     }
 }
