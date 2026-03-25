@@ -78,7 +78,12 @@ Read the file `src/test/prompts/PROMPT-smoke-test.md` and follow its instruction
 
 **Critical override:** The goal of this workflow is to validate the SDK snapshot you just built and installed locally in Step 1, not any newer SNAPSHOT that might exist in a remote repository. To ensure Maven does not download a newer timestamped SNAPSHOT, you must run the smoke-test Maven build in offline mode and without `-U`, so that it uses the locally installed artifact.
 
-Follow every step in the prompt: create the `smoke-test/` directory, create `pom.xml` and the Java source file exactly as specified, then **when the prompt instructs you to run `mvn -U clean package`, instead run** `mvn -o clean package` (no `-U`), run with `java -jar`, and verify the exit code.
+**Critical override — authentication:** The Quick Start code creates a `CopilotClient` which spawns the Copilot CLI and needs authentication. The `COPILOT_GITHUB_TOKEN` environment variable is available in your environment. You **must** ensure it is passed through when running the `java -jar` command. For example:
+```bash
+COPILOT_GITHUB_TOKEN="$COPILOT_GITHUB_TOKEN" java -jar ./target/copilot-sdk-smoketest-1.0-SNAPSHOT.jar
+```
+
+Follow every step in the prompt: create the `smoke-test/` directory, create `pom.xml` and the Java source file exactly as specified, build with `mvn -o clean package` (offline and without \`-U\`), run with `java -jar` (with `COPILOT_GITHUB_TOKEN` passed through), and verify the exit code.
 
 ### Step 3 — Report result
 
