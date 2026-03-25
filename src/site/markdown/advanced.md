@@ -6,11 +6,15 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
 
 - [Custom Tools](#Custom_Tools)
   - [Overriding Built-in Tools](#Overriding_Built-in_Tools)
+  - [Skipping Permission for Safe Tools](#Skipping_Permission_for_Safe_Tools)
 - [Switching Models Mid-Session](#Switching_Models_Mid-Session)
 - [System Messages](#System_Messages)
   - [Adding Rules](#Adding_Rules)
   - [Full Control](#Full_Control)
+  - [Fine-grained Customization](#Fine-grained_Customization)
 - [File Attachments](#File_Attachments)
+  - [Inline Blob Attachments](#Inline_Blob_Attachments)
+- [OpenTelemetry](#OpenTelemetry)
 - [Bring Your Own Key (BYOK)](#Bring_Your_Own_Key_BYOK)
 - [Infinite Sessions](#Infinite_Sessions)
   - [Manual Compaction](#Manual_Compaction)
@@ -42,6 +46,7 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
   - [Event Handler Exceptions](#Event_Handler_Exceptions)
   - [Custom Event Error Handler](#Custom_Event_Error_Handler)
   - [Event Error Policy](#Event_Error_Policy)
+- [OpenTelemetry](#OpenTelemetry)
 
 ---
 
@@ -108,6 +113,34 @@ var session = client.createSession(
 ).get();
 ```
 
+### Skipping Permission for Safe Tools
+
+When a tool performs only read-only or non-destructive operations, you can mark it to skip the
+permission prompt entirely using `ToolDefinition.createSkipPermission()`:
+
+```java
+var safeLookup = ToolDefinition.createSkipPermission(
+    "safe_lookup",
+    "Look up a record by ID (read-only, no side effects)",
+    Map.of(
+        "type", "object",
+        "properties", Map.of(
+            "id", Map.of("type", "string")
+        ),
+        "required", List.of("id")
+    ),
+    invocation -> {
+        String id = (String) invocation.getArguments().get("id");
+        return CompletableFuture.completedFuture("Record: " + lookupRecord(id));
+    }
+);
+```
+
+The CLI bypasses the permission request for this tool invocation, so no `PermissionRequestedEvent`
+is emitted and the `onPermissionRequest` handler is not called.
+
+See [ToolDefinition](apidocs/com/github/copilot/sdk/json/ToolDefinition.html) Javadoc for details.
+
 ---
 
 ## Switching Models Mid-Session
@@ -124,9 +157,15 @@ var session = client.createSession(
 // Switch to a different model mid-conversation
 session.setModel("gpt-4.1").get();
 
+// Switch with a specific reasoning effort level
+session.setModel("claude-sonnet-4.6", "high").get();
+
 // Next message will use the new model
 session.sendAndWait(new MessageOptions().setPrompt("Continue with the new model")).get();
 ```
+
+The `reasoningEffort` parameter accepts `"low"`, `"medium"`, `"high"`, or `"xhigh"` for models
+that support reasoning. Pass `null` (or use the single-argument overload) to use the default.
 
 The session emits a [`SessionModelChangeEvent`](apidocs/com/github/copilot/sdk/events/SessionModelChangeEvent.html)
 when the switch completes, which you can observe with `session.on(SessionModelChangeEvent.class, event -> ...)`.
@@ -170,6 +209,56 @@ var session = client.createSession(
 ).get();
 ```
 
+### Fine-grained Customization
+
+Use `CUSTOMIZE` mode to override individual sections of the default system prompt without
+replacing it entirely. You can replace, remove, append, prepend, or transform specific sections
+using the section identifiers from `SystemPromptSections`.
+
+**Static overrides:**
+
+```java
+var session = client.createSession(
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setSystemMessage(new SystemMessageConfig()
+            .setMode(SystemMessageMode.CUSTOMIZE)
+            .setSections(Map.of(
+                // Replace the tone section
+                SystemPromptSections.TONE,
+                    new SectionOverride()
+                        .setAction(SectionOverrideAction.REPLACE)
+                        .setContent("Be concise and formal in all responses."),
+                // Remove the code-change-rules section entirely
+                SystemPromptSections.CODE_CHANGE_RULES,
+                    new SectionOverride()
+                        .setAction(SectionOverrideAction.REMOVE)
+            ))
+            // Optional: extra content appended after all sections
+            .setContent("Always mention quarterly earnings."))
+).get();
+```
+
+**Transform callbacks** let you inspect and modify section content at runtime:
+
+```java
+var session = client.createSession(
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setSystemMessage(new SystemMessageConfig()
+            .setMode(SystemMessageMode.CUSTOMIZE)
+            .setSections(Map.of(
+                SystemPromptSections.IDENTITY,
+                    new SectionOverride()
+                        .setTransform(content ->
+                            CompletableFuture.completedFuture(
+                                content + "\nAlways end your reply with DONE."))
+            )))
+).get();
+```
+
+See [SystemMessageConfig](apidocs/com/github/copilot/sdk/json/SystemMessageConfig.html),
+[SectionOverride](apidocs/com/github/copilot/sdk/json/SectionOverride.html), and
+[SystemPromptSections](apidocs/com/github/copilot/sdk/json/SystemPromptSections.html) Javadoc for details.
+
 ---
 
 ## File Attachments
@@ -199,6 +288,45 @@ session.send(new MessageOptions()
     .setAttachments(List.of(
         new Attachment("file", "/src/main/OldImpl.java", "Old Implementation"),
         new Attachment("file", "/src/main/NewImpl.java", "New Implementation")
+    ))
+).get();
+```
+
+### Inline Blob Attachments
+
+Use `BlobAttachment` to pass inline base64-encoded binary data — for example, an image captured
+at runtime — without writing it to disk first:
+
+```java
+// Load image bytes and base64-encode them
+byte[] imageBytes = Files.readAllBytes(Path.of("/path/to/screenshot.png"));
+String base64Data = Base64.getEncoder().encodeToString(imageBytes);
+
+session.send(new MessageOptions()
+    .setPrompt("Describe this screenshot")
+    .setAttachments(List.of(
+        new BlobAttachment()
+            .setData(base64Data)
+            .setMimeType("image/png")
+            .setDisplayName("screenshot.png")
+    ))
+).get();
+```
+
+See [BlobAttachment](apidocs/com/github/copilot/sdk/json/BlobAttachment.html) Javadoc for details.
+
+Both `Attachment` and `BlobAttachment` implement the sealed `MessageAttachment` interface.
+For a mixed list with both types, use an explicit type hint:
+
+```java
+session.send(new MessageOptions()
+    .setPrompt("Analyze these")
+    .setAttachments(List.<MessageAttachment>of(
+        new Attachment("file", "/path/to/file.java", "Source"),
+        new BlobAttachment()
+            .setData(base64Data)
+            .setMimeType("image/png")
+            .setDisplayName("screenshot.png")
     ))
 ).get();
 ```
@@ -925,6 +1053,43 @@ session.setEventErrorPolicy(EventErrorPolicy.SUPPRESS_AND_LOG_ERRORS);
 ```
 
 See [EventErrorPolicy](apidocs/com/github/copilot/sdk/EventErrorPolicy.html) and [EventErrorHandler](apidocs/com/github/copilot/sdk/EventErrorHandler.html) Javadoc for details.
+
+---
+
+## OpenTelemetry
+
+Enable OpenTelemetry tracing in the Copilot CLI server by configuring a `TelemetryConfig`
+on the `CopilotClientOptions`. This is useful for observability, performance monitoring,
+and debugging.
+
+```java
+var options = new CopilotClientOptions()
+    .setTelemetry(new TelemetryConfig()
+        .setOtlpEndpoint("http://localhost:4318")  // OTLP/HTTP exporter
+        .setSourceName("my-app"));
+
+var client = new CopilotClient(options);
+```
+
+To export to a local file instead:
+
+```java
+var options = new CopilotClientOptions()
+    .setTelemetry(new TelemetryConfig()
+        .setExporterType("file")
+        .setFilePath("/tmp/copilot-traces.json")
+        .setCaptureContent(true));  // include message content in spans
+```
+
+| Property | Environment Variable | Description |
+|----------|---------------------|-------------|
+| `otlpEndpoint` | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP exporter endpoint URL |
+| `filePath` | `COPILOT_OTEL_FILE_EXPORTER_PATH` | File path for the file exporter |
+| `exporterType` | `COPILOT_OTEL_EXPORTER_TYPE` | `"otlp-http"` or `"file"` |
+| `sourceName` | `COPILOT_OTEL_SOURCE_NAME` | Source name for telemetry spans |
+| `captureContent` | `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT` | Whether to capture message content |
+
+See [TelemetryConfig](apidocs/com/github/copilot/sdk/json/TelemetryConfig.html) Javadoc for details.
 
 ---
 
