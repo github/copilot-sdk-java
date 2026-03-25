@@ -45,7 +45,7 @@ jobs:
                   If any step fails, exit with a non-zero exit code. Do not silently fix errors.
                   PROMPT_EOF
 
-                  copilot --prompt "$(cat /tmp/smoke-test-prompt.txt)"
+                  copilot --yolo --prompt "$(cat /tmp/smoke-test-prompt.txt)"
 
             - name: Run smoke test jar
               env:
