@@ -39,8 +39,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SessionMetadata,16,29,0,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SendMessageResponse,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,CreateSessionRequest,0,199,0,14,0,67,0,52,0,45
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ToolInvocation,0,68,0,2,0,20,0,12,0,11
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SetForegroundSessionResponse,9,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,GetMessagesResponse,0,6,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SetForegroundSessionResponse,9,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SessionLifecycleEvent,0,24,0,0,0,10,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ListSessionsResponse,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,UserInputResponse,0,19,0,0,0,7,0,5,0,5
@@ -49,8 +49,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,AzureOptions,0,11,0,0,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SectionOverrideAction,3,46,0,0,1,9,1,2,1,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,PingResponse,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SectionOverride,8,19,0,0,3,7,2,5,2,5
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,InfiniteSessionConfig,0,27,0,0,0,10,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ProviderConfig,0,51,0,0,0,19,0,13,0,13
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,InfiniteSessionConfig,0,27,0,0,0,10,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,GetModelsResponse,0,11,0,0,0,4,0,3,0,3
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ModelSupports,3,16,0,0,1,6,1,4,1,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,CopilotClientOptions,21,188,0,4,8,57,5,29,5,27
@@ -109,8 +109,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,AssistantTurnEndEvent,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionUsageInfoEvent.SessionUsageInfoData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionTaskCompleteEvent.SessionTaskCompleteData,6,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ExitPlanModeRequestedEvent.ExitPlanModeRequestedData,0,18,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionCompactionCompleteEvent.CompactionTokensUsed,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionModelChangeEvent.SessionModelChangeData,0,9,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionCompactionCompleteEvent.CompactionTokensUsed,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionIdleEvent.SessionIdleData,0,3,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolUserRequestedEvent.ToolUserRequestedData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SystemNotificationEvent,0,12,0,0,0,5,0,4,0,4
@@ -142,8 +142,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,AssistantIntentEvent.As
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SubagentCompletedEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,AssistantTurnStartEvent.AssistantTurnStartData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,AbstractSessionEvent,0,31,0,0,0,13,0,9,0,9
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,UserMessageEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionWorkspaceFileChangedEvent.SessionWorkspaceFileChangedData,0,9,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,UserMessageEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionHandoffEvent.SessionHandoffData.Repository,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionTaskCompleteEvent,12,0,0,0,5,0,4,0,4,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,AssistantReasoningEvent.AssistantReasoningData,0,9,0,0,0,1,0,1,0,1
@@ -151,8 +151,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionInfoEvent,0,12,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SubagentFailedEvent.SubagentFailedData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionUsageInfoEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionCompactionCompleteEvent.SessionCompactionCompleteData,0,39,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SystemMessageEvent.SystemMessageData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionStartEvent,0,12,0,0,0,5,0,4,0,4
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SystemMessageEvent.SystemMessageData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,AbortEvent.AbortData,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,PermissionRequestedEvent.PermissionRequestedData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionEventParser,3,361,0,6,1,77,1,5,1,2
@@ -163,8 +163,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ExternalToolRequestedEv
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ExitPlanModeRequestedEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolExecutionCompleteEvent.ToolExecutionCompleteData.Error,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SubagentDeselectedEvent.SubagentDeselectedData,3,0,0,0,1,0,1,0,1,0
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolExecutionPartialResultEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionShutdownEvent.SessionShutdownData,0,27,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolExecutionPartialResultEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,PermissionCompletedEvent.PermissionCompletedData.PermissionCompletedResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,PendingMessagesModifiedEvent,3,9,0,0,1,4,1,3,1,3
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,PermissionCompletedEvent,0,12,0,0,0,5,0,4,0,4
@@ -173,8 +173,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,AbortEvent,0,12,0,0,0,5
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,SessionSnapshotRewindEvent.SessionSnapshotRewindData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,PendingMessagesModifiedEvent.PendingMessagesModifiedData,0,3,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolExecutionStartEvent.ToolExecutionStartData,0,21,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolUserRequestedEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,CommandCompletedEvent,0,12,0,0,0,5,0,4,0,4
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolUserRequestedEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ExitPlanModeCompletedEvent,0,12,0,0,0,5,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,ToolExecutionPartialResultEvent.ToolExecutionPartialResultData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.events,UserMessageEvent.UserMessageData,0,24,0,2,0,2,0,3,0,2
