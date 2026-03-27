@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * }</pre>
  *
  * @see com.github.copilot.sdk.CopilotClient#listSessions()
+ * @see com.github.copilot.sdk.CopilotClient#getSessionMetadata(String)
  * @see com.github.copilot.sdk.CopilotClient#resumeSession(String,
  *      ResumeSessionConfig)
  * @since 1.0.0

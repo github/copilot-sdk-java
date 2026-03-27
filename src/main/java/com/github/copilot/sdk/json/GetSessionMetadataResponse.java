@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @see com.github.copilot.sdk.CopilotClient#getSessionMetadata(String)
  * @see SessionMetadata
- * @since 1.0.0
+ * @since 1.2.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record GetSessionMetadataResponse(

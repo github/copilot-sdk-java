@@ -698,12 +698,12 @@ public class CopilotSessionTest {
     /**
      * Verifies that session metadata can be retrieved by ID.
      * <p>
-     * TODO: Re-enable once test harness CAPI proxy supports this test's session
-     * lifecycle.
+     * Disabled until {@code .lastmerge} is advanced past upstream PR #899 which
+     * adds the {@code should_get_session_metadata} snapshot.
      *
      * @see Snapshot: session/should_get_session_metadata
      */
-    @Disabled("Needs test harness CAPI proxy support")
+    @Disabled("Snapshot not available until .lastmerge is advanced past upstream PR #899")
     @Test
     void testShouldGetSessionMetadata() throws Exception {
         ctx.configureForTest("session", "should_get_session_metadata");
