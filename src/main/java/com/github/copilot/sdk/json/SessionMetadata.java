@@ -11,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Metadata about an existing Copilot session.
  * <p>
  * This class represents session information returned when listing available
- * sessions via {@link com.github.copilot.sdk.CopilotClient#listSessions()}. It
+ * sessions via {@link com.github.copilot.sdk.CopilotClient#listSessions()} or
+ * looking up a specific session via
+ * {@link com.github.copilot.sdk.CopilotClient#getSessionMetadata(String)}. It
  * includes timing information, a summary of the conversation, and whether the
  * session is stored remotely.
  *
@@ -27,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * }</pre>
  *
  * @see com.github.copilot.sdk.CopilotClient#listSessions()
+ * @see com.github.copilot.sdk.CopilotClient#getSessionMetadata(String)
  * @see com.github.copilot.sdk.CopilotClient#resumeSession(String,
  *      ResumeSessionConfig)
  * @since 1.0.0
