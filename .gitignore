@@ -8,3 +8,6 @@ smoke-test
 *job-logs.txt
 temporary-prompts/
 changebundle.txt*
+.classpath
+.project
+.settings
