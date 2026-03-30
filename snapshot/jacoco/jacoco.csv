@@ -197,7 +197,7 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk,EventErrorPolicy,0,15,0,0,0,3,
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,SessionRequestBuilder,14,415,6,56,4,97,6,31,0,6
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,ExtractedTransforms,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,ConnectionState,0,27,0,0,0,5,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession,475,1042,46,74,111,258,52,82,20,52
+GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession,457,1098,45,79,106,277,51,85,19,53
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession.AgentSelectResponse,6,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,RpcHandlerDispatcher,868,0,50,0,209,0,57,0,32,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotClient.Connection,0,9,0,0,0,1,0,1,0,1
