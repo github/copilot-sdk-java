@@ -41,7 +41,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # Enable repository pre-commit hooks (including Spotless checks for relevant source changes)
+      # Enable pre-commit hooks so Spotless formatting is enforced on every commit
       - name: Enable pre-commit hooks
         run: git config core.hooksPath .githooks
 
