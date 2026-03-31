@@ -244,18 +244,6 @@ This SDK is designed to be **lightweight with minimal dependencies**:
   5. Check for security vulnerabilities
   6. Get team approval for non-trivial additions
 
-## Pre-commit Hooks and Formatting (Coding Agent)
-
-The repository has a pre-commit hook (`.githooks/pre-commit`) that is **automatically enabled** in the Copilot coding agent environment via `copilot-setup-steps.yml`. The hook runs `mvn spotless:check` on any commit that includes changes under `src/`.
-
-**If a commit fails due to the pre-commit hook:**
-
-1. Run `mvn spotless:apply` to auto-fix formatting issues.
-2. Re-stage the changed files with `git add -u`.
-3. Retry the commit.
-
-**Best practice:** Always run `mvn spotless:apply` before committing Java source changes to avoid hook failures in the first place. If you forget and the hook rejects the commit, follow the three steps above and continue.
-
 ## Commit and PR Guidelines
 
 ### Commit Messages

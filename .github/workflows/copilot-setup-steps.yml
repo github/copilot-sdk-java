@@ -41,10 +41,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # Enable pre-commit hooks so Spotless formatting is enforced on every commit
-      - name: Enable pre-commit hooks
-        run: git config core.hooksPath .githooks
-
       # Verify installations
       - name: Verify tool installations
         run: |
@@ -54,6 +50,4 @@ jobs:
           java -version
           gh --version
           gh aw version
-          echo "--- Git hooks path ---"
-          git config core.hooksPath
           echo "✅ All tools installed successfully"
