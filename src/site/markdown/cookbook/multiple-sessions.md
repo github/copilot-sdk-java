@@ -164,6 +164,69 @@ public class ParallelSessions {
 }
 ```
 
+## Providing a custom Executor for parallel sessions
+
+By default, `CompletableFuture` operations run on `ForkJoinPool.commonPool()`,
+which has limited parallelism (typically `Runtime.availableProcessors() - 1`
+threads). When multiple sessions block waiting for CLI responses, those threads
+are unavailable for other work—a condition known as *pool starvation*.
+
+Use `CopilotClientOptions.setExecutor(Executor)` to supply a dedicated thread
+pool so that SDK work does not compete with the rest of your application for
+common-pool threads:
+
+```java
+//DEPS com.github:copilot-sdk-java:${project.version}
+import com.github.copilot.sdk.CopilotClient;
+import com.github.copilot.sdk.json.CopilotClientOptions;
+import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.PermissionHandler;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ParallelSessionsWithExecutor {
+    public static void main(String[] args) throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(4);
+        try {
+            var options = new CopilotClientOptions().setExecutor(pool);
+            try (CopilotClient client = new CopilotClient(options)) {
+                client.start().get();
+
+                var s1 = client.createSession(new SessionConfig()
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                    .setModel("gpt-5")).get();
+                var s2 = client.createSession(new SessionConfig()
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                    .setModel("gpt-5")).get();
+                var s3 = client.createSession(new SessionConfig()
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                    .setModel("claude-sonnet-4.5")).get();
+
+                CompletableFuture.allOf(
+                    s1.sendAndWait(new MessageOptions().setPrompt("Question 1")),
+                    s2.sendAndWait(new MessageOptions().setPrompt("Question 2")),
+                    s3.sendAndWait(new MessageOptions().setPrompt("Question 3"))
+                ).get();
+
+                s1.close();
+                s2.close();
+                s3.close();
+            }
+        } finally {
+            pool.shutdown();
+        }
+    }
+}
+```
+
+Passing `null` (or omitting `setExecutor` entirely) keeps the default
+`ForkJoinPool.commonPool()` behaviour. The executor is used for all internal
+`CompletableFuture.runAsync` / `supplyAsync` calls—including client start/stop,
+tool-call dispatch, permission dispatch, user-input dispatch, and hooks.
+
 ## Use cases
 
 - **Multi-user applications**: One session per user

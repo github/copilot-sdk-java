@@ -69,16 +69,23 @@ implementation 'com.github:copilot-sdk-java:0.2.1-java.0'
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.events.AssistantMessageEvent;
 import com.github.copilot.sdk.events.SessionUsageInfoEvent;
+import com.github.copilot.sdk.json.CopilotClientOptions;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;
+
+import java.util.concurrent.Executors;
 
 public class CopilotSDK {
     public static void main(String[] args) throws Exception {
         var lastMessage = new String[]{null};
 
         // Create and start client
-        try (var client = new CopilotClient()) {
+        try (var client = new CopilotClient()) {  // JDK 25+: comment out this line
+        // JDK 25+: uncomment the following 3 lines for virtual thread support
+        // var options = new CopilotClientOptions()
+        //     .setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+        // try (var client = new CopilotClient(options)) {
             client.start().get();
 
             // Create a session
