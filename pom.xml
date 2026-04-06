@@ -51,6 +51,8 @@
         <copilot.tests.dir>${copilot.sdk.clone.dir}/test</copilot.tests.dir>
         <!-- Set to true (via -Pskip-test-harness) to skip git-clone + npm install of test harness -->
         <skip.test.harness>false</skip.test.harness>
+        <!-- Extra JVM args for Surefire; overridden by the jdk21+ profile -->
+        <surefire.jvm.args />
     </properties>
 
     <dependencies>
@@ -89,7 +91,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.17.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -245,8 +247,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.4</version>
                 <configuration>
-                    <!-- Inject JaCoCo agent for coverage collection during test runs -->
-                    <argLine>${testExecutionAgentArgs}</argLine>
+                    <!-- Inject JaCoCo agent + any JDK-version-specific flags -->
+                    <argLine>${testExecutionAgentArgs} ${surefire.jvm.args}</argLine>
                     <systemPropertyVariables>
                         <copilot.tests.dir>${copilot.tests.dir}</copilot.tests.dir>
                         <copilot.sdk.dir>${copilot.sdk.clone.dir}</copilot.sdk.dir>
@@ -543,6 +545,18 @@
     </reporting>
 
     <profiles>
+        <!-- Enable dynamic agent loading on JDK 21+ so Mockito/ByteBuddy
+             can attach at runtime (JEP 451). The flag does not exist on
+             earlier JDKs, so it must be conditional. -->
+        <profile>
+            <id>jdk21+</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <properties>
+                <surefire.jvm.args>-XX:+EnableDynamicAgentLoading</surefire.jvm.args>
+            </properties>
+        </profile>
         <!-- Skip git-clone + npm install of the copilot-sdk test harness -->
         <profile>
             <id>skip-test-harness</id>
