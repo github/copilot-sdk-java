@@ -13,26 +13,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.11
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L16">public final class SubagentDeselectedEvent extends AbstractSessionEvent {</span>
+<span class="fc" id="L16">public final class SubagentDeselectedEvent extends AbstractSessionEvent {</span>
 
     @JsonProperty(&quot;data&quot;)
     private SubagentDeselectedData data;
 
     @Override
     public String getType() {
-<span class="nc" id="L23">        return &quot;subagent.deselected&quot;;</span>
+<span class="fc" id="L23">        return &quot;subagent.deselected&quot;;</span>
     }
 
     public SubagentDeselectedData getData() {
-<span class="nc" id="L27">        return data;</span>
+<span class="fc" id="L27">        return data;</span>
     }
 
     public void setData(SubagentDeselectedData data) {
-<span class="nc" id="L31">        this.data = data;</span>
-<span class="nc" id="L32">    }</span>
+<span class="fc" id="L31">        this.data = data;</span>
+<span class="fc" id="L32">    }</span>
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L35">    public record SubagentDeselectedData() {</span>
+<span class="fc" id="L35">    public record SubagentDeselectedData() {</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

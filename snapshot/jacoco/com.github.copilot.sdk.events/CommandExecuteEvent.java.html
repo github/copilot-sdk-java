@@ -17,26 +17,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L20">public final class CommandExecuteEvent extends AbstractSessionEvent {</span>
+<span class="fc" id="L20">public final class CommandExecuteEvent extends AbstractSessionEvent {</span>
 
     @JsonProperty(&quot;data&quot;)
     private CommandExecuteData data;
 
     @Override
     public String getType() {
-<span class="nc" id="L27">        return &quot;command.execute&quot;;</span>
+<span class="fc" id="L27">        return &quot;command.execute&quot;;</span>
     }
 
     public CommandExecuteData getData() {
-<span class="nc" id="L31">        return data;</span>
+<span class="fc" id="L31">        return data;</span>
     }
 
     public void setData(CommandExecuteData data) {
-<span class="nc" id="L35">        this.data = data;</span>
-<span class="nc" id="L36">    }</span>
+<span class="fc" id="L35">        this.data = data;</span>
+<span class="fc" id="L36">    }</span>
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L39">    public record CommandExecuteData(@JsonProperty(&quot;requestId&quot;) String requestId,</span>
+<span class="fc" id="L39">    public record CommandExecuteData(@JsonProperty(&quot;requestId&quot;) String requestId,</span>
             @JsonProperty(&quot;command&quot;) String command, @JsonProperty(&quot;commandName&quot;) String commandName,
             @JsonProperty(&quot;args&quot;) String args) {
     }

@@ -64,7 +64,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Deprecated
     public boolean isAutoRestart() {
-<span class="nc" id="L67">        return autoRestart;</span>
+<span class="fc" id="L67">        return autoRestart;</span>
     }
 
     /**
@@ -79,8 +79,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Deprecated
     public CopilotClientOptions setAutoRestart(boolean autoRestart) {
-<span class="nc" id="L82">        this.autoRestart = autoRestart;</span>
-<span class="nc" id="L83">        return this;</span>
+<span class="fc" id="L82">        this.autoRestart = autoRestart;</span>
+<span class="fc" id="L83">        return this;</span>
     }
 
     /**
@@ -129,9 +129,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setCliArgs(String[] cliArgs) {
-<span class="pc bpc" id="L132" title="2 of 4 branches missed.">        if (cliArgs == null || cliArgs.length == 0) {</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">            if (this.cliArgs != null) {</span>
-<span class="nc" id="L134">                this.cliArgs = new String[0];</span>
+<span class="pc bpc" id="L132" title="1 of 4 branches missed.">        if (cliArgs == null || cliArgs.length == 0) {</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">            if (this.cliArgs != null) {</span>
+<span class="fc" id="L134">                this.cliArgs = new String[0];</span>
             }
         } else {
 <span class="fc" id="L137">            this.cliArgs = Arrays.copyOf(cliArgs, cliArgs.length);</span>
@@ -237,9 +237,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setEnvironment(Map&lt;String, String&gt; environment) {
-<span class="pc bpc" id="L240" title="2 of 4 branches missed.">        if (environment == null || environment.isEmpty()) {</span>
-<span class="nc bnc" id="L241" title="All 2 branches missed.">            if (this.environment != null) {</span>
-<span class="nc" id="L242">                this.environment.clear();</span>
+<span class="pc bpc" id="L240" title="1 of 4 branches missed.">        if (environment == null || environment.isEmpty()) {</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">            if (this.environment != null) {</span>
+<span class="fc" id="L242">                this.environment.clear();</span>
             }
         } else {
 <span class="fc" id="L245">            this.environment = new HashMap&lt;&gt;(environment);</span>
@@ -311,7 +311,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Deprecated
     public String getGithubToken() {
-<span class="nc" id="L314">        return gitHubToken;</span>
+<span class="fc" id="L314">        return gitHubToken;</span>
     }
 
     /**
@@ -324,8 +324,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Deprecated
     public CopilotClientOptions setGithubToken(String githubToken) {
-<span class="nc" id="L327">        this.gitHubToken = Objects.requireNonNull(githubToken, &quot;githubToken must not be null&quot;);</span>
-<span class="nc" id="L328">        return this;</span>
+<span class="fc" id="L327">        this.gitHubToken = Objects.requireNonNull(githubToken, &quot;githubToken must not be null&quot;);</span>
+<span class="fc" id="L328">        return this;</span>
     }
 
     /**
@@ -426,8 +426,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @since 1.2.0
      */
     public CopilotClientOptions setTelemetry(TelemetryConfig telemetry) {
-<span class="nc" id="L429">        this.telemetry = Objects.requireNonNull(telemetry, &quot;telemetry must not be null&quot;);</span>
-<span class="nc" id="L430">        return this;</span>
+<span class="fc" id="L429">        this.telemetry = Objects.requireNonNull(telemetry, &quot;telemetry must not be null&quot;);</span>
+<span class="fc" id="L430">        return this;</span>
     }
 
     /**
@@ -455,7 +455,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public CopilotClientOptions setUseLoggedInUser(Boolean useLoggedInUser) {
-<span class="pc bpc" id="L458" title="1 of 2 branches missed.">        this.useLoggedInUser = useLoggedInUser != null ? useLoggedInUser : Boolean.FALSE;</span>
+<span class="fc bfc" id="L458" title="All 2 branches covered.">        this.useLoggedInUser = useLoggedInUser != null ? useLoggedInUser : Boolean.FALSE;</span>
 <span class="fc" id="L459">        return this;</span>
     }
 

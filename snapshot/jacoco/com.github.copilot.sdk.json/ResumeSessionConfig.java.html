@@ -149,8 +149,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @see SystemMessageConfig
      */
     public ResumeSessionConfig setSystemMessage(SystemMessageConfig systemMessage) {
-<span class="nc" id="L152">        this.systemMessage = systemMessage;</span>
-<span class="nc" id="L153">        return this;</span>
+<span class="fc" id="L152">        this.systemMessage = systemMessage;</span>
+<span class="fc" id="L153">        return this;</span>
     }
 
     /**
@@ -159,7 +159,7 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return the list of available tool names
      */
     public List&lt;String&gt; getAvailableTools() {
-<span class="pc bpc" id="L162" title="1 of 2 branches missed.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
     }
 
     /**
@@ -173,8 +173,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setAvailableTools(List&lt;String&gt; availableTools) {
-<span class="nc" id="L176">        this.availableTools = availableTools;</span>
-<span class="nc" id="L177">        return this;</span>
+<span class="fc" id="L176">        this.availableTools = availableTools;</span>
+<span class="fc" id="L177">        return this;</span>
     }
 
     /**
@@ -183,7 +183,7 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return the list of excluded tool names
      */
     public List&lt;String&gt; getExcludedTools() {
-<span class="pc bpc" id="L186" title="1 of 2 branches missed.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
     }
 
     /**
@@ -197,8 +197,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setExcludedTools(List&lt;String&gt; excludedTools) {
-<span class="nc" id="L200">        this.excludedTools = excludedTools;</span>
-<span class="nc" id="L201">        return this;</span>
+<span class="fc" id="L200">        this.excludedTools = excludedTools;</span>
+<span class="fc" id="L201">        return this;</span>
     }
 
     /**
@@ -242,8 +242,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setReasoningEffort(String reasoningEffort) {
-<span class="nc" id="L245">        this.reasoningEffort = reasoningEffort;</span>
-<span class="nc" id="L246">        return this;</span>
+<span class="fc" id="L245">        this.reasoningEffort = reasoningEffort;</span>
+<span class="fc" id="L246">        return this;</span>
     }
 
     /**
@@ -329,8 +329,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setWorkingDirectory(String workingDirectory) {
-<span class="nc" id="L332">        this.workingDirectory = workingDirectory;</span>
-<span class="nc" id="L333">        return this;</span>
+<span class="fc" id="L332">        this.workingDirectory = workingDirectory;</span>
+<span class="fc" id="L333">        return this;</span>
     }
 
     /**
@@ -352,8 +352,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setConfigDir(String configDir) {
-<span class="nc" id="L355">        this.configDir = configDir;</span>
-<span class="nc" id="L356">        return this;</span>
+<span class="fc" id="L355">        this.configDir = configDir;</span>
+<span class="fc" id="L356">        return this;</span>
     }
 
     /**
@@ -472,7 +472,7 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return the list of skill directory paths
      */
     public List&lt;String&gt; getSkillDirectories() {
-<span class="pc bpc" id="L475" title="1 of 2 branches missed.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
+<span class="fc bfc" id="L475" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
     }
 
     /**
@@ -483,8 +483,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setSkillDirectories(List&lt;String&gt; skillDirectories) {
-<span class="nc" id="L486">        this.skillDirectories = skillDirectories;</span>
-<span class="nc" id="L487">        return this;</span>
+<span class="fc" id="L486">        this.skillDirectories = skillDirectories;</span>
+<span class="fc" id="L487">        return this;</span>
     }
 
     /**
@@ -493,7 +493,7 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return the list of disabled skill names
      */
     public List&lt;String&gt; getDisabledSkills() {
-<span class="pc bpc" id="L496" title="1 of 2 branches missed.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
+<span class="fc bfc" id="L496" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
     }
 
     /**
@@ -504,8 +504,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setDisabledSkills(List&lt;String&gt; disabledSkills) {
-<span class="nc" id="L507">        this.disabledSkills = disabledSkills;</span>
-<span class="nc" id="L508">        return this;</span>
+<span class="fc" id="L507">        this.disabledSkills = disabledSkills;</span>
+<span class="fc" id="L508">        return this;</span>
     }
 
     /**
@@ -527,8 +527,8 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      * @see InfiniteSessionConfig
      */
     public ResumeSessionConfig setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
-<span class="nc" id="L530">        this.infiniteSessions = infiniteSessions;</span>
-<span class="nc" id="L531">        return this;</span>
+<span class="fc" id="L530">        this.infiniteSessions = infiniteSessions;</span>
+<span class="fc" id="L531">        return this;</span>
     }
 
     /**

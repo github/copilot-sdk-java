@@ -17,22 +17,22 @@ import com.github.copilot.sdk.json.SessionContext;
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L20">public final class SessionContextChangedEvent extends AbstractSessionEvent {</span>
+<span class="fc" id="L20">public final class SessionContextChangedEvent extends AbstractSessionEvent {</span>
 
     @JsonProperty(&quot;data&quot;)
     private SessionContext data;
 
     @Override
     public String getType() {
-<span class="nc" id="L27">        return &quot;session.context_changed&quot;;</span>
+<span class="fc" id="L27">        return &quot;session.context_changed&quot;;</span>
     }
 
     public SessionContext getData() {
-<span class="nc" id="L31">        return data;</span>
+<span class="fc" id="L31">        return data;</span>
     }
 
     public void setData(SessionContext data) {
-<span class="nc" id="L35">        this.data = data;</span>
-<span class="nc" id="L36">    }</span>
+<span class="fc" id="L35">        this.data = data;</span>
+<span class="fc" id="L36">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -111,24 +111,24 @@ final class CliServerManager {
         }
 
         // Set telemetry environment variables if configured
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if (options.getTelemetry() != null) {</span>
-<span class="nc" id="L115">            var telemetry = options.getTelemetry();</span>
-<span class="nc" id="L116">            pb.environment().put(&quot;COPILOT_OTEL_ENABLED&quot;, &quot;true&quot;);</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">            if (telemetry.getOtlpEndpoint() != null) {</span>
-<span class="nc" id="L118">                pb.environment().put(&quot;OTEL_EXPORTER_OTLP_ENDPOINT&quot;, telemetry.getOtlpEndpoint());</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (options.getTelemetry() != null) {</span>
+<span class="fc" id="L115">            var telemetry = options.getTelemetry();</span>
+<span class="fc" id="L116">            pb.environment().put(&quot;COPILOT_OTEL_ENABLED&quot;, &quot;true&quot;);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">            if (telemetry.getOtlpEndpoint() != null) {</span>
+<span class="fc" id="L118">                pb.environment().put(&quot;OTEL_EXPORTER_OTLP_ENDPOINT&quot;, telemetry.getOtlpEndpoint());</span>
             }
-<span class="nc bnc" id="L120" title="All 2 branches missed.">            if (telemetry.getFilePath() != null) {</span>
-<span class="nc" id="L121">                pb.environment().put(&quot;COPILOT_OTEL_FILE_EXPORTER_PATH&quot;, telemetry.getFilePath());</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">            if (telemetry.getFilePath() != null) {</span>
+<span class="fc" id="L121">                pb.environment().put(&quot;COPILOT_OTEL_FILE_EXPORTER_PATH&quot;, telemetry.getFilePath());</span>
             }
-<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (telemetry.getExporterType() != null) {</span>
-<span class="nc" id="L124">                pb.environment().put(&quot;COPILOT_OTEL_EXPORTER_TYPE&quot;, telemetry.getExporterType());</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">            if (telemetry.getExporterType() != null) {</span>
+<span class="fc" id="L124">                pb.environment().put(&quot;COPILOT_OTEL_EXPORTER_TYPE&quot;, telemetry.getExporterType());</span>
             }
-<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (telemetry.getSourceName() != null) {</span>
-<span class="nc" id="L127">                pb.environment().put(&quot;COPILOT_OTEL_SOURCE_NAME&quot;, telemetry.getSourceName());</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            if (telemetry.getSourceName() != null) {</span>
+<span class="fc" id="L127">                pb.environment().put(&quot;COPILOT_OTEL_SOURCE_NAME&quot;, telemetry.getSourceName());</span>
             }
-<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (telemetry.getCaptureContent() != null) {</span>
-<span class="nc" id="L130">                pb.environment().put(&quot;OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT&quot;,</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">                        telemetry.getCaptureContent() ? &quot;true&quot; : &quot;false&quot;);</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            if (telemetry.getCaptureContent() != null) {</span>
+<span class="fc" id="L130">                pb.environment().put(&quot;OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT&quot;,</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">                        telemetry.getCaptureContent() ? &quot;true&quot; : &quot;false&quot;);</span>
             }
         }
 

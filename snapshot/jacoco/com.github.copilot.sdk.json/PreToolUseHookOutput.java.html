@@ -56,7 +56,7 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return a new PreToolUseHookOutput with permission decision &quot;deny&quot; and reason
      */
     public static PreToolUseHookOutput deny(String reason) {
-<span class="nc" id="L59">        return new PreToolUseHookOutput(&quot;deny&quot;, reason, null, null, null);</span>
+<span class="fc" id="L59">        return new PreToolUseHookOutput(&quot;deny&quot;, reason, null, null, null);</span>
     }
 
     /**
@@ -65,7 +65,7 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return a new PreToolUseHookOutput with permission decision &quot;ask&quot;
      */
     public static PreToolUseHookOutput ask() {
-<span class="nc" id="L68">        return new PreToolUseHookOutput(&quot;ask&quot;, null, null, null, null);</span>
+<span class="fc" id="L68">        return new PreToolUseHookOutput(&quot;ask&quot;, null, null, null, null);</span>
     }
 
     /**
@@ -79,7 +79,7 @@ import com.fasterxml.jackson.databind.JsonNode;
      *         arguments
      */
     public static PreToolUseHookOutput withModifiedArgs(String permissionDecision, JsonNode modifiedArgs) {
-<span class="nc" id="L82">        return new PreToolUseHookOutput(permissionDecision, null, modifiedArgs, null, null);</span>
+<span class="fc" id="L82">        return new PreToolUseHookOutput(permissionDecision, null, modifiedArgs, null, null);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -146,8 +146,8 @@ final class SessionRequestBuilder {
      */
     @Deprecated
     static CreateSessionRequest buildCreateRequest(SessionConfig config) {
-<span class="pc bpc" id="L149" title="1 of 4 branches missed.">        String sessionId = (config != null &amp;&amp; config.getSessionId() != null)</span>
-<span class="nc" id="L150">                ? config.getSessionId()</span>
+<span class="fc bfc" id="L149" title="All 4 branches covered.">        String sessionId = (config != null &amp;&amp; config.getSessionId() != null)</span>
+<span class="fc" id="L150">                ? config.getSessionId()</span>
 <span class="fc" id="L151">                : java.util.UUID.randomUUID().toString();</span>
 <span class="fc" id="L152">        return buildCreateRequest(config, sessionId);</span>
     }
@@ -216,14 +216,14 @@ final class SessionRequestBuilder {
      *            the session configuration
      */
     static void configureSession(CopilotSession session, SessionConfig config) {
-<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        if (config == null) {</span>
-<span class="nc" id="L220">            return;</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">        if (config == null) {</span>
+<span class="fc" id="L220">            return;</span>
         }
 
 <span class="fc bfc" id="L223" title="All 2 branches covered.">        if (config.getTools() != null) {</span>
 <span class="fc" id="L224">            session.registerTools(config.getTools());</span>
         }
-<span class="pc bpc" id="L226" title="1 of 2 branches missed.">        if (config.getOnPermissionRequest() != null) {</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">        if (config.getOnPermissionRequest() != null) {</span>
 <span class="fc" id="L227">            session.registerPermissionHandler(config.getOnPermissionRequest());</span>
         }
 <span class="fc bfc" id="L229" title="All 2 branches covered.">        if (config.getOnUserInputRequest() != null) {</span>
@@ -232,14 +232,14 @@ final class SessionRequestBuilder {
 <span class="fc bfc" id="L232" title="All 2 branches covered.">        if (config.getHooks() != null) {</span>
 <span class="fc" id="L233">            session.registerHooks(config.getHooks());</span>
         }
-<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        if (config.getCommands() != null) {</span>
-<span class="nc" id="L236">            session.registerCommands(config.getCommands());</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        if (config.getCommands() != null) {</span>
+<span class="fc" id="L236">            session.registerCommands(config.getCommands());</span>
         }
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        if (config.getOnElicitationRequest() != null) {</span>
-<span class="nc" id="L239">            session.registerElicitationHandler(config.getOnElicitationRequest());</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">        if (config.getOnElicitationRequest() != null) {</span>
+<span class="fc" id="L239">            session.registerElicitationHandler(config.getOnElicitationRequest());</span>
         }
-<span class="pc bpc" id="L241" title="1 of 2 branches missed.">        if (config.getOnEvent() != null) {</span>
-<span class="nc" id="L242">            session.on(config.getOnEvent());</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        if (config.getOnEvent() != null) {</span>
+<span class="fc" id="L242">            session.on(config.getOnEvent());</span>
         }
 <span class="fc" id="L244">    }</span>
 
@@ -268,14 +268,14 @@ final class SessionRequestBuilder {
 <span class="fc bfc" id="L268" title="All 2 branches covered.">        if (config.getHooks() != null) {</span>
 <span class="fc" id="L269">            session.registerHooks(config.getHooks());</span>
         }
-<span class="pc bpc" id="L271" title="1 of 2 branches missed.">        if (config.getCommands() != null) {</span>
-<span class="nc" id="L272">            session.registerCommands(config.getCommands());</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">        if (config.getCommands() != null) {</span>
+<span class="fc" id="L272">            session.registerCommands(config.getCommands());</span>
         }
-<span class="pc bpc" id="L274" title="1 of 2 branches missed.">        if (config.getOnElicitationRequest() != null) {</span>
-<span class="nc" id="L275">            session.registerElicitationHandler(config.getOnElicitationRequest());</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">        if (config.getOnElicitationRequest() != null) {</span>
+<span class="fc" id="L275">            session.registerElicitationHandler(config.getOnElicitationRequest());</span>
         }
-<span class="pc bpc" id="L277" title="1 of 2 branches missed.">        if (config.getOnEvent() != null) {</span>
-<span class="nc" id="L278">            session.on(config.getOnEvent());</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">        if (config.getOnEvent() != null) {</span>
+<span class="fc" id="L278">            session.on(config.getOnEvent());</span>
         }
 <span class="fc" id="L280">    }</span>
 }

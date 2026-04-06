@@ -16,30 +16,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L19">public final class CapabilitiesChangedEvent extends AbstractSessionEvent {</span>
+<span class="fc" id="L19">public final class CapabilitiesChangedEvent extends AbstractSessionEvent {</span>
 
     @JsonProperty(&quot;data&quot;)
     private CapabilitiesChangedData data;
 
     @Override
     public String getType() {
-<span class="nc" id="L26">        return &quot;capabilities.changed&quot;;</span>
+<span class="fc" id="L26">        return &quot;capabilities.changed&quot;;</span>
     }
 
     public CapabilitiesChangedData getData() {
-<span class="nc" id="L30">        return data;</span>
+<span class="fc" id="L30">        return data;</span>
     }
 
     public void setData(CapabilitiesChangedData data) {
-<span class="nc" id="L34">        this.data = data;</span>
-<span class="nc" id="L35">    }</span>
+<span class="fc" id="L34">        this.data = data;</span>
+<span class="fc" id="L35">    }</span>
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L38">    public record CapabilitiesChangedData(@JsonProperty(&quot;ui&quot;) CapabilitiesChangedUi ui) {</span>
+<span class="fc" id="L38">    public record CapabilitiesChangedData(@JsonProperty(&quot;ui&quot;) CapabilitiesChangedUi ui) {</span>
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L42">    public record CapabilitiesChangedUi(@JsonProperty(&quot;elicitation&quot;) Boolean elicitation) {</span>
+<span class="fc" id="L42">    public record CapabilitiesChangedUi(@JsonProperty(&quot;elicitation&quot;) Boolean elicitation) {</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

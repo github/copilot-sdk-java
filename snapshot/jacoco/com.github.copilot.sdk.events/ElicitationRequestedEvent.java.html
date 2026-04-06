@@ -20,26 +20,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L23">public final class ElicitationRequestedEvent extends AbstractSessionEvent {</span>
+<span class="fc" id="L23">public final class ElicitationRequestedEvent extends AbstractSessionEvent {</span>
 
     @JsonProperty(&quot;data&quot;)
     private ElicitationRequestedData data;
 
     @Override
     public String getType() {
-<span class="nc" id="L30">        return &quot;elicitation.requested&quot;;</span>
+<span class="fc" id="L30">        return &quot;elicitation.requested&quot;;</span>
     }
 
     public ElicitationRequestedData getData() {
-<span class="nc" id="L34">        return data;</span>
+<span class="fc" id="L34">        return data;</span>
     }
 
     public void setData(ElicitationRequestedData data) {
-<span class="nc" id="L38">        this.data = data;</span>
-<span class="nc" id="L39">    }</span>
+<span class="fc" id="L38">        this.data = data;</span>
+<span class="fc" id="L39">    }</span>
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L42">    public record ElicitationRequestedData(@JsonProperty(&quot;requestId&quot;) String requestId,</span>
+<span class="fc" id="L42">    public record ElicitationRequestedData(@JsonProperty(&quot;requestId&quot;) String requestId,</span>
             @JsonProperty(&quot;toolCallId&quot;) String toolCallId, @JsonProperty(&quot;elicitationSource&quot;) String elicitationSource,
             @JsonProperty(&quot;message&quot;) String message, @JsonProperty(&quot;mode&quot;) String mode,
             @JsonProperty(&quot;requestedSchema&quot;) ElicitationRequestedSchema requestedSchema,
@@ -47,7 +47,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L50">    public record ElicitationRequestedSchema(@JsonProperty(&quot;type&quot;) String type,</span>
+<span class="fc" id="L50">    public record ElicitationRequestedSchema(@JsonProperty(&quot;type&quot;) String type,</span>
             @JsonProperty(&quot;properties&quot;) Map&lt;String, Object&gt; properties,
             @JsonProperty(&quot;required&quot;) List&lt;String&gt; required) {
     }

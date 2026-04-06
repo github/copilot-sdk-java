@@ -13,26 +13,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.11
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L16">public final class SessionTaskCompleteEvent extends AbstractSessionEvent {</span>
+<span class="fc" id="L16">public final class SessionTaskCompleteEvent extends AbstractSessionEvent {</span>
 
     @JsonProperty(&quot;data&quot;)
     private SessionTaskCompleteData data;
 
     @Override
     public String getType() {
-<span class="nc" id="L23">        return &quot;session.task_complete&quot;;</span>
+<span class="fc" id="L23">        return &quot;session.task_complete&quot;;</span>
     }
 
     public SessionTaskCompleteData getData() {
-<span class="nc" id="L27">        return data;</span>
+<span class="fc" id="L27">        return data;</span>
     }
 
     public void setData(SessionTaskCompleteData data) {
-<span class="nc" id="L31">        this.data = data;</span>
-<span class="nc" id="L32">    }</span>
+<span class="fc" id="L31">        this.data = data;</span>
+<span class="fc" id="L32">    }</span>
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L35">    public record SessionTaskCompleteData(@JsonProperty(&quot;summary&quot;) String summary) {</span>
+<span class="fc" id="L35">    public record SessionTaskCompleteData(@JsonProperty(&quot;summary&quot;) String summary) {</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

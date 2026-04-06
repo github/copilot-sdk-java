@@ -1224,15 +1224,15 @@ public final class CopilotSession implements AutoCloseable {
      *            the command definitions to register
      */
     void registerCommands(java.util.List&lt;CommandDefinition&gt; commands) {
-<span class="nc" id="L1227">        commandHandlers.clear();</span>
-<span class="nc bnc" id="L1228" title="All 2 branches missed.">        if (commands != null) {</span>
-<span class="nc bnc" id="L1229" title="All 2 branches missed.">            for (CommandDefinition cmd : commands) {</span>
-<span class="nc bnc" id="L1230" title="All 4 branches missed.">                if (cmd.getName() != null &amp;&amp; cmd.getHandler() != null) {</span>
-<span class="nc" id="L1231">                    commandHandlers.put(cmd.getName(), cmd.getHandler());</span>
+<span class="fc" id="L1227">        commandHandlers.clear();</span>
+<span class="pc bpc" id="L1228" title="1 of 2 branches missed.">        if (commands != null) {</span>
+<span class="fc bfc" id="L1229" title="All 2 branches covered.">            for (CommandDefinition cmd : commands) {</span>
+<span class="pc bpc" id="L1230" title="2 of 4 branches missed.">                if (cmd.getName() != null &amp;&amp; cmd.getHandler() != null) {</span>
+<span class="fc" id="L1231">                    commandHandlers.put(cmd.getName(), cmd.getHandler());</span>
                 }
-<span class="nc" id="L1233">            }</span>
+<span class="fc" id="L1233">            }</span>
         }
-<span class="nc" id="L1235">    }</span>
+<span class="fc" id="L1235">    }</span>
 
     /**
      * Registers an elicitation handler for this session.
@@ -1244,8 +1244,8 @@ public final class CopilotSession implements AutoCloseable {
      *            the handler to invoke when an elicitation request is received
      */
     void registerElicitationHandler(ElicitationHandler handler) {
-<span class="nc" id="L1247">        elicitationHandler.set(handler);</span>
-<span class="nc" id="L1248">    }</span>
+<span class="fc" id="L1247">        elicitationHandler.set(handler);</span>
+<span class="fc" id="L1248">    }</span>
 
     /**
      * Sets the capabilities reported by the host for this session.
@@ -1325,20 +1325,20 @@ public final class CopilotSession implements AutoCloseable {
      * @return a future resolving with a map of transformed sections
      */
     CompletableFuture&lt;Map&lt;String, Object&gt;&gt; handleSystemMessageTransform(JsonNode sections) {
-<span class="nc" id="L1328">        var callbacks = this.transformCallbacks;</span>
-<span class="nc" id="L1329">        var result = new java.util.LinkedHashMap&lt;String, Object&gt;();</span>
-<span class="nc" id="L1330">        var futures = new ArrayList&lt;CompletableFuture&lt;Void&gt;&gt;();</span>
+<span class="fc" id="L1328">        var callbacks = this.transformCallbacks;</span>
+<span class="fc" id="L1329">        var result = new java.util.LinkedHashMap&lt;String, Object&gt;();</span>
+<span class="fc" id="L1330">        var futures = new ArrayList&lt;CompletableFuture&lt;Void&gt;&gt;();</span>
 
-<span class="nc bnc" id="L1332" title="All 4 branches missed.">        if (sections != null &amp;&amp; sections.isObject()) {</span>
-<span class="nc" id="L1333">            sections.fields().forEachRemaining(entry -&gt; {</span>
-<span class="nc" id="L1334">                String sectionId = entry.getKey();</span>
-<span class="nc bnc" id="L1335" title="All 2 branches missed.">                String content = entry.getValue().has(&quot;content&quot;) ? entry.getValue().get(&quot;content&quot;).asText(&quot;&quot;) : &quot;&quot;;</span>
+<span class="pc bpc" id="L1332" title="2 of 4 branches missed.">        if (sections != null &amp;&amp; sections.isObject()) {</span>
+<span class="fc" id="L1333">            sections.fields().forEachRemaining(entry -&gt; {</span>
+<span class="fc" id="L1334">                String sectionId = entry.getKey();</span>
+<span class="pc bpc" id="L1335" title="1 of 2 branches missed.">                String content = entry.getValue().has(&quot;content&quot;) ? entry.getValue().get(&quot;content&quot;).asText(&quot;&quot;) : &quot;&quot;;</span>
 
-<span class="nc bnc" id="L1337" title="All 2 branches missed.">                java.util.function.Function&lt;String, CompletableFuture&lt;String&gt;&gt; cb = callbacks != null</span>
+<span class="pc bpc" id="L1337" title="1 of 2 branches missed.">                java.util.function.Function&lt;String, CompletableFuture&lt;String&gt;&gt; cb = callbacks != null</span>
 <span class="nc" id="L1338">                        ? callbacks.get(sectionId)</span>
-<span class="nc" id="L1339">                        : null;</span>
+<span class="fc" id="L1339">                        : null;</span>
 
-<span class="nc bnc" id="L1341" title="All 2 branches missed.">                if (cb != null) {</span>
+<span class="pc bpc" id="L1341" title="1 of 2 branches missed.">                if (cb != null) {</span>
 <span class="nc" id="L1342">                    CompletableFuture&lt;Void&gt; f = cb.apply(content).exceptionally(ex -&gt; content)</span>
 <span class="nc" id="L1343">                            .thenAccept(transformed -&gt; {</span>
 <span class="nc" id="L1344">                                synchronized (result) {</span>
@@ -1347,15 +1347,15 @@ public final class CopilotSession implements AutoCloseable {
 <span class="nc" id="L1347">                            });</span>
 <span class="nc" id="L1348">                    futures.add(f);</span>
 <span class="nc" id="L1349">                } else {</span>
-<span class="nc" id="L1350">                    result.put(sectionId, Map.of(&quot;content&quot;, content));</span>
+<span class="fc" id="L1350">                    result.put(sectionId, Map.of(&quot;content&quot;, content));</span>
                 }
-<span class="nc" id="L1352">            });</span>
+<span class="fc" id="L1352">            });</span>
         }
 
-<span class="nc" id="L1355">        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenApply(v -&gt; {</span>
-<span class="nc" id="L1356">            Map&lt;String, Object&gt; response = new java.util.LinkedHashMap&lt;&gt;();</span>
-<span class="nc" id="L1357">            response.put(&quot;sections&quot;, result);</span>
-<span class="nc" id="L1358">            return response;</span>
+<span class="fc" id="L1355">        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).thenApply(v -&gt; {</span>
+<span class="fc" id="L1356">            Map&lt;String, Object&gt; response = new java.util.LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L1357">            response.put(&quot;sections&quot;, result);</span>
+<span class="fc" id="L1358">            return response;</span>
         });
     }
 
