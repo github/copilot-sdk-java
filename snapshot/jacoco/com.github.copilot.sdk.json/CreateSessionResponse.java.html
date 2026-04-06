@@ -11,10 +11,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param workspacePath
  *            the workspace path, or {@code null} if infinite sessions are
  *            disabled
+ * @param capabilities
+ *            the capabilities reported by the host, or {@code null}
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L17">public record CreateSessionResponse(@JsonProperty(&quot;sessionId&quot;) String sessionId,</span>
-        @JsonProperty(&quot;workspacePath&quot;) String workspacePath) {
+<span class="fc" id="L19">public record CreateSessionResponse(@JsonProperty(&quot;sessionId&quot;) String sessionId,</span>
+        @JsonProperty(&quot;workspacePath&quot;) String workspacePath,
+        @JsonProperty(&quot;capabilities&quot;) SessionCapabilities capabilities) {
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

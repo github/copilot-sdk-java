@@ -38,7 +38,8 @@ import com.github.copilot.sdk.json.PermissionRequest;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
 <span class="fc" id="L40">    public record PermissionRequestedData(@JsonProperty(&quot;requestId&quot;) String requestId,</span>
-            @JsonProperty(&quot;permissionRequest&quot;) PermissionRequest permissionRequest) {
+            @JsonProperty(&quot;permissionRequest&quot;) PermissionRequest permissionRequest,
+            @JsonProperty(&quot;resolvedByHook&quot;) Boolean resolvedByHook) {
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

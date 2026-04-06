@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ElicitationRequestedEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">GitHub Copilot SDK :: Java</a> &gt; <a href="index.source.html" class="el_package">com.github.copilot.sdk.events</a> &gt; <span class="el_source">ElicitationRequestedEvent.java</span></div><h1>ElicitationRequestedEvent.java</h1><pre class="source lang-java linenums">/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------------------------------------------*/
+
+package com.github.copilot.sdk.events;
+
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Event: elicitation.requested
+ * &lt;p&gt;
+ * Broadcast when the server or an MCP tool requests structured input from the
+ * user. Clients that have an elicitation handler should respond via
+ * {@code session.ui.handlePendingElicitation}.
+ *
+ * @since 1.0.0
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+<span class="nc" id="L23">public final class ElicitationRequestedEvent extends AbstractSessionEvent {</span>
+
+    @JsonProperty(&quot;data&quot;)
+    private ElicitationRequestedData data;
+
+    @Override
+    public String getType() {
+<span class="nc" id="L30">        return &quot;elicitation.requested&quot;;</span>
+    }
+
+    public ElicitationRequestedData getData() {
+<span class="nc" id="L34">        return data;</span>
+    }
+
+    public void setData(ElicitationRequestedData data) {
+<span class="nc" id="L38">        this.data = data;</span>
+<span class="nc" id="L39">    }</span>
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="nc" id="L42">    public record ElicitationRequestedData(@JsonProperty(&quot;requestId&quot;) String requestId,</span>
+            @JsonProperty(&quot;toolCallId&quot;) String toolCallId, @JsonProperty(&quot;elicitationSource&quot;) String elicitationSource,
+            @JsonProperty(&quot;message&quot;) String message, @JsonProperty(&quot;mode&quot;) String mode,
+            @JsonProperty(&quot;requestedSchema&quot;) ElicitationRequestedSchema requestedSchema,
+            @JsonProperty(&quot;url&quot;) String url) {
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+<span class="nc" id="L50">    public record ElicitationRequestedSchema(@JsonProperty(&quot;type&quot;) String type,</span>
+            @JsonProperty(&quot;properties&quot;) Map&lt;String, Object&gt; properties,
+            @JsonProperty(&quot;required&quot;) List&lt;String&gt; required) {
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
