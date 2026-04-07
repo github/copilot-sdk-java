@@ -18,7 +18,7 @@ Copilot: In Tokyo it's 75°F and sunny. Great day to be outside!
 
 Before you begin, make sure you have:
 
-- **Java 17+** installed
+- **Java 17+** installed (**Java 21+ recommended** for automatic [virtual thread](https://openjdk.org/jeps/444) support)
 - **GitHub Copilot CLI** installed and authenticated ([Installation guide](https://docs.github.com/en/copilot/how-tos/set-up/install-copilot-cli))
 
 Verify the CLI is working:

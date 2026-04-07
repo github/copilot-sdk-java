@@ -8,7 +8,7 @@ Welcome to the documentation for the **GitHub Copilot SDK for Java** — a Java 
 
 ### Requirements
 
-- Java 17 or later
+- Java 17 or later (**Java 21+ recommended** for automatic [virtual thread](https://openjdk.org/jeps/444) support)
 - GitHub Copilot CLI 1.0.17 or later installed and in PATH (or provide custom `cliPath`)
 
 ### Installation

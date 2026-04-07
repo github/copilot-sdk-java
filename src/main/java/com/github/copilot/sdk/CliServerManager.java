@@ -172,7 +172,7 @@ final class CliServerManager {
     }
 
     private void startStderrReader(Process process) {
-        var stderrThread = new Thread(() -> {
+        var stderrThread = ThreadFactoryProvider.newThread(() -> {
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))) {
                 String line;
@@ -186,7 +186,6 @@ final class CliServerManager {
                 LOG.log(Level.FINE, "Error reading stderr", e);
             }
         }, "cli-stderr-reader");
-        stderrThread.setDaemon(true);
         stderrThread.start();
     }
 

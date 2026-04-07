@@ -133,6 +133,7 @@
                     <archive>
                         <manifestEntries>
                             <Automatic-Module-Name>com.github.copilot.sdk.java</Automatic-Module-Name>
+                            <Multi-Release>true</Multi-Release>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -261,6 +262,11 @@
                 <version>2.44.5</version>
                 <configuration>
                     <java>
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/main/java21/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
                         <eclipse>
                             <version>4.33</version>
                         </eclipse>
@@ -556,6 +562,30 @@
             <properties>
                 <surefire.jvm.args>-XX:+EnableDynamicAgentLoading</surefire.jvm.args>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-java21</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <release>21</release>
+                                    <compileSourceRoots>
+                                        <compileSourceRoot>${project.basedir}/src/main/java21</compileSourceRoot>
+                                    </compileSourceRoots>
+                                    <multiReleaseOutput>true</multiReleaseOutput>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <!-- Skip git-clone + npm install of the copilot-sdk test harness -->
         <profile>

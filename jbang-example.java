@@ -12,6 +12,7 @@ import static java.lang.System.out;
 class CopilotSDK {
     public static void main(String[] args) throws Exception {
         // Create and start client
+        // On Java 21+, the SDK automatically uses virtual threads for internal I/O.
         try (var client = new CopilotClient()) {
             client.start().get();
 

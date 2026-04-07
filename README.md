@@ -24,7 +24,7 @@ Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build A
 
 ### Requirements
 
-- Java 17 or later. **JDK 25 recommended**. Selecting JDK 25 enables the use of virtual threads, as shown in the [Quick Start](#quick-start).
+- Java 17 or later. **JDK 21+ recommended** for automatic virtual thread support (see [Virtual Threads](#virtual-threads) below). Selecting JDK 25 additionally enables the use of virtual threads for the custom executor, as shown in the [Quick Start](#quick-start).
 - GitHub Copilot CLI 1.0.17 or later installed and in `PATH` (or provide custom `cliPath`)
 
 ### Maven
@@ -142,6 +142,14 @@ jbang https://github.com/github/copilot-sdk-java/blob/latest/jbang-example.java
 - [Javadoc API Reference](https://github.github.io/copilot-sdk-java/latest/apidocs/)
 - [MCP Servers Integration](https://github.github.io/copilot-sdk-java/latest/mcp.html)
 - [Cookbook](src/site/markdown/cookbook/) — Practical recipes for common use cases
+
+## Virtual Threads
+
+When running on **Java 21+**, the SDK automatically uses [virtual threads](https://openjdk.org/jeps/444) for its internal I/O threads (JSON-RPC reader loop, CLI stderr forwarding). This is implemented via a [Multi-Release JAR (JEP 238)](https://openjdk.org/jeps/238) — no configuration or code changes are required on your part.
+
+On Java 17–20, the SDK falls back to standard platform (daemon) threads.
+
+> **Note:** The `ScheduledExecutorService` used for `sendAndWait` timeouts always uses platform threads, because the JDK does not provide a virtual-thread-based scheduled executor.
 
 ## Projects Using This SDK
 

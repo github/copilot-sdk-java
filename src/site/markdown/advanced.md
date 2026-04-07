@@ -54,6 +54,7 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
   - [Session Capabilities](#Session_Capabilities)
   - [Outgoing Elicitation via session.getUi()](#Outgoing_Elicitation_via_session.getUi)
 - [Getting Session Metadata by ID](#Getting_Session_Metadata_by_ID)
+- [Virtual Threads (Java 21+)](#Virtual_Threads_Java_21)
 
 ---
 
@@ -1236,6 +1237,37 @@ if (metadata != null) {
 This is more efficient than `listSessions()` when you already know the session ID, as it performs a direct O(1) lookup instead of scanning all sessions.
 
 ---
+
+## Virtual Threads (Java 21+)
+
+When running on **Java 21 or later**, the SDK automatically uses [virtual threads (JEP 444)](https://openjdk.org/jeps/444) for its internal I/O threads. This is implemented via a [Multi-Release JAR (JEP 238)](https://openjdk.org/jeps/238) — no configuration or code changes are required.
+
+### What Uses Virtual Threads
+
+| Component | Thread name | Java 17–20 | Java 21+ |
+|-----------|------------|-------------|----------|
+| JSON-RPC reader loop | `jsonrpc-reader` | Platform (daemon) | Virtual |
+| CLI stderr forwarding | `cli-stderr-reader` | Platform (daemon) | Virtual |
+| `sendAndWait` timeouts | `sendAndWait-timeout` | Platform (daemon) | Platform (daemon) |
+
+The `sendAndWait` timeout scheduler always uses platform threads because the JDK does not provide a virtual-thread-based `ScheduledExecutorService`.
+
+### Performance Implications
+
+Virtual threads are lightweight and scheduled by the JVM on a shared `ForkJoinPool` carrier pool. For the I/O-bound JSON-RPC communication this SDK performs, virtual threads reduce memory footprint and improve scalability when many concurrent sessions are active.
+
+### How It Works
+
+The SDK JAR includes `Multi-Release: true` in its manifest. On Java 21+, the JVM loads the `ThreadFactoryProvider` class from `META-INF/versions/21/`, which uses `Thread.ofVirtual()`. On earlier JVMs, the baseline class under the main class path is loaded, which creates standard platform threads.
+
+### Verifying Virtual Thread Usage
+
+You can check at runtime whether the SDK is using virtual threads:
+
+```java
+// Thread names are preserved for debuggability regardless of thread type.
+// On Java 21+, the jsonrpc-reader and cli-stderr-reader threads will be virtual.
+```
 
 ## Next Steps
 

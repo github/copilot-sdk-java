@@ -44,6 +44,13 @@ import com.github.copilot.sdk.json.SessionMetadata;
  * provides methods to create and manage conversation sessions. It can either
  * spawn a CLI server process or connect to an existing server.
  * <p>
+ * <b>Threading:</b> On Java 21+, the SDK automatically uses virtual threads for
+ * its internal I/O threads (JSON-RPC reader, CLI stderr forwarding). On Java
+ * 17–20, standard platform threads are used. The
+ * {@link java.util.concurrent.ScheduledExecutorService} used for
+ * {@code sendAndWait} timeouts always uses platform threads because the JDK
+ * does not provide a virtual-thread-based scheduled executor.
+ * <p>
  * Example usage:
  *
  * <pre>{@code

@@ -89,6 +89,11 @@ import com.github.copilot.sdk.json.UserPromptSubmittedHookInput;
  * session data on disk — the conversation can be resumed later via
  * {@link CopilotClient#resumeSession}. To permanently delete session data, use
  * {@link CopilotClient#deleteSession}.
+ * <p>
+ * <b>Threading:</b> The {@link java.util.concurrent.ScheduledExecutorService}
+ * used for {@code sendAndWait} timeouts always uses platform threads regardless
+ * of the Java version, because the JDK does not provide a virtual-thread-based
+ * scheduled executor.
  *
  * <h2>Example Usage</h2>
  *

@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
@@ -57,11 +56,7 @@ class JsonRpcClient implements AutoCloseable {
         this.outputStream = outputStream;
         this.socket = socket;
         this.process = process;
-        this.readerExecutor = Executors.newSingleThreadExecutor(r -> {
-            Thread t = new Thread(r, "jsonrpc-reader");
-            t.setDaemon(true);
-            return t;
-        });
+        this.readerExecutor = ThreadFactoryProvider.newSingleThreadExecutor("jsonrpc-reader");
         startReader();
     }
 
