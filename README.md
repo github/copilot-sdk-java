@@ -24,7 +24,7 @@ Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build A
 
 ### Requirements
 
-- Java 17 or later. **JDK 21+ recommended** for automatic virtual thread support (see [Virtual Threads](#virtual-threads) below). Selecting JDK 25 additionally enables the use of virtual threads for the custom executor, as shown in the [Quick Start](#quick-start).
+- Java 17 or later. **JDK 21+ recommended** — the SDK automatically uses virtual threads for its internal I/O on Java 21+ (see [Virtual Threads](#virtual-threads)).
 - GitHub Copilot CLI 1.0.17 or later installed and in `PATH` (or provide custom `cliPath`)
 
 ### Maven
@@ -69,23 +69,17 @@ implementation 'com.github:copilot-sdk-java:0.2.1-java.1'
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.events.AssistantMessageEvent;
 import com.github.copilot.sdk.events.SessionUsageInfoEvent;
-import com.github.copilot.sdk.json.CopilotClientOptions;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;
-
-import java.util.concurrent.Executors;
 
 public class CopilotSDK {
     public static void main(String[] args) throws Exception {
         var lastMessage = new String[]{null};
 
         // Create and start client
-        try (var client = new CopilotClient()) {  // JDK 25+: comment out this line
-        // JDK 25+: uncomment the following 3 lines for virtual thread support
-        // var options = new CopilotClientOptions()
-        //     .setExecutor(Executors.newVirtualThreadPerTaskExecutor());
-        // try (var client = new CopilotClient(options)) {
+        // On Java 21+, the SDK automatically uses virtual threads for internal I/O.
+        try (var client = new CopilotClient()) {
             client.start().get();
 
             // Create a session

@@ -5,6 +5,7 @@
 package com.github.copilot.sdk;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -56,7 +57,7 @@ class ThreadFactoryProviderTest {
         if (javaVersion >= 21) {
             assertTrue(result, "Expected virtual threads on Java 21+");
         } else {
-            assertTrue(!result, "Expected platform threads on Java < 21");
+            assertFalse(result, "Expected platform threads on Java < 21");
         }
     }
 }
