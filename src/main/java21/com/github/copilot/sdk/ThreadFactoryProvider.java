@@ -39,14 +39,15 @@ final class ThreadFactoryProvider {
     }
 
     /**
-     * Creates a virtual-thread-per-task executor for the JSON-RPC reader loop.
+     * Creates a single-thread executor backed by a virtual-thread factory for the
+     * JSON-RPC reader loop.
      *
      * @param name
-     *            the thread name prefix for debuggability
-     * @return a virtual-thread {@link ExecutorService}
+     *            the thread name for debuggability
+     * @return a single-thread virtual-thread-backed {@link ExecutorService}
      */
     static ExecutorService newSingleThreadExecutor(String name) {
-        return Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name(name).factory());
+        return Executors.newSingleThreadExecutor(Thread.ofVirtual().name(name).factory());
     }
 
     /**
