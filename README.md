@@ -16,7 +16,7 @@
 
 ## Background
 
-> ⚠️ **Disclaimer:** This SDK tracks the pre-GA [GitHub Copilot SDKs](https://github.com/github/copilot-sdk) for [.NET](https://github.com/github/copilot-sdk/tree/main/dotnet) and [nodejs](https://github.com/github/copilot-sdk/tree/main/nodejs). This SDK may change in breaking ways. Use at your own risk.
+> ℹ️ **Public Preview:** This SDK tracks the [GitHub Copilot SDKs](https://github.com/github/copilot-sdk) for [.NET](https://github.com/github/copilot-sdk/tree/main/dotnet) and [nodejs](https://github.com/github/copilot-sdk/tree/main/nodejs). While in public preview, minor breaking changes may still occur between releases.
 
 Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build AI-powered applications and agentic workflows.
 
