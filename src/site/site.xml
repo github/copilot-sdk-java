@@ -59,6 +59,9 @@
             <item name="BYOK" href="advanced.html#Bring_Your_Own_Key_.28BYOK.29"/>
             <item name="Infinite Sessions" href="advanced.html#Infinite_Sessions"/>
             <item name="MCP Servers" href="advanced.html#MCP_Servers"/>
+            <item name="Slash Commands" href="advanced.html#Slash_Commands"/>
+            <item name="Elicitation" href="advanced.html#Elicitation_UI_Dialogs"/>
+            <item name="Session Metadata" href="advanced.html#Getting_Session_Metadata_by_ID"/>
             <item name="Session Hooks" href="hooks.html"/>
         </menu>
 

@@ -245,6 +245,19 @@ The SDK supports event types organized by category. All events extend `AbstractS
 |-------|-------------|-------------|
 | `CommandQueuedEvent` | `command.queued` | A command was queued for execution |
 | `CommandCompletedEvent` | `command.completed` | A queued command completed |
+| `CommandExecuteEvent` | `command.execute` | A registered slash command was dispatched for execution |
+
+### Elicitation Events
+
+| Event | Type String | Description |
+|-------|-------------|-------------|
+| `ElicitationRequestedEvent` | `elicitation.requested` | An elicitation (UI dialog) request was received |
+
+### Capability Events
+
+| Event | Type String | Description |
+|-------|-------------|-------------|
+| `CapabilitiesChangedEvent` | `capabilities.changed` | Session capabilities were updated |
 
 ### Plan Mode Events
 
@@ -633,6 +646,8 @@ When resuming a session, you can optionally reconfigure many settings. This is u
 | `skillDirectories` | Directories to load skills from |
 | `disabledSkills` | Skills to disable |
 | `infiniteSessions` | Configure infinite session behavior |
+| `commands` | Slash command definitions for the resumed session |
+| `onElicitationRequest` | Handler for incoming elicitation requests |
 | `disableResume` | When `true`, resumes without emitting a `session.resume` event |
 | `onEvent` | Event handler registered before session resumption |
 
@@ -691,6 +706,8 @@ Complete list of all `SessionConfig` options for `createSession()`:
 | `skillDirectories` | List&lt;String&gt; | Directories to load skills from | [Skills](advanced.html#Skills_Configuration) |
 | `disabledSkills` | List&lt;String&gt; | Skills to disable by name | [Skills](advanced.html#Skills_Configuration) |
 | `configDir` | String | Custom configuration directory | [Config Dir](advanced.html#Custom_Configuration_Directory) |
+| `commands` | List&lt;CommandDefinition&gt; | Slash command definitions | [Slash Commands](advanced.html#Slash_Commands) |
+| `onElicitationRequest` | ElicitationHandler | Handler for incoming elicitation requests | [Elicitation](advanced.html#Elicitation_UI_Dialogs) |
 | `onEvent` | Consumer&lt;AbstractSessionEvent&gt; | Event handler registered before session creation | [Early Event Registration](advanced.html#Early_Event_Registration) |
 
 ### Cloning SessionConfig

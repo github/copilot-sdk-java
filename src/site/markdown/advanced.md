@@ -47,6 +47,13 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
   - [Custom Event Error Handler](#Custom_Event_Error_Handler)
   - [Event Error Policy](#Event_Error_Policy)
 - [OpenTelemetry](#OpenTelemetry)
+- [Slash Commands](#Slash_Commands)
+  - [Registering Commands](#Registering_Commands)
+- [Elicitation (UI Dialogs)](#Elicitation_UI_Dialogs)
+  - [Incoming Elicitation Handler](#Incoming_Elicitation_Handler)
+  - [Session Capabilities](#Session_Capabilities)
+  - [Outgoing Elicitation via session.getUi()](#Outgoing_Elicitation_via_session.getUi)
+- [Getting Session Metadata by ID](#Getting_Session_Metadata_by_ID)
 
 ---
 

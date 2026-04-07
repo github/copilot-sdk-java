@@ -8,7 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-> **Upstream sync:** [`github/copilot-sdk@4088739`](https://github.com/github/copilot-sdk/commit/40887393a9e687dacc141a645799441b0313ff15)
+> **Upstream sync:** [`github/copilot-sdk@f7fd757`](https://github.com/github/copilot-sdk/commit/f7fd7577109d64e261456b16c49baa56258eae4e)
+
+### Added
+
+- Slash commands — register `/command` handlers invoked from the CLI TUI via `SessionConfig.setCommands()` (upstream: [`f7fd757`](https://github.com/github/copilot-sdk/commit/f7fd757))
+- `CommandDefinition`, `CommandContext`, `CommandHandler`, `CommandWireDefinition` — types for defining and handling slash commands
+- `CommandExecuteEvent` — event dispatched when a registered slash command is executed
+- Elicitation (UI dialogs) — incoming handler via `SessionConfig.setOnElicitationRequest()` and outgoing convenience methods via `session.getUi()` (upstream: [`f7fd757`](https://github.com/github/copilot-sdk/commit/f7fd757))
+- `ElicitationContext`, `ElicitationHandler`, `ElicitationParams`, `ElicitationResult`, `ElicitationResultAction`, `ElicitationSchema`, `InputOptions` — types for elicitation
+- `ElicitationRequestedEvent` — event dispatched when an elicitation request is received
+- `SessionUiApi` — convenience API on `session.getUi()` for `confirm()`, `select()`, `input()`, and `elicitation()` calls
+- `SessionCapabilities` and `SessionUiCapabilities` — session capability reporting populated from create/resume response
+- `CapabilitiesChangedEvent` — event dispatched when session capabilities are updated
+- `CopilotClient.getSessionMetadata(String)` — O(1) session lookup by ID
+- `GetSessionMetadataResponse` — response type for `getSessionMetadata`
+
+### Fixed
+
+- Permission events already resolved by a pre-hook now short-circuit before invoking the client-side handler
+- `SessionUiApi` Javadoc now uses valid Java null-check syntax instead of `?.`
+- README updated to say "GitHub Copilot CLI 1.0.17" instead of "GitHub Copilot 1.0.17"
 
 ## [0.2.1-java.1] - 2026-04-02
 
