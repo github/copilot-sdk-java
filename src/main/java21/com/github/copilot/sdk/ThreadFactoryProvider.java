@@ -6,7 +6,6 @@ package com.github.copilot.sdk;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
 /**
  * Java 21+ override that uses virtual threads for the SDK's internal thread
@@ -19,8 +18,6 @@ import java.util.logging.Logger;
  * @since 0.2.2-java.1
  */
 final class ThreadFactoryProvider {
-
-    private static final Logger LOG = Logger.getLogger(ThreadFactoryProvider.class.getName());
 
     private ThreadFactoryProvider() {
     }

@@ -1262,12 +1262,7 @@ The SDK JAR includes `Multi-Release: true` in its manifest. On Java 21+, the JVM
 
 ### Verifying Virtual Thread Usage
 
-You can check at runtime whether the SDK is using virtual threads:
-
-```java
-// Thread names are preserved for debuggability regardless of thread type.
-// On Java 21+, the jsonrpc-reader and cli-stderr-reader threads will be virtual.
-```
+Thread names are preserved for debuggability regardless of thread type. On Java 21+, a thread dump will show `jsonrpc-reader` and `cli-stderr-reader` as virtual threads rather than platform threads. You can verify this via `jcmd <pid> Thread.dump_to_file -format=json <file>` or your IDE's thread inspector.
 
 ## Next Steps
 
