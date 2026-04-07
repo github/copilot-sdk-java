@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.github.copilot.sdk"},{"l":"com.github.copilot.sdk.events"},{"l":"com.github.copilot.sdk.json"}];updateSearchResults();
