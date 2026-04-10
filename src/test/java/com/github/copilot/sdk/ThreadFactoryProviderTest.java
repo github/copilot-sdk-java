@@ -59,7 +59,7 @@ class ThreadFactoryProviderTest {
         if (javaVersion < 21) {
             assertFalse(result, "Expected platform threads on Java < 21");
         } else if (result) {
-            assertTrue(javaVersion >= 21, "Virtual threads are only supported on Java 21+");
+            assertTrue(result, "Virtual threads should be enabled when reported as supported");
         }
     }
 }
