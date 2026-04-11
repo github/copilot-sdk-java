@@ -70,13 +70,18 @@ class CliServerManagerTest {
         }
     }
 
+    private static Process startBlockingProcess() throws IOException {
+        boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
+        return (isWindows ? new ProcessBuilder("cmd", "/c", "more") : new ProcessBuilder("cat")).start();
+    }
+
     @Test
     void connectToServerStdioMode() throws Exception {
         var options = new CopilotClientOptions();
         var manager = new CliServerManager(options);
 
         // Create a dummy process for stdio mode
-        Process process = new ProcessBuilder("cat").start();
+        Process process = startBlockingProcess();
         try {
             JsonRpcClient client = manager.connectToServer(process, null, null);
             assertNotNull(client);
@@ -126,6 +131,14 @@ class CliServerManagerTest {
     // resolveCliCommand is private, so we test indirectly through startCliServer
     // with specific cliPath values.
 
+    // On Windows, "/nonexistent/copilot" is not an absolute path (no drive letter),
+    // so resolveCliCommand wraps it with "cmd /c" and ProcessBuilder.start()
+    // succeeds
+    // (launching cmd.exe). Use a Windows-absolute path to ensure IOException.
+    private static final String NONEXISTENT_CLI = System.getProperty("os.name").toLowerCase().contains("win")
+            ? "C:\\nonexistent\\copilot"
+            : "/nonexistent/copilot";
+
     @Test
     void startCliServerWithJsFile() throws Exception {
         // Using a .js file path causes resolveCliCommand to prepend "node"
@@ -147,8 +160,8 @@ class CliServerManagerTest {
     @Test
     void startCliServerWithCliArgs() throws Exception {
         // Test that cliArgs are included in the command
-        var options = new CopilotClientOptions().setCliPath("/nonexistent/copilot")
-                .setCliArgs(new String[]{"--extra-flag"}).setUseStdio(true);
+        var options = new CopilotClientOptions().setCliPath(NONEXISTENT_CLI).setCliArgs(new String[]{"--extra-flag"})
+                .setUseStdio(true);
         var manager = new CliServerManager(options);
 
         var ex = assertThrows(IOException.class, () -> manager.startCliServer());
@@ -158,7 +171,7 @@ class CliServerManagerTest {
     @Test
     void startCliServerWithExplicitPort() throws Exception {
         // Test the explicit port branch (useStdio=false, port > 0)
-        var options = new CopilotClientOptions().setCliPath("/nonexistent/copilot").setUseStdio(false).setPort(9999);
+        var options = new CopilotClientOptions().setCliPath(NONEXISTENT_CLI).setUseStdio(false).setPort(9999);
         var manager = new CliServerManager(options);
 
         var ex = assertThrows(IOException.class, () -> manager.startCliServer());
@@ -168,7 +181,7 @@ class CliServerManagerTest {
     @Test
     void startCliServerWithGitHubToken() throws Exception {
         // Test the github token branch
-        var options = new CopilotClientOptions().setCliPath("/nonexistent/copilot").setGitHubToken("ghp_test123")
+        var options = new CopilotClientOptions().setCliPath(NONEXISTENT_CLI).setGitHubToken("ghp_test123")
                 .setUseStdio(true);
         var manager = new CliServerManager(options);
 
@@ -179,7 +192,7 @@ class CliServerManagerTest {
     @Test
     void startCliServerWithUseLoggedInUserExplicit() throws Exception {
         // Test the explicit useLoggedInUser=false branch (adds --no-auto-login)
-        var options = new CopilotClientOptions().setCliPath("/nonexistent/copilot").setUseLoggedInUser(false)
+        var options = new CopilotClientOptions().setCliPath(NONEXISTENT_CLI).setUseLoggedInUser(false)
                 .setUseStdio(true);
         var manager = new CliServerManager(options);
 
@@ -190,7 +203,7 @@ class CliServerManagerTest {
     @Test
     void startCliServerWithGitHubTokenAndNoExplicitUseLoggedInUser() throws Exception {
         // When gitHubToken is set and useLoggedInUser is null, defaults to false
-        var options = new CopilotClientOptions().setCliPath("/nonexistent/copilot").setGitHubToken("ghp_test123")
+        var options = new CopilotClientOptions().setCliPath(NONEXISTENT_CLI).setGitHubToken("ghp_test123")
                 .setUseStdio(true);
         var manager = new CliServerManager(options);
 
@@ -220,8 +233,7 @@ class CliServerManagerTest {
         // so even with a nonexistent CLI path, the telemetry code path is exercised
         var telemetry = new TelemetryConfig().setOtlpEndpoint("http://localhost:4318").setFilePath("/tmp/telemetry.log")
                 .setExporterType("otlp-http").setSourceName("test-app").setCaptureContent(true);
-        var options = new CopilotClientOptions().setCliPath("/nonexistent/copilot").setTelemetry(telemetry)
-                .setUseStdio(true);
+        var options = new CopilotClientOptions().setCliPath(NONEXISTENT_CLI).setTelemetry(telemetry).setUseStdio(true);
         var manager = new CliServerManager(options);
 
         var ex = assertThrows(IOException.class, () -> manager.startCliServer());
@@ -232,8 +244,7 @@ class CliServerManagerTest {
     void startCliServerWithTelemetryCaptureContentFalse() throws Exception {
         // Test the false branch of getCaptureContent()
         var telemetry = new TelemetryConfig().setCaptureContent(false);
-        var options = new CopilotClientOptions().setCliPath("/nonexistent/copilot").setTelemetry(telemetry)
-                .setUseStdio(true);
+        var options = new CopilotClientOptions().setCliPath(NONEXISTENT_CLI).setTelemetry(telemetry).setUseStdio(true);
         var manager = new CliServerManager(options);
 
         var ex = assertThrows(IOException.class, () -> manager.startCliServer());

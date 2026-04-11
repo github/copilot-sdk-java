@@ -6,7 +6,7 @@ name: 'GitHub Copilot SDK Java Instructions'
 
 ## Core Principles
 
-- The SDK is in technical preview and may have breaking changes
+- The SDK is in public preview and may have breaking changes
 - Requires Java 17 or later
 - Requires GitHub Copilot CLI installed and in PATH
 - Uses `CompletableFuture` for all async operations

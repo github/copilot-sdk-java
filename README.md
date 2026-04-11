@@ -16,7 +16,7 @@
 
 ## Background
 
-> ⚠️ **Disclaimer:** This SDK tracks the pre-GA [GitHub Copilot SDKs](https://github.com/github/copilot-sdk) for [.NET](https://github.com/github/copilot-sdk/tree/main/dotnet) and [nodejs](https://github.com/github/copilot-sdk/tree/main/nodejs). This SDK may change in breaking ways. Use at your own risk.
+> ℹ️ **Public Preview:** This SDK tracks the [GitHub Copilot SDKs](https://github.com/github/copilot-sdk) for [.NET](https://github.com/github/copilot-sdk/tree/main/dotnet) and [Node.js](https://github.com/github/copilot-sdk/tree/main/nodejs). While in public preview, minor breaking changes may still occur between releases.
 
 Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build AI-powered applications and agentic workflows.
 
@@ -33,7 +33,7 @@ Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build A
 <dependency>
     <groupId>com.github</groupId>
     <artifactId>copilot-sdk-java</artifactId>
-    <version>0.2.1-java.1</version>
+    <version>0.2.2-java.1</version>
 </dependency>
 ```
 
@@ -53,14 +53,14 @@ Snapshot builds of the next development version are published to Maven Central S
 <dependency>
     <groupId>com.github</groupId>
     <artifactId>copilot-sdk-java</artifactId>
-    <version>0.2.1-java.0-SNAPSHOT</version>
+    <version>0.2.3-java.1-SNAPSHOT</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-implementation 'com.github:copilot-sdk-java:0.2.1-java.1'
+implementation 'com.github:copilot-sdk-java:0.2.2-java.1'
 ```
 
 ## Quick Start

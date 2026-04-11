@@ -1,6 +1,6 @@
 # GitHub Copilot SDK for Java
 
-> ⚠️ **Disclaimer:** This is the official Java SDK for GitHub Copilot. This repository treats the official .NET and nodejs SDKs for GitHub Copilot as reference implementations. These SDKS are all officially supported as GitHub open source projects. The Java implementation follows the backward compatibility guarantees offered by the reference implementations. As such this implementation may introduce breaking changes, according to the policy declared by the reference implementations. Use at your own risk.
+> ℹ️ **Public Preview:** This is the official Java SDK for GitHub Copilot. This repository treats the official .NET and Node.js SDKs for GitHub Copilot as reference implementations. These SDKs are all officially supported as GitHub open source projects. The Java implementation follows the backward compatibility guarantees offered by the reference implementations. While in public preview, minor breaking changes may still occur between releases.
 
 Welcome to the documentation for the **GitHub Copilot SDK for Java** — a Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build AI-powered applications and agentic workflows.
 
