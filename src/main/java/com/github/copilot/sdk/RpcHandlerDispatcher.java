@@ -337,6 +337,10 @@ final class RpcHandlerDispatcher {
      * When the CLI creates sub-agent sessions internally, their session IDs are not
      * in the SDK's session map. This method searches all registered sessions to
      * find one with hooks, enabling hook handlers to fire for sub-agent tool calls.
+     * <p>
+     * If multiple sessions have hooks registered, the first one found is returned.
+     * In practice, SDK users typically register hooks on a single session that
+     * covers all sub-agent activity.
      *
      * @return a session with hooks, or {@code null} if none found
      */
@@ -354,6 +358,10 @@ final class RpcHandlerDispatcher {
      * <p>
      * Similar to {@link #findSessionWithHooks()}, this enables permission handlers
      * to fire for sub-agent sessions whose IDs are not tracked by the SDK.
+     * <p>
+     * If multiple sessions have permission handlers, the first one found is
+     * returned. In practice, SDK users typically register a single permission
+     * handler that covers all sub-agent activity.
      *
      * @return a session with a permission handler, or {@code null} if none found
      */
