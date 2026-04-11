@@ -1299,6 +1299,31 @@ public final class CopilotSession implements AutoCloseable {
     }
 
     /**
+     * Returns whether this session has hooks registered.
+     * <p>
+     * Used internally to find a session that can handle hooks invocations for
+     * sub-agent sessions whose IDs are not directly tracked by the SDK.
+     *
+     * @return {@code true} if hooks are registered and at least one handler is set
+     */
+    boolean hasHooks() {
+        SessionHooks hooks = hooksHandler.get();
+        return hooks != null && hooks.hasHooks();
+    }
+
+    /**
+     * Returns whether this session has a permission handler registered.
+     * <p>
+     * Used internally to find a session that can handle permission requests for
+     * sub-agent sessions whose IDs are not directly tracked by the SDK.
+     *
+     * @return {@code true} if a permission handler is registered
+     */
+    boolean hasPermissionHandler() {
+        return permissionHandler.get() != null;
+    }
+
+    /**
      * Registers transform callbacks for system message sections.
      * <p>
      * Called internally when creating or resuming a session with
