@@ -192,12 +192,6 @@ final class RpcHandlerDispatcher {
 
                 CopilotSession session = sessions.get(sessionId);
                 if (session == null) {
-                    // The CLI may send permission requests for sub-agent sessions
-                    // whose IDs are not tracked by the SDK. Fall back to any
-                    // registered session that has a permission handler.
-                    session = findSessionWithPermissionHandler();
-                }
-                if (session == null) {
                     var result = new PermissionRequestResult()
                             .setKind(PermissionRequestResultKind.DENIED_COULD_NOT_REQUEST_FROM_USER);
                     rpc.sendResponse(Long.parseLong(requestId), Map.of("result", result));
@@ -299,14 +293,7 @@ final class RpcHandlerDispatcher {
 
                 CopilotSession session = sessions.get(sessionId);
                 if (session == null) {
-                    // The CLI may send hooks.invoke for sub-agent sessions whose IDs
-                    // are not tracked by the SDK. Fall back to any registered session
-                    // that has hooks so that application-level hooks (e.g. onPreToolUse)
-                    // also fire for sub-agent tool calls.
-                    session = findSessionWithHooks();
-                }
-                if (session == null) {
-                    rpc.sendResponse(Long.parseLong(requestId), Collections.singletonMap("output", null));
+                    rpc.sendErrorResponse(Long.parseLong(requestId), -32602, "Unknown session " + sessionId);
                     return;
                 }
 
@@ -329,49 +316,6 @@ final class RpcHandlerDispatcher {
                 LOG.log(Level.SEVERE, "Error handling hooks invoke", e);
             }
         });
-    }
-
-    /**
-     * Finds a session that has hooks registered.
-     * <p>
-     * When the CLI creates sub-agent sessions internally, their session IDs are not
-     * in the SDK's session map. This method searches all registered sessions to
-     * find one with hooks, enabling hook handlers to fire for sub-agent tool calls.
-     * <p>
-     * If multiple sessions have hooks registered, the first one found is returned.
-     * In practice, SDK users typically register hooks on a single session that
-     * covers all sub-agent activity.
-     *
-     * @return a session with hooks, or {@code null} if none found
-     */
-    private CopilotSession findSessionWithHooks() {
-        for (CopilotSession s : sessions.values()) {
-            if (s.hasHooks()) {
-                return s;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Finds a session that has a permission handler registered.
-     * <p>
-     * Similar to {@link #findSessionWithHooks()}, this enables permission handlers
-     * to fire for sub-agent sessions whose IDs are not tracked by the SDK.
-     * <p>
-     * If multiple sessions have permission handlers, the first one found is
-     * returned. In practice, SDK users typically register a single permission
-     * handler that covers all sub-agent activity.
-     *
-     * @return a session with a permission handler, or {@code null} if none found
-     */
-    private CopilotSession findSessionWithPermissionHandler() {
-        for (CopilotSession s : sessions.values()) {
-            if (s.hasPermissionHandler()) {
-                return s;
-            }
-        }
-        return null;
     }
 
     /**

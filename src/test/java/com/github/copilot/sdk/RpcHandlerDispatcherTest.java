@@ -295,8 +295,7 @@ class RpcHandlerDispatcherTest {
     // ===== permission.request tests =====
 
     @Test
-    void permissionRequestWithUnknownSessionAndNoFallback() throws Exception {
-        // No sessions at all — returns denied
+    void permissionRequestWithUnknownSession() throws Exception {
         ObjectNode params = MAPPER.createObjectNode();
         params.put("sessionId", "nonexistent");
         params.putObject("permissionRequest");
@@ -306,24 +305,6 @@ class RpcHandlerDispatcherTest {
         JsonNode response = readResponse();
         JsonNode result = response.get("result").get("result");
         assertEquals("denied-no-approval-rule-and-could-not-request-from-user", result.get("kind").asText());
-    }
-
-    @Test
-    void permissionRequestFallsBackToSessionWithHandlerForSubAgent() throws Exception {
-        // Parent session has permission handler; sub-agent session ID not in map.
-        CopilotSession parent = createSession("parent-session");
-        parent.registerPermissionHandler((request, invocation) -> CompletableFuture
-                .completedFuture(new PermissionRequestResult().setKind("allow")));
-
-        ObjectNode params = MAPPER.createObjectNode();
-        params.put("sessionId", "subagent-session-id");
-        params.putObject("permissionRequest");
-
-        invokeHandler("permission.request", "15", params);
-
-        JsonNode response = readResponse();
-        JsonNode result = response.get("result").get("result");
-        assertEquals("allow", result.get("kind").asText());
     }
 
     @Test
@@ -472,8 +453,7 @@ class RpcHandlerDispatcherTest {
     // ===== hooks.invoke tests =====
 
     @Test
-    void hooksInvokeWithUnknownSessionAndNoFallback() throws Exception {
-        // No sessions at all — returns null output (no-op)
+    void hooksInvokeWithUnknownSession() throws Exception {
         ObjectNode params = MAPPER.createObjectNode();
         params.put("sessionId", "nonexistent");
         params.put("hookType", "preToolUse");
@@ -482,49 +462,8 @@ class RpcHandlerDispatcherTest {
         invokeHandler("hooks.invoke", "30", params);
 
         JsonNode response = readResponse();
-        JsonNode output = response.get("result").get("output");
-        assertTrue(output == null || output.isNull(),
-                "Output should be null when no sessions with hooks are registered");
-    }
-
-    @Test
-    void hooksInvokeFallsBackToSessionWithHooksForSubAgent() throws Exception {
-        // Parent session has hooks; sub-agent session ID is not in the map.
-        // The dispatcher should fall back to the parent session's hooks.
-        CopilotSession parent = createSession("parent-session");
-        parent.registerHooks(new SessionHooks().setOnPreToolUse(
-                (input, invocation) -> CompletableFuture.completedFuture(PreToolUseHookOutput.allow())));
-
-        ObjectNode params = MAPPER.createObjectNode();
-        params.put("sessionId", "subagent-session-id");
-        params.put("hookType", "preToolUse");
-        ObjectNode input = params.putObject("input");
-        input.put("toolName", "glob");
-        input.put("toolCallId", "tc-sub");
-
-        invokeHandler("hooks.invoke", "35", params);
-
-        JsonNode response = readResponse();
-        JsonNode output = response.get("result").get("output");
-        assertNotNull(output, "Hooks should fire for sub-agent tool calls via fallback");
-        assertEquals("allow", output.get("permissionDecision").asText());
-    }
-
-    @Test
-    void hooksInvokeFallbackSkipsSessionWithoutHooks() throws Exception {
-        // Session exists but has no hooks — should not be used as fallback
-        createSession("no-hooks-session");
-
-        ObjectNode params = MAPPER.createObjectNode();
-        params.put("sessionId", "subagent-session-id");
-        params.put("hookType", "preToolUse");
-        params.putObject("input");
-
-        invokeHandler("hooks.invoke", "36", params);
-
-        JsonNode response = readResponse();
-        JsonNode output = response.get("result").get("output");
-        assertTrue(output == null || output.isNull(), "Should return null when no session with hooks is found");
+        assertNotNull(response.get("error"));
+        assertEquals(-32602, response.get("error").get("code").asInt());
     }
 
     @Test
