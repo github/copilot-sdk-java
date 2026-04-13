@@ -122,6 +122,8 @@ final class SessionRequestBuilder {
         request.setSkillDirectories(config.getSkillDirectories());
         request.setDisabledSkills(config.getDisabledSkills());
         request.setConfigDir(config.getConfigDir());
+        request.setEnableConfigDiscovery(config.getEnableConfigDiscovery());
+        request.setModelCapabilities(config.getModelCapabilities());
 
         if (config.getCommands() != null && !config.getCommands().isEmpty()) {
             var wireCommands = config.getCommands().stream()
@@ -193,6 +195,8 @@ final class SessionRequestBuilder {
         request.setSkillDirectories(config.getSkillDirectories());
         request.setDisabledSkills(config.getDisabledSkills());
         request.setInfiniteSessions(config.getInfiniteSessions());
+        request.setEnableConfigDiscovery(config.getEnableConfigDiscovery());
+        request.setModelCapabilities(config.getModelCapabilities());
 
         if (config.getCommands() != null && !config.getCommands().isEmpty()) {
             var wireCommands = config.getCommands().stream()

@@ -9,7 +9,7 @@ Welcome to the documentation for the **GitHub Copilot SDK for Java** — a Java 
 ### Requirements
 
 - Java 17 or later
-- GitHub Copilot CLI 1.0.17 or later installed and in PATH (or provide custom `cliPath`)
+- GitHub Copilot CLI 1.0.22 or later installed and in PATH (or provide custom `cliPath`)
 
 ### Installation
 

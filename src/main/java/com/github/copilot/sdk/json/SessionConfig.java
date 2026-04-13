@@ -6,6 +6,7 @@ package com.github.copilot.sdk.json;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -50,13 +51,15 @@ public class SessionConfig {
     private SessionHooks hooks;
     private String workingDirectory;
     private boolean streaming;
-    private Map<String, Object> mcpServers;
+    private Map<String, McpServerConfig> mcpServers;
     private List<CustomAgentConfig> customAgents;
     private String agent;
     private InfiniteSessionConfig infiniteSessions;
     private List<String> skillDirectories;
     private List<String> disabledSkills;
     private String configDir;
+    private Boolean enableConfigDiscovery;
+    private ModelCapabilitiesOverride modelCapabilities;
     private Consumer<AbstractSessionEvent> onEvent;
     private List<CommandDefinition> commands;
     private ElicitationHandler onElicitationRequest;
@@ -401,7 +404,7 @@ public class SessionConfig {
      *
      * @return the MCP servers map
      */
-    public Map<String, Object> getMcpServers() {
+    public Map<String, McpServerConfig> getMcpServers() {
         return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);
     }
 
@@ -409,13 +412,16 @@ public class SessionConfig {
      * Sets MCP (Model Context Protocol) server configurations.
      * <p>
      * MCP servers extend the assistant's capabilities by providing additional
-     * context sources and tools.
+     * context sources and tools. Use {@link McpStdioServerConfig} for local/stdio
+     * servers and {@link McpHttpServerConfig} for remote HTTP servers.
      *
      * @param mcpServers
      *            the MCP servers configuration map
      * @return this config instance for method chaining
+     * @see McpStdioServerConfig
+     * @see McpHttpServerConfig
      */
-    public SessionConfig setMcpServers(Map<String, Object> mcpServers) {
+    public SessionConfig setMcpServers(Map<String, McpServerConfig> mcpServers) {
         this.mcpServers = mcpServers;
         return this;
     }
@@ -569,6 +575,67 @@ public class SessionConfig {
     }
 
     /**
+     * Gets the enableConfigDiscovery flag.
+     *
+     * @return {@code true} if config discovery is enabled, {@code false} if
+     *         disabled, or {@code null} to use the server default
+     */
+    public Boolean getEnableConfigDiscovery() {
+        return enableConfigDiscovery;
+    }
+
+    /**
+     * Sets whether to automatically discover MCP server configurations and skill
+     * directories from the working directory.
+     * <p>
+     * When {@code true}, the runtime automatically discovers MCP server
+     * configurations (e.g. {@code .mcp.json}, {@code .vscode/mcp.json}) and skill
+     * directories from the working directory and merges them with any explicitly
+     * provided {@link #setMcpServers(Map) McpServers} and
+     * {@link #setSkillDirectories(List) SkillDirectories}, with explicit values
+     * taking precedence on name collision.
+     * <p>
+     * Custom instruction files ({@code .github/copilot-instructions.md},
+     * {@code AGENTS.md}, etc.) are always loaded from the working directory
+     * regardless of this setting.
+     *
+     * @param enableConfigDiscovery
+     *            {@code true} to enable auto-discovery, {@code false} to disable,
+     *            {@code null} to use the server default
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setEnableConfigDiscovery(Boolean enableConfigDiscovery) {
+        this.enableConfigDiscovery = enableConfigDiscovery;
+        return this;
+    }
+
+    /**
+     * Gets the model capabilities override.
+     *
+     * @return the model capabilities override, or {@code null} if not set
+     */
+    public ModelCapabilitiesOverride getModelCapabilities() {
+        return modelCapabilities;
+    }
+
+    /**
+     * Sets per-property overrides for model capabilities, deep-merged over runtime
+     * defaults.
+     * <p>
+     * Use this to override specific capabilities such as vision support or token
+     * limits for the session.
+     *
+     * @param modelCapabilities
+     *            the capabilities override
+     * @return this config instance for method chaining
+     * @see ModelCapabilitiesOverride
+     */
+    public SessionConfig setModelCapabilities(ModelCapabilitiesOverride modelCapabilities) {
+        this.modelCapabilities = modelCapabilities;
+        return this;
+    }
+
+    /**
      * Gets the event handler registered before the session.create RPC is issued.
      *
      * @return the event handler, or {@code null} if not set
@@ -675,13 +742,15 @@ public class SessionConfig {
         copy.hooks = this.hooks;
         copy.workingDirectory = this.workingDirectory;
         copy.streaming = this.streaming;
-        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap<>(this.mcpServers) : null;
+        copy.mcpServers = this.mcpServers != null ? new HashMap<>(this.mcpServers) : null;
         copy.customAgents = this.customAgents != null ? new ArrayList<>(this.customAgents) : null;
         copy.agent = this.agent;
         copy.infiniteSessions = this.infiniteSessions;
         copy.skillDirectories = this.skillDirectories != null ? new ArrayList<>(this.skillDirectories) : null;
         copy.disabledSkills = this.disabledSkills != null ? new ArrayList<>(this.disabledSkills) : null;
         copy.configDir = this.configDir;
+        copy.enableConfigDiscovery = this.enableConfigDiscovery;
+        copy.modelCapabilities = this.modelCapabilities;
         copy.onEvent = this.onEvent;
         copy.commands = this.commands != null ? new ArrayList<>(this.commands) : null;
         copy.onElicitationRequest = this.onElicitationRequest;

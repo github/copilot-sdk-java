@@ -25,7 +25,7 @@ Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build A
 ### Requirements
 
 - Java 17 or later. **JDK 25 recommended**. Selecting JDK 25 enables the use of virtual threads, as shown in the [Quick Start](#quick-start).
-- GitHub Copilot CLI 1.0.17 or later installed and in `PATH` (or provide custom `cliPath`)
+- GitHub Copilot CLI 1.0.22 or later installed and in `PATH` (or provide custom `cliPath`)
 
 ### Maven
 

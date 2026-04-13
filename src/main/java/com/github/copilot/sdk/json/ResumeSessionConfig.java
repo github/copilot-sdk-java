@@ -51,12 +51,14 @@ public class ResumeSessionConfig {
     private String configDir;
     private boolean disableResume;
     private boolean streaming;
-    private Map<String, Object> mcpServers;
+    private Map<String, McpServerConfig> mcpServers;
     private List<CustomAgentConfig> customAgents;
     private String agent;
     private List<String> skillDirectories;
     private List<String> disabledSkills;
     private InfiniteSessionConfig infiniteSessions;
+    private Boolean enableConfigDiscovery;
+    private ModelCapabilitiesOverride modelCapabilities;
     private Consumer<AbstractSessionEvent> onEvent;
     private List<CommandDefinition> commands;
     private ElicitationHandler onElicitationRequest;
@@ -405,7 +407,7 @@ public class ResumeSessionConfig {
      *
      * @return the MCP servers map
      */
-    public Map<String, Object> getMcpServers() {
+    public Map<String, McpServerConfig> getMcpServers() {
         return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);
     }
 
@@ -415,8 +417,10 @@ public class ResumeSessionConfig {
      * @param mcpServers
      *            the MCP servers configuration map
      * @return this config for method chaining
+     * @see McpStdioServerConfig
+     * @see McpHttpServerConfig
      */
-    public ResumeSessionConfig setMcpServers(Map<String, Object> mcpServers) {
+    public ResumeSessionConfig setMcpServers(Map<String, McpServerConfig> mcpServers) {
         this.mcpServers = mcpServers;
         return this;
     }
@@ -532,6 +536,58 @@ public class ResumeSessionConfig {
     }
 
     /**
+     * Gets the enableConfigDiscovery flag.
+     *
+     * @return {@code true} if config discovery is enabled, {@code false} if
+     *         disabled, or {@code null} to use the server default
+     */
+    public Boolean getEnableConfigDiscovery() {
+        return enableConfigDiscovery;
+    }
+
+    /**
+     * Sets whether to automatically discover MCP server configurations and skill
+     * directories from the working directory.
+     * <p>
+     * When {@code true}, the runtime automatically discovers MCP server
+     * configurations (e.g. {@code .mcp.json}, {@code .vscode/mcp.json}) and skill
+     * directories from the working directory and merges them with any explicitly
+     * provided values, with explicit values taking precedence on name collision.
+     *
+     * @param enableConfigDiscovery
+     *            {@code true} to enable auto-discovery, {@code false} to disable,
+     *            {@code null} to use the server default
+     * @return this config for method chaining
+     */
+    public ResumeSessionConfig setEnableConfigDiscovery(Boolean enableConfigDiscovery) {
+        this.enableConfigDiscovery = enableConfigDiscovery;
+        return this;
+    }
+
+    /**
+     * Gets the model capabilities override.
+     *
+     * @return the model capabilities override, or {@code null} if not set
+     */
+    public ModelCapabilitiesOverride getModelCapabilities() {
+        return modelCapabilities;
+    }
+
+    /**
+     * Sets per-property overrides for model capabilities, deep-merged over runtime
+     * defaults.
+     *
+     * @param modelCapabilities
+     *            the capabilities override
+     * @return this config for method chaining
+     * @see ModelCapabilitiesOverride
+     */
+    public ResumeSessionConfig setModelCapabilities(ModelCapabilitiesOverride modelCapabilities) {
+        this.modelCapabilities = modelCapabilities;
+        return this;
+    }
+
+    /**
      * Gets the event handler registered before the session.resume RPC is issued.
      *
      * @return the event handler, or {@code null} if not set
@@ -642,6 +698,8 @@ public class ResumeSessionConfig {
         copy.skillDirectories = this.skillDirectories != null ? new ArrayList<>(this.skillDirectories) : null;
         copy.disabledSkills = this.disabledSkills != null ? new ArrayList<>(this.disabledSkills) : null;
         copy.infiniteSessions = this.infiniteSessions;
+        copy.enableConfigDiscovery = this.enableConfigDiscovery;
+        copy.modelCapabilities = this.modelCapabilities;
         copy.onEvent = this.onEvent;
         copy.commands = this.commands != null ? new ArrayList<>(this.commands) : null;
         copy.onElicitationRequest = this.onElicitationRequest;

@@ -75,7 +75,7 @@ public final class ResumeSessionRequest {
     private Boolean streaming;
 
     @JsonProperty("mcpServers")
-    private Map<String, Object> mcpServers;
+    private Map<String, McpServerConfig> mcpServers;
 
     @JsonProperty("envValueMode")
     private String envValueMode;
@@ -94,6 +94,12 @@ public final class ResumeSessionRequest {
 
     @JsonProperty("infiniteSessions")
     private InfiniteSessionConfig infiniteSessions;
+
+    @JsonProperty("enableConfigDiscovery")
+    private Boolean enableConfigDiscovery;
+
+    @JsonProperty("modelCapabilities")
+    private ModelCapabilitiesOverride modelCapabilities;
 
     @JsonProperty("commands")
     private List<CommandWireDefinition> commands;
@@ -267,12 +273,12 @@ public final class ResumeSessionRequest {
     }
 
     /** Gets MCP servers. @return the servers map */
-    public Map<String, Object> getMcpServers() {
+    public Map<String, McpServerConfig> getMcpServers() {
         return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);
     }
 
     /** Sets MCP servers. @param mcpServers the servers map */
-    public void setMcpServers(Map<String, Object> mcpServers) {
+    public void setMcpServers(Map<String, McpServerConfig> mcpServers) {
         this.mcpServers = mcpServers;
     }
 
@@ -337,6 +343,30 @@ public final class ResumeSessionRequest {
      */
     public void setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
         this.infiniteSessions = infiniteSessions;
+    }
+
+    /** Gets the enableConfigDiscovery flag. @return the flag */
+    public Boolean getEnableConfigDiscovery() {
+        return enableConfigDiscovery;
+    }
+
+    /**
+     * Sets the enableConfigDiscovery flag. @param enableConfigDiscovery the flag
+     */
+    public void setEnableConfigDiscovery(Boolean enableConfigDiscovery) {
+        this.enableConfigDiscovery = enableConfigDiscovery;
+    }
+
+    /** Gets the model capabilities override. @return the override */
+    public ModelCapabilitiesOverride getModelCapabilities() {
+        return modelCapabilities;
+    }
+
+    /**
+     * Sets the model capabilities override. @param modelCapabilities the override
+     */
+    public void setModelCapabilities(ModelCapabilitiesOverride modelCapabilities) {
+        this.modelCapabilities = modelCapabilities;
     }
 
     /** Gets the commands wire definitions. @return the commands */
