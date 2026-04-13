@@ -36,6 +36,11 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         working-directory: ./scripts/codegen
+        # npm install updates package.json and package-lock.json to the new
+        # version; npm ci (below) then does a clean, reproducible install from
+        # the updated lock file.  Both steps are required: npm install alone
+        # leaves leftover packages, while npm ci alone cannot change the pinned
+        # version in the lock file.
         run: npm install "@github/copilot@$VERSION"
 
       - name: Install codegen dependencies
