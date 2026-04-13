@@ -55,6 +55,7 @@ import com.github.copilot.sdk.json.InputOptions;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.ModelCapabilitiesOverride;
 import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionFsHandler;
 import com.github.copilot.sdk.json.PermissionInvocation;
 import com.github.copilot.sdk.json.PermissionRequest;
 import com.github.copilot.sdk.json.PermissionRequestResult;
@@ -143,6 +144,7 @@ public final class CopilotSession implements AutoCloseable {
     private final AtomicReference<UserInputHandler> userInputHandler = new AtomicReference<>();
     private final AtomicReference<ElicitationHandler> elicitationHandler = new AtomicReference<>();
     private final AtomicReference<SessionHooks> hooksHandler = new AtomicReference<>();
+    private final AtomicReference<SessionFsHandler> sessionFsHandler = new AtomicReference<>();
     private volatile EventErrorHandler eventErrorHandler;
     private volatile EventErrorPolicy eventErrorPolicy = EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS;
     private volatile Map<String, java.util.function.Function<String, CompletableFuture<String>>> transformCallbacks;
@@ -1297,6 +1299,24 @@ public final class CopilotSession implements AutoCloseable {
      */
     void registerHooks(SessionHooks hooks) {
         hooksHandler.set(hooks);
+    }
+
+    /**
+     * Registers the session filesystem handler for this session.
+     *
+     * @param handler
+     *            the handler to register
+     */
+    void registerSessionFsHandler(SessionFsHandler handler) {
+        sessionFsHandler.set(handler);
+    }
+
+    /**
+     * Returns the registered session filesystem handler, or {@code null} if none is
+     * registered.
+     */
+    SessionFsHandler getSessionFsHandler() {
+        return sessionFsHandler.get();
     }
 
     /**

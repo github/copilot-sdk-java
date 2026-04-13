@@ -33,6 +33,8 @@ import com.github.copilot.sdk.json.PingResponse;
 import com.github.copilot.sdk.json.ResumeSessionConfig;
 import com.github.copilot.sdk.json.ResumeSessionResponse;
 import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.sdk.json.SessionFsConventions;
+import com.github.copilot.sdk.json.SessionFsHandler;
 import com.github.copilot.sdk.json.SessionLifecycleHandler;
 import com.github.copilot.sdk.json.SessionListFilter;
 import com.github.copilot.sdk.json.SessionMetadata;
@@ -189,6 +191,9 @@ public final class CopilotClient implements AutoCloseable {
             // Verify protocol version
             verifyProtocolVersion(connection);
 
+            // Register as sessionFs provider if configured
+            configureSessionFs(connection);
+
             LOG.info("Copilot client connected");
             return connection;
         } catch (Exception e) {
@@ -201,6 +206,37 @@ public final class CopilotClient implements AutoCloseable {
     }
 
     private static final int MIN_PROTOCOL_VERSION = 2;
+
+    private void configureSessionFs(Connection connection) throws Exception {
+        var sessionFsOptions = options.getSessionFs();
+        if (sessionFsOptions == null) {
+            return;
+        }
+        var params = new HashMap<String, Object>();
+        params.put("initialCwd", sessionFsOptions.getInitialCwd());
+        params.put("sessionStatePath", sessionFsOptions.getSessionStatePath());
+        SessionFsConventions conventions = sessionFsOptions.getConventions();
+        if (conventions != null) {
+            params.put("conventions", conventions == SessionFsConventions.POSIX ? "posix" : "windows");
+        }
+        connection.rpc.invoke("sessionFs.setProvider", params, Void.class).get(30, TimeUnit.SECONDS);
+    }
+
+    private void configureSessionFsHandler(CopilotSession session,
+            java.util.function.Function<CopilotSession, SessionFsHandler> createSessionFsHandler) {
+        if (options.getSessionFs() == null) {
+            return;
+        }
+        if (createSessionFsHandler == null) {
+            throw new IllegalArgumentException(
+                    "CreateSessionFsHandler is required in the session config when CopilotClientOptions.sessionFs is configured.");
+        }
+        SessionFsHandler handler = createSessionFsHandler.apply(session);
+        if (handler == null) {
+            throw new IllegalArgumentException("createSessionFsHandler returned null.");
+        }
+        session.registerSessionFsHandler(handler);
+    }
 
     private void verifyProtocolVersion(Connection connection) throws Exception {
         int expectedVersion = SdkProtocolVersion.get();
@@ -357,6 +393,7 @@ public final class CopilotClient implements AutoCloseable {
                 session.setExecutor(options.getExecutor());
             }
             SessionRequestBuilder.configureSession(session, config);
+            configureSessionFsHandler(session, config.getCreateSessionFsHandler());
             sessions.put(sessionId, session);
 
             // Extract transform callbacks from the system message config.
@@ -431,6 +468,7 @@ public final class CopilotClient implements AutoCloseable {
                 session.setExecutor(options.getExecutor());
             }
             SessionRequestBuilder.configureSession(session, config);
+            configureSessionFsHandler(session, config.getCreateSessionFsHandler());
             sessions.put(sessionId, session);
 
             // Extract transform callbacks from the system message config.

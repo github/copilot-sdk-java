@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -59,6 +60,7 @@ public class ResumeSessionConfig {
     private InfiniteSessionConfig infiniteSessions;
     private Boolean enableConfigDiscovery;
     private ModelCapabilitiesOverride modelCapabilities;
+    private Function<com.github.copilot.sdk.CopilotSession, SessionFsHandler> createSessionFsHandler;
     private Consumer<AbstractSessionEvent> onEvent;
     private List<CommandDefinition> commands;
     private ElicitationHandler onElicitationRequest;
@@ -588,6 +590,36 @@ public class ResumeSessionConfig {
     }
 
     /**
+     * Gets the session filesystem handler factory.
+     *
+     * @return the handler factory, or {@code null} if not set
+     * @since 1.4.0
+     */
+    public Function<com.github.copilot.sdk.CopilotSession, SessionFsHandler> getCreateSessionFsHandler() {
+        return createSessionFsHandler;
+    }
+
+    /**
+     * Sets a factory function that creates a {@link SessionFsHandler} for each
+     * session.
+     * <p>
+     * This is only used when
+     * {@link com.github.copilot.sdk.json.CopilotClientOptions#setSessionFs(SessionFsConfig)
+     * CopilotClientOptions.sessionFs} is configured.
+     *
+     * @param createSessionFsHandler
+     *            the handler factory
+     * @return this config for method chaining
+     * @see SessionFsHandler
+     * @since 1.4.0
+     */
+    public ResumeSessionConfig setCreateSessionFsHandler(
+            Function<com.github.copilot.sdk.CopilotSession, SessionFsHandler> createSessionFsHandler) {
+        this.createSessionFsHandler = createSessionFsHandler;
+        return this;
+    }
+
+    /**
      * Gets the event handler registered before the session.resume RPC is issued.
      *
      * @return the event handler, or {@code null} if not set
@@ -700,6 +732,7 @@ public class ResumeSessionConfig {
         copy.infiniteSessions = this.infiniteSessions;
         copy.enableConfigDiscovery = this.enableConfigDiscovery;
         copy.modelCapabilities = this.modelCapabilities;
+        copy.createSessionFsHandler = this.createSessionFsHandler;
         copy.onEvent = this.onEvent;
         copy.commands = this.commands != null ? new ArrayList<>(this.commands) : null;
         copy.onElicitationRequest = this.onElicitationRequest;

@@ -51,6 +51,7 @@ public class CopilotClientOptions {
     private String logLevel = "info";
     private Supplier<CompletableFuture<List<ModelInfo>>> onListModels;
     private int port;
+    private SessionFsConfig sessionFs;
     private TelemetryConfig telemetry;
     private Boolean useLoggedInUser;
     private boolean useStdio = true;
@@ -405,6 +406,36 @@ public class CopilotClientOptions {
     }
 
     /**
+     * Gets the session filesystem configuration.
+     *
+     * @return the session filesystem config, or {@code null} if not set
+     * @since 1.4.0
+     */
+    public SessionFsConfig getSessionFs() {
+        return sessionFs;
+    }
+
+    /**
+     * Sets the session filesystem provider configuration.
+     * <p>
+     * When set, the client registers as the session filesystem provider on connect,
+     * routing session-scoped file I/O through per-session handlers created via
+     * {@link SessionConfig#setCreateSessionFsHandler(java.util.function.Function)
+     * SessionConfig.createSessionFsHandler} or
+     * {@link ResumeSessionConfig#setCreateSessionFsHandler(java.util.function.Function)
+     * ResumeSessionConfig.createSessionFsHandler}.
+     *
+     * @param sessionFs
+     *            the session filesystem configuration
+     * @return this options instance for method chaining
+     * @since 1.4.0
+     */
+    public CopilotClientOptions setSessionFs(SessionFsConfig sessionFs) {
+        this.sessionFs = sessionFs;
+        return this;
+    }
+
+    /**
      * Gets the OpenTelemetry configuration for the CLI server.
      *
      * @return the telemetry config, or {@code null}
@@ -508,6 +539,7 @@ public class CopilotClientOptions {
         copy.logLevel = this.logLevel;
         copy.onListModels = this.onListModels;
         copy.port = this.port;
+        copy.sessionFs = this.sessionFs;
         copy.telemetry = this.telemetry;
         copy.useLoggedInUser = this.useLoggedInUser;
         copy.useStdio = this.useStdio;

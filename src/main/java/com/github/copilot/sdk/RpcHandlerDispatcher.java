@@ -20,6 +20,19 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
 import com.github.copilot.sdk.events.SessionEventParser;
 import com.github.copilot.sdk.json.PermissionRequestResult;
 import com.github.copilot.sdk.json.PermissionRequestResultKind;
+import com.github.copilot.sdk.json.SessionFsAppendFileParams;
+import com.github.copilot.sdk.json.SessionFsCopyDirParams;
+import com.github.copilot.sdk.json.SessionFsCpParams;
+import com.github.copilot.sdk.json.SessionFsExistsParams;
+import com.github.copilot.sdk.json.SessionFsGlobParams;
+import com.github.copilot.sdk.json.SessionFsHandler;
+import com.github.copilot.sdk.json.SessionFsMkdirParams;
+import com.github.copilot.sdk.json.SessionFsReaddirParams;
+import com.github.copilot.sdk.json.SessionFsReadFileParams;
+import com.github.copilot.sdk.json.SessionFsRenameParams;
+import com.github.copilot.sdk.json.SessionFsRmParams;
+import com.github.copilot.sdk.json.SessionFsStatParams;
+import com.github.copilot.sdk.json.SessionFsWriteFileParams;
 import com.github.copilot.sdk.json.SessionLifecycleEvent;
 import com.github.copilot.sdk.json.SessionLifecycleEventMetadata;
 import com.github.copilot.sdk.json.ToolDefinition;
@@ -83,6 +96,32 @@ final class RpcHandlerDispatcher {
         rpc.registerMethodHandler("hooks.invoke", (requestId, params) -> handleHooksInvoke(rpc, requestId, params));
         rpc.registerMethodHandler("systemMessage.transform",
                 (requestId, params) -> handleSystemMessageTransform(rpc, requestId, params));
+        rpc.registerMethodHandler("sessionFs.readFile", (requestId, params) -> handleSessionFsCall(rpc, requestId,
+                params, "readFile", SessionFsReadFileParams.class, (h, p) -> h.readFile(p)));
+        rpc.registerMethodHandler("sessionFs.writeFile", (requestId, params) -> handleSessionFsVoidCall(rpc, requestId,
+                params, "writeFile", SessionFsWriteFileParams.class, (h, p) -> h.writeFile(p)));
+        rpc.registerMethodHandler("sessionFs.appendFile", (requestId, params) -> handleSessionFsVoidCall(rpc, requestId,
+                params, "appendFile", SessionFsAppendFileParams.class, (h, p) -> h.appendFile(p)));
+        rpc.registerMethodHandler("sessionFs.exists", (requestId, params) -> handleSessionFsCall(rpc, requestId, params,
+                "exists", SessionFsExistsParams.class, (h, p) -> h.exists(p)));
+        rpc.registerMethodHandler("sessionFs.stat", (requestId, params) -> handleSessionFsCall(rpc, requestId, params,
+                "stat", SessionFsStatParams.class, (h, p) -> h.stat(p)));
+        rpc.registerMethodHandler("sessionFs.mkdir", (requestId, params) -> handleSessionFsVoidCall(rpc, requestId,
+                params, "mkdir", SessionFsMkdirParams.class, (h, p) -> h.mkdir(p)));
+        rpc.registerMethodHandler("sessionFs.readdir", (requestId, params) -> handleSessionFsCall(rpc, requestId,
+                params, "readdir", SessionFsReaddirParams.class, (h, p) -> h.readdir(p)));
+        rpc.registerMethodHandler("sessionFs.readdirWithTypes", (requestId, params) -> handleSessionFsCall(rpc,
+                requestId, params, "readdirWithTypes", SessionFsReaddirParams.class, (h, p) -> h.readdirWithTypes(p)));
+        rpc.registerMethodHandler("sessionFs.rm", (requestId, params) -> handleSessionFsVoidCall(rpc, requestId, params,
+                "rm", SessionFsRmParams.class, (h, p) -> h.rm(p)));
+        rpc.registerMethodHandler("sessionFs.rename", (requestId, params) -> handleSessionFsVoidCall(rpc, requestId,
+                params, "rename", SessionFsRenameParams.class, (h, p) -> h.rename(p)));
+        rpc.registerMethodHandler("sessionFs.cp", (requestId, params) -> handleSessionFsVoidCall(rpc, requestId, params,
+                "cp", SessionFsCpParams.class, (h, p) -> h.cp(p)));
+        rpc.registerMethodHandler("sessionFs.copyDir", (requestId, params) -> handleSessionFsVoidCall(rpc, requestId,
+                params, "copyDir", SessionFsCopyDirParams.class, (h, p) -> h.copyDir(p)));
+        rpc.registerMethodHandler("sessionFs.glob", (requestId, params) -> handleSessionFsCall(rpc, requestId, params,
+                "glob", SessionFsGlobParams.class, (h, p) -> h.glob(p)));
     }
 
     private void handleSessionEvent(JsonNode params) {
@@ -378,5 +417,58 @@ final class RpcHandlerDispatcher {
             LOG.log(Level.WARNING, "Executor rejected handler task; running inline", e);
             task.run();
         }
+    }
+
+    @FunctionalInterface
+    private interface SessionFsOp<P, R> {
+
+        CompletableFuture<R> call(SessionFsHandler handler, P params);
+    }
+
+    private <P, R> void handleSessionFsCall(JsonRpcClient rpc, String requestId, JsonNode params, String opName,
+            Class<P> paramsClass, SessionFsOp<P, R> op) {
+        runAsync(() -> {
+            try {
+                P p = MAPPER.treeToValue(params, paramsClass);
+                String sessionId = params.has("sessionId") ? params.get("sessionId").asText() : null;
+                CopilotSession session = sessionId != null ? sessions.get(sessionId) : null;
+                if (session == null) {
+                    rpc.sendErrorResponse(Long.parseLong(requestId), -32602, "Unknown session: " + sessionId);
+                    return;
+                }
+                SessionFsHandler handler = session.getSessionFsHandler();
+                if (handler == null) {
+                    rpc.sendErrorResponse(Long.parseLong(requestId), -32603,
+                            "No sessionFs handler registered for session: " + sessionId);
+                    return;
+                }
+                op.call(handler, p).thenAccept(result -> {
+                    try {
+                        rpc.sendResponse(Long.parseLong(requestId), result);
+                    } catch (Exception e) {
+                        LOG.log(Level.SEVERE, "Error sending sessionFs." + opName + " response", e);
+                    }
+                }).exceptionally(ex -> {
+                    try {
+                        rpc.sendErrorResponse(Long.parseLong(requestId), -32603, ex.getMessage());
+                    } catch (IOException e) {
+                        LOG.log(Level.SEVERE, "Failed to send sessionFs." + opName + " error", e);
+                    }
+                    return null;
+                });
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Error handling sessionFs." + opName, e);
+                try {
+                    rpc.sendErrorResponse(Long.parseLong(requestId), -32603, e.getMessage());
+                } catch (IOException ioe) {
+                    LOG.log(Level.SEVERE, "Failed to send error response", ioe);
+                }
+            }
+        });
+    }
+
+    private <P> void handleSessionFsVoidCall(JsonRpcClient rpc, String requestId, JsonNode params, String opName,
+            Class<P> paramsClass, SessionFsOp<P, Void> op) {
+        handleSessionFsCall(rpc, requestId, params, opName, paramsClass, (h, p) -> op.call(h, p).thenApply(v -> null));
     }
 }

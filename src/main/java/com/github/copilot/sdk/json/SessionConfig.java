@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -60,6 +61,7 @@ public class SessionConfig {
     private String configDir;
     private Boolean enableConfigDiscovery;
     private ModelCapabilitiesOverride modelCapabilities;
+    private Function<com.github.copilot.sdk.CopilotSession, SessionFsHandler> createSessionFsHandler;
     private Consumer<AbstractSessionEvent> onEvent;
     private List<CommandDefinition> commands;
     private ElicitationHandler onElicitationRequest;
@@ -636,6 +638,38 @@ public class SessionConfig {
     }
 
     /**
+     * Gets the session filesystem handler factory.
+     *
+     * @return the handler factory, or {@code null} if not set
+     * @since 1.4.0
+     */
+    public Function<com.github.copilot.sdk.CopilotSession, SessionFsHandler> getCreateSessionFsHandler() {
+        return createSessionFsHandler;
+    }
+
+    /**
+     * Sets a factory function that creates a {@link SessionFsHandler} for each
+     * session.
+     * <p>
+     * This is only used when
+     * {@link com.github.copilot.sdk.json.CopilotClientOptions#setSessionFs(SessionFsConfig)
+     * CopilotClientOptions.sessionFs} is configured. The factory is called with the
+     * session instance when the session is created, and the returned handler is
+     * used to route file I/O for that session.
+     *
+     * @param createSessionFsHandler
+     *            the handler factory
+     * @return this config instance for method chaining
+     * @see SessionFsHandler
+     * @since 1.4.0
+     */
+    public SessionConfig setCreateSessionFsHandler(
+            Function<com.github.copilot.sdk.CopilotSession, SessionFsHandler> createSessionFsHandler) {
+        this.createSessionFsHandler = createSessionFsHandler;
+        return this;
+    }
+
+    /**
      * Gets the event handler registered before the session.create RPC is issued.
      *
      * @return the event handler, or {@code null} if not set
@@ -751,6 +785,7 @@ public class SessionConfig {
         copy.configDir = this.configDir;
         copy.enableConfigDiscovery = this.enableConfigDiscovery;
         copy.modelCapabilities = this.modelCapabilities;
+        copy.createSessionFsHandler = this.createSessionFsHandler;
         copy.onEvent = this.onEvent;
         copy.commands = this.commands != null ? new ArrayList<>(this.commands) : null;
         copy.onElicitationRequest = this.onElicitationRequest;
