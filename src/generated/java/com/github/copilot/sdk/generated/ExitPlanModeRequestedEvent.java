@@ -19,6 +19,7 @@ import javax.annotation.processing.Generated;
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @javax.annotation.processing.Generated("copilot-sdk-codegen")
 public final class ExitPlanModeRequestedEvent extends SessionEvent {
 

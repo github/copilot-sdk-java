@@ -179,6 +179,7 @@ function schemaTypeToJava(
             return { javaType: `List<${itemResult.javaType}>`, imports };
         }
         imports.add("java.util.List");
+        console.warn(`[codegen] ${context}.${propName}: array without typed items — falling back to List<Object>`);
         return { javaType: "List<Object>", imports };
     }
 
@@ -205,6 +206,7 @@ function schemaTypeToJava(
             return { javaType: `Map<String, ${valueResult.javaType}>`, imports };
         }
         imports.add("java.util.Map");
+        console.warn(`[codegen] ${context}.${propName}: object without typed properties or additionalProperties — falling back to Map<String, Object>`);
         return { javaType: "Map<String, Object>", imports };
     }
 
@@ -291,6 +293,7 @@ async function generateSessionEventBaseClass(
     lines.push(`package ${packageName};`);
     lines.push("");
     lines.push(`import com.fasterxml.jackson.annotation.JsonIgnoreProperties;`);
+    lines.push(`import com.fasterxml.jackson.annotation.JsonInclude;`);
     lines.push(`import com.fasterxml.jackson.annotation.JsonProperty;`);
     lines.push(`import com.fasterxml.jackson.annotation.JsonSubTypes;`);
     lines.push(`import com.fasterxml.jackson.annotation.JsonTypeInfo;`);
@@ -304,6 +307,7 @@ async function generateSessionEventBaseClass(
     lines.push(` * @since 1.0.0`);
     lines.push(` */`);
     lines.push(`@JsonIgnoreProperties(ignoreUnknown = true)`);
+    lines.push(`@JsonInclude(JsonInclude.Include.NON_NULL)`);
     lines.push(`@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", defaultImpl = UnknownSessionEvent.class)`);
     lines.push(`@JsonSubTypes({`);
     for (let i = 0; i < variants.length; i++) {
@@ -539,6 +543,7 @@ async function generateEventVariantClass(
         lines.push(` */`);
     }
     lines.push(`@JsonIgnoreProperties(ignoreUnknown = true)`);
+    lines.push(`@JsonInclude(JsonInclude.Include.NON_NULL)`);
     lines.push(GENERATED_ANNOTATION);
     lines.push(`public final class ${variant.className} extends SessionEvent {`);
     lines.push("");
