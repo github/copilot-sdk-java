@@ -15,13 +15,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.copilot.sdk.generated.*;
 
 /**
- * Tests for session event parsing.
+ * Tests for session event deserialization.
  * <p>
  * These are unit tests that verify JSON deserialization works correctly for all
  * event types supported by the SDK.
  * </p>
  */
-public class SessionEventParserTest {
+public class SessionEventDeserializationTest {
 
     private static final ObjectMapper MAPPER = JsonRpcClient.getObjectMapper();
 

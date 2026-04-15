@@ -77,7 +77,7 @@ mvn test -Dtest=CopilotClientTest
 
 - `com.github.copilot.sdk` - Core classes (CopilotClient, CopilotSession, JsonRpcClient)
 - `com.github.copilot.sdk.json` - DTOs, request/response types, handler interfaces (SessionConfig, MessageOptions, ToolDefinition, etc.)
-- `com.github.copilot.sdk.events` - Event types for session streaming (AssistantMessageEvent, SessionIdleEvent, ToolExecutionStartEvent, etc.)
+- `com.github.copilot.sdk.generated` - Generated event types for session streaming (SessionEvent, AssistantMessageEvent, SessionIdleEvent, ToolExecutionStartEvent, etc.)
 
 ### Test Infrastructure
 
