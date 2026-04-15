@@ -779,6 +779,525 @@ async function generateRpcDataClass(
     return className;
 }
 
+// ── RPC wrapper generation ───────────────────────────────────────────────────
+
+/** A single RPC method node parsed from the schema */
+interface RpcMethodNode {
+    rpcMethod: string;
+    stability: string;
+    params: JSONSchema7 | null;
+    result: JSONSchema7 | null;
+}
+
+/** Namespace tree node: holds direct methods and sub-namespace trees */
+interface NamespaceTree {
+    methods: Map<string, RpcMethodNode>;   // leaf method name -> info
+    subspaces: Map<string, NamespaceTree>; // sub-namespace name -> tree
+}
+
+/** Build a namespace tree by recursively walking a schema section object */
+function buildNamespaceTree(node: Record<string, unknown>): NamespaceTree {
+    const tree: NamespaceTree = { methods: new Map(), subspaces: new Map() };
+    for (const [key, value] of Object.entries(node)) {
+        if (typeof value !== "object" || value === null) continue;
+        const obj = value as Record<string, unknown>;
+        if ("rpcMethod" in obj) {
+            tree.methods.set(key, {
+                rpcMethod: String(obj.rpcMethod),
+                stability: String(obj.stability ?? "stable"),
+                params: (obj.params as JSONSchema7) ?? null,
+                result: (obj.result as JSONSchema7) ?? null,
+            });
+        } else {
+            const child = buildNamespaceTree(obj);
+            // Only add non-empty sub-trees
+            if (child.methods.size > 0 || child.subspaces.size > 0) {
+                tree.subspaces.set(key, child);
+            }
+        }
+    }
+    return tree;
+}
+
+/**
+ * Derive the Java class name for an API namespace class.
+ * e.g., prefix="Server", path=["mcp","config"] → "ServerMcpConfigApi"
+ */
+function apiClassName(prefix: string, path: string[]): string {
+    const parts = [prefix, ...path].map((p) => p.charAt(0).toUpperCase() + p.slice(1));
+    return parts.join("") + "Api";
+}
+
+/**
+ * Derive the result class name for an RPC method.
+ * If the result schema has no properties we use Void; if no result schema we also use Void.
+ */
+function wrapperResultClassName(method: RpcMethodNode): string {
+    if (
+        method.result &&
+        typeof method.result === "object" &&
+        method.result.properties &&
+        Object.keys(method.result.properties).length > 0
+    ) {
+        return rpcMethodToClassName(method.rpcMethod) + "Result";
+    }
+    return "Void";
+}
+
+/**
+ * Return the params class name if the method has a params schema with properties
+ * other than sessionId (i.e. there are user-supplied parameters).
+ */
+function wrapperParamsClassName(method: RpcMethodNode): string | null {
+    if (!method.params || typeof method.params !== "object") return null;
+    const props = method.params.properties ?? {};
+    const userProps = Object.keys(props).filter((k) => k !== "sessionId");
+    if (userProps.length === 0) return null;
+    return rpcMethodToClassName(method.rpcMethod) + "Params";
+}
+
+/** True if the method's params schema contains a "sessionId" property */
+function methodHasSessionId(method: RpcMethodNode): boolean {
+    return !!method.params?.properties && "sessionId" in method.params.properties;
+}
+
+/**
+ * Generate the Java source for a single method in a wrapper API class.
+ * Returns the Java source lines and whether an ObjectMapper is required.
+ */
+function generateApiMethod(
+    key: string,
+    method: RpcMethodNode,
+    isSession: boolean,
+    sessionIdExpr: string
+): { lines: string[]; needsMapper: boolean } {
+    const resultClass = wrapperResultClassName(method);
+    const paramsClass = wrapperParamsClassName(method);
+    const hasSessionId = methodHasSessionId(method);
+    const hasExtraParams = paramsClass !== null;
+    let needsMapper = false;
+
+    const lines: string[] = [];
+
+    // Javadoc
+    const description = (method.params as JSONSchema7 | null)?.description
+        ?? (method.result as JSONSchema7 | null)?.description
+        ?? `Invokes {@code ${method.rpcMethod}}.`;
+    lines.push(`    /**`);
+    lines.push(`     * ${description}`);
+    if (method.stability === "experimental") {
+        lines.push(`     *`);
+        lines.push(`     * @apiNote This method is experimental and may change in a future version.`);
+    }
+    lines.push(`     * @since 1.0.0`);
+    lines.push(`     */`);
+
+    // Signature
+    if (hasExtraParams) {
+        lines.push(`    public CompletableFuture<${resultClass}> ${key}(${paramsClass} params) {`);
+    } else {
+        lines.push(`    public CompletableFuture<${resultClass}> ${key}() {`);
+    }
+
+    // Body
+    if (isSession) {
+        if (hasExtraParams) {
+            // Merge sessionId into the params using Jackson ObjectNode
+            needsMapper = true;
+            lines.push(`        com.fasterxml.jackson.databind.node.ObjectNode _p = MAPPER.valueToTree(params);`);
+            lines.push(`        _p.put("sessionId", ${sessionIdExpr});`);
+            lines.push(`        return caller.invoke("${method.rpcMethod}", _p, ${resultClass}.class);`);
+        } else if (hasSessionId) {
+            lines.push(`        return caller.invoke("${method.rpcMethod}", java.util.Map.of("sessionId", ${sessionIdExpr}), ${resultClass}.class);`);
+        } else {
+            lines.push(`        return caller.invoke("${method.rpcMethod}", java.util.Map.of(), ${resultClass}.class);`);
+        }
+    } else {
+        // Server-side: pass params directly (or empty map if no params)
+        if (hasExtraParams) {
+            lines.push(`        return caller.invoke("${method.rpcMethod}", params, ${resultClass}.class);`);
+        } else {
+            lines.push(`        return caller.invoke("${method.rpcMethod}", java.util.Map.of(), ${resultClass}.class);`);
+        }
+    }
+
+    lines.push(`    }`);
+    lines.push(``);
+
+    return { lines, needsMapper };
+}
+
+/**
+ * Generate a Java source file for a single namespace API class.
+ * Returns the generated class name and whether a mapper static field is needed.
+ */
+async function generateNamespaceApiFile(
+    prefix: string,
+    namespacePath: string[],
+    tree: NamespaceTree,
+    isSession: boolean,
+    packageName: string,
+    packageDir: string
+): Promise<string> {
+    const className = apiClassName(prefix, namespacePath);
+    const sessionIdExpr = "this.sessionId";
+
+    const classLines: string[] = [];
+    const allImports = new Set<string>([
+        "java.util.concurrent.CompletableFuture",
+        "javax.annotation.processing.Generated",
+    ]);
+    let needsMapper = false;
+
+    // Generate sub-namespace fields
+    const subFields: string[] = [];
+    const subInits: string[] = [];
+    for (const [subKey, subTree] of tree.subspaces) {
+        const subClass = apiClassName(prefix, [...namespacePath, subKey]);
+        subFields.push(`    /** API methods for the {@code ${[...namespacePath, subKey].join(".")}} sub-namespace. */`);
+        subFields.push(`    public final ${subClass} ${subKey};`);
+        if (isSession) {
+            subInits.push(`        this.${subKey} = new ${subClass}(caller, sessionId);`);
+        } else {
+            subInits.push(`        this.${subKey} = new ${subClass}(caller);`);
+        }
+        // Recursively generate sub-namespace files
+        await generateNamespaceApiFile(prefix, [...namespacePath, subKey], subTree, isSession, packageName, packageDir);
+    }
+
+    // Collect result/param imports and generate methods
+    const methodLines: string[] = [];
+    for (const [key, method] of tree.methods) {
+        const resultClass = wrapperResultClassName(method);
+        const paramsClass = wrapperParamsClassName(method);
+        if (resultClass !== "Void") allImports.add(`${packageName}.${resultClass}`);
+        if (paramsClass) allImports.add(`${packageName}.${paramsClass}`);
+
+        const { lines, needsMapper: nm } = generateApiMethod(key, method, isSession, sessionIdExpr);
+        methodLines.push(...lines);
+        if (nm) needsMapper = true;
+    }
+
+    // Build class body
+    const qualifiedNs = namespacePath.length > 0 ? namespacePath.join(".") : prefix.toLowerCase();
+    classLines.push(COPYRIGHT);
+    classLines.push(``);
+    classLines.push(AUTO_GENERATED_HEADER);
+    classLines.push(GENERATED_FROM_API);
+    classLines.push(``);
+    classLines.push(`package ${packageName};`);
+    classLines.push(``);
+
+    // Add imports (skip same-package imports)
+    const sortedImports = [...allImports].filter(imp => !imp.startsWith(packageName + ".")).sort();
+    for (const imp of sortedImports) {
+        classLines.push(`import ${imp};`);
+    }
+    classLines.push(``);
+
+    // Javadoc for class
+    classLines.push(`/**`);
+    classLines.push(` * API methods for the {@code ${qualifiedNs}} namespace.`);
+    classLines.push(` *`);
+    classLines.push(` * @since 1.0.0`);
+    classLines.push(` */`);
+    classLines.push(GENERATED_ANNOTATION);
+    classLines.push(`public final class ${className} {`);
+    classLines.push(``);
+    if (needsMapper) {
+        classLines.push(`    private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = RpcMapper.INSTANCE;`);
+        classLines.push(``);
+    }
+    classLines.push(`    private final RpcCaller caller;`);
+    if (isSession) {
+        classLines.push(`    private final String sessionId;`);
+    }
+
+    // Sub-namespace fields
+    if (subFields.length > 0) {
+        classLines.push(``);
+        classLines.push(...subFields);
+    }
+
+    // Constructor
+    classLines.push(``);
+    if (isSession) {
+        classLines.push(`    /** @param caller the RPC transport function */`);
+        classLines.push(`    ${className}(RpcCaller caller, String sessionId) {`);
+        classLines.push(`        this.caller = caller;`);
+        classLines.push(`        this.sessionId = sessionId;`);
+    } else {
+        classLines.push(`    /** @param caller the RPC transport function */`);
+        classLines.push(`    ${className}(RpcCaller caller) {`);
+        classLines.push(`        this.caller = caller;`);
+    }
+    for (const init of subInits) {
+        classLines.push(init);
+    }
+    classLines.push(`    }`);
+    classLines.push(``);
+
+    // Methods
+    classLines.push(...methodLines);
+
+    classLines.push(`}`);
+    classLines.push(``);
+
+    await writeGeneratedFile(`${packageDir}/${className}.java`, classLines.join("\n"));
+    return className;
+}
+
+/**
+ * Generate ServerRpc.java or SessionRpc.java — the top-level wrapper class.
+ */
+async function generateRpcRootFile(
+    sectionName: string, // "server" | "session"
+    tree: NamespaceTree,
+    isSession: boolean,
+    packageName: string,
+    packageDir: string
+): Promise<void> {
+    const prefix = sectionName === "server" ? "Server" : "Session";
+    const rootClassName = prefix + "Rpc";
+    const sessionIdExpr = "this.sessionId";
+
+    const classLines: string[] = [];
+    const allImports = new Set<string>([
+        "java.util.concurrent.CompletableFuture",
+        "javax.annotation.processing.Generated",
+    ]);
+    let needsMapper = false;
+
+    // Sub-namespace fields and init lines
+    const subFields: string[] = [];
+    const subInits: string[] = [];
+    for (const [nsKey, nsTree] of tree.subspaces) {
+        const nsClass = apiClassName(prefix, [nsKey]);
+        subFields.push(`    /** API methods for the {@code ${nsKey}} namespace. */`);
+        subFields.push(`    public final ${nsClass} ${nsKey};`);
+        if (isSession) {
+            subInits.push(`        this.${nsKey} = new ${nsClass}(caller, sessionId);`);
+        } else {
+            subInits.push(`        this.${nsKey} = new ${nsClass}(caller);`);
+        }
+        // Generate the namespace API class file (recursively)
+        await generateNamespaceApiFile(prefix, [nsKey], nsTree, isSession, packageName, packageDir);
+    }
+
+    // Collect result/param imports and generate top-level method bodies
+    const methodLines: string[] = [];
+    for (const [key, method] of tree.methods) {
+        const resultClass = wrapperResultClassName(method);
+        const paramsClass = wrapperParamsClassName(method);
+        if (resultClass !== "Void") allImports.add(`${packageName}.${resultClass}`);
+        if (paramsClass) allImports.add(`${packageName}.${paramsClass}`);
+
+        const { lines, needsMapper: nm } = generateApiMethod(key, method, isSession, sessionIdExpr);
+        methodLines.push(...lines);
+        if (nm) needsMapper = true;
+    }
+
+    // Build file content
+    classLines.push(COPYRIGHT);
+    classLines.push(``);
+    classLines.push(AUTO_GENERATED_HEADER);
+    classLines.push(GENERATED_FROM_API);
+    classLines.push(``);
+    classLines.push(`package ${packageName};`);
+    classLines.push(``);
+
+    const sortedImports = [...allImports].filter(imp => !imp.startsWith(packageName + ".")).sort();
+    for (const imp of sortedImports) {
+        classLines.push(`import ${imp};`);
+    }
+    classLines.push(``);
+
+    classLines.push(`/**`);
+    if (isSession) {
+        classLines.push(` * Typed client for session-scoped RPC methods.`);
+        classLines.push(` * <p>`);
+        classLines.push(` * Provides strongly-typed access to all session-level API namespaces.`);
+        classLines.push(` * The {@code sessionId} is injected automatically into every call.`);
+        classLines.push(` * <p>`);
+        classLines.push(` * Obtain an instance by calling {@code new SessionRpc(caller, sessionId)}.`);
+    } else {
+        classLines.push(` * Typed client for server-level RPC methods.`);
+        classLines.push(` * <p>`);
+        classLines.push(` * Provides strongly-typed access to all server-level API namespaces.`);
+        classLines.push(` * <p>`);
+        classLines.push(` * Obtain an instance by calling {@code new ServerRpc(caller)}.`);
+    }
+    classLines.push(` *`);
+    classLines.push(` * @since 1.0.0`);
+    classLines.push(` */`);
+    classLines.push(GENERATED_ANNOTATION);
+    classLines.push(`public final class ${rootClassName} {`);
+    classLines.push(``);
+    if (needsMapper) {
+        classLines.push(`    private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = RpcMapper.INSTANCE;`);
+        classLines.push(``);
+    }
+    classLines.push(`    private final RpcCaller caller;`);
+    if (isSession) {
+        classLines.push(`    private final String sessionId;`);
+    }
+    if (subFields.length > 0) {
+        classLines.push(``);
+        classLines.push(...subFields);
+    }
+    classLines.push(``);
+
+    // Constructor
+    if (isSession) {
+        classLines.push(`    /**`);
+        classLines.push(`     * Creates a new session RPC client.`);
+        classLines.push(`     *`);
+        classLines.push(`     * @param caller    the RPC transport function (e.g., {@code jsonRpcClient::invoke})`);
+        classLines.push(`     * @param sessionId the session ID to inject into every request`);
+        classLines.push(`     */`);
+        classLines.push(`    public ${rootClassName}(RpcCaller caller, String sessionId) {`);
+        classLines.push(`        this.caller = caller;`);
+        classLines.push(`        this.sessionId = sessionId;`);
+    } else {
+        classLines.push(`    /**`);
+        classLines.push(`     * Creates a new server RPC client.`);
+        classLines.push(`     *`);
+        classLines.push(`     * @param caller the RPC transport function (e.g., {@code jsonRpcClient::invoke})`);
+        classLines.push(`     */`);
+        classLines.push(`    public ${rootClassName}(RpcCaller caller) {`);
+        classLines.push(`        this.caller = caller;`);
+    }
+    for (const init of subInits) {
+        classLines.push(init);
+    }
+    classLines.push(`    }`);
+    classLines.push(``);
+
+    // Top-level methods
+    classLines.push(...methodLines);
+
+    classLines.push(`}`);
+    classLines.push(``);
+
+    await writeGeneratedFile(`${packageDir}/${rootClassName}.java`, classLines.join("\n"));
+}
+
+/** Generate the RpcCaller functional interface */
+async function generateRpcCallerInterface(packageName: string, packageDir: string): Promise<void> {
+    const lines: string[] = [];
+    lines.push(COPYRIGHT);
+    lines.push(``);
+    lines.push(AUTO_GENERATED_HEADER);
+    lines.push(GENERATED_FROM_API);
+    lines.push(``);
+    lines.push(`package ${packageName};`);
+    lines.push(``);
+    lines.push(`import java.util.concurrent.CompletableFuture;`);
+    lines.push(`import javax.annotation.processing.Generated;`);
+    lines.push(``);
+    lines.push(`/**`);
+    lines.push(` * Interface for invoking JSON-RPC methods with typed responses.`);
+    lines.push(` * <p>`);
+    lines.push(` * Implementations delegate to the underlying transport layer`);
+    lines.push(` * (e.g., a {@code JsonRpcClient} instance). Use a method reference:`);
+    lines.push(` * <pre>{@code`);
+    lines.push(` * RpcCaller caller = jsonRpcClient::invoke;`);
+    lines.push(` * }</pre>`);
+    lines.push(` * Note: because the {@code invoke} method has a type parameter, this interface cannot`);
+    lines.push(` * be implemented using a lambda expression — use a method reference or anonymous class.`);
+    lines.push(` *`);
+    lines.push(` * @since 1.0.0`);
+    lines.push(` */`);
+    lines.push(GENERATED_ANNOTATION);
+    lines.push(`public interface RpcCaller {`);
+    lines.push(``);
+    lines.push(`    /**`);
+    lines.push(`     * Invokes a JSON-RPC method and returns a future for the typed response.`);
+    lines.push(`     *`);
+    lines.push(`     * @param <T>        the expected response type`);
+    lines.push(`     * @param method     the JSON-RPC method name`);
+    lines.push(`     * @param params     the request parameters (may be a {@code Map}, DTO record, or {@code JsonNode})`);
+    lines.push(`     * @param resultType the {@link Class} of the expected response type`);
+    lines.push(`     * @return a {@link CompletableFuture} that completes with the deserialized result`);
+    lines.push(`     */`);
+    lines.push(`    <T> CompletableFuture<T> invoke(String method, Object params, Class<T> resultType);`);
+    lines.push(`}`);
+    lines.push(``);
+
+    await writeGeneratedFile(`${packageDir}/RpcCaller.java`, lines.join("\n"));
+}
+
+/**
+ * Generate RpcMapper.java — a package-private holder for the shared ObjectMapper used
+ * when merging sessionId into session API call params.  All session API classes that
+ * need an ObjectMapper reference this single instance instead of instantiating their own.
+ */
+async function generateRpcMapperClass(packageName: string, packageDir: string): Promise<void> {
+    const lines: string[] = [];
+    lines.push(COPYRIGHT);
+    lines.push(``);
+    lines.push(AUTO_GENERATED_HEADER);
+    lines.push(GENERATED_FROM_API);
+    lines.push(``);
+    lines.push(`package ${packageName};`);
+    lines.push(``);
+    lines.push(`import javax.annotation.processing.Generated;`);
+    lines.push(``);
+    lines.push(`/**`);
+    lines.push(` * Package-private holder for the shared {@link com.fasterxml.jackson.databind.ObjectMapper}`);
+    lines.push(` * used by session API classes when merging {@code sessionId} into call parameters.`);
+    lines.push(` * <p>`);
+    lines.push(` * {@link com.fasterxml.jackson.databind.ObjectMapper} is thread-safe and expensive to`);
+    lines.push(` * instantiate, so a single shared instance is used across all generated API classes.`);
+    lines.push(` *`);
+    lines.push(` * @since 1.0.0`);
+    lines.push(` */`);
+    lines.push(GENERATED_ANNOTATION);
+    lines.push(`final class RpcMapper {`);
+    lines.push(``);
+    lines.push(`    static final com.fasterxml.jackson.databind.ObjectMapper INSTANCE =`);
+    lines.push(`        new com.fasterxml.jackson.databind.ObjectMapper();`);
+    lines.push(``);
+    lines.push(`    private RpcMapper() {}`);
+    lines.push(`}`);
+    lines.push(``);
+
+    await writeGeneratedFile(`${packageDir}/RpcMapper.java`, lines.join("\n"));
+}
+
+/** Main entry point for RPC wrapper generation */
+async function generateRpcWrappers(schemaPath: string): Promise<void> {
+    console.log("\n🔧 Generating RPC wrapper classes...");
+
+    const schemaContent = await fs.readFile(schemaPath, "utf-8");
+    const schema = JSON.parse(schemaContent) as {
+        server?: Record<string, unknown>;
+        session?: Record<string, unknown>;
+        clientSession?: Record<string, unknown>;
+    };
+
+    const packageName = "com.github.copilot.sdk.generated.rpc";
+    const packageDir = `src/generated/java/com/github/copilot/sdk/generated/rpc`;
+
+    // RpcCaller interface and shared ObjectMapper holder
+    await generateRpcCallerInterface(packageName, packageDir);
+    await generateRpcMapperClass(packageName, packageDir);
+
+    // Server-side wrappers
+    if (schema.server) {
+        const serverTree = buildNamespaceTree(schema.server);
+        await generateRpcRootFile("server", serverTree, false, packageName, packageDir);
+    }
+
+    // Session-side wrappers
+    if (schema.session) {
+        const sessionTree = buildNamespaceTree(schema.session);
+        await generateRpcRootFile("session", sessionTree, true, packageName, packageDir);
+    }
+
+    console.log(`✅ RPC wrapper classes generated`);
+}
+
 // ── Main entry point ──────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -792,6 +1311,7 @@ async function main(): Promise<void> {
 
     await generateSessionEvents(sessionEventsSchemaPath);
     await generateRpcTypes(apiSchemaPath);
+    await generateRpcWrappers(apiSchemaPath);
 
     console.log("\n✅ Java code generation complete!");
 }
