@@ -24,7 +24,7 @@ tools:
 safe-outputs:
   create-issue:
     title-prefix: "[reference-impl-sync] "
-    assignees: [copilot]
+    assignees: [copilot-swe-agent]
     labels: [reference-impl-sync]
     expires: 6
   close-issue:
@@ -59,8 +59,8 @@ Clone the reference implementation repository and compare commits:
 
 ```bash
 LAST_MERGE=$(cat .lastmerge)
-git clone --quiet https://github.com/github/copilot-sdk.git /tmp/gh-aw/agent/refererce-impl
-cd /tmp/gh-aw/agent/refererce-impl
+git clone --quiet https://github.com/github/copilot-sdk.git /tmp/gh-aw/agent/reference-impl
+cd /tmp/gh-aw/agent/reference-impl
 REFERENCE_IMPL_HEAD=$(git rev-parse HEAD)
 ```
 
@@ -84,8 +84,8 @@ Go to Step 3b.
 
 ### Step 3b: Changes detected
 
-1. Search for any open issues with the `refererce-impl-sync` label using the GitHub MCP tools.
-2. Close each existing open `refererce-impl-sync` issue using the `close_issue` safe-output tool with a comment: "Superseded by a newer reference implementation sync check."
+1. Search for any open issues with the `reference-impl-sync` label using the GitHub MCP tools.
+2. Close each existing open `reference-impl-sync` issue using the `close_issue` safe-output tool with a comment: "Superseded by a newer reference implementation sync check."
 3. Create a new issue using the `create_issue` safe-output tool with:
    - **Title:** `Reference Implementation sync: <COMMIT_COUNT> new commits (<YYYY-MM-DD>)`
    - **Body:** Include the following information:
