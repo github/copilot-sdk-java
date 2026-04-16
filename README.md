@@ -153,7 +153,7 @@ jbang https://github.com/github/copilot-sdk-java/blob/latest/jbang-example.java
 
 ## CI/CD Workflows
 
-This project uses several GitHub Actions workflows for building, testing, releasing, and syncing with the upstream SDK. 
+This project uses several GitHub Actions workflows for building, testing, releasing, and syncing with the reference implementation SDK. 
 
 See [WORKFLOWS.md](docs/WORKFLOWS.md) for a full overview and details on each workflow.
 
@@ -161,14 +161,14 @@ See [WORKFLOWS.md](docs/WORKFLOWS.md) for a full overview and details on each wo
 
 Contributions are welcome! Please see the [Contributing Guide](CONTRIBUTING.md) for details.
 
-### Agentic Upstream Merge and Sync
+### Agentic Reference Implementation Merge and Sync
 
-This SDK tracks the official [Copilot SDK](https://github.com/github/copilot-sdk) (.NET reference implementation) and ports changes to Java. The upstream merge process is automated with AI assistance:
+This SDK tracks the official [Copilot SDK](https://github.com/github/copilot-sdk) (.NET reference implementation) and ports changes to Java. The reference implementation merge process is automated with AI assistance:
 
-**Weekly automated sync** — A [scheduled GitHub Actions workflow](.github/workflows/weekly-upstream-sync.yml) runs every Monday at 5 AM ET. It checks for new upstream commits since the last merge (tracked in [`.lastmerge`](.lastmerge)), and if changes are found, creates an issue labeled `upstream-sync` and assigns it to the GitHub Copilot coding agent. Any previously open `upstream-sync` issues are automatically closed.
+**Weekly automated sync** — A [scheduled GitHub Actions workflow](.github/workflows/weekly-reference-impl-sync.yml) runs every Monday at 5 AM ET. It checks for new reference implementation commits since the last merge (tracked in [`.lastmerge`](.lastmerge)), and if changes are found, creates an issue labeled `reference-impl-sync` and assigns it to the GitHub Copilot coding agent. Any previously open `reference-impl-sync` issues are automatically closed.
 
-**Reusable prompt** — The merge workflow is defined in [`agentic-merge-upstream.prompt.md`](.github/prompts/agentic-merge-upstream.prompt.md). It can be triggered manually from:
-- **VS Code Copilot Chat** — type `/agentic-merge-upstream`
+**Reusable prompt** — The merge workflow is defined in [`agentic-merge-reference-impl.prompt.md`](.github/prompts/agentic-merge-reference-impl.prompt.md). It can be triggered manually from:
+- **VS Code Copilot Chat** — type `/agentic-merge-reference-impl`
 - **GitHub Copilot CLI** — use `copilot` CLI with the same skill reference
 
 ### Development Setup
@@ -212,3 +212,4 @@ MIT — see [LICENSE](LICENSE) for details.
 [![Star History Chart](https://api.star-history.com/svg?repos=github/copilot-sdk-java&type=Date)](https://www.star-history.com/#github/copilot-sdk-java&Date)
 
 ⭐ Drop a star if you find this useful!
+

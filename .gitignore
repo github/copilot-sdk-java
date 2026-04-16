@@ -12,3 +12,4 @@ changebundle.txt*
 .project
 .settings
 scripts/codegen/node_modules/
+*~

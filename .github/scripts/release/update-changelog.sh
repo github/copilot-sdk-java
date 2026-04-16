@@ -2,24 +2,24 @@
 set -e
 
 # Script to update CHANGELOG.md during release process
-# Usage: ./update-changelog.sh <version> [upstream-hash]
+# Usage: ./update-changelog.sh <version> [reference-impl-hash]
 # Example: ./update-changelog.sh 1.0.8
 # Example: ./update-changelog.sh 1.0.8 05e3c46c8c23130c9c064dc43d00ec78f7a75eab
 
 if [ -z "$1" ]; then
     echo "Error: Version argument required"
-    echo "Usage: $0 <version> [upstream-hash]"
+    echo "Usage: $0 <version> [reference-impl-hash]"
     exit 1
 fi
 
 VERSION="$1"
-UPSTREAM_HASH="${2:-}"
+REFERENCE_IMPL_HASH="${2:-}"
 CHANGELOG_FILE="${CHANGELOG_FILE:-CHANGELOG.md}"
 RELEASE_DATE=$(date +%Y-%m-%d)
 
 echo "Updating CHANGELOG.md for version ${VERSION} (${RELEASE_DATE})"
-if [ -n "$UPSTREAM_HASH" ]; then
-    echo "  Upstream SDK sync: ${UPSTREAM_HASH:0:7}"
+if [ -n "$REFERENCE_IMPL_HASH" ]; then
+    echo "  Reference implementation SDK sync: ${REFERENCE_IMPL_HASH:0:7}"
 fi
 
 # Check if CHANGELOG.md exists
@@ -38,7 +38,7 @@ fi
 TEMP_FILE=$(mktemp)
 
 # Process the CHANGELOG
-awk -v version="$VERSION" -v date="$RELEASE_DATE" -v upstream_hash="$UPSTREAM_HASH" '
+awk -v version="$VERSION" -v date="$RELEASE_DATE" -v REFERENCE_IMPL_HASH="$REFERENCE_IMPL_HASH" '
 BEGIN {
     unreleased_found = 0
     content_found = 0
@@ -65,26 +65,26 @@ links_section && repo_url == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?\]:
     if (!unreleased_found) {
         print "## [Unreleased]"
         print ""
-        if (upstream_hash != "") {
-            short_hash = substr(upstream_hash, 1, 7)
-            print "> **Upstream sync:** [`github/copilot-sdk@" short_hash "`](https://github.com/github/copilot-sdk/commit/" upstream_hash ")"
+        if (REFERENCE_IMPL_HASH != "") {
+            short_hash = substr(REFERENCE_IMPL_HASH, 1, 7)
+            print "> **Reference implementation sync:** [`github/copilot-sdk@" short_hash "`](https://github.com/github/copilot-sdk/commit/" REFERENCE_IMPL_HASH ")"
             print ""
         }
         print "## [" version "] - " date
-        if (upstream_hash != "") {
+        if (REFERENCE_IMPL_HASH != "") {
             print ""
-            print "> **Upstream sync:** [`github/copilot-sdk@" short_hash "`](https://github.com/github/copilot-sdk/commit/" upstream_hash ")"
+            print "> **Reference implementation sync:** [`github/copilot-sdk@" short_hash "`](https://github.com/github/copilot-sdk/commit/" REFERENCE_IMPL_HASH ")"
         }
         unreleased_found = 1
-        skip_old_upstream = 1
+        skip_old_reference_impl = 1
         next
     }
 }
 
-# Skip the old upstream sync line and surrounding blank lines from the previous [Unreleased] section
-skip_old_upstream && /^[[:space:]]*$/ { next }
-skip_old_upstream && /^> \*\*Upstream sync:\*\*/ { next }
-skip_old_upstream && !/^[[:space:]]*$/ && !/^> \*\*Upstream sync:\*\*/ { skip_old_upstream = 0 }
+# Skip the old Reference implementation sync line and surrounding blank lines from the previous [Unreleased] section
+skip_old_reference_impl && /^[[:space:]]*$/ { next }
+skip_old_reference_impl && /^> \*\*Reference implementation sync:\*\*/ { next }
+skip_old_reference_impl && !/^[[:space:]]*$/ && !/^> \*\*Reference implementation sync:\*\*/ { skip_old_reference_impl = 0 }
 
 # Capture the first version link to get the previous version
 links_section && first_version_link == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?\]:/ {
@@ -119,3 +119,4 @@ echo "✓ CHANGELOG.md updated successfully"
 echo "  - Added version ${VERSION} with date ${RELEASE_DATE}"
 echo "  - Created new [Unreleased] section"
 echo "  - Updated version comparison links"
+

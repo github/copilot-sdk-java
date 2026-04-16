@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────────────────────
-# merge-upstream-diff.sh
+# merge-reference-impl-diff.sh
 #
-# Generates a detailed diff analysis of upstream changes since
+# Generates a detailed diff analysis of reference implementation changes since
 # the last merge, grouped by area of interest:
 #   • .NET source (primary reference)
 #   • .NET tests
@@ -10,10 +10,10 @@
 #   • Documentation
 #   • Protocol / config files
 #
-# Usage:  ./.github/scripts/upstream-sync/merge-upstream-diff.sh [--full]
+# Usage:  ./.github/scripts/reference-impl-sync/merge-reference-impl-diff.sh [--full]
 #         --full   Show actual diffs, not just stats
 #
-# Requires: .merge-env written by merge-upstream-start.sh
+# Requires: .merge-env written by merge-reference-impl-start.sh
 # ──────────────────────────────────────────────────────────────
 set -euo pipefail
 
@@ -21,7 +21,7 @@ ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
 ENV_FILE="$ROOT_DIR/.merge-env"
 
 if [[ ! -f "$ENV_FILE" ]]; then
-    echo "❌ $ENV_FILE not found. Run ./.github/scripts/upstream-sync/merge-upstream-start.sh first."
+    echo "❌ $ENV_FILE not found. Run ./.github/scripts/reference-impl-sync/merge-reference-impl-start.sh first."
     exit 1
 fi
 
@@ -33,13 +33,13 @@ if [[ "${1:-}" == "--full" ]]; then
     SHOW_FULL=true
 fi
 
-cd "$UPSTREAM_DIR"
+cd "$REFERENCE_IMPL_DIR"
 git fetch origin main 2>/dev/null
 
 RANGE="$LAST_MERGE_COMMIT..origin/main"
 
 echo "════════════════════════════════════════════════════════════"
-echo "  Upstream diff analysis: $RANGE"
+echo "  Reference implementation diff analysis: $RANGE"
 echo "════════════════════════════════════════════════════════════"
 
 # ── Commit log ────────────────────────────────────────────────
@@ -82,5 +82,5 @@ section "Other files"                     "README.md" "CONTRIBUTING.md" "SECURIT
 echo "════════════════════════════════════════════════════════════"
 echo "  To see full diffs: $0 --full"
 echo "  To see a specific path:"
-echo "    cd $UPSTREAM_DIR && git diff $RANGE -- <path>"
+echo "    cd $REFERENCE_IMPL_DIR && git diff $RANGE -- <path>"
 echo "════════════════════════════════════════════════════════════"
