@@ -153,7 +153,7 @@ jbang https://github.com/github/copilot-sdk-java/blob/latest/jbang-example.java
 
 ## CI/CD Workflows
 
-This project uses several GitHub Actions workflows for building, testing, releasing, and syncing with the upstream SDK. 
+This project uses several GitHub Actions workflows for building, testing, releasing, and syncing with the reference implementation SDK. 
 
 See [WORKFLOWS.md](docs/WORKFLOWS.md) for a full overview and details on each workflow.
 
@@ -212,3 +212,4 @@ MIT — see [LICENSE](LICENSE) for details.
 [![Star History Chart](https://api.star-history.com/svg?repos=github/copilot-sdk-java&type=Date)](https://www.star-history.com/#github/copilot-sdk-java&Date)
 
 ⭐ Drop a star if you find this useful!
+

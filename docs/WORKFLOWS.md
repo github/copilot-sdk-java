@@ -21,9 +21,9 @@ Runs on every push to `main`, on pull requests, and in merge groups. Also runs w
 
 Steps:
 1. Checks code formatting with Spotless
-2. Compiles the SDK and clones the upstream test harness
+2. Compiles the SDK and clones the reference implementation test harness
 3. Verifies Javadoc generation
-4. Installs the Copilot CLI from the cloned upstream SDK
+4. Installs the Copilot CLI from the cloned reference implementation SDK
 5. Runs the full test suite with `mvn verify`
 6. Uploads test results (JaCoCo + Surefire) as artifacts for site generation
 
@@ -98,3 +98,4 @@ Sets up:
 - JDK 17 (Temurin)
 - `gh-aw` CLI extension
 - Maven cache
+
