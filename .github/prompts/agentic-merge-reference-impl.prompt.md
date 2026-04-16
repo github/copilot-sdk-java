@@ -56,7 +56,7 @@ This writes a `.merge-env` file used by the other scripts. It outputs:
 - The reference-impl dir path
 - A short log of reference implementation commits since `.lastmerge`
 
-## Step 2: Analyze Upstream Changes
+## Step 2: Analyze reference implementation Changes
 
 Run the diff script for a detailed breakdown by area:
 
@@ -96,7 +96,7 @@ For each change in the reference implementation diff, determine:
 
 ### Key Files to Compare
 
-| Upstream (.NET)                    | Java SDK Equivalent                                    |
+| reference implementation (.NET)                    | Java SDK Equivalent                                    |
 |------------------------------------|--------------------------------------------------------|
 | `dotnet/src/Client.cs`             | `src/main/java/com/github/copilot/sdk/CopilotClient.java` |
 | `dotnet/src/Session.cs`            | `src/main/java/com/github/copilot/sdk/CopilotSession.java` |
@@ -121,7 +121,7 @@ Before modifying any code:
 2. **Identify the Java equivalent approach** - Don't replicate C# patterns; find the idiomatic Java way
 3. **Check for existing abstractions** - The Java SDK may already have mechanisms that differ from .NET
 4. **Preserve backward compatibility** - Existing API signatures should not break unless absolutely necessary
-5. **When in doubt, match existing code** - Follow what's already in the Java SDK, not the upstream
+5. **When in doubt, match existing code** - Follow what's already in the Java SDK, not the reference implementation
 
 ### Commit Changes Incrementally
 
@@ -181,8 +181,8 @@ After porting implementation changes, **always check for new or updated tests** 
 
 ```bash
 cd "$TEMP_DIR/copilot-sdk"
-git diff "$LAST_MERGE_COMMIT"..origin/main --stat -- dotnet/test/
-git diff "$LAST_MERGE_COMMIT"..origin/main --stat -- test/snapshots/
+git diff "$LAST_REFERENCE_IMPL_COMMIT"..origin/main --stat -- dotnet/test/
+git diff "$LAST_REFERENCE_IMPL_COMMIT"..origin/main --stat -- test/snapshots/
 ```
 
 ### Port Test Cases
@@ -196,7 +196,7 @@ For each new or modified test file in `dotnet/test/`:
 
 ### Test File Mapping
 
-| Upstream Test (.NET)        | Java SDK Test                                          |
+| reference implementation Test (.NET)        | Java SDK Test                                          |
 |-----------------------------|--------------------------------------------------------|
 | `dotnet/test/AskUserTests.cs`  | `src/test/java/com/github/copilot/sdk/AskUserTest.java`  |
 | `dotnet/test/HooksTests.cs`    | `src/test/java/com/github/copilot/sdk/HooksTest.java`    |
@@ -209,7 +209,7 @@ New test snapshots are stored in `test/snapshots/` in the reference implementati
 
 If tests fail with errors like `TypeError: Cannot read properties of undefined`, the test harness may not yet support the new RPC methods. In this case:
 
-1. **Mark tests as `@Disabled`** with a clear reason (e.g., `@Disabled("Requires test harness update with X support - see upstream PR #NNN")`)
+1. **Mark tests as `@Disabled`** with a clear reason (e.g., `@Disabled("Requires test harness update with X support - see reference implementation PR #NNN")`)
 2. **Document the dependency** in the test class Javadoc
 3. **Enable tests later** once the harness is updated
 
@@ -403,7 +403,7 @@ Before finishing:
 - [ ] New branch created from `main`
 - [ ] Copilot CLI updated to latest version
 - [ ] README.md updated with minimum CLI version requirement
-- [ ] Upstream repository cloned
+- [ ] reference implementation repository cloned
 - [ ] Diff analyzed between `.lastmerge` commit and HEAD
 - [ ] New features/fixes identified
 - [ ] Changes ported to Java SDK following conventions
@@ -437,3 +437,4 @@ Before finishing:
 - Uses JUnit 5 for testing
 - **Java SDK design decisions take precedence over reference implementation patterns**
 - **Adapt reference implementation changes to fit Java idioms, not the other way around**
+
