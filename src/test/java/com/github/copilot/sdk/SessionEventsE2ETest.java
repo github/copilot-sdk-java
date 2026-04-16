@@ -240,12 +240,24 @@ public class SessionEventsE2ETest {
         ctx.configureForTest("tools", "invokes_built_in_tools");
 
         var eventTypes = new ArrayList<String>();
+        // Use a separate completion signal so we know when THIS handler has seen
+        // session.idle, rather than relying on sendAndWait's internal subscription.
+        // sendAndWait also listens for session.idle internally. Because eventHandlers
+        // is a ConcurrentHashMap Set (non-deterministic iteration order), the
+        // sendAndWait handler can fire BEFORE this listener and unblock the test
+        // thread before session.idle has been added to eventTypes — a race condition.
+        var idleReceived = new java.util.concurrent.CompletableFuture<Void>();
 
         try (CopilotClient client = ctx.createClient()) {
             CopilotSession session = client
                     .createSession(new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
 
-            session.on(event -> eventTypes.add(event.getType()));
+            session.on(event -> {
+                eventTypes.add(event.getType());
+                if (event instanceof SessionIdleEvent) {
+                    idleReceived.complete(null);
+                }
+            });
 
             // Create the README.md file expected by the snapshot - must have ONLY one line
             // to match the snapshot's expected tool response: "1. # ELIZA, the only chatbot
@@ -256,6 +268,11 @@ public class SessionEventsE2ETest {
             // Use prompt that matches the snapshot
             session.sendAndWait(new MessageOptions().setPrompt("What's the first line of README.md in this directory?"))
                     .get(60, TimeUnit.SECONDS);
+
+            // Wait for this listener to also receive session.idle. sendAndWait can return
+            // slightly before our listener sees the event due to concurrent dispatch
+            // ordering.
+            idleReceived.get(5, TimeUnit.SECONDS);
 
             // Verify expected event types are present
             assertTrue(eventTypes.contains("user.message"), "Should have user.message");
