@@ -2,13 +2,13 @@
 set -e
 
 # Script to update CHANGELOG.md during release process
-# Usage: ./update-changelog.sh <version> [reference implementation-hash]
+# Usage: ./update-changelog.sh <version> [reference-impl-hash]
 # Example: ./update-changelog.sh 1.0.8
 # Example: ./update-changelog.sh 1.0.8 05e3c46c8c23130c9c064dc43d00ec78f7a75eab
 
 if [ -z "$1" ]; then
     echo "Error: Version argument required"
-    echo "Usage: $0 <version> [reference implementation-hash]"
+    echo "Usage: $0 <version> [reference-impl-hash]"
     exit 1
 fi
 
