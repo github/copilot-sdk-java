@@ -1,4 +1,4 @@
-name: "Weekly Upstream Sync"
+name: "Weekly Reference Implementation Sync"
 
 on:
   schedule:
@@ -19,39 +19,39 @@ env:
 jobs:
 
   check-and-sync:
-    name: "Check upstream & trigger Copilot merge"
+    name: "Check reference implementation & trigger Copilot merge"
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Check for upstream changes
+      - name: Check for reference implementation changes
         id: check
         run: |
           LAST_MERGE=$(cat .lastmerge)
           echo "Last merged commit: $LAST_MERGE"
 
-          git clone --quiet https://github.com/github/copilot-sdk.git /tmp/upstream
-          cd /tmp/upstream
+          git clone --quiet https://github.com/github/copilot-sdk.git /tmp/reference-impl
+          cd /tmp/reference-impl
 
-          UPSTREAM_HEAD=$(git rev-parse HEAD)
-          echo "Upstream HEAD: $UPSTREAM_HEAD"
+          REFERENCE_IMPL_HEAD=$(git rev-parse HEAD)
+          echo "Reference implementation HEAD: $REFERENCE_IMPL_HEAD"
 
           echo "last_merge=$LAST_MERGE" >> "$GITHUB_OUTPUT"
 
-          if [ "$LAST_MERGE" = "$UPSTREAM_HEAD" ]; then
-            echo "No new upstream changes since last merge."
+          if [ "$LAST_MERGE" = "$REFERENCE_IMPL_HEAD" ]; then
+            echo "No new reference implementation changes since last merge."
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
-            COMMIT_COUNT=$(git rev-list --count "$LAST_MERGE".."$UPSTREAM_HEAD")
-            echo "Found $COMMIT_COUNT new upstream commits."
+            COMMIT_COUNT=$(git rev-list --count "$LAST_MERGE".."$REFERENCE_IMPL_HEAD")
+            echo "Found $COMMIT_COUNT new reference implementation commits."
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
             echo "commit_count=$COMMIT_COUNT" >> "$GITHUB_OUTPUT"
-            echo "upstream_head=$UPSTREAM_HEAD" >> "$GITHUB_OUTPUT"
+            echo "reference_impl_head=$REFERENCE_IMPL_HEAD" >> "$GITHUB_OUTPUT"
 
             # Generate a short summary of changes
-            SUMMARY=$(git log --oneline "$LAST_MERGE".."$UPSTREAM_HEAD" | head -20)
+            SUMMARY=$(git log --oneline "$LAST_MERGE".."$REFERENCE_IMPL_HEAD" | head -20)
             {
               echo "summary<<EOF"
               echo "$SUMMARY"
@@ -59,13 +59,13 @@ jobs:
             } >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Close previous upstream-sync issues
+      - name: Close previous reference-impl-sync issues
         if: steps.check.outputs.has_changes == 'true'
         run: |
-          # Find all open issues with the upstream-sync label
+          # Find all open issues with the reference-impl-sync label
           OPEN_ISSUES=$(gh issue list \
             --repo "${{ github.repository }}" \
-            --label "upstream-sync" \
+            --label "reference-impl-sync" \
             --state open \
             --json number \
             --jq '.[].number')
@@ -74,27 +74,27 @@ jobs:
             echo "Closing superseded issue #${ISSUE_NUM}"
             gh issue comment "$ISSUE_NUM" \
               --repo "${{ github.repository }}" \
-              --body "Superseded by a newer upstream sync issue. Closing this one."
+              --body "Superseded by a newer reference implementation sync issue. Closing this one."
             gh issue close "$ISSUE_NUM" \
               --repo "${{ github.repository }}" \
               --reason "not planned"
           done
 
-      - name: Close stale upstream-sync issues (no changes)
+      - name: Close stale reference-impl-sync issues (no changes)
         if: steps.check.outputs.has_changes == 'false'
         run: |
           OPEN_ISSUES=$(gh issue list \
             --repo "${{ github.repository }}" \
-            --label "upstream-sync" \
+            --label "reference-impl-sync" \
             --state open \
             --json number \
             --jq '.[].number')
 
           for ISSUE_NUM in $OPEN_ISSUES; do
-            echo "Closing stale issue #${ISSUE_NUM} — upstream is up to date"
+            echo "Closing stale issue #${ISSUE_NUM} — reference implementation is up to date"
             gh issue comment "$ISSUE_NUM" \
               --repo "${{ github.repository }}" \
-              --body "No new upstream changes detected. The Java SDK is up to date. Closing."
+              --body "No new reference implementation changes detected. The Java SDK is up to date. Closing."
             gh issue close "$ISSUE_NUM" \
               --repo "${{ github.repository }}" \
               --reason "completed"
@@ -108,18 +108,18 @@ jobs:
         run: |
           COMMIT_COUNT="${{ steps.check.outputs.commit_count }}"
           LAST_MERGE="${{ steps.check.outputs.last_merge }}"
-          UPSTREAM_HEAD="${{ steps.check.outputs.upstream_head }}"
+          REFERENCE_IMPL_HEAD="${{ steps.check.outputs.reference_impl_head }}"
           DATE=$(date -u +"%Y-%m-%d")
           REPO="${{ github.repository }}"
 
-          BODY="## Automated Upstream Sync
+          BODY="## Automated Reference Implementation Sync
 
           There are **${COMMIT_COUNT}** new commits in the [official Copilot SDK](https://github.com/github/copilot-sdk) since the last merge.
 
           - **Last merged commit:** [\`${LAST_MERGE}\`](https://github.com/github/copilot-sdk/commit/${LAST_MERGE})
-          - **Upstream HEAD:** [\`${UPSTREAM_HEAD}\`](https://github.com/github/copilot-sdk/commit/${UPSTREAM_HEAD})
+          - **Reference implementation HEAD:** [\`${REFERENCE_IMPL_HEAD}\`](https://github.com/github/copilot-sdk/commit/${REFERENCE_IMPL_HEAD})
 
-          ### Recent upstream commits
+          ### Recent reference implementation commits
 
           \`\`\`
           ${SUMMARY}
@@ -127,14 +127,14 @@ jobs:
 
           ### Instructions
 
-          Follow the [agentic-merge-upstream](.github/prompts/agentic-merge-upstream.prompt.md) prompt to port these changes to the Java SDK."
+          Follow the [agentic-merge-reference-impl](.github/prompts/agentic-merge-reference-impl.prompt.md) prompt to port these changes to the Java SDK."
 
           # Create the issue and assign to Copilot coding agent
           ISSUE_URL=$(gh issue create \
             --repo "$REPO" \
-            --title "Upstream sync: ${COMMIT_COUNT} new commits (${DATE})" \
+            --title "Reference implementation sync: ${COMMIT_COUNT} new commits (${DATE})" \
             --body "$BODY" \
-            --label "upstream-sync" \
+            --label "reference-impl-sync" \
             --assignee "copilot-swe-agent")
 
           echo "issue_url=$ISSUE_URL" >> "$GITHUB_OUTPUT"
@@ -148,25 +148,25 @@ jobs:
           HAS_CHANGES="${{ steps.check.outputs.has_changes }}"
           COMMIT_COUNT="${{ steps.check.outputs.commit_count }}"
           LAST_MERGE="${{ steps.check.outputs.last_merge }}"
-          UPSTREAM_HEAD="${{ steps.check.outputs.upstream_head }}"
+          REFERENCE_IMPL_HEAD="${{ steps.check.outputs.reference_impl_head }}"
           ISSUE_URL="${{ steps.create-issue.outputs.issue_url }}"
 
           {
-            echo "## Weekly Upstream Sync"
+            echo "## Weekly Reference Implementation Sync"
             echo ""
             if [ "$HAS_CHANGES" = "true" ]; then
-              echo "### ✅ New upstream changes detected"
+              echo "### ✅ New reference implementation changes detected"
               echo ""
               echo "| | |"
               echo "|---|---|"
               echo "| **New commits** | ${COMMIT_COUNT} |"
               echo "| **Last merged** | \`${LAST_MERGE:0:12}\` |"
-              echo "| **Upstream HEAD** | \`${UPSTREAM_HEAD:0:12}\` |"
+              echo "| **Reference implementation HEAD** | \`${REFERENCE_IMPL_HEAD:0:12}\` |"
               echo ""
               echo "An issue has been created and assigned to the Copilot coding agent: "
               echo "  -> ${ISSUE_URL}"
               echo ""
-              echo "### Recent upstream commits"
+              echo "### Recent reference implementation commits"
               echo ""
               echo '```'
               echo "$SUMMARY"
@@ -174,7 +174,7 @@ jobs:
             else
               echo "### ⏭️ No changes"
               echo ""
-              echo "The Java SDK is already up to date with the upstream Copilot SDK."
+              echo "The Java SDK is already up to date with the reference implementation Copilot SDK."
               echo ""
               echo "**Last merged commit:** \`${LAST_MERGE:0:12}\`"
             fi

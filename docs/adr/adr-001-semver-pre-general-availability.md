@@ -20,8 +20,9 @@ We took an architectural decision to enable us to pursue investigating this poss
 
 Chosen option: "Track SemVer of reference implementation, with one exception.", because this enables us to pursue Virtual Threads without delaying the first public release of `copilot-sdk-java`. Also, we're supposed to be aggressively modernizing our customers.
 
-To some extent, I would use qualifiers to mark a release as having some feature that is awaiting an upstream full release before it goes full ga, i.e you put out 0.1.46-virtualthreads.3 until upstream is ready to move to 0.2.0 then you release your virtual threads change and go 0.2.0. So I would make your agreement that your version numbers would match with the exception of qualifiers that you might add in exceptional circumstances.
+To some extent, I would use qualifiers to mark a release as having some feature that is awaiting a reference implementation full release before it goes full ga, i.e you put out 0.1.46-virtualthreads.3 until reference implementation is ready to move to 0.2.0 then you release your virtual threads change and go 0.2.0. So I would make your agreement that your version numbers would match with the exception of qualifiers that you might add in exceptional circumstances.
 
 ## Related work items
 
 - https://devdiv.visualstudio.com/DevDiv/_workitems/edit/2745172
+

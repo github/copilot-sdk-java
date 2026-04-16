@@ -108,14 +108,14 @@ jobs:
               run: |
                   VERSION="${{ steps.versions.outputs.release_version }}"
                   
-                  # Read the upstream SDK commit hash that this release is synced to
-                  UPSTREAM_HASH=$(cat .lastmerge)
-                  UPSTREAM_SHORT="${UPSTREAM_HASH:0:7}"
-                  UPSTREAM_URL="https://github.com/github/copilot-sdk/commit/${UPSTREAM_HASH}"
-                  echo "Upstream SDK sync: ${UPSTREAM_SHORT} (${UPSTREAM_URL})"
+                  # Read the reference implementation SDK commit hash that this release is synced to
+                  REFERENCE_IMPL_HASH=$(cat .lastmerge)
+                  REFERENCE_IMPL_SHORT="${REFERENCE_IMPL_HASH:0:7}"
+                  REFERENCE_IMPL_URL="https://github.com/github/copilot-sdk/commit/${REFERENCE_IMPL_HASH}"
+                  echo "Reference implementation SDK sync: ${REFERENCE_IMPL_SHORT} (${REFERENCE_IMPL_URL})"
                   
-                  # Update CHANGELOG.md with release version and upstream sync hash
-                  ./.github/scripts/release/update-changelog.sh "${VERSION}" "${UPSTREAM_HASH}"
+                  # Update CHANGELOG.md with release version and Reference implementation sync hash
+                  ./.github/scripts/release/update-changelog.sh "${VERSION}" "${REFERENCE_IMPL_HASH}"
                   
                   # Update version in README.md (supports versions like 1.0.0 and 0.1.32-java.0)
                   sed -i "s|<version>[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}</version>|<version>${VERSION}</version>|g" README.md
@@ -249,3 +249,4 @@ jobs:
                     -f publish_as_latest=true
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

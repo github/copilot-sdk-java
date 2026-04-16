@@ -21,12 +21,12 @@
 #
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
-# Weekly upstream sync workflow. Checks for new commits in the official
+# Weekly reference implementation sync workflow. Checks for new commits in the official
 # Copilot SDK (github/copilot-sdk) and assigns to Copilot to port changes.
 #
 # gh-aw-metadata: {"schema_version":"v1","frontmatter_hash":"fc14b09206c7aeafcd52c843adce996a1c14cf15875f9b647ef71f631b3b296e","compiler_version":"v0.51.6"}
 
-name: "Weekly Upstream Sync Agentic Workflow"
+name: "Weekly Reference Implementation Sync Agentic Workflow"
 "on":
   schedule:
   - cron: "39 8 * * 2"
@@ -38,7 +38,7 @@ permissions: {}
 concurrency:
   group: "gh-aw-${{ github.workflow }}"
 
-run-name: "Weekly Upstream Sync Agentic Workflow"
+run-name: "Weekly Reference Implementation Sync Agentic Workflow"
 
 jobs:
   activation:
@@ -64,7 +64,7 @@ jobs:
           GH_AW_INFO_VERSION: ""
           GH_AW_INFO_AGENT_VERSION: "0.0.420"
           GH_AW_INFO_CLI_VERSION: "v0.51.6"
-          GH_AW_INFO_WORKFLOW_NAME: "Weekly Upstream Sync Agentic Workflow"
+          GH_AW_INFO_WORKFLOW_NAME: "Weekly Reference Implementation Sync Agentic Workflow"
           GH_AW_INFO_EXPERIMENTAL: "false"
           GH_AW_INFO_SUPPORTS_TOOLS_ALLOWLIST: "true"
           GH_AW_INFO_STAGED: "false"
@@ -95,7 +95,7 @@ jobs:
       - name: Check workflow file timestamps
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
-          GH_AW_WORKFLOW_FILE: "weekly-upstream-sync.lock.yml"
+          GH_AW_WORKFLOW_FILE: "weekly-reference-impl-sync.lock.yml"
         with:
           script: |
             const { setupGlobals } = require('/opt/gh-aw/actions/setup_globals.cjs');
@@ -161,7 +161,7 @@ jobs:
           </system>
           GH_AW_PROMPT_EOF
           cat << 'GH_AW_PROMPT_EOF'
-          {{#runtime-import .github/workflows/weekly-upstream-sync.md}}
+          {{#runtime-import .github/workflows/weekly-reference-impl-sync.md}}
           GH_AW_PROMPT_EOF
           } > "$GH_AW_PROMPT"
       - name: Interpolate variables and render templates
@@ -243,7 +243,7 @@ jobs:
       GH_AW_SAFE_OUTPUTS: /opt/gh-aw/safeoutputs/outputs.jsonl
       GH_AW_SAFE_OUTPUTS_CONFIG_PATH: /opt/gh-aw/safeoutputs/config.json
       GH_AW_SAFE_OUTPUTS_TOOLS_PATH: /opt/gh-aw/safeoutputs/tools.json
-      GH_AW_WORKFLOW_ID_SANITIZED: weeklyupstreamsync
+      GH_AW_WORKFLOW_ID_SANITIZED: weeklyreferenceimplsync
     outputs:
       checkout_pr_success: ${{ steps.checkout-pr.outputs.checkout_pr_success || 'true' }}
       detection_conclusion: ${{ steps.detection_conclusion.outputs.conclusion }}
@@ -311,12 +311,12 @@ jobs:
           mkdir -p /tmp/gh-aw/safeoutputs
           mkdir -p /tmp/gh-aw/mcp-logs/safeoutputs
           cat > /opt/gh-aw/safeoutputs/config.json << 'GH_AW_SAFE_OUTPUTS_CONFIG_EOF'
-          {"add_comment":{"max":10,"target":"*"},"assign_to_agent":{"default_agent":"copilot","max":1,"target":"*"},"close_issue":{"max":10,"required_labels":["upstream-sync"],"target":"*"},"create_issue":{"expires":144,"max":1},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
+          {"add_comment":{"max":10,"target":"*"},"assign_to_agent":{"default_agent":"copilot","max":1,"target":"*"},"close_issue":{"max":10,"required_labels":["reference-impl-sync"],"target":"*"},"create_issue":{"expires":144,"max":1},"missing_data":{},"missing_tool":{},"noop":{"max":1}}
           GH_AW_SAFE_OUTPUTS_CONFIG_EOF
           cat > /opt/gh-aw/safeoutputs/tools.json << 'GH_AW_SAFE_OUTPUTS_TOOLS_EOF'
           [
             {
-              "description": "Create a new GitHub issue for tracking bugs, feature requests, or tasks. Use this for actionable work items that need assignment, labeling, and status tracking. For reports, announcements, or status updates that don't require task tracking, use create_discussion instead. CONSTRAINTS: Maximum 1 issue(s) can be created. Title will be prefixed with \"[upstream-sync] \". Labels [upstream-sync] will be automatically added. Assignees [copilot] will be automatically assigned.",
+              "description": "Create a new GitHub issue for tracking bugs, feature requests, or tasks. Use this for actionable work items that need assignment, labeling, and status tracking. For reports, announcements, or status updates that don't require task tracking, use create_discussion instead. CONSTRAINTS: Maximum 1 issue(s) can be created. Title will be prefixed with \"[reference-impl-sync] \". Labels [reference-impl-sync] will be automatically added. Assignees [copilot] will be automatically assigned.",
               "inputSchema": {
                 "additionalProperties": false,
                 "properties": {
@@ -958,8 +958,8 @@ jobs:
         if: always() && steps.detection_guard.outputs.run_detection == 'true'
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
-          WORKFLOW_NAME: "Weekly Upstream Sync Agentic Workflow"
-          WORKFLOW_DESCRIPTION: "Weekly upstream sync workflow. Checks for new commits in the official\nCopilot SDK (github/copilot-sdk) and assigns to Copilot to port changes."
+          WORKFLOW_NAME: "Weekly Reference Implementation Sync Agentic Workflow"
+          WORKFLOW_DESCRIPTION: "Weekly reference implementation sync workflow. Checks for new commits in the official\nCopilot SDK (github/copilot-sdk) and assigns to Copilot to port changes."
           HAS_PATCH: ${{ steps.collect_output.outputs.has_patch }}
         with:
           script: |
@@ -1077,7 +1077,7 @@ jobs:
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
           GH_AW_NOOP_MAX: "1"
-          GH_AW_WORKFLOW_NAME: "Weekly Upstream Sync Agentic Workflow"
+          GH_AW_WORKFLOW_NAME: "Weekly Reference Implementation Sync Agentic Workflow"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1090,7 +1090,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Weekly Upstream Sync Agentic Workflow"
+          GH_AW_WORKFLOW_NAME: "Weekly Reference Implementation Sync Agentic Workflow"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
@@ -1103,10 +1103,10 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Weekly Upstream Sync Agentic Workflow"
+          GH_AW_WORKFLOW_NAME: "Weekly Reference Implementation Sync Agentic Workflow"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
-          GH_AW_WORKFLOW_ID: "weekly-upstream-sync"
+          GH_AW_WORKFLOW_ID: "weekly-reference-impl-sync"
           GH_AW_SECRET_VERIFICATION_RESULT: ${{ needs.activation.outputs.secret_verification_result }}
           GH_AW_CHECKOUT_PR_SUCCESS: ${{ needs.agent.outputs.checkout_pr_success }}
           GH_AW_ASSIGNMENT_ERRORS: ${{ needs.safe_outputs.outputs.assign_to_agent_assignment_errors }}
@@ -1124,7 +1124,7 @@ jobs:
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           GH_AW_AGENT_OUTPUT: ${{ env.GH_AW_AGENT_OUTPUT }}
-          GH_AW_WORKFLOW_NAME: "Weekly Upstream Sync Agentic Workflow"
+          GH_AW_WORKFLOW_NAME: "Weekly Reference Implementation Sync Agentic Workflow"
           GH_AW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GH_AW_AGENT_CONCLUSION: ${{ needs.agent.result }}
           GH_AW_NOOP_MESSAGE: ${{ steps.noop.outputs.noop_message }}
@@ -1150,8 +1150,8 @@ jobs:
     env:
       GH_AW_CALLER_WORKFLOW_ID: "${{ github.repository }}/${{ github.workflow }}"
       GH_AW_ENGINE_ID: "copilot"
-      GH_AW_WORKFLOW_ID: "weekly-upstream-sync"
-      GH_AW_WORKFLOW_NAME: "Weekly Upstream Sync Agentic Workflow"
+      GH_AW_WORKFLOW_ID: "weekly-reference-impl-sync"
+      GH_AW_WORKFLOW_NAME: "Weekly Reference Implementation Sync Agentic Workflow"
     outputs:
       assign_to_agent_assigned: ${{ steps.assign_to_agent.outputs.assigned }}
       assign_to_agent_assignment_error_count: ${{ steps.assign_to_agent.outputs.assignment_error_count }}
@@ -1190,7 +1190,7 @@ jobs:
           GH_AW_ALLOWED_DOMAINS: "*.githubusercontent.com,api.business.githubcopilot.com,api.enterprise.githubcopilot.com,api.github.com,api.githubcopilot.com,api.individual.githubcopilot.com,api.snapcraft.io,archive.ubuntu.com,azure.archive.ubuntu.com,codeload.github.com,crl.geotrust.com,crl.globalsign.com,crl.identrust.com,crl.sectigo.com,crl.thawte.com,crl.usertrust.com,crl.verisign.com,crl3.digicert.com,crl4.digicert.com,crls.ssl.com,github-cloud.githubusercontent.com,github-cloud.s3.amazonaws.com,github.com,github.githubassets.com,host.docker.internal,json-schema.org,json.schemastore.org,keyserver.ubuntu.com,lfs.github.com,objects.githubusercontent.com,ocsp.digicert.com,ocsp.geotrust.com,ocsp.globalsign.com,ocsp.identrust.com,ocsp.sectigo.com,ocsp.ssl.com,ocsp.thawte.com,ocsp.usertrust.com,ocsp.verisign.com,packagecloud.io,packages.cloud.google.com,packages.microsoft.com,ppa.launchpad.net,raw.githubusercontent.com,registry.npmjs.org,s.symcb.com,s.symcd.com,security.ubuntu.com,telemetry.enterprise.githubcopilot.com,ts-crl.ws.symantec.com,ts-ocsp.ws.symantec.com"
           GITHUB_SERVER_URL: ${{ github.server_url }}
           GITHUB_API_URL: ${{ github.api_url }}
-          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"add_comment\":{\"max\":10,\"target\":\"*\"},\"close_issue\":{\"max\":10,\"required_labels\":[\"upstream-sync\"],\"target\":\"*\"},\"create_issue\":{\"assignees\":[\"copilot\"],\"expires\":144,\"labels\":[\"upstream-sync\"],\"max\":1,\"title_prefix\":\"[upstream-sync] \"},\"missing_data\":{},\"missing_tool\":{}}"
+          GH_AW_SAFE_OUTPUTS_HANDLER_CONFIG: "{\"add_comment\":{\"max\":10,\"target\":\"*\"},\"close_issue\":{\"max\":10,\"required_labels\":[\"reference-impl-sync\"],\"target\":\"*\"},\"create_issue\":{\"assignees\":[\"copilot\"],\"expires\":144,\"labels\":[\"reference-impl-sync\"],\"max\":1,\"title_prefix\":\"[reference-impl-sync] \"},\"missing_data\":{},\"missing_tool\":{}}"
           GH_AW_ASSIGN_COPILOT: "true"
         with:
           github-token: ${{ secrets.GH_AW_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}

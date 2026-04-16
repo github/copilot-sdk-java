@@ -8,17 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-> **Upstream sync:** [`github/copilot-sdk@c3fa6cb`](https://github.com/github/copilot-sdk/commit/c3fa6cbfb83d4a20b7912b1a17013d48f5a277a1)
+> **Reference implementation sync:** [`github/copilot-sdk@c3fa6cb`](https://github.com/github/copilot-sdk/commit/c3fa6cbfb83d4a20b7912b1a17013d48f5a277a1)
 
 ## [0.2.2-java.1] - 2026-04-07
 
-> **Upstream sync:** [`github/copilot-sdk@c3fa6cb`](https://github.com/github/copilot-sdk/commit/c3fa6cbfb83d4a20b7912b1a17013d48f5a277a1)
+> **Reference implementation sync:** [`github/copilot-sdk@c3fa6cb`](https://github.com/github/copilot-sdk/commit/c3fa6cbfb83d4a20b7912b1a17013d48f5a277a1)
 ### Added
 
-- Slash commands — register `/command` handlers invoked from the CLI TUI via `SessionConfig.setCommands()` (upstream: [`f7fd757`](https://github.com/github/copilot-sdk/commit/f7fd757))
+- Slash commands — register `/command` handlers invoked from the CLI TUI via `SessionConfig.setCommands()` (reference implementation: [`f7fd757`](https://github.com/github/copilot-sdk/commit/f7fd757))
 - `CommandDefinition`, `CommandContext`, `CommandHandler`, `CommandWireDefinition` — types for defining and handling slash commands
 - `CommandExecuteEvent` — event dispatched when a registered slash command is executed
-- Elicitation (UI dialogs) — incoming handler via `SessionConfig.setOnElicitationRequest()` and outgoing convenience methods via `session.getUi()` (upstream: [`f7fd757`](https://github.com/github/copilot-sdk/commit/f7fd757))
+- Elicitation (UI dialogs) — incoming handler via `SessionConfig.setOnElicitationRequest()` and outgoing convenience methods via `session.getUi()` (reference implementation: [`f7fd757`](https://github.com/github/copilot-sdk/commit/f7fd757))
 - `ElicitationContext`, `ElicitationHandler`, `ElicitationParams`, `ElicitationResult`, `ElicitationResultAction`, `ElicitationSchema`, `InputOptions` — types for elicitation
 - `ElicitationRequestedEvent` — event dispatched when an elicitation request is received
 - `SessionUiApi` — convenience API on `session.getUi()` for `confirm()`, `select()`, `input()`, and `elicitation()` calls
@@ -35,27 +35,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [0.2.1-java.1] - 2026-04-02
 
-> **Upstream sync:** [`github/copilot-sdk@4088739`](https://github.com/github/copilot-sdk/commit/40887393a9e687dacc141a645799441b0313ff15)
+> **Reference implementation sync:** [`github/copilot-sdk@4088739`](https://github.com/github/copilot-sdk/commit/40887393a9e687dacc141a645799441b0313ff15)
 ## [0.2.1-java.0] - 2026-03-26
 
-> **Upstream sync:** [`github/copilot-sdk@4088739`](https://github.com/github/copilot-sdk/commit/40887393a9e687dacc141a645799441b0313ff15)
+> **Reference implementation sync:** [`github/copilot-sdk@4088739`](https://github.com/github/copilot-sdk/commit/40887393a9e687dacc141a645799441b0313ff15)
 ### Added
 
-- `UnknownSessionEvent` — forward-compatible placeholder for event types not yet known to the SDK; unknown events are now dispatched to handlers instead of being silently dropped (upstream: [`d82fd62`](https://github.com/github/copilot-sdk/commit/d82fd62))
-- `PermissionRequestResultKind.NO_RESULT` — new constant that signals the handler intentionally abstains from answering a permission request, leaving it unanswered for another client (upstream: [`df59a0e`](https://github.com/github/copilot-sdk/commit/df59a0e))
-- `ToolDefinition.skipPermission` field and `ToolDefinition.createSkipPermission()` factory — marks a tool to skip the permission prompt (upstream: [`10c4d02`](https://github.com/github/copilot-sdk/commit/10c4d02))
-- `SystemMessageMode.CUSTOMIZE` — new enum value for fine-grained system prompt customization (upstream: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
-- `SectionOverrideAction` enum — specifies the operation on a system prompt section (replace, remove, append, prepend, transform) (upstream: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
-- `SectionOverride` class — describes how one section of the system prompt should be modified, with optional transform callback (upstream: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
-- `SystemPromptSections` constants — well-known section identifier strings for use with CUSTOMIZE mode (upstream: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
-- `SystemMessageConfig.setSections(Map<String,SectionOverride>)` — section-level overrides for CUSTOMIZE mode (upstream: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
-- `systemMessage.transform` RPC handler — the SDK now registers a handler that invokes transform callbacks registered in the session config (upstream: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
-- `CopilotSession.setModel(String, String)` — new overload that accepts an optional reasoning effort level (upstream: [`ea90f07`](https://github.com/github/copilot-sdk/commit/ea90f07))
+- `UnknownSessionEvent` — forward-compatible placeholder for event types not yet known to the SDK; unknown events are now dispatched to handlers instead of being silently dropped (reference implementation: [`d82fd62`](https://github.com/github/copilot-sdk/commit/d82fd62))
+- `PermissionRequestResultKind.NO_RESULT` — new constant that signals the handler intentionally abstains from answering a permission request, leaving it unanswered for another client (reference implementation: [`df59a0e`](https://github.com/github/copilot-sdk/commit/df59a0e))
+- `ToolDefinition.skipPermission` field and `ToolDefinition.createSkipPermission()` factory — marks a tool to skip the permission prompt (reference implementation: [`10c4d02`](https://github.com/github/copilot-sdk/commit/10c4d02))
+- `SystemMessageMode.CUSTOMIZE` — new enum value for fine-grained system prompt customization (reference implementation: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
+- `SectionOverrideAction` enum — specifies the operation on a system prompt section (replace, remove, append, prepend, transform) (reference implementation: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
+- `SectionOverride` class — describes how one section of the system prompt should be modified, with optional transform callback (reference implementation: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
+- `SystemPromptSections` constants — well-known section identifier strings for use with CUSTOMIZE mode (reference implementation: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
+- `SystemMessageConfig.setSections(Map<String,SectionOverride>)` — section-level overrides for CUSTOMIZE mode (reference implementation: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
+- `systemMessage.transform` RPC handler — the SDK now registers a handler that invokes transform callbacks registered in the session config (reference implementation: [`005b780`](https://github.com/github/copilot-sdk/commit/005b780))
+- `CopilotSession.setModel(String, String)` — new overload that accepts an optional reasoning effort level (reference implementation: [`ea90f07`](https://github.com/github/copilot-sdk/commit/ea90f07))
 - `CopilotSession.log(String, String, Boolean, String)` — new overload with an optional `url` parameter (minor addition)
-- `BlobAttachment` class — inline base64-encoded binary attachment for messages (e.g., images) (upstream: [`698b259`](https://github.com/github/copilot-sdk/commit/698b259))
+- `BlobAttachment` class — inline base64-encoded binary attachment for messages (e.g., images) (reference implementation: [`698b259`](https://github.com/github/copilot-sdk/commit/698b259))
 - `MessageAttachment` sealed interface — type-safe base for all attachment types (`Attachment`, `BlobAttachment`), with Jackson polymorphic serialization support
-- `TelemetryConfig` class — OpenTelemetry configuration for the CLI server; set on `CopilotClientOptions.setTelemetry()` (upstream: [`f2d21a0`](https://github.com/github/copilot-sdk/commit/f2d21a0))
-- `CopilotClientOptions.setTelemetry(TelemetryConfig)` — enables OpenTelemetry instrumentation in the CLI server (upstream: [`f2d21a0`](https://github.com/github/copilot-sdk/commit/f2d21a0))
+- `TelemetryConfig` class — OpenTelemetry configuration for the CLI server; set on `CopilotClientOptions.setTelemetry()` (reference implementation: [`f2d21a0`](https://github.com/github/copilot-sdk/commit/f2d21a0))
+- `CopilotClientOptions.setTelemetry(TelemetryConfig)` — enables OpenTelemetry instrumentation in the CLI server (reference implementation: [`f2d21a0`](https://github.com/github/copilot-sdk/commit/f2d21a0))
 
 ### Changed
 
@@ -70,61 +70,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [0.1.32-java.0] - 2026-03-17
 
-> **Upstream sync:** [`github/copilot-sdk@062b61c`](https://github.com/github/copilot-sdk/commit/062b61c8aa63b9b5d45fa1d7b01723e6660ffa83)
+> **Reference implementation sync:** [`github/copilot-sdk@062b61c`](https://github.com/github/copilot-sdk/commit/062b61c8aa63b9b5d45fa1d7b01723e6660ffa83)
 ## [1.0.11] - 2026-03-12
 
-> **Upstream sync:** [`github/copilot-sdk@062b61c`](https://github.com/github/copilot-sdk/commit/062b61c8aa63b9b5d45fa1d7b01723e6660ffa83)
+> **Reference implementation sync:** [`github/copilot-sdk@062b61c`](https://github.com/github/copilot-sdk/commit/062b61c8aa63b9b5d45fa1d7b01723e6660ffa83)
 ### Added
 
-- `CopilotClientOptions.setOnListModels(Supplier<CompletableFuture<List<ModelInfo>>>)` — custom handler for `listModels()` used in BYOK mode to return models from a custom provider instead of querying the CLI (upstream: [`e478657`](https://github.com/github/copilot-sdk/commit/e478657))
-- `SessionConfig.setAgent(String)` — pre-selects a custom agent by name when creating a session (upstream: [`7766b1a`](https://github.com/github/copilot-sdk/commit/7766b1a))
-- `ResumeSessionConfig.setAgent(String)` — pre-selects a custom agent by name when resuming a session (upstream: [`7766b1a`](https://github.com/github/copilot-sdk/commit/7766b1a))
-- `SessionConfig.setOnEvent(Consumer<AbstractSessionEvent>)` — registers an event handler before the `session.create` RPC is issued, ensuring no early events are missed (upstream: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7))
-- `ResumeSessionConfig.setOnEvent(Consumer<AbstractSessionEvent>)` — registers an event handler before the `session.resume` RPC is issued (upstream: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7))
-- New broadcast session event types (protocol v3): `ExternalToolRequestedEvent` (`external_tool.requested`), `ExternalToolCompletedEvent` (`external_tool.completed`), `PermissionRequestedEvent` (`permission.requested`), `PermissionCompletedEvent` (`permission.completed`), `CommandQueuedEvent` (`command.queued`), `CommandCompletedEvent` (`command.completed`), `ExitPlanModeRequestedEvent` (`exit_plan_mode.requested`), `ExitPlanModeCompletedEvent` (`exit_plan_mode.completed`), `SystemNotificationEvent` (`system.notification`) (upstream: [`1653812`](https://github.com/github/copilot-sdk/commit/1653812), [`396e8b3`](https://github.com/github/copilot-sdk/commit/396e8b3))
-- `CopilotSession.log(String)` and `CopilotSession.log(String, String, Boolean)` — log a message to the session timeline (upstream: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7))
+- `CopilotClientOptions.setOnListModels(Supplier<CompletableFuture<List<ModelInfo>>>)` — custom handler for `listModels()` used in BYOK mode to return models from a custom provider instead of querying the CLI (reference implementation: [`e478657`](https://github.com/github/copilot-sdk/commit/e478657))
+- `SessionConfig.setAgent(String)` — pre-selects a custom agent by name when creating a session (reference implementation: [`7766b1a`](https://github.com/github/copilot-sdk/commit/7766b1a))
+- `ResumeSessionConfig.setAgent(String)` — pre-selects a custom agent by name when resuming a session (reference implementation: [`7766b1a`](https://github.com/github/copilot-sdk/commit/7766b1a))
+- `SessionConfig.setOnEvent(Consumer<AbstractSessionEvent>)` — registers an event handler before the `session.create` RPC is issued, ensuring no early events are missed (reference implementation: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7))
+- `ResumeSessionConfig.setOnEvent(Consumer<AbstractSessionEvent>)` — registers an event handler before the `session.resume` RPC is issued (reference implementation: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7))
+- New broadcast session event types (protocol v3): `ExternalToolRequestedEvent` (`external_tool.requested`), `ExternalToolCompletedEvent` (`external_tool.completed`), `PermissionRequestedEvent` (`permission.requested`), `PermissionCompletedEvent` (`permission.completed`), `CommandQueuedEvent` (`command.queued`), `CommandCompletedEvent` (`command.completed`), `ExitPlanModeRequestedEvent` (`exit_plan_mode.requested`), `ExitPlanModeCompletedEvent` (`exit_plan_mode.completed`), `SystemNotificationEvent` (`system.notification`) (reference implementation: [`1653812`](https://github.com/github/copilot-sdk/commit/1653812), [`396e8b3`](https://github.com/github/copilot-sdk/commit/396e8b3))
+- `CopilotSession.log(String)` and `CopilotSession.log(String, String, Boolean)` — log a message to the session timeline (reference implementation: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7))
 
 ### Changed
 
-- **Protocol version bumped to v3.** The SDK now supports CLI servers running v2 or v3 (backward-compatible range). Sessions are now registered in the client's session map *before* the `session.create`/`session.resume` RPC is issued, ensuring broadcast events emitted immediately on session start are never dropped (upstream: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7), [`1653812`](https://github.com/github/copilot-sdk/commit/1653812))
-- In protocol v3, tool calls and permission requests that have a registered handler are now handled automatically via `ExternalToolRequestedEvent` and `PermissionRequestedEvent` broadcast events; results are sent back via `session.tools.handlePendingToolCall` and `session.permissions.handlePendingPermissionRequest` RPC calls (upstream: [`1653812`](https://github.com/github/copilot-sdk/commit/1653812))
+- **Protocol version bumped to v3.** The SDK now supports CLI servers running v2 or v3 (backward-compatible range). Sessions are now registered in the client's session map *before* the `session.create`/`session.resume` RPC is issued, ensuring broadcast events emitted immediately on session start are never dropped (reference implementation: [`4125fe7`](https://github.com/github/copilot-sdk/commit/4125fe7), [`1653812`](https://github.com/github/copilot-sdk/commit/1653812))
+- In protocol v3, tool calls and permission requests that have a registered handler are now handled automatically via `ExternalToolRequestedEvent` and `PermissionRequestedEvent` broadcast events; results are sent back via `session.tools.handlePendingToolCall` and `session.permissions.handlePendingPermissionRequest` RPC calls (reference implementation: [`1653812`](https://github.com/github/copilot-sdk/commit/1653812))
 
 ## [1.0.10] - 2026-03-03
 
-> **Upstream sync:** [`github/copilot-sdk@dcd86c1`](https://github.com/github/copilot-sdk/commit/dcd86c189501ce1b46b787ca60d90f3f315f3079)
+> **Reference implementation sync:** [`github/copilot-sdk@dcd86c1`](https://github.com/github/copilot-sdk/commit/dcd86c189501ce1b46b787ca60d90f3f315f3079)
 ### Added
 
-- `CopilotSession.setModel(String)` — changes the model for an existing session mid-conversation; the new model takes effect for the next message, and conversation history is preserved (upstream: [`bd98e3a`](https://github.com/github/copilot-sdk/commit/bd98e3a))
-- `ToolDefinition.createOverride(String, String, Map, ToolHandler)` — creates a tool definition that overrides a built-in CLI tool with the same name (upstream: [`f843c80`](https://github.com/github/copilot-sdk/commit/f843c80))
-- `ToolDefinition` record now includes `overridesBuiltInTool` field; when `true`, signals to the CLI that the custom tool intentionally replaces a built-in (upstream: [`f843c80`](https://github.com/github/copilot-sdk/commit/f843c80))
-- `CopilotSession.listAgents()` — lists custom agents available for selection (upstream: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
-- `CopilotSession.getCurrentAgent()` — gets the currently selected custom agent (upstream: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
-- `CopilotSession.selectAgent(String)` — selects a custom agent for the session (upstream: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
-- `CopilotSession.deselectAgent()` — deselects the current custom agent (upstream: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
-- `CopilotSession.compact()` — triggers immediate session context compaction (upstream: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
-- `AgentInfo` — new JSON type representing a custom agent with `name`, `displayName`, and `description` (upstream: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
-- New event types: `SessionTaskCompleteEvent` (`session.task_complete`), `AssistantStreamingDeltaEvent` (`assistant.streaming_delta`), `SubagentDeselectedEvent` (`subagent.deselected`) (upstream: various commits)
+- `CopilotSession.setModel(String)` — changes the model for an existing session mid-conversation; the new model takes effect for the next message, and conversation history is preserved (reference implementation: [`bd98e3a`](https://github.com/github/copilot-sdk/commit/bd98e3a))
+- `ToolDefinition.createOverride(String, String, Map, ToolHandler)` — creates a tool definition that overrides a built-in CLI tool with the same name (reference implementation: [`f843c80`](https://github.com/github/copilot-sdk/commit/f843c80))
+- `ToolDefinition` record now includes `overridesBuiltInTool` field; when `true`, signals to the CLI that the custom tool intentionally replaces a built-in (reference implementation: [`f843c80`](https://github.com/github/copilot-sdk/commit/f843c80))
+- `CopilotSession.listAgents()` — lists custom agents available for selection (reference implementation: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
+- `CopilotSession.getCurrentAgent()` — gets the currently selected custom agent (reference implementation: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
+- `CopilotSession.selectAgent(String)` — selects a custom agent for the session (reference implementation: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
+- `CopilotSession.deselectAgent()` — deselects the current custom agent (reference implementation: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
+- `CopilotSession.compact()` — triggers immediate session context compaction (reference implementation: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
+- `AgentInfo` — new JSON type representing a custom agent with `name`, `displayName`, and `description` (reference implementation: [`9d998fb`](https://github.com/github/copilot-sdk/commit/9d998fb))
+- New event types: `SessionTaskCompleteEvent` (`session.task_complete`), `AssistantStreamingDeltaEvent` (`assistant.streaming_delta`), `SubagentDeselectedEvent` (`subagent.deselected`) (reference implementation: various commits)
 - `AssistantTurnStartEvent` data now includes `interactionId` field
 - `AssistantMessageEvent` data now includes `interactionId` field
 - `ToolExecutionCompleteEvent` data now includes `model` and `interactionId` fields
 - `SkillInvokedEvent` data now includes `pluginName` and `pluginVersion` fields
 - `AssistantUsageEvent` data now includes `copilotUsage` field with `CopilotUsage` and `TokenDetails` nested types
-- E2E tests for custom tool permission approval and denial flows (upstream: [`388f2f3`](https://github.com/github/copilot-sdk/commit/388f2f3))
+- E2E tests for custom tool permission approval and denial flows (reference implementation: [`388f2f3`](https://github.com/github/copilot-sdk/commit/388f2f3))
 
 ### Changed
 
-- **Breaking:** `createSession(SessionConfig)` now requires a non-null `onPermissionRequest` handler; throws `IllegalArgumentException` if not provided (upstream: [`279f6c4`](https://github.com/github/copilot-sdk/commit/279f6c4))
-- **Breaking:** `resumeSession(String, ResumeSessionConfig)` now requires a non-null `onPermissionRequest` handler; throws `IllegalArgumentException` if not provided (upstream: [`279f6c4`](https://github.com/github/copilot-sdk/commit/279f6c4))
-- **Breaking:** The no-arg `createSession()` and `resumeSession(String)` overloads were removed (upstream: [`279f6c4`](https://github.com/github/copilot-sdk/commit/279f6c4))
-- `AssistantMessageDeltaEvent` data: `totalResponseSizeBytes` field moved to new `AssistantStreamingDeltaEvent` (upstream: various)
+- **Breaking:** `createSession(SessionConfig)` now requires a non-null `onPermissionRequest` handler; throws `IllegalArgumentException` if not provided (reference implementation: [`279f6c4`](https://github.com/github/copilot-sdk/commit/279f6c4))
+- **Breaking:** `resumeSession(String, ResumeSessionConfig)` now requires a non-null `onPermissionRequest` handler; throws `IllegalArgumentException` if not provided (reference implementation: [`279f6c4`](https://github.com/github/copilot-sdk/commit/279f6c4))
+- **Breaking:** The no-arg `createSession()` and `resumeSession(String)` overloads were removed (reference implementation: [`279f6c4`](https://github.com/github/copilot-sdk/commit/279f6c4))
+- `AssistantMessageDeltaEvent` data: `totalResponseSizeBytes` field moved to new `AssistantStreamingDeltaEvent` (reference implementation: various)
 
 ### Fixed
 
-- Permission checks now also apply to SDK-registered custom tools, invoking the `onPermissionRequest` handler with `kind="custom-tool"` before executing tools (upstream: [`388f2f3`](https://github.com/github/copilot-sdk/commit/388f2f3))
+- Permission checks now also apply to SDK-registered custom tools, invoking the `onPermissionRequest` handler with `kind="custom-tool"` before executing tools (reference implementation: [`388f2f3`](https://github.com/github/copilot-sdk/commit/388f2f3))
 
 ## [1.0.9] - 2026-02-16
 
-> **Upstream sync:** [`github/copilot-sdk@e40d57c`](https://github.com/github/copilot-sdk/commit/e40d57c86e18b495722adbf42045288c03924342)
+> **Reference implementation sync:** [`github/copilot-sdk@e40d57c`](https://github.com/github/copilot-sdk/commit/e40d57c86e18b495722adbf42045288c03924342)
 ### Added
 
 #### Cookbook with Practical Recipes
@@ -191,7 +191,7 @@ session.on(SessionContextChangedEvent.class, event -> {
 
 ## [1.0.8] - 2026-02-08
 
-> **Upstream sync:** [`github/copilot-sdk@05e3c46`](https://github.com/github/copilot-sdk/commit/05e3c46c8c23130c9c064dc43d00ec78f7a75eab)
+> **Reference implementation sync:** [`github/copilot-sdk@05e3c46`](https://github.com/github/copilot-sdk/commit/05e3c46c8c23130c9c064dc43d00ec78f7a75eab)
 
 ### Added
 
@@ -347,7 +347,7 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 ### Changed
 
 - Enhanced permission request handling with graceful error recovery
-- Updated test harness integration to clone from upstream SDK
+- Updated test harness integration to clone from reference implementation SDK
 - Improved logging for session events and user input requests
 
 ### Fixed
@@ -366,8 +366,8 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 
 ### Changed
 
-- Merged upstream SDK changes (commit 87ff5510)
-- Added agentic-merge-upstream Claude skill for tracking upstream changes
+- Merged reference implementation SDK changes (commit 87ff5510)
+- Added agentic-merge-reference-impl Claude skill for tracking reference implementation changes
 
 ### Fixed
 
@@ -376,7 +376,7 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 - NPM dependency installation in CI workflow
 - Enhanced error handling in permission request processing
 - Checkstyle and Maven Resources Plugin version updates
-- Test harness CLI installation to match upstream version
+- Test harness CLI installation to match reference implementation version
 
 ## [1.0.4] - 2026-01-27
 
@@ -394,7 +394,7 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 - Refactored tool argument handling for improved type safety
 - Optimized event listener registration in examples
 - Enhanced site navigation with documentation links
-- Merged upstream SDK changes from commit f902b76
+- Merged reference implementation SDK changes from commit f902b76
 
 ### Fixed
 
@@ -410,7 +410,7 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 - MCP Servers documentation and integration examples
 - Infinite sessions documentation section
 - Versioned documentation template with version selector
-- Guidelines for porting upstream SDK changes to Java
+- Guidelines for porting reference implementation SDK changes to Java
 - Configuration for automatically generated release notes
 
 ### Changed
@@ -519,3 +519,4 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 [1.0.2]: https://github.com/github/copilot-sdk-java/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/github/copilot-sdk-java/compare/1.0.0...v1.0.1
 [1.0.0]: https://github.com/github/copilot-sdk-java/releases/tag/1.0.0
+

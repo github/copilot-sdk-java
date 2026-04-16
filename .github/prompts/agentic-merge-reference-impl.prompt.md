@@ -1,15 +1,15 @@
-# Merge Upstream SDK Changes
+# Merge Reference Implementation SDK Changes
 
-You are an expert Java developer tasked with porting changes from the official Copilot SDK (primarily the .NET implementation) to this Java SDK.
+You are an expert Java developer tasked with porting changes from the reference implementation of the Copilot SDK (primarily the .NET implementation) to this Java SDK.
 
 ## ⚠️ IMPORTANT: Java SDK Design Takes Priority
 
-**The current design and architecture of the Java SDK is the priority.** When porting changes from upstream:
+**The current design and architecture of the Java SDK is the priority.** When porting changes from the reference implementation:
 
-1. **Adapt, don't copy** - Translate upstream features to fit the Java SDK's existing patterns, naming conventions, and architecture
+1. **Adapt, don't copy** - Translate reference implementation features to fit the Java SDK's existing patterns, naming conventions, and architecture
 2. **Preserve Java idioms** - The Java SDK should feel natural to Java developers, not like a C# port
 3. **Maintain consistency** - New code must match the existing codebase style and structure
-4. **Evaluate before porting** - Not every upstream change needs to be ported; some may not be applicable or may conflict with Java SDK design decisions
+4. **Evaluate before porting** - Not every reference implementation change needs to be ported; some may not be applicable or may conflict with Java SDK design decisions
 
 Before making any changes, **read and understand the existing Java SDK implementation** to ensure new code integrates seamlessly.
 
@@ -19,50 +19,50 @@ The `.github/scripts/` directory contains helper scripts that automate the repea
 
 | Script | Purpose |
 |---|---|
-| `.github/scripts/upstream-sync/merge-upstream-start.sh` | Creates branch, updates CLI, clones upstream, reads `.lastmerge`, prints commit summary |
-| `.github/scripts/upstream-sync/merge-upstream-diff.sh` | Detailed diff analysis grouped by area (`.NET src`, tests, snapshots, docs, etc.) |
-| `.github/scripts/upstream-sync/merge-upstream-finish.sh` | Runs format + test + build, updates `.lastmerge`, commits, pushes branch |
+| `.github/scripts/reference-impl-sync/merge-reference-impl-start.sh` | Creates branch, updates CLI, clones reference implementation, reads `.lastmerge`, prints commit summary |
+| `.github/scripts/reference-impl-sync/merge-reference-impl-diff.sh` | Detailed diff analysis grouped by area (`.NET src`, tests, snapshots, docs, etc.) |
+| `.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh` | Runs format + test + build, updates `.lastmerge`, commits, pushes branch |
 | `.github/scripts/build/format-and-test.sh` | Standalone `spotless:apply` + `mvn clean verify` (useful during porting too) |
 
-All scripts write/read a `.merge-env` file (git-ignored) to share state (branch name, upstream dir, last-merge commit).
+All scripts write/read a `.merge-env` file (git-ignored) to share state (branch name, reference-impl dir, last-merge commit).
 
 ## Workflow Overview
 
-1. Run `./.github/scripts/upstream-sync/merge-upstream-start.sh` (creates branch, clones upstream, shows summary)
-2. Run `./.github/scripts/upstream-sync/merge-upstream-diff.sh` (analyze changes)
+1. Run `./.github/scripts/reference-impl-sync/merge-reference-impl-start.sh` (creates branch, clones reference implementation, shows summary)
+2. Run `./.github/scripts/reference-impl-sync/merge-reference-impl-diff.sh` (analyze changes)
 3. Update README with minimum CLI version requirement
-4. Identify upstream changes to port
+4. Identify reference implementation changes to port
 5. Apply changes to Java SDK (commit as you go)
-6. Port/adjust tests from upstream changes
+6. Port/adjust tests from reference implementation changes
 7. Run `./.github/scripts/build/format-and-test.sh` frequently while porting
 8. Build the package
-9. Update documentation (**required for every user-facing upstream change**)
-10. Run `./.github/scripts/upstream-sync/merge-upstream-finish.sh` (final test + push) and finalize Pull Request (see note below about coding agent vs. manual workflow)
+9. Update documentation (**required for every user-facing reference implementation change**)
+10. Run `./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh` (final test + push) and finalize Pull Request (see note below about coding agent vs. manual workflow)
 11. Perform final review before handing off
 
 ---
 
-## Step 1: Initialize Upstream Sync
+## Step 1: Initialize Reference Implementation Sync
 
-Run the start script to create a branch, update the CLI, clone the upstream repo, and see a summary of new commits:
+Run the start script to create a branch, update the CLI, clone the reference implementation repo, and see a summary of new commits:
 
 ```bash
-./.github/scripts/upstream-sync/merge-upstream-start.sh
+./.github/scripts/reference-impl-sync/merge-reference-impl-start.sh
 ```
 
 This writes a `.merge-env` file used by the other scripts. It outputs:
 - The branch name created
 - The Copilot CLI version
-- The upstream dir path
-- A short log of upstream commits since `.lastmerge`
+- The reference-impl dir path
+- A short log of reference implementation commits since `.lastmerge`
 
-## Step 2: Analyze Upstream Changes
+## Step 2: Analyze reference implementation Changes
 
 Run the diff script for a detailed breakdown by area:
 
 ```bash
-./.github/scripts/upstream-sync/merge-upstream-diff.sh          # stat only
-./.github/scripts/upstream-sync/merge-upstream-diff.sh --full   # full diffs
+./.github/scripts/reference-impl-sync/merge-reference-impl-diff.sh          # stat only
+./.github/scripts/reference-impl-sync/merge-reference-impl-diff.sh --full   # full diffs
 ```
 
 The diff script groups changes into: .NET source, .NET tests, test snapshots, documentation, protocol/config, Go/Node.js/Python SDKs, and other files.
@@ -80,13 +80,13 @@ git commit -m "Update Copilot CLI minimum version requirement"
 
 ## Step 4: Identify Changes to Port
 
-Using the output from `merge-upstream-diff.sh`, focus on:
+Using the output from `merge-reference-impl-diff.sh`, focus on:
 - `dotnet/src/` - Primary reference implementation
 - `dotnet/test/` - Test cases to port
 - `docs/` - Documentation updates
 - `sdk-protocol-version.json` - Protocol version changes
 
-For each change in the upstream diff, determine:
+For each change in the reference implementation diff, determine:
 
 1. **New Features**: New methods, classes, or capabilities added to the SDK
 2. **Bug Fixes**: Corrections to existing functionality
@@ -96,7 +96,7 @@ For each change in the upstream diff, determine:
 
 ### Key Files to Compare
 
-| Upstream (.NET)                    | Java SDK Equivalent                                    |
+| reference implementation (.NET)                    | Java SDK Equivalent                                    |
 |------------------------------------|--------------------------------------------------------|
 | `dotnet/src/Client.cs`             | `src/main/java/com/github/copilot/sdk/CopilotClient.java` |
 | `dotnet/src/Session.cs`            | `src/main/java/com/github/copilot/sdk/CopilotSession.java` |
@@ -121,7 +121,7 @@ Before modifying any code:
 2. **Identify the Java equivalent approach** - Don't replicate C# patterns; find the idiomatic Java way
 3. **Check for existing abstractions** - The Java SDK may already have mechanisms that differ from .NET
 4. **Preserve backward compatibility** - Existing API signatures should not break unless absolutely necessary
-5. **When in doubt, match existing code** - Follow what's already in the Java SDK, not the upstream
+5. **When in doubt, match existing code** - Follow what's already in the Java SDK, not the reference implementation
 
 ### Commit Changes Incrementally
 
@@ -130,12 +130,12 @@ Before modifying any code:
 ```bash
 # After porting a feature or fix, commit with a descriptive message
 git add <changed-files>
-git commit -m "Port <feature/fix name> from upstream"
+git commit -m "Port <feature/fix name> from the reference implementation"
 
 # Example commits:
-# git commit -m "Port new authentication flow from upstream"
-# git commit -m "Add new message types from upstream protocol update"
-# git commit -m "Port bug fix for session handling from upstream"
+# git commit -m "Port new authentication flow from the reference implementation"
+# git commit -m "Add new message types from the reference implementation protocol update"
+# git commit -m "Port bug fix for session handling from the reference implementation"
 ```
 
 This creates a clear history of changes that can be reviewed in the Pull Request.
@@ -170,19 +170,19 @@ Follow the existing Java SDK patterns:
 - Use Java records for DTOs where appropriate
 - Follow the existing package structure under `com.github.copilot.sdk`
 - Maintain backward compatibility when possible
-- **Match the style of surrounding code** - Consistency with existing code is more important than upstream patterns
+- **Match the style of surrounding code** - Consistency with existing code is more important than reference implementation patterns
 - **Prefer existing abstractions** - If the Java SDK already solves a problem differently than .NET, keep the Java approach
 
 ## Step 6: Port Tests
 
-After porting implementation changes, **always check for new or updated tests** in the upstream repository:
+After porting implementation changes, **always check for new or updated tests** in the reference implementation repository:
 
 ### Check for New Tests
 
 ```bash
 cd "$TEMP_DIR/copilot-sdk"
-git diff "$LAST_MERGE_COMMIT"..origin/main --stat -- dotnet/test/
-git diff "$LAST_MERGE_COMMIT"..origin/main --stat -- test/snapshots/
+git diff "$LAST_REFERENCE_IMPL_COMMIT"..origin/main --stat -- dotnet/test/
+git diff "$LAST_REFERENCE_IMPL_COMMIT"..origin/main --stat -- test/snapshots/
 ```
 
 ### Port Test Cases
@@ -196,7 +196,7 @@ For each new or modified test file in `dotnet/test/`:
 
 ### Test File Mapping
 
-| Upstream Test (.NET)        | Java SDK Test                                          |
+| reference implementation Test (.NET)        | Java SDK Test                                          |
 |-----------------------------|--------------------------------------------------------|
 | `dotnet/test/AskUserTests.cs`  | `src/test/java/com/github/copilot/sdk/AskUserTest.java`  |
 | `dotnet/test/HooksTests.cs`    | `src/test/java/com/github/copilot/sdk/HooksTest.java`    |
@@ -205,11 +205,11 @@ For each new or modified test file in `dotnet/test/`:
 
 ### Test Snapshot Compatibility
 
-New test snapshots are stored in `test/snapshots/` in the upstream repository. These snapshots are automatically cloned during the Maven build process.
+New test snapshots are stored in `test/snapshots/` in the reference implementation repository. These snapshots are automatically cloned during the Maven build process.
 
 If tests fail with errors like `TypeError: Cannot read properties of undefined`, the test harness may not yet support the new RPC methods. In this case:
 
-1. **Mark tests as `@Disabled`** with a clear reason (e.g., `@Disabled("Requires test harness update with X support - see upstream PR #NNN")`)
+1. **Mark tests as `@Disabled`** with a clear reason (e.g., `@Disabled("Requires test harness update with X support - see reference implementation PR #NNN")`)
 2. **Document the dependency** in the test class Javadoc
 3. **Enable tests later** once the harness is updated
 
@@ -266,7 +266,7 @@ Verify:
 
 ## Step 9: Update Documentation
 
-**Documentation is critical for new features.** Every new feature ported from upstream must be documented before the merge is complete.
+**Documentation is critical for new features.** Every new feature ported from the reference implementation must be documented before the merge is complete.
 Review and complete this documentation checklist before proceeding to Step 10.
 If you determine no docs changes are needed, document that decision and rationale in the PR body under a clear heading (for example, `Documentation Impact`).
 
@@ -328,31 +328,31 @@ Ensure consistency across all documentation files:
 Run the finish script which updates `.lastmerge`, runs a final build, and pushes the branch:
 
 ```bash
-./.github/scripts/upstream-sync/merge-upstream-finish.sh            # full format + test + push
-./.github/scripts/upstream-sync/merge-upstream-finish.sh --skip-tests  # if tests already passed
+./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh            # full format + test + push
+./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh --skip-tests  # if tests already passed
 ```
 
 ### PR Handling: Coding Agent vs. Manual Workflow
 
-**If running as a Copilot coding agent** (triggered via GitHub issue assignment by the weekly sync workflow), a pull request has **already been created automatically** for you. Do NOT create a new one. Just push your commits to the current branch — the existing PR will be updated. Add the `upstream-sync` label to the existing PR by running this command in a terminal:
+**If running as a Copilot coding agent** (triggered via GitHub issue assignment by the weekly sync workflow), a pull request has **already been created automatically** for you. Do NOT create a new one. Just push your commits to the current branch — the existing PR will be updated. Add the `reference-impl-sync` label to the existing PR by running this command in a terminal:
 
 ```bash
-gh pr edit --add-label "upstream-sync"
+gh pr edit --add-label "reference-impl-sync"
 ```
 
-> **No-changes scenario (coding agent only):** If after analyzing the upstream diff there are no relevant changes to port to the Java SDK, push an empty commit with a message explaining why no changes were needed, so the PR reflects the analysis outcome. The repository maintainer will close the PR and issue manually.
+> **No-changes scenario (coding agent only):** If after analyzing the reference implementation diff there are no relevant changes to port to the Java SDK, push an empty commit with a message explaining why no changes were needed, so the PR reflects the analysis outcome. The repository maintainer will close the PR and issue manually.
 
 **If running manually** (e.g., from VS Code via the reusable prompt), create the Pull Request using `gh` CLI or the GitHub MCP tool. Then add the label:
 
 ```bash
-gh pr create --base main --title "Merge upstream SDK changes (YYYY-MM-DD)" --body-file /dev/stdin <<< "$PR_BODY"
-gh pr edit --add-label "upstream-sync"
+gh pr create --base main --title "Merge reference implementation SDK changes (YYYY-MM-DD)" --body-file /dev/stdin <<< "$PR_BODY"
+gh pr edit --add-label "reference-impl-sync"
 ```
 
 The PR body should include:
-1. **Title**: `Merge upstream SDK changes (YYYY-MM-DD)`
+1. **Title**: `Merge reference implementation SDK changes (YYYY-MM-DD)`
 2. **Body** with:
-   - Summary of upstream commits analyzed (with count and commit range)
+   - Summary of reference implementation commits analyzed (with count and commit range)
    - Table of changes ported (commit hash + description)
    - List of changes intentionally not ported (with reasons)
    - Verification status (test count, build status)
@@ -360,13 +360,13 @@ The PR body should include:
 ### PR Body Template
 
 ```markdown
-## Upstream Merge
+## Reference Implementation Merge
 
 Ports changes from the official Copilot SDK ([github/copilot-sdk](https://github.com/github/copilot-sdk)) since last merge (`<OLD_COMMIT>`→`<NEW_COMMIT>`).
 
-### Upstream commits analyzed (N commits)
+### Reference implementation commits analyzed (N commits)
 
-- Brief description of each upstream change and whether it was ported or not
+- Brief description of each reference implementation change and whether it was ported or not
 
 ### Changes ported
 
@@ -403,11 +403,11 @@ Before finishing:
 - [ ] New branch created from `main`
 - [ ] Copilot CLI updated to latest version
 - [ ] README.md updated with minimum CLI version requirement
-- [ ] Upstream repository cloned
+- [ ] reference implementation repository cloned
 - [ ] Diff analyzed between `.lastmerge` commit and HEAD
 - [ ] New features/fixes identified
 - [ ] Changes ported to Java SDK following conventions
-- [ ] **New/updated tests ported from upstream** (check `dotnet/test/` and `test/snapshots/`)
+- [ ] **New/updated tests ported from the reference implementation** (check `dotnet/test/` and `test/snapshots/`)
 - [ ] Tests marked `@Disabled` if harness doesn't support new features yet
 - [ ] Changes committed incrementally with descriptive messages
 - [ ] `mvn test` passes
@@ -418,22 +418,23 @@ Before finishing:
   - [ ] `src/site/markdown/documentation.md` updated for new basic usage
   - [ ] `src/site/markdown/advanced.md` updated for new advanced features
   - [ ] Javadoc added/updated for new public APIs
-- [ ] If no documentation files were changed for user-facing upstream changes, PR body explicitly explains why documentation changes were not needed
+- [ ] If no documentation files were changed for user-facing reference implementation changes, PR body explicitly explains why documentation changes were not needed
 - [ ] `src/site/site.xml` updated if new documentation pages were added
 - [ ] `.lastmerge` file updated with new commit hash
 - [ ] Branch pushed to remote
 - [ ] **Pull Request finalized** (coding agent: push to existing PR; manual: create via `mcp_github_create_pull_request`)
-- [ ] **`upstream-sync` label added** to the PR via `mcp_github_add_issue_labels`
+- [ ] **`reference-impl-sync` label added** to the PR via `mcp_github_add_issue_labels`
 - [ ] PR URL provided to user
 
 ---
 
 ## Notes
 
-- The upstream SDK is at: `https://github.com/github/copilot-sdk.git`
+- The reference implementation SDK is at: `https://github.com/github/copilot-sdk.git`
 - Primary reference implementation is in `dotnet/` folder
 - This Java SDK targets Java 17+
 - Uses Jackson for JSON processing
 - Uses JUnit 5 for testing
-- **Java SDK design decisions take precedence over upstream patterns**
-- **Adapt upstream changes to fit Java idioms, not the other way around**
+- **Java SDK design decisions take precedence over reference implementation patterns**
+- **Adapt reference implementation changes to fit Java idioms, not the other way around**
+

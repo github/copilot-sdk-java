@@ -9,7 +9,7 @@ These instructions guide GitHub Copilot when assisting with this repository. The
 - **Tech Stack**: Java 17+, Maven, Jackson for JSON, JUnit for testing
 - **Purpose**: Provide a Java SDK for programmatic control of GitHub Copilot CLI
 - **Architecture**: JSON-RPC client communicating with Copilot CLI over stdio
-- **Key Goals**: Maintain parity with upstream .NET SDK while following Java idioms
+- **Key Goals**: Maintain parity with reference implementation .NET SDK while following Java idioms
 
 ## Build & Test Commands
 
@@ -85,13 +85,13 @@ Tests use the official copilot-sdk test harness from `https://github.com/github/
 
 - **E2ETestContext** - Manages test environment with CapiProxy for deterministic API responses
 - **CapiProxy** - Node.js-based replaying proxy using YAML snapshots from `test/snapshots/`
-- Test snapshots are stored in the upstream repo's `test/snapshots/` directory
+- Test snapshots are stored in the reference implementation repo's `test/snapshots/` directory
 
 ## Key Conventions
 
-### Upstream Merging
+### Reference Implementation Merging
 
-This SDK tracks the official .NET implementation at `github/copilot-sdk`. The `.lastmerge` file contains the last merged upstream commit hash. Use the `agentic-merge-upstream` skill (see `.github/prompts/agentic-merge-upstream.prompt.md`) to port changes.
+This SDK tracks the official .NET implementation at `github/copilot-sdk`. The `.lastmerge` file contains the last merged reference implementation commit hash. Use the `agentic-merge-reference-impl` skill (see `.github/prompts/agentic-merge-reference-impl.prompt.md`) to port changes.
 
 When porting from .NET:
 - Adapt to Java idioms, don't copy C# patterns directly
@@ -217,7 +217,7 @@ Test method names are converted to lowercase snake_case for snapshot filenames t
 - **DO NOT** modify `target/` directory - this contains build artifacts
 - **DO NOT** edit `pom.xml` dependencies without careful consideration - this SDK has minimal dependencies by design
 - **DO NOT** change the Jackson version without testing against all serialization patterns
-- **DO NOT** modify test snapshots in `target/copilot-sdk/test/snapshots/` - these come from upstream
+- **DO NOT** modify test snapshots in `target/copilot-sdk/test/snapshots/` - these come from reference implementation
 - **DO NOT** alter the Eclipse formatter configuration in `pom.xml` without team consensus
 - **DO NOT** remove or skip Checkstyle or Spotless checks
 
@@ -278,7 +278,7 @@ The repository has a pre-commit hook (`.githooks/pre-commit`) that is **automati
 - Include tests for new functionality
 - Update documentation if adding/changing public APIs
 - Reference related issues using `#issue-number`
-- For upstream merges, follow the `agentic-merge-upstream` skill workflow
+- For reference implementation merges, follow the `agentic-merge-reference-impl` skill workflow
 
 ## Development Workflow
 
@@ -299,12 +299,12 @@ The release process is automated via the `publish-maven.yml` GitHub Actions work
    - Converts the `## [Unreleased]` section to `## [version] - date`
    - Creates a new empty `## [Unreleased]` section at the top
    - Updates version comparison links at the bottom of CHANGELOG.md
-   - Injects the upstream SDK commit hash (from `.lastmerge`) as a `> **Upstream sync:**` blockquote in both the new `[Unreleased]` section and the released version section
+   - Injects the reference implementation SDK commit hash (from `.lastmerge`) as a `> **Reference implementation sync:**` blockquote in both the new `[Unreleased]` section and the released version section
 
-2. **Upstream Sync Tracking**: Each release records which commit from the official `github/copilot-sdk` it is synced to:
+2. **Reference Implementation Sync Tracking**: Each release records which commit from the official `github/copilot-sdk` it is synced to:
    - The `.lastmerge` file is read during the release workflow
    - The commit hash is injected into `CHANGELOG.md` under the release heading
-   - Format: `> **Upstream sync:** [\`github/copilot-sdk@SHORT_HASH\`](link-to-commit)`
+   - Format: `> **Reference implementation sync:** [\`github/copilot-sdk@SHORT_HASH\`](link-to-commit)`
 
 3. **Documentation Updates**: README.md and jbang-example.java are updated with the new version.
 
@@ -316,3 +316,4 @@ The release process is automated via the `publish-maven.yml` GitHub Actions work
 5. **Rollback**: If the release fails, the documentation commit is automatically reverted
 
 The workflow is triggered manually via workflow_dispatch with optional version parameters.
+

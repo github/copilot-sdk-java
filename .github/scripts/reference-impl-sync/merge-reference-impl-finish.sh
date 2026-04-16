@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────────────────────
-# merge-upstream-finish.sh
+# merge-reference-impl-finish.sh
 #
-# Finalises an upstream merge:
+# Finalises a reference implementation merge:
 #   1. Runs format + test + build  (via format-and-test.sh)
-#   2. Updates .lastmerge to upstream HEAD
+#   2. Updates .lastmerge to reference implementation HEAD
 #   3. Commits the .lastmerge update
 #   4. Pushes the branch to origin
 #
-# Usage:  ./.github/scripts/upstream-sync/merge-upstream-finish.sh
-#         ./.github/scripts/upstream-sync/merge-upstream-finish.sh --skip-tests
+# Usage:  ./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh
+#         ./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh --skip-tests
 #
-# Requires: .merge-env written by merge-upstream-start.sh
+# Requires: .merge-env written by merge-reference-impl-start.sh
 # ──────────────────────────────────────────────────────────────
 set -euo pipefail
 
@@ -19,7 +19,7 @@ ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
 ENV_FILE="$ROOT_DIR/.merge-env"
 
 if [[ ! -f "$ENV_FILE" ]]; then
-    echo "❌ $ENV_FILE not found. Run ./.github/scripts/upstream-sync/merge-upstream-start.sh first."
+    echo "❌ $ENV_FILE not found. Run ./.github/scripts/reference-impl-sync/merge-reference-impl-start.sh first."
     exit 1
 fi
 
@@ -45,7 +45,7 @@ fi
 
 # ── 2. Update .lastmerge ─────────────────────────────────────
 echo "▸ Updating .lastmerge…"
-NEW_COMMIT=$(cd "$UPSTREAM_DIR" && git rev-parse origin/main)
+NEW_COMMIT=$(cd "$REFERENCE_IMPL_DIR" && git rev-parse origin/main)
 echo "$NEW_COMMIT" > "$ROOT_DIR/.lastmerge"
 
 git add .lastmerge
@@ -59,5 +59,5 @@ echo ""
 echo "✅  Branch pushed. Next step:"
 echo "  Create a Pull Request (base: main, head: $BRANCH_NAME)"
 echo ""
-echo "  Suggested title:  Merge upstream SDK changes ($(date +%Y-%m-%d))"
-echo "  Don't forget to add the 'upstream-sync' label."
+echo "  Suggested title:  Merge reference implementation SDK changes ($(date +%Y-%m-%d))"
+echo "  Don't forget to add the 'reference-impl-sync' label."
