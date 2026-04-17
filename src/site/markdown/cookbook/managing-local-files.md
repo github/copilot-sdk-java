@@ -36,10 +36,10 @@ jbang ManagingLocalFiles.java
 ```java
 //DEPS com.github:copilot-sdk-java:0.2.2-java.1
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageEvent;
-import com.github.copilot.sdk.events.SessionIdleEvent;
-import com.github.copilot.sdk.events.ToolExecutionCompleteEvent;
-import com.github.copilot.sdk.events.ToolExecutionStartEvent;
+import com.github.copilot.sdk.generated.AssistantMessageEvent;
+import com.github.copilot.sdk.generated.SessionIdleEvent;
+import com.github.copilot.sdk.generated.ToolExecutionCompleteEvent;
+import com.github.copilot.sdk.generated.ToolExecutionStartEvent;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;

@@ -1,0 +1,144 @@
+name: "Update @github/copilot Dependency"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Target version of @github/copilot (e.g. 1.0.24)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: "Update @github/copilot to ${{ inputs.version }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate version input
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9._-]+)?$ ]]; then
+            echo "::error::Invalid version format '$VERSION'. Expected semver (e.g. 1.0.24)."
+            exit 1
+          fi
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: 22
+
+      - name: Update @github/copilot in scripts/codegen
+        env:
+          VERSION: ${{ inputs.version }}
+        working-directory: ./scripts/codegen
+        # npm install updates package.json and package-lock.json to the new
+        # version; npm ci (below) then does a clean, reproducible install from
+        # the updated lock file.  Both steps are required: npm install alone
+        # leaves leftover packages, while npm ci alone cannot change the pinned
+        # version in the lock file.
+        run: npm install "@github/copilot@$VERSION"
+
+      - name: Install codegen dependencies
+        working-directory: ./scripts/codegen
+        run: npm ci
+
+      - name: Run codegen
+        working-directory: ./scripts/codegen
+        run: npm run generate
+
+      - uses: ./.github/actions/setup-copilot
+
+      - name: Verify generated code against schema
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+        run: |
+          cat > /tmp/verify-codegen-prompt.txt << 'PROMPT_EOF'
+          You are running inside the copilot-sdk-java repository.
+          The code generator has just run and produced Java source files under
+          src/generated/java/com/github/copilot/sdk/generated/rpc/.
+
+          Your task is to spot-check the generated API classes against the source
+          JSON schema to verify the generator produced correct output.
+
+          **Critical constraint: Do NOT modify any files. This is a read-only
+          verification. Use only read/inspect operations.**
+
+          **Steps:**
+          1. Read the API schema at:
+             scripts/codegen/node_modules/@github/copilot/schemas/api.schema.json
+
+          2. Pick these 3 generated API classes to verify:
+             - src/generated/java/com/github/copilot/sdk/generated/rpc/SessionToolsApi.java
+             - src/generated/java/com/github/copilot/sdk/generated/rpc/SessionUiApi.java
+             - src/generated/java/com/github/copilot/sdk/generated/rpc/SessionPermissionsApi.java
+
+          3. For each class, verify:
+             - Every RPC method in the schema's corresponding namespace has a
+               matching Java method in the generated class
+             - Parameter record fields match the JSON schema property names
+             - Java types are consistent with JSON schema types (String for
+               "string", Integer/int for "integer", Boolean/boolean for
+               "boolean", List for "array", Map or a generated class for
+               "object", etc.)
+             - No extra methods exist in the Java class that are not in the
+               schema
+
+          4. Print a summary table of what was checked and the result for each
+             method.
+
+          5. If ANY mismatch is found, print the details and exit with a
+             non-zero code.
+             If all checks pass, print "Schema verification passed" and exit 0.
+          PROMPT_EOF
+
+          copilot --yolo --prompt "$(cat /tmp/verify-codegen-prompt.txt)"
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          BRANCH="update-copilot-$VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git rev-parse --verify "origin/$BRANCH" >/dev/null 2>&1; then
+            git checkout "$BRANCH"
+            git reset --hard HEAD
+          else
+            git checkout -b "$BRANCH"
+          fi
+
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No changes detected; skipping commit and PR creation."
+            exit 0
+          fi
+
+          git commit -m "Update @github/copilot to $VERSION
+
+          - Updated @github/copilot in scripts/codegen
+          - Re-ran Java code generator"
+          git push origin "$BRANCH" --force-with-lease
+
+          if gh pr view "$BRANCH" >/dev/null 2>&1; then
+            echo "Pull request for branch '$BRANCH' already exists; updated branch only."
+          else
+            gh pr create \
+              --title "Update @github/copilot to $VERSION" \
+              --body "Automated update of \`@github/copilot\` to version \`$VERSION\`.
+
+          ### Changes
+          - Updated \`@github/copilot\` in \`scripts/codegen/package.json\`
+          - Re-ran Java code generator (\`scripts/codegen\`)
+
+          > Created by the **Update @github/copilot Dependency** workflow." \
+              --base main \
+              --head "$BRANCH"
+          fi

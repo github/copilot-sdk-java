@@ -37,8 +37,8 @@ implementation 'com.github:copilot-sdk-java:${project.version}'
 
 ```java
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageEvent;
-import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.generated.AssistantMessageEvent;
+import com.github.copilot.sdk.generated.SessionIdleEvent;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;
@@ -88,8 +88,8 @@ You can quickly try the SDK without setting up a full project using [JBang](http
 cat > hello-copilot.java << 'EOF'
 //DEPS com.github:copilot-sdk-java:${project.version}
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageEvent;
-import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.generated.AssistantMessageEvent;
+import com.github.copilot.sdk.generated.SessionIdleEvent;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;

@@ -17,3 +17,17 @@ Add the 'reference-impl-sync' label to the existing PR by running this command i
 If after analyzing the reference implementation diff there are no relevant changes to port to the Java SDK,
 push an empty commit with a message explaining why no changes were needed, so the PR reflects
 the analysis outcome. The repository maintainer will close the PR and issue manually.
+
+❌❌❌ ABSOLUTE PROHIBITION ❌❌❌
+
+NEVER MODIFY ANY FILE UNDER src/generated/java/ — THESE FILES ARE AUTO-GENERATED AND FORBIDDEN.
+
+If any change requires modifying src/generated/java/:
+1. STOP IMMEDIATELY — do not make the change
+2. FAIL the sync with an explanatory commit message
+3. Instruct the maintainer to re-run update-copilot-dependency.yml to regenerate these files
+
+See the ABSOLUTE PROHIBITION section in .github/prompts/agentic-merge-reference-impl.prompt.md
+for the full required procedure and commit message template.
+
+❌❌❌ END ABSOLUTE PROHIBITION ❌❌❌

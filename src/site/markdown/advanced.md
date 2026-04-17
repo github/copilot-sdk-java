@@ -174,7 +174,7 @@ session.sendAndWait(new MessageOptions().setPrompt("Continue with the new model"
 The `reasoningEffort` parameter accepts `"low"`, `"medium"`, `"high"`, or `"xhigh"` for models
 that support reasoning. Pass `null` (or use the single-argument overload) to use the default.
 
-The session emits a [`SessionModelChangeEvent`](apidocs/com/github/copilot/sdk/events/SessionModelChangeEvent.html)
+The session emits a [`SessionModelChangeEvent`](apidocs/com/github/copilot/sdk/generated/SessionModelChangeEvent.html)
 when the switch completes, which you can observe with `session.on(SessionModelChangeEvent.class, event -> ...)`.
 
 See [CopilotSession.setModel()](apidocs/com/github/copilot/sdk/CopilotSession.html#setModel(java.lang.String)) Javadoc for details.
@@ -675,7 +675,7 @@ Register an event handler *before* the `session.create` RPC is issued, ensuring 
 When you register handlers with `session.on()` after `createSession()` returns, you may miss events emitted during session creation (e.g., `SessionStartEvent`). Use `SessionConfig.setOnEvent()` to guarantee delivery of all events from the very start:
 
 ```java
-var events = new CopyOnWriteArrayList<AbstractSessionEvent>();
+var events = new CopyOnWriteArrayList<SessionEvent>();
 
 var session = client.createSession(
     new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
