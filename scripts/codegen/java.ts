@@ -167,7 +167,8 @@ function schemaTypeToJava(
     if (schema.type === "array") {
         const items = schema.items as JSONSchema7 | undefined;
         if (items) {
-            const itemResult = schemaTypeToJava(items, true, context, propName + "Item", nestedTypes);
+            // Always pass required=false so primitives are boxed (List<Long>, not List<long>)
+            const itemResult = schemaTypeToJava(items, false, context, propName + "Item", nestedTypes);
             imports.add("java.util.List");
             for (const imp of itemResult.imports) imports.add(imp);
             return { javaType: `List<${itemResult.javaType}>`, imports };
@@ -194,7 +195,8 @@ function schemaTypeToJava(
             const valueSchema = typeof schema.additionalProperties === "object"
                 ? schema.additionalProperties as JSONSchema7
                 : { type: "object" } as JSONSchema7;
-            const valueResult = schemaTypeToJava(valueSchema, true, context, propName + "Value", nestedTypes);
+            // Always pass required=false so primitives are boxed (Map<String, Long>, not Map<String, long>)
+            const valueResult = schemaTypeToJava(valueSchema, false, context, propName + "Value", nestedTypes);
             imports.add("java.util.Map");
             for (const imp of valueResult.imports) imports.add(imp);
             return { javaType: `Map<String, ${valueResult.javaType}>`, imports };
@@ -885,6 +887,11 @@ function generateApiMethod(
         ?? `Invokes {@code ${method.rpcMethod}}.`;
     lines.push(`    /**`);
     lines.push(`     * ${description}`);
+    if (isSession && hasExtraParams && hasSessionId) {
+        lines.push(`     * <p>`);
+        lines.push(`     * Note: the {@code sessionId} field in the params record is overridden`);
+        lines.push(`     * by the session-scoped wrapper; any value provided is ignored.`);
+    }
     if (method.stability === "experimental") {
         lines.push(`     *`);
         lines.push(`     * @apiNote This method is experimental and may change in a future version.`);
@@ -1199,12 +1206,11 @@ async function generateRpcCallerInterface(packageName: string, packageDir: strin
     lines.push(` * Interface for invoking JSON-RPC methods with typed responses.`);
     lines.push(` * <p>`);
     lines.push(` * Implementations delegate to the underlying transport layer`);
-    lines.push(` * (e.g., a {@code JsonRpcClient} instance). Use a method reference:`);
+    lines.push(` * (e.g., a {@code JsonRpcClient} instance). A method reference is typically the clearest`);
+    lines.push(` * way to adapt a generic {@code invoke} method to this interface:`);
     lines.push(` * <pre>{@code`);
     lines.push(` * RpcCaller caller = jsonRpcClient::invoke;`);
     lines.push(` * }</pre>`);
-    lines.push(` * Note: because the {@code invoke} method has a type parameter, this interface cannot`);
-    lines.push(` * be implemented using a lambda expression — use a method reference or anonymous class.`);
     lines.push(` *`);
     lines.push(` * @since 1.0.0`);
     lines.push(` */`);
@@ -1256,7 +1262,7 @@ async function generateRpcMapperClass(packageName: string, packageDir: string): 
     lines.push(`final class RpcMapper {`);
     lines.push(``);
     lines.push(`    static final com.fasterxml.jackson.databind.ObjectMapper INSTANCE =`);
-    lines.push(`        new com.fasterxml.jackson.databind.ObjectMapper();`);
+    lines.push(`        com.github.copilot.sdk.JsonRpcClient.getObjectMapper();`);
     lines.push(``);
     lines.push(`    private RpcMapper() {}`);
     lines.push(`}`);
