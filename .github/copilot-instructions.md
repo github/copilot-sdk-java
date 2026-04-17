@@ -213,6 +213,8 @@ Test method names are converted to lowercase snake_case for snapshot filenames t
 
 ### What NOT to Modify
 
+- **DO NOT** edit, create, or delete any file under `src/generated/java/` — these are **auto-generated** by `scripts/codegen/java.ts` and will be overwritten. To update generated code, run `mvn generate-sources -Pcodegen` or trigger the `update-copilot-dependency.yml` workflow.
+   If you need to get a new version of the schemas, run `mvn generate-sources -Pupdate-schemas-from-npm-artifact` before running the code generator.
 - **DO NOT** edit `.github/agents/` directory - these contain instructions for other agents
 - **DO NOT** modify `target/` directory - this contains build artifacts
 - **DO NOT** edit `pom.xml` dependencies without careful consideration - this SDK has minimal dependencies by design
