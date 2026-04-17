@@ -299,8 +299,7 @@ public final class CopilotSession implements AutoCloseable {
      */
     public SessionRpc getRpc() {
         if (rpc == null) {
-            throw new IllegalStateException(
-                    "Session is not connected or initialized: getRpc() requires an active session.");
+            return null;
         }
         SessionRpc current = sessionRpc;
         if (current == null) {
