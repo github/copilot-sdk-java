@@ -148,7 +148,7 @@ For the complete list of all event types, see [Event Types Reference](#Event_Typ
 
 ## Event Types Reference
 
-The SDK supports event types organized by category. All events extend `AbstractSessionEvent`.
+The SDK supports event types organized by category. All events extend `SessionEvent`.
 
 ### Session Events
 
@@ -266,7 +266,7 @@ The SDK supports event types organized by category. All events extend `AbstractS
 | `ExitPlanModeRequestedEvent` | `exit_plan_mode.requested` | Exit from plan mode was requested |
 | `ExitPlanModeCompletedEvent` | `exit_plan_mode.completed` | Exit from plan mode completed |
 
-See the [events package Javadoc](apidocs/com/github/copilot/sdk/events/package-summary.html) for detailed event data structures.
+See the [generated package Javadoc](apidocs/com/github/copilot/sdk/generated/package-summary.html) for detailed event data structures.
 
 ---
 
@@ -708,7 +708,7 @@ Complete list of all `SessionConfig` options for `createSession()`:
 | `configDir` | String | Custom configuration directory | [Config Dir](advanced.html#Custom_Configuration_Directory) |
 | `commands` | List&lt;CommandDefinition&gt; | Slash command definitions | [Slash Commands](advanced.html#Slash_Commands) |
 | `onElicitationRequest` | ElicitationHandler | Handler for incoming elicitation requests | [Elicitation](advanced.html#Elicitation_UI_Dialogs) |
-| `onEvent` | Consumer&lt;AbstractSessionEvent&gt; | Event handler registered before session creation | [Early Event Registration](advanced.html#Early_Event_Registration) |
+| `onEvent` | Consumer&lt;SessionEvent&gt; | Event handler registered before session creation | [Early Event Registration](advanced.html#Early_Event_Registration) |
 
 ### Cloning SessionConfig
 

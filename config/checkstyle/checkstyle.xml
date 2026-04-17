@@ -11,9 +11,9 @@
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="error"/>
 
-    <!-- Exclude json package and events package (self-documenting DTOs) -->
+    <!-- Exclude json package, events package, and generated package (self-documenting DTOs) -->
     <module name="BeforeExecutionExclusionFileFilter">
-        <property name="fileNamePattern" value=".*[\\/](json|events)[\\/].*\.java$"/>
+        <property name="fileNamePattern" value=".*[\\/](json|events|generated|rpc)[\\/].*\.java$"/>
     </module>
 
     <module name="TreeWalker">

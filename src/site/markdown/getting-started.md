@@ -110,8 +110,8 @@ Right now, you wait for the complete response before seeing anything. Let's make
 
 ```java
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageDeltaEvent;
-import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.generated.AssistantMessageDeltaEvent;
+import com.github.copilot.sdk.generated.SessionIdleEvent;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;
@@ -157,8 +157,8 @@ Now for the powerful part. Let's give Copilot the ability to call your code by d
 
 ```java
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageDeltaEvent;
-import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.generated.AssistantMessageDeltaEvent;
+import com.github.copilot.sdk.generated.SessionIdleEvent;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;
@@ -239,8 +239,8 @@ Let's put it all together into a useful interactive assistant:
 
 ```java
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageDeltaEvent;
-import com.github.copilot.sdk.events.SessionIdleEvent;
+import com.github.copilot.sdk.generated.AssistantMessageDeltaEvent;
+import com.github.copilot.sdk.generated.SessionIdleEvent;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;
