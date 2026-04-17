@@ -342,6 +342,53 @@ class RpcWrappersTest {
         }
     }
 
+    @Test
+    void copilotSession_getRpc_is_lazy_and_cached() throws Exception {
+        // Verify lazy init: getRpc() returns the same instance on repeated calls
+        // (caches rather than allocating a new SessionRpc per call).
+        try (var sockets = new SocketPair()) {
+            var rpc = sockets.client();
+            var session = new CopilotSession("sess-cache", rpc);
+
+            var first = session.getRpc();
+            var second = session.getRpc();
+            assertNotNull(first);
+            assertSame(first, second, "getRpc() must return the cached instance when sessionId has not changed");
+        }
+    }
+
+    @Test
+    void copilotSession_getRpc_returns_new_instance_after_sessionId_change() throws Exception {
+        // Verify that after setActiveSessionId() the old cached instance is discarded
+        // and the next getRpc() call produces a fresh SessionRpc with the new ID.
+        try (var sockets = new SocketPair()) {
+            var rpc = sockets.client();
+            var stub = sockets.stubServer();
+            var session = new CopilotSession("old-id", rpc);
+
+            var before = session.getRpc();
+            session.setActiveSessionId("new-id");
+            var after = session.getRpc();
+
+            assertNotNull(before);
+            assertNotNull(after);
+            assertNotSame(before, after, "getRpc() must return a new instance after sessionId changes");
+
+            // Confirm the new instance uses the new sessionId
+            after.agent.list();
+            var sent = stub.readOneMessage();
+            assertEquals("new-id", sent.get("params").get("sessionId").asText());
+        }
+    }
+
+    @Test
+    void copilotClient_getRpc_throws_before_start() {
+        // CopilotClient.getRpc() should throw before start() is called.
+        var client = new CopilotClient();
+        assertThrows(IllegalStateException.class, client::getRpc,
+                "getRpc() must throw IllegalStateException if called before start()");
+    }
+
     /**
      * Helper that creates a loopback socket pair. The client side is used by
      * {@link JsonRpcClient}; the server side can be read to inspect outbound
