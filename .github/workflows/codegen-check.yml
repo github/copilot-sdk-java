@@ -1,0 +1,44 @@
+name: "Codegen Check"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'scripts/codegen/**'
+      - 'src/generated/java/**'
+      - '.github/workflows/codegen-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: "Verify generated files are up-to-date"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: 22
+
+      - name: Install codegen dependencies
+        working-directory: ./scripts/codegen
+        run: npm ci
+
+      - name: Run codegen
+        working-directory: ./scripts/codegen
+        run: npm run generate
+
+      - name: Check for uncommitted changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::Generated files are out of date. Run 'cd scripts/codegen && npm run generate' and commit the changes."
+            git diff --stat
+            git diff
+            exit 1
+          fi
+          echo "✅ Generated files are up-to-date"
