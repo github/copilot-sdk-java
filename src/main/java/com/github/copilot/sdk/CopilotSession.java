@@ -868,17 +868,6 @@ public final class CopilotSession implements AutoCloseable {
      * {@code ToolResultObject} results. This helper bypasses the type constraint
      * while keeping every other call site on the typed wrapper.
      */
-    /**
-     * Sends a {@code ToolResultObject} back via
-     * {@code session.tools.handlePendingToolCall} using an
-     * {@link com.fasterxml.jackson.databind.node.ObjectNode} payload.
-     * <p>
-     * {@link SessionToolsHandlePendingToolCallParams#result()} is typed as
-     * {@code String} by the code generator's {@code anyOf[string,object]}
-     * preference rule, but the protocol requires a JSON object for expanded
-     * {@code ToolResultObject} results. This helper bypasses the type constraint
-     * while keeping every other call site on the typed wrapper.
-     */
     private void sendExpandedToolResult(String requestId, ToolResultObject toolResult) {
         var node = MAPPER.createObjectNode();
         node.put("sessionId", sessionId);
