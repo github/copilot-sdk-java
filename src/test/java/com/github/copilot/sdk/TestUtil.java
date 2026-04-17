@@ -22,8 +22,8 @@ final class TestUtil {
      * <p>
      * Resolution order:
      * <ol>
-     * <li>Search the system PATH using {@code where.exe} (Windows) or
-     * {@code which} (Linux/macOS).</li>
+     * <li>Search the system PATH using {@code where.exe} (Windows) or {@code which}
+     * (Linux/macOS).</li>
      * <li>Fall back to the {@code COPILOT_CLI_PATH} environment variable.</li>
      * <li>Walk parent directories looking for
      * {@code nodejs/node_modules/@github/copilot/index.js}.</li>
@@ -66,11 +66,11 @@ final class TestUtil {
     /**
      * Searches the system PATH for a launchable {@code copilot} executable.
      * <p>
-     * Uses {@code where.exe} on Windows and {@code which} on Unix-like systems.
-     * On Windows, {@code where.exe} may return multiple results (e.g. a Linux ELF
+     * Uses {@code where.exe} on Windows and {@code which} on Unix-like systems. On
+     * Windows, {@code where.exe} may return multiple results (e.g. a Linux ELF
      * binary, a {@code .bat} wrapper, a {@code .cmd} wrapper). This method iterates
-     * all results and returns the first one that {@link ProcessBuilder} can actually
-     * start.
+     * all results and returns the first one that {@link ProcessBuilder} can
+     * actually start.
      */
     private static String findCopilotInPath() {
         try {
@@ -86,8 +86,7 @@ final class TestUtil {
                 var lines = reader.lines().map(String::trim).filter(l -> !l.isEmpty()).toList();
                 for (String candidate : lines) {
                     try {
-                        new ProcessBuilder(candidate, "--version")
-                                .redirectErrorStream(true).start().destroyForcibly();
+                        new ProcessBuilder(candidate, "--version").redirectErrorStream(true).start().destroyForcibly();
                         return candidate;
                     } catch (Exception launchFailed) {
                         // Not launchable on this platform — try next candidate
