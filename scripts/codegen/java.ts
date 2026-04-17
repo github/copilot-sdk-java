@@ -431,7 +431,6 @@ function renderNestedType(nested: JavaClassDef, indentLevel: number, nestedTypes
         lines.push(`${ind}}`);
     } else if (nested.kind === "class" && nested.schema?.properties) {
         const localNestedTypes = new Map<string, JavaClassDef>();
-        const requiredSet = new Set(nested.schema.required || []);
         const fields: { jsonName: string; javaName: string; javaType: string; description?: string }[] = [];
 
         for (const [propName, propSchema] of Object.entries(nested.schema.properties)) {
