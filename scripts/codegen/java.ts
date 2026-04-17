@@ -302,7 +302,7 @@ async function generateSessionEventBaseClass(
     lines.push(` */`);
     lines.push(`@JsonIgnoreProperties(ignoreUnknown = true)`);
     lines.push(`@JsonInclude(JsonInclude.Include.NON_NULL)`);
-    lines.push(`@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", defaultImpl = UnknownSessionEvent.class)`);
+    lines.push(`@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true, defaultImpl = UnknownSessionEvent.class)`);
     lines.push(`@JsonSubTypes({`);
     for (let i = 0; i < variants.length; i++) {
         const v = variants[i];
@@ -373,10 +373,14 @@ async function generateUnknownEventClass(packageName: string, packageDir: string
     lines.push(`package ${packageName};`);
     lines.push("");
     lines.push(`import com.fasterxml.jackson.annotation.JsonIgnoreProperties;`);
+    lines.push(`import com.fasterxml.jackson.annotation.JsonProperty;`);
     lines.push(`import javax.annotation.processing.Generated;`);
     lines.push("");
     lines.push(`/**`);
     lines.push(` * Fallback for event types not yet known to this SDK version.`);
+    lines.push(` * <p>`);
+    lines.push(` * {@link #getType()} returns the original type string from the JSON payload,`);
+    lines.push(` * preserving forward compatibility with event types introduced by newer CLI versions.`);
     lines.push(` *`);
     lines.push(` * @since 1.0.0`);
     lines.push(` */`);
@@ -384,8 +388,11 @@ async function generateUnknownEventClass(packageName: string, packageDir: string
     lines.push(GENERATED_ANNOTATION);
     lines.push(`public final class UnknownSessionEvent extends SessionEvent {`);
     lines.push("");
+    lines.push(`    @JsonProperty("type")`);
+    lines.push(`    private String type = "unknown";`);
+    lines.push("");
     lines.push(`    @Override`);
-    lines.push(`    public String getType() { return "unknown"; }`);
+    lines.push(`    public String getType() { return type; }`);
     lines.push(`}`);
     lines.push("");
 

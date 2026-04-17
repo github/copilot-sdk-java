@@ -294,16 +294,23 @@ public final class CopilotSession implements AutoCloseable {
      * var agents = session.getRpc().agent.list().get();
      * }</pre>
      *
-     * @return the session-scoped typed RPC client
+     * @return the session-scoped typed RPC client (never {@code null})
+     * @throws IllegalStateException
+     *             if the session is not connected
      * @since 1.0.0
      */
     public SessionRpc getRpc() {
         if (rpc == null) {
-            return null;
+            throw new IllegalStateException("Session is not connected — RPC client is unavailable");
         }
         SessionRpc current = sessionRpc;
         if (current == null) {
-            sessionRpc = current = new SessionRpc(rpc::invoke, sessionId);
+            synchronized (this) {
+                current = sessionRpc;
+                if (current == null) {
+                    sessionRpc = current = new SessionRpc(rpc::invoke, sessionId);
+                }
+            }
         }
         return current;
     }

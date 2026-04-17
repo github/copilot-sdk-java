@@ -53,7 +53,7 @@ public class ForwardCompatibilityTest {
         SessionEvent result = MAPPER.readValue(json, SessionEvent.class);
 
         assertInstanceOf(UnknownSessionEvent.class, result);
-        assertEquals("unknown", result.getType());
+        assertEquals("future.feature_from_server", result.getType());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ForwardCompatibilityTest {
         SessionEvent result = MAPPER.readValue(json, SessionEvent.class);
 
         assertInstanceOf(UnknownSessionEvent.class, result);
-        assertEquals("unknown", result.getType());
+        assertEquals("future.feature_from_server", result.getType());
     }
 
     @Test

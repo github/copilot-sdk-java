@@ -844,7 +844,8 @@ public class SessionEventDeserializationTest {
         assertNotNull(event, "Unknown event types should return an UnknownSessionEvent");
         assertInstanceOf(com.github.copilot.sdk.generated.UnknownSessionEvent.class, event,
                 "Unknown event types should return UnknownSessionEvent for forward compatibility");
-        assertEquals("unknown", event.getType());
+        assertEquals("unknown.event.type", event.getType(),
+                "UnknownSessionEvent should preserve the original type from JSON");
     }
 
     @Test

@@ -23,7 +23,7 @@ import javax.annotation.processing.Generated;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", defaultImpl = UnknownSessionEvent.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true, defaultImpl = UnknownSessionEvent.class)
 @JsonSubTypes({
     @JsonSubTypes.Type(value = SessionStartEvent.class, name = "session.start"),
     @JsonSubTypes.Type(value = SessionResumeEvent.class, name = "session.resume"),
