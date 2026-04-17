@@ -115,12 +115,10 @@ function schemaTypeToJava(
         }
         // When exactly two non-null types and one of them is string, prefer String
         // over Object to avoid unnecessary type erasure on common wire-level unions
-        // (e.g., string | null, string | boolean).  For string | object keep Object
-        // so downstream code is not forced to cast.  For wider unions keep Object.
+        // (e.g., string | null, string | boolean).  For wider unions keep Object.
         if (nonNull.length === 2) {
             const hasString = nonNull.some((s) => typeof s === "object" && (s as JSONSchema7).type === "string");
-            const hasObject = nonNull.some((s) => typeof s === "object" && (s as JSONSchema7).type === "object");
-            if (hasString && !hasObject) {
+            if (hasString) {
                 return { javaType: "String", imports };
             }
         }
@@ -310,7 +308,7 @@ async function generateSessionEventBaseClass(
     lines.push(` */`);
     lines.push(`@JsonIgnoreProperties(ignoreUnknown = true)`);
     lines.push(`@JsonInclude(JsonInclude.Include.NON_NULL)`);
-    lines.push(`@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true, defaultImpl = UnknownSessionEvent.class)`);
+    lines.push(`@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", defaultImpl = UnknownSessionEvent.class)`);
     lines.push(`@JsonSubTypes({`);
     for (let i = 0; i < variants.length; i++) {
         const v = variants[i];
@@ -380,17 +378,11 @@ async function generateUnknownEventClass(packageName: string, packageDir: string
     lines.push("");
     lines.push(`package ${packageName};`);
     lines.push("");
-    lines.push(`import com.fasterxml.jackson.annotation.JsonIgnore;`);
     lines.push(`import com.fasterxml.jackson.annotation.JsonIgnoreProperties;`);
-    lines.push(`import com.fasterxml.jackson.annotation.JsonProperty;`);
     lines.push(`import javax.annotation.processing.Generated;`);
     lines.push("");
     lines.push(`/**`);
     lines.push(` * Fallback for event types not yet known to this SDK version.`);
-    lines.push(` *`);
-    lines.push(` * <p>The {@link #getOriginalType()} method returns the raw event-type discriminator`);
-    lines.push(` * value received on the wire, which can be used for forward-compatibility`);
-    lines.push(` * telemetry and handling.`);
     lines.push(` *`);
     lines.push(` * @since 1.0.0`);
     lines.push(` */`);
@@ -398,28 +390,8 @@ async function generateUnknownEventClass(packageName: string, packageDir: string
     lines.push(GENERATED_ANNOTATION);
     lines.push(`public final class UnknownSessionEvent extends SessionEvent {`);
     lines.push("");
-    lines.push(`    @JsonProperty("type")`);
-    lines.push(`    private String originalType;`);
-    lines.push("");
-    lines.push(`    /**`);
-    lines.push(`     * Returns the raw event-type discriminator string received on the wire,`);
-    lines.push(`     * or {@code "unknown"} if the value was not present in the JSON payload.`);
-    lines.push(`     *`);
-    lines.push(`     * @return the original wire type string, or {@code "unknown"}`);
-    lines.push(`     */`);
     lines.push(`    @Override`);
-    lines.push(`    @JsonProperty("type")`);
-    lines.push(`    public String getType() { return originalType != null ? originalType : "unknown"; }`);
-    lines.push("");
-    lines.push(`    /**`);
-    lines.push(`     * Returns the raw event-type discriminator string received on the wire.`);
-    lines.push(`     *`);
-    lines.push(`     * @return the original wire type string, or {@code null} if not present`);
-    lines.push(`     */`);
-    lines.push(`    @JsonIgnore`);
-    lines.push(`    public String getOriginalType() { return originalType; }`);
-    lines.push("");
-    lines.push(`    public void setOriginalType(String originalType) { this.originalType = originalType; }`);
+    lines.push(`    public String getType() { return "unknown"; }`);
     lines.push(`}`);
     lines.push("");
 
@@ -458,6 +430,7 @@ function renderNestedType(nested: JavaClassDef, indentLevel: number, nestedTypes
         lines.push(`${ind}}`);
     } else if (nested.kind === "class" && nested.schema?.properties) {
         const localNestedTypes = new Map<string, JavaClassDef>();
+        const requiredSet = new Set(nested.schema.required || []);
         const fields: { jsonName: string; javaName: string; javaType: string; description?: string }[] = [];
 
         for (const [propName, propSchema] of Object.entries(nested.schema.properties)) {
