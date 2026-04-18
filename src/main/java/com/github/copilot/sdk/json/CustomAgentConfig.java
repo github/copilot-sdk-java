@@ -50,7 +50,7 @@ public class CustomAgentConfig {
     private String prompt;
 
     @JsonProperty("mcpServers")
-    private Map<String, Object> mcpServers;
+    private Map<String, McpServerConfig> mcpServers;
 
     @JsonProperty("infer")
     private Boolean infer;
@@ -175,7 +175,7 @@ public class CustomAgentConfig {
      *
      * @return the MCP servers map
      */
-    public Map<String, Object> getMcpServers() {
+    public Map<String, McpServerConfig> getMcpServers() {
         return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);
     }
 
@@ -186,7 +186,7 @@ public class CustomAgentConfig {
      *            the MCP server configurations
      * @return this config for method chaining
      */
-    public CustomAgentConfig setMcpServers(Map<String, Object> mcpServers) {
+    public CustomAgentConfig setMcpServers(Map<String, McpServerConfig> mcpServers) {
         this.mcpServers = mcpServers;
         return this;
     }

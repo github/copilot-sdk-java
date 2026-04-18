@@ -53,7 +53,9 @@ import com.github.copilot.sdk.json.GetMessagesResponse;
 import com.github.copilot.sdk.json.HookInvocation;
 import com.github.copilot.sdk.json.InputOptions;
 import com.github.copilot.sdk.json.MessageOptions;
+import com.github.copilot.sdk.json.ModelCapabilitiesOverride;
 import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.sdk.json.SessionFsHandler;
 import com.github.copilot.sdk.json.PermissionInvocation;
 import com.github.copilot.sdk.json.PermissionRequest;
 import com.github.copilot.sdk.json.PermissionRequestResult;
@@ -142,6 +144,7 @@ public final class CopilotSession implements AutoCloseable {
     private final AtomicReference<UserInputHandler> userInputHandler = new AtomicReference<>();
     private final AtomicReference<ElicitationHandler> elicitationHandler = new AtomicReference<>();
     private final AtomicReference<SessionHooks> hooksHandler = new AtomicReference<>();
+    private final AtomicReference<SessionFsHandler> sessionFsHandler = new AtomicReference<>();
     private volatile EventErrorHandler eventErrorHandler;
     private volatile EventErrorPolicy eventErrorPolicy = EventErrorPolicy.PROPAGATE_AND_LOG_ERRORS;
     private volatile Map<String, java.util.function.Function<String, CompletableFuture<String>>> transformCallbacks;
@@ -1299,6 +1302,24 @@ public final class CopilotSession implements AutoCloseable {
     }
 
     /**
+     * Registers the session filesystem handler for this session.
+     *
+     * @param handler
+     *            the handler to register
+     */
+    void registerSessionFsHandler(SessionFsHandler handler) {
+        sessionFsHandler.set(handler);
+    }
+
+    /**
+     * Returns the registered session filesystem handler, or {@code null} if none is
+     * registered.
+     */
+    SessionFsHandler getSessionFsHandler() {
+        return sessionFsHandler.get();
+    }
+
+    /**
      * Registers transform callbacks for system message sections.
      * <p>
      * Called internally when creating or resuming a session with
@@ -1496,12 +1517,45 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.2.0
      */
     public CompletableFuture<Void> setModel(String model, String reasoningEffort) {
+        return setModel(model, reasoningEffort, null);
+    }
+
+    /**
+     * Changes the model for this session with optional reasoning effort level and
+     * model capabilities overrides.
+     * <p>
+     * The new model takes effect for the next message. Conversation history is
+     * preserved.
+     *
+     * <pre>{@code
+     * session.setModel("claude-sonnet-4.5", null,
+     * 		new ModelCapabilitiesOverride().setSupports(new ModelCapabilitiesOverrideSupports().setVision(true))).get();
+     * }</pre>
+     *
+     * @param model
+     *            the model ID to switch to (e.g., {@code "gpt-4.1"})
+     * @param reasoningEffort
+     *            reasoning effort level (e.g., {@code "low"}, {@code "medium"},
+     *            {@code "high"}, {@code "xhigh"}); {@code null} to use default
+     * @param modelCapabilities
+     *            per-property overrides for model capabilities, deep-merged over
+     *            runtime defaults; {@code null} to use runtime defaults
+     * @return a future that completes when the model switch is acknowledged
+     * @throws IllegalStateException
+     *             if this session has been terminated
+     * @since 1.4.0
+     */
+    public CompletableFuture<Void> setModel(String model, String reasoningEffort,
+            ModelCapabilitiesOverride modelCapabilities) {
         ensureNotTerminated();
         var params = new java.util.HashMap<String, Object>();
         params.put("sessionId", sessionId);
         params.put("modelId", model);
         if (reasoningEffort != null) {
             params.put("reasoningEffort", reasoningEffort);
+        }
+        if (modelCapabilities != null) {
+            params.put("modelCapabilities", modelCapabilities);
         }
         return rpc.invoke("session.model.switchTo", params, Void.class);
     }
@@ -1524,7 +1578,7 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture<Void> setModel(String model) {
-        return setModel(model, null);
+        return setModel(model, null, null);
     }
 
     /**
