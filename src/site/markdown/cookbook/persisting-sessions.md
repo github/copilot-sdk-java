@@ -32,7 +32,7 @@ jbang PersistingSessions.java
 ```java
 //DEPS com.github:copilot-sdk-java:0.2.2-java.1
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageEvent;
+import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.json.MessageOptions;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.SessionConfig;
@@ -129,8 +129,8 @@ public class DeleteSession {
 ```java
 //DEPS com.github:copilot-sdk-java:0.2.2-java.1
 import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.events.AssistantMessageEvent;
-import com.github.copilot.sdk.events.UserMessageEvent;
+import com.github.copilot.sdk.generated.AssistantMessageEvent;
+import com.github.copilot.sdk.generated.UserMessageEvent;
 import com.github.copilot.sdk.json.PermissionHandler;
 import com.github.copilot.sdk.json.ResumeSessionConfig;
 

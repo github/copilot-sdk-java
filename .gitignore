@@ -5,10 +5,11 @@ examples-test/
 blog-copilotsdk/
 .claude/worktrees
 smoke-test
-*job-logs.txt
+*job-logs.txt*
 temporary-prompts/
 changebundle.txt*
 .classpath
 .project
 .settings
+scripts/codegen/node_modules/
 *~
