@@ -103,9 +103,9 @@ public class CopilotSDK {
             session.on(SessionUsageInfoEvent.class, usage -> {
                 var data = usage.getData();
                 System.out.println("\n--- Usage Metrics ---");
-                System.out.println("Current tokens: " + (int) data.currentTokens());
-                System.out.println("Token limit: " + (int) data.tokenLimit());
-                System.out.println("Messages count: " + (int) data.messagesLength());
+                System.out.println("Current tokens: " + data.currentTokens().intValue());
+                System.out.println("Token limit: " + data.tokenLimit().intValue());
+                System.out.println("Messages count: " + data.messagesLength().intValue());
             });
 
             // Send a message
