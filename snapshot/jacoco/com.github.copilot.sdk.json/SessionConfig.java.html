@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import com.github.copilot.sdk.events.AbstractSessionEvent;
+import com.github.copilot.sdk.generated.SessionEvent;
 
 /**
  * Configuration for creating a new Copilot session.
@@ -57,7 +57,7 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
     private List&lt;String&gt; skillDirectories;
     private List&lt;String&gt; disabledSkills;
     private String configDir;
-    private Consumer&lt;AbstractSessionEvent&gt; onEvent;
+    private Consumer&lt;SessionEvent&gt; onEvent;
     private List&lt;CommandDefinition&gt; commands;
     private ElicitationHandler onElicitationRequest;
 
@@ -573,7 +573,7 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      *
      * @return the event handler, or {@code null} if not set
      */
-    public Consumer&lt;AbstractSessionEvent&gt; getOnEvent() {
+    public Consumer&lt;SessionEvent&gt; getOnEvent() {
 <span class="fc" id="L577">        return onEvent;</span>
     }
 
@@ -592,7 +592,7 @@ import com.github.copilot.sdk.events.AbstractSessionEvent;
      *            the event handler to register before session creation
      * @return this config instance for method chaining
      */
-    public SessionConfig setOnEvent(Consumer&lt;AbstractSessionEvent&gt; onEvent) {
+    public SessionConfig setOnEvent(Consumer&lt;SessionEvent&gt; onEvent) {
 <span class="fc" id="L596">        this.onEvent = onEvent;</span>
 <span class="fc" id="L597">        return this;</span>
     }
