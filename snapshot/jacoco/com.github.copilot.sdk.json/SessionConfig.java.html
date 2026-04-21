@@ -34,7 +34,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="nc" id="L37">public class SessionConfig {</span>
+<span class="fc" id="L37">public class SessionConfig {</span>
 
     private String sessionId;
     private String clientName;
@@ -70,7 +70,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the session ID, or {@code null} to generate automatically
      */
     public String getSessionId() {
-<span class="nc" id="L73">        return sessionId;</span>
+<span class="fc" id="L73">        return sessionId;</span>
     }
 
     /**
@@ -83,8 +83,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setSessionId(String sessionId) {
-<span class="nc" id="L86">        this.sessionId = sessionId;</span>
-<span class="nc" id="L87">        return this;</span>
+<span class="fc" id="L86">        this.sessionId = sessionId;</span>
+<span class="fc" id="L87">        return this;</span>
     }
 
     /**
@@ -93,7 +93,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the client name, or {@code null} if not set
      */
     public String getClientName() {
-<span class="nc" id="L96">        return clientName;</span>
+<span class="fc" id="L96">        return clientName;</span>
     }
 
     /**
@@ -106,8 +106,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setClientName(String clientName) {
-<span class="nc" id="L109">        this.clientName = clientName;</span>
-<span class="nc" id="L110">        return this;</span>
+<span class="fc" id="L109">        this.clientName = clientName;</span>
+<span class="fc" id="L110">        return this;</span>
     }
 
     /**
@@ -116,7 +116,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the model name
      */
     public String getModel() {
-<span class="nc" id="L119">        return model;</span>
+<span class="fc" id="L119">        return model;</span>
     }
 
     /**
@@ -129,8 +129,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setModel(String model) {
-<span class="nc" id="L132">        this.model = model;</span>
-<span class="nc" id="L133">        return this;</span>
+<span class="fc" id="L132">        this.model = model;</span>
+<span class="fc" id="L133">        return this;</span>
     }
 
     /**
@@ -139,7 +139,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the reasoning effort level (&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;, or &quot;xhigh&quot;)
      */
     public String getReasoningEffort() {
-<span class="nc" id="L142">        return reasoningEffort;</span>
+<span class="fc" id="L142">        return reasoningEffort;</span>
     }
 
     /**
@@ -163,7 +163,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the list of tool definitions
      */
     public List&lt;ToolDefinition&gt; getTools() {
-<span class="nc bnc" id="L166" title="All 2 branches missed.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
     }
 
     /**
@@ -178,8 +178,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see ToolDefinition
      */
     public SessionConfig setTools(List&lt;ToolDefinition&gt; tools) {
-<span class="nc" id="L181">        this.tools = tools;</span>
-<span class="nc" id="L182">        return this;</span>
+<span class="fc" id="L181">        this.tools = tools;</span>
+<span class="fc" id="L182">        return this;</span>
     }
 
     /**
@@ -188,7 +188,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the system message config
      */
     public SystemMessageConfig getSystemMessage() {
-<span class="nc" id="L191">        return systemMessage;</span>
+<span class="fc" id="L191">        return systemMessage;</span>
     }
 
     /**
@@ -205,8 +205,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see SystemMessageConfig
      */
     public SessionConfig setSystemMessage(SystemMessageConfig systemMessage) {
-<span class="nc" id="L208">        this.systemMessage = systemMessage;</span>
-<span class="nc" id="L209">        return this;</span>
+<span class="fc" id="L208">        this.systemMessage = systemMessage;</span>
+<span class="fc" id="L209">        return this;</span>
     }
 
     /**
@@ -215,7 +215,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the list of available tool names
      */
     public List&lt;String&gt; getAvailableTools() {
-<span class="nc bnc" id="L218" title="All 2 branches missed.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
     }
 
     /**
@@ -228,8 +228,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setAvailableTools(List&lt;String&gt; availableTools) {
-<span class="nc" id="L231">        this.availableTools = availableTools;</span>
-<span class="nc" id="L232">        return this;</span>
+<span class="fc" id="L231">        this.availableTools = availableTools;</span>
+<span class="fc" id="L232">        return this;</span>
     }
 
     /**
@@ -238,7 +238,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the list of excluded tool names
      */
     public List&lt;String&gt; getExcludedTools() {
-<span class="nc bnc" id="L241" title="All 2 branches missed.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
     }
 
     /**
@@ -251,8 +251,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setExcludedTools(List&lt;String&gt; excludedTools) {
-<span class="nc" id="L254">        this.excludedTools = excludedTools;</span>
-<span class="nc" id="L255">        return this;</span>
+<span class="fc" id="L254">        this.excludedTools = excludedTools;</span>
+<span class="fc" id="L255">        return this;</span>
     }
 
     /**
@@ -261,7 +261,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the provider configuration
      */
     public ProviderConfig getProvider() {
-<span class="nc" id="L264">        return provider;</span>
+<span class="fc" id="L264">        return provider;</span>
     }
 
     /**
@@ -276,8 +276,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see ProviderConfig
      */
     public SessionConfig setProvider(ProviderConfig provider) {
-<span class="nc" id="L279">        this.provider = provider;</span>
-<span class="nc" id="L280">        return this;</span>
+<span class="fc" id="L279">        this.provider = provider;</span>
+<span class="fc" id="L280">        return this;</span>
     }
 
     /**
@@ -286,7 +286,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the permission handler
      */
     public PermissionHandler getOnPermissionRequest() {
-<span class="nc" id="L289">        return onPermissionRequest;</span>
+<span class="fc" id="L289">        return onPermissionRequest;</span>
     }
 
     /**
@@ -301,8 +301,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see PermissionHandler
      */
     public SessionConfig setOnPermissionRequest(PermissionHandler onPermissionRequest) {
-<span class="nc" id="L304">        this.onPermissionRequest = onPermissionRequest;</span>
-<span class="nc" id="L305">        return this;</span>
+<span class="fc" id="L304">        this.onPermissionRequest = onPermissionRequest;</span>
+<span class="fc" id="L305">        return this;</span>
     }
 
     /**
@@ -311,7 +311,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the user input handler
      */
     public UserInputHandler getOnUserInputRequest() {
-<span class="nc" id="L314">        return onUserInputRequest;</span>
+<span class="fc" id="L314">        return onUserInputRequest;</span>
     }
 
     /**
@@ -325,8 +325,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see UserInputHandler
      */
     public SessionConfig setOnUserInputRequest(UserInputHandler onUserInputRequest) {
-<span class="nc" id="L328">        this.onUserInputRequest = onUserInputRequest;</span>
-<span class="nc" id="L329">        return this;</span>
+<span class="fc" id="L328">        this.onUserInputRequest = onUserInputRequest;</span>
+<span class="fc" id="L329">        return this;</span>
     }
 
     /**
@@ -335,7 +335,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the session hooks
      */
     public SessionHooks getHooks() {
-<span class="nc" id="L338">        return hooks;</span>
+<span class="fc" id="L338">        return hooks;</span>
     }
 
     /**
@@ -349,8 +349,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see SessionHooks
      */
     public SessionConfig setHooks(SessionHooks hooks) {
-<span class="nc" id="L352">        this.hooks = hooks;</span>
-<span class="nc" id="L353">        return this;</span>
+<span class="fc" id="L352">        this.hooks = hooks;</span>
+<span class="fc" id="L353">        return this;</span>
     }
 
     /**
@@ -359,7 +359,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the working directory path
      */
     public String getWorkingDirectory() {
-<span class="nc" id="L362">        return workingDirectory;</span>
+<span class="fc" id="L362">        return workingDirectory;</span>
     }
 
     /**
@@ -380,7 +380,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return {@code true} if streaming is enabled
      */
     public boolean isStreaming() {
-<span class="nc" id="L383">        return streaming;</span>
+<span class="fc" id="L383">        return streaming;</span>
     }
 
     /**
@@ -395,8 +395,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setStreaming(boolean streaming) {
-<span class="nc" id="L398">        this.streaming = streaming;</span>
-<span class="nc" id="L399">        return this;</span>
+<span class="fc" id="L398">        this.streaming = streaming;</span>
+<span class="fc" id="L399">        return this;</span>
     }
 
     /**
@@ -405,7 +405,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the MCP servers map
      */
     public Map&lt;String, McpServerConfig&gt; getMcpServers() {
-<span class="nc bnc" id="L408" title="All 2 branches missed.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+<span class="fc bfc" id="L408" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
     }
 
     /**
@@ -419,8 +419,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setMcpServers(Map&lt;String, McpServerConfig&gt; mcpServers) {
-<span class="nc" id="L422">        this.mcpServers = mcpServers;</span>
-<span class="nc" id="L423">        return this;</span>
+<span class="fc" id="L422">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L423">        return this;</span>
     }
 
     /**
@@ -429,7 +429,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the list of custom agent configurations
      */
     public List&lt;CustomAgentConfig&gt; getCustomAgents() {
-<span class="nc bnc" id="L432" title="All 2 branches missed.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
     }
 
     /**
@@ -444,8 +444,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see CustomAgentConfig
      */
     public SessionConfig setCustomAgents(List&lt;CustomAgentConfig&gt; customAgents) {
-<span class="nc" id="L447">        this.customAgents = customAgents;</span>
-<span class="nc" id="L448">        return this;</span>
+<span class="fc" id="L447">        this.customAgents = customAgents;</span>
+<span class="fc" id="L448">        return this;</span>
     }
 
     /**
@@ -454,7 +454,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the agent name, or {@code null} if not set
      */
     public String getAgent() {
-<span class="nc" id="L457">        return agent;</span>
+<span class="fc" id="L457">        return agent;</span>
     }
 
     /**
@@ -467,8 +467,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setAgent(String agent) {
-<span class="nc" id="L470">        this.agent = agent;</span>
-<span class="nc" id="L471">        return this;</span>
+<span class="fc" id="L470">        this.agent = agent;</span>
+<span class="fc" id="L471">        return this;</span>
     }
 
     /**
@@ -477,7 +477,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the infinite sessions config
      */
     public InfiniteSessionConfig getInfiniteSessions() {
-<span class="nc" id="L480">        return infiniteSessions;</span>
+<span class="fc" id="L480">        return infiniteSessions;</span>
     }
 
     /**
@@ -494,8 +494,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see InfiniteSessionConfig
      */
     public SessionConfig setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
-<span class="nc" id="L497">        this.infiniteSessions = infiniteSessions;</span>
-<span class="nc" id="L498">        return this;</span>
+<span class="fc" id="L497">        this.infiniteSessions = infiniteSessions;</span>
+<span class="fc" id="L498">        return this;</span>
     }
 
     /**
@@ -504,7 +504,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the list of skill directory paths
      */
     public List&lt;String&gt; getSkillDirectories() {
-<span class="nc bnc" id="L507" title="All 2 branches missed.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
+<span class="fc bfc" id="L507" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
     }
 
     /**
@@ -519,8 +519,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setSkillDirectories(List&lt;String&gt; skillDirectories) {
-<span class="nc" id="L522">        this.skillDirectories = skillDirectories;</span>
-<span class="nc" id="L523">        return this;</span>
+<span class="fc" id="L522">        this.skillDirectories = skillDirectories;</span>
+<span class="fc" id="L523">        return this;</span>
     }
 
     /**
@@ -529,7 +529,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the list of disabled skill names
      */
     public List&lt;String&gt; getDisabledSkills() {
-<span class="nc bnc" id="L532" title="All 2 branches missed.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
+<span class="fc bfc" id="L532" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
     }
 
     /**
@@ -543,8 +543,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setDisabledSkills(List&lt;String&gt; disabledSkills) {
-<span class="nc" id="L546">        this.disabledSkills = disabledSkills;</span>
-<span class="nc" id="L547">        return this;</span>
+<span class="fc" id="L546">        this.disabledSkills = disabledSkills;</span>
+<span class="fc" id="L547">        return this;</span>
     }
 
     /**
@@ -553,7 +553,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the config directory path
      */
     public String getConfigDir() {
-<span class="nc" id="L556">        return configDir;</span>
+<span class="fc" id="L556">        return configDir;</span>
     }
 
     /**
@@ -567,8 +567,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setConfigDir(String configDir) {
-<span class="nc" id="L570">        this.configDir = configDir;</span>
-<span class="nc" id="L571">        return this;</span>
+<span class="fc" id="L570">        this.configDir = configDir;</span>
+<span class="fc" id="L571">        return this;</span>
     }
 
     /**
@@ -578,7 +578,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      *         {@code null} to use the runtime default
      */
     public Boolean getEnableConfigDiscovery() {
-<span class="nc" id="L581">        return enableConfigDiscovery;</span>
+<span class="fc" id="L581">        return enableConfigDiscovery;</span>
     }
 
     /**
@@ -608,7 +608,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      *         suppress them, or {@code null} to use the runtime default
      */
     public Boolean getIncludeSubAgentStreamingEvents() {
-<span class="nc" id="L611">        return includeSubAgentStreamingEvents;</span>
+<span class="fc" id="L611">        return includeSubAgentStreamingEvents;</span>
     }
 
     /**
@@ -636,7 +636,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the model capabilities override, or {@code null} if not set
      */
     public ModelCapabilitiesOverride getModelCapabilities() {
-<span class="nc" id="L639">        return modelCapabilities;</span>
+<span class="fc" id="L639">        return modelCapabilities;</span>
     }
 
     /**
@@ -663,7 +663,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the event handler, or {@code null} if not set
      */
     public Consumer&lt;SessionEvent&gt; getOnEvent() {
-<span class="nc" id="L666">        return onEvent;</span>
+<span class="fc" id="L666">        return onEvent;</span>
     }
 
     /**
@@ -682,8 +682,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return this config instance for method chaining
      */
     public SessionConfig setOnEvent(Consumer&lt;SessionEvent&gt; onEvent) {
-<span class="nc" id="L685">        this.onEvent = onEvent;</span>
-<span class="nc" id="L686">        return this;</span>
+<span class="fc" id="L685">        this.onEvent = onEvent;</span>
+<span class="fc" id="L686">        return this;</span>
     }
 
     /**
@@ -692,7 +692,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the list of command definitions, or {@code null}
      */
     public List&lt;CommandDefinition&gt; getCommands() {
-<span class="nc bnc" id="L695" title="All 2 branches missed.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
+<span class="fc bfc" id="L695" title="All 2 branches covered.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
     }
 
     /**
@@ -707,8 +707,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see CommandDefinition
      */
     public SessionConfig setCommands(List&lt;CommandDefinition&gt; commands) {
-<span class="nc" id="L710">        this.commands = commands;</span>
-<span class="nc" id="L711">        return this;</span>
+<span class="fc" id="L710">        this.commands = commands;</span>
+<span class="fc" id="L711">        return this;</span>
     }
 
     /**
@@ -717,7 +717,7 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @return the elicitation handler, or {@code null}
      */
     public ElicitationHandler getOnElicitationRequest() {
-<span class="nc" id="L720">        return onElicitationRequest;</span>
+<span class="fc" id="L720">        return onElicitationRequest;</span>
     }
 
     /**
@@ -732,8 +732,8 @@ import com.github.copilot.sdk.generated.SessionEvent;
      * @see ElicitationHandler
      */
     public SessionConfig setOnElicitationRequest(ElicitationHandler onElicitationRequest) {
-<span class="nc" id="L735">        this.onElicitationRequest = onElicitationRequest;</span>
-<span class="nc" id="L736">        return this;</span>
+<span class="fc" id="L735">        this.onElicitationRequest = onElicitationRequest;</span>
+<span class="fc" id="L736">        return this;</span>
     }
 
     /**
@@ -749,35 +749,35 @@ import com.github.copilot.sdk.generated.SessionEvent;
      */
     @Override
     public SessionConfig clone() {
-<span class="nc" id="L752">        SessionConfig copy = new SessionConfig();</span>
-<span class="nc" id="L753">        copy.sessionId = this.sessionId;</span>
-<span class="nc" id="L754">        copy.clientName = this.clientName;</span>
-<span class="nc" id="L755">        copy.model = this.model;</span>
-<span class="nc" id="L756">        copy.reasoningEffort = this.reasoningEffort;</span>
-<span class="nc bnc" id="L757" title="All 2 branches missed.">        copy.tools = this.tools != null ? new ArrayList&lt;&gt;(this.tools) : null;</span>
-<span class="nc" id="L758">        copy.systemMessage = this.systemMessage;</span>
-<span class="nc bnc" id="L759" title="All 2 branches missed.">        copy.availableTools = this.availableTools != null ? new ArrayList&lt;&gt;(this.availableTools) : null;</span>
-<span class="nc bnc" id="L760" title="All 2 branches missed.">        copy.excludedTools = this.excludedTools != null ? new ArrayList&lt;&gt;(this.excludedTools) : null;</span>
-<span class="nc" id="L761">        copy.provider = this.provider;</span>
-<span class="nc" id="L762">        copy.onPermissionRequest = this.onPermissionRequest;</span>
-<span class="nc" id="L763">        copy.onUserInputRequest = this.onUserInputRequest;</span>
-<span class="nc" id="L764">        copy.hooks = this.hooks;</span>
-<span class="nc" id="L765">        copy.workingDirectory = this.workingDirectory;</span>
-<span class="nc" id="L766">        copy.streaming = this.streaming;</span>
-<span class="nc" id="L767">        copy.includeSubAgentStreamingEvents = this.includeSubAgentStreamingEvents;</span>
-<span class="nc bnc" id="L768" title="All 2 branches missed.">        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap&lt;&gt;(this.mcpServers) : null;</span>
-<span class="nc bnc" id="L769" title="All 2 branches missed.">        copy.customAgents = this.customAgents != null ? new ArrayList&lt;&gt;(this.customAgents) : null;</span>
-<span class="nc" id="L770">        copy.agent = this.agent;</span>
-<span class="nc" id="L771">        copy.infiniteSessions = this.infiniteSessions;</span>
-<span class="nc bnc" id="L772" title="All 2 branches missed.">        copy.skillDirectories = this.skillDirectories != null ? new ArrayList&lt;&gt;(this.skillDirectories) : null;</span>
-<span class="nc bnc" id="L773" title="All 2 branches missed.">        copy.disabledSkills = this.disabledSkills != null ? new ArrayList&lt;&gt;(this.disabledSkills) : null;</span>
-<span class="nc" id="L774">        copy.configDir = this.configDir;</span>
-<span class="nc" id="L775">        copy.enableConfigDiscovery = this.enableConfigDiscovery;</span>
-<span class="nc" id="L776">        copy.modelCapabilities = this.modelCapabilities;</span>
-<span class="nc" id="L777">        copy.onEvent = this.onEvent;</span>
-<span class="nc bnc" id="L778" title="All 2 branches missed.">        copy.commands = this.commands != null ? new ArrayList&lt;&gt;(this.commands) : null;</span>
-<span class="nc" id="L779">        copy.onElicitationRequest = this.onElicitationRequest;</span>
-<span class="nc" id="L780">        return copy;</span>
+<span class="fc" id="L752">        SessionConfig copy = new SessionConfig();</span>
+<span class="fc" id="L753">        copy.sessionId = this.sessionId;</span>
+<span class="fc" id="L754">        copy.clientName = this.clientName;</span>
+<span class="fc" id="L755">        copy.model = this.model;</span>
+<span class="fc" id="L756">        copy.reasoningEffort = this.reasoningEffort;</span>
+<span class="pc bpc" id="L757" title="1 of 2 branches missed.">        copy.tools = this.tools != null ? new ArrayList&lt;&gt;(this.tools) : null;</span>
+<span class="fc" id="L758">        copy.systemMessage = this.systemMessage;</span>
+<span class="fc bfc" id="L759" title="All 2 branches covered.">        copy.availableTools = this.availableTools != null ? new ArrayList&lt;&gt;(this.availableTools) : null;</span>
+<span class="pc bpc" id="L760" title="1 of 2 branches missed.">        copy.excludedTools = this.excludedTools != null ? new ArrayList&lt;&gt;(this.excludedTools) : null;</span>
+<span class="fc" id="L761">        copy.provider = this.provider;</span>
+<span class="fc" id="L762">        copy.onPermissionRequest = this.onPermissionRequest;</span>
+<span class="fc" id="L763">        copy.onUserInputRequest = this.onUserInputRequest;</span>
+<span class="fc" id="L764">        copy.hooks = this.hooks;</span>
+<span class="fc" id="L765">        copy.workingDirectory = this.workingDirectory;</span>
+<span class="fc" id="L766">        copy.streaming = this.streaming;</span>
+<span class="fc" id="L767">        copy.includeSubAgentStreamingEvents = this.includeSubAgentStreamingEvents;</span>
+<span class="pc bpc" id="L768" title="1 of 2 branches missed.">        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap&lt;&gt;(this.mcpServers) : null;</span>
+<span class="pc bpc" id="L769" title="1 of 2 branches missed.">        copy.customAgents = this.customAgents != null ? new ArrayList&lt;&gt;(this.customAgents) : null;</span>
+<span class="fc" id="L770">        copy.agent = this.agent;</span>
+<span class="fc" id="L771">        copy.infiniteSessions = this.infiniteSessions;</span>
+<span class="pc bpc" id="L772" title="1 of 2 branches missed.">        copy.skillDirectories = this.skillDirectories != null ? new ArrayList&lt;&gt;(this.skillDirectories) : null;</span>
+<span class="pc bpc" id="L773" title="1 of 2 branches missed.">        copy.disabledSkills = this.disabledSkills != null ? new ArrayList&lt;&gt;(this.disabledSkills) : null;</span>
+<span class="fc" id="L774">        copy.configDir = this.configDir;</span>
+<span class="fc" id="L775">        copy.enableConfigDiscovery = this.enableConfigDiscovery;</span>
+<span class="fc" id="L776">        copy.modelCapabilities = this.modelCapabilities;</span>
+<span class="fc" id="L777">        copy.onEvent = this.onEvent;</span>
+<span class="fc bfc" id="L778" title="All 2 branches covered.">        copy.commands = this.commands != null ? new ArrayList&lt;&gt;(this.commands) : null;</span>
+<span class="fc" id="L779">        copy.onElicitationRequest = this.onElicitationRequest;</span>
+<span class="fc" id="L780">        return copy;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

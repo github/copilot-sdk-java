@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="nc" id="L35">public class CustomAgentConfig {</span>
+<span class="fc" id="L35">public class CustomAgentConfig {</span>
 
     @JsonProperty(&quot;name&quot;)
     private String name;
@@ -64,7 +64,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the agent name used for {@code @mentions}
      */
     public String getName() {
-<span class="nc" id="L67">        return name;</span>
+<span class="fc" id="L67">        return name;</span>
     }
 
     /**
@@ -78,8 +78,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setName(String name) {
-<span class="nc" id="L81">        this.name = name;</span>
-<span class="nc" id="L82">        return this;</span>
+<span class="fc" id="L81">        this.name = name;</span>
+<span class="fc" id="L82">        return this;</span>
     }
 
     /**
@@ -88,7 +88,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the display name shown to users
      */
     public String getDisplayName() {
-<span class="nc" id="L91">        return displayName;</span>
+<span class="fc" id="L91">        return displayName;</span>
     }
 
     /**
@@ -99,8 +99,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setDisplayName(String displayName) {
-<span class="nc" id="L102">        this.displayName = displayName;</span>
-<span class="nc" id="L103">        return this;</span>
+<span class="fc" id="L102">        this.displayName = displayName;</span>
+<span class="fc" id="L103">        return this;</span>
     }
 
     /**
@@ -109,7 +109,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the description of what this agent does
      */
     public String getDescription() {
-<span class="nc" id="L112">        return description;</span>
+<span class="fc" id="L112">        return description;</span>
     }
 
     /**
@@ -122,8 +122,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setDescription(String description) {
-<span class="nc" id="L125">        this.description = description;</span>
-<span class="nc" id="L126">        return this;</span>
+<span class="fc" id="L125">        this.description = description;</span>
+<span class="fc" id="L126">        return this;</span>
     }
 
     /**
@@ -132,7 +132,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the list of tool identifiers
      */
     public List&lt;String&gt; getTools() {
-<span class="nc bnc" id="L135" title="All 2 branches missed.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
     }
 
     /**
@@ -146,8 +146,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setTools(List&lt;String&gt; tools) {
-<span class="nc" id="L149">        this.tools = tools;</span>
-<span class="nc" id="L150">        return this;</span>
+<span class="fc" id="L149">        this.tools = tools;</span>
+<span class="fc" id="L150">        return this;</span>
     }
 
     /**
@@ -156,7 +156,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the agent's system prompt
      */
     public String getPrompt() {
-<span class="nc" id="L159">        return prompt;</span>
+<span class="fc" id="L159">        return prompt;</span>
     }
 
     /**
@@ -169,8 +169,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setPrompt(String prompt) {
-<span class="nc" id="L172">        this.prompt = prompt;</span>
-<span class="nc" id="L173">        return this;</span>
+<span class="fc" id="L172">        this.prompt = prompt;</span>
+<span class="fc" id="L173">        return this;</span>
     }
 
     /**
@@ -179,7 +179,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the MCP servers map
      */
     public Map&lt;String, McpServerConfig&gt; getMcpServers() {
-<span class="nc bnc" id="L182" title="All 2 branches missed.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
     }
 
     /**
@@ -190,8 +190,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setMcpServers(Map&lt;String, McpServerConfig&gt; mcpServers) {
-<span class="nc" id="L193">        this.mcpServers = mcpServers;</span>
-<span class="nc" id="L194">        return this;</span>
+<span class="fc" id="L193">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L194">        return this;</span>
     }
 
     /**
@@ -200,7 +200,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the infer flag, or {@code null} if not set
      */
     public Boolean getInfer() {
-<span class="nc" id="L203">        return infer;</span>
+<span class="fc" id="L203">        return infer;</span>
     }
 
     /**
@@ -211,8 +211,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setInfer(Boolean infer) {
-<span class="nc" id="L214">        this.infer = infer;</span>
-<span class="nc" id="L215">        return this;</span>
+<span class="fc" id="L214">        this.infer = infer;</span>
+<span class="fc" id="L215">        return this;</span>
     }
 
     /**
@@ -221,7 +221,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the list of skill names, or {@code null} if not set
      */
     public List&lt;String&gt; getSkills() {
-<span class="nc bnc" id="L224" title="All 2 branches missed.">        return skills == null ? null : Collections.unmodifiableList(skills);</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        return skills == null ? null : Collections.unmodifiableList(skills);</span>
     }
 
     /**
@@ -238,8 +238,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public CustomAgentConfig setSkills(List&lt;String&gt; skills) {
-<span class="nc" id="L241">        this.skills = skills;</span>
-<span class="nc" id="L242">        return this;</span>
+<span class="fc" id="L241">        this.skills = skills;</span>
+<span class="fc" id="L242">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

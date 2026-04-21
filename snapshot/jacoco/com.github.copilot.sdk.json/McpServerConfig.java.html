@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = McpStdioServerConfig.class, name = &quot;local&quot;),
         @JsonSubTypes.Type(value = McpHttpServerConfig.class, name = &quot;http&quot;),
         @JsonSubTypes.Type(value = McpHttpServerConfig.class, name = &quot;sse&quot;)})
-<span class="nc" id="L35">public abstract class McpServerConfig {</span>
+<span class="fc" id="L35">public abstract class McpServerConfig {</span>
 
     @JsonProperty(&quot;tools&quot;)
     private List&lt;String&gt; tools;
@@ -48,7 +48,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
      * @return the list of tool names, or {@code null} if not set
      */
     public List&lt;String&gt; getTools() {
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
     }
 
     /**
@@ -61,8 +61,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
      * @return this config for method chaining
      */
     public McpServerConfig setTools(List&lt;String&gt; tools) {
-<span class="nc" id="L64">        this.tools = tools;</span>
-<span class="nc" id="L65">        return this;</span>
+<span class="fc" id="L64">        this.tools = tools;</span>
+<span class="fc" id="L65">        return this;</span>
     }
 
     /**
@@ -71,7 +71,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
      * @return the timeout in milliseconds, or {@code null} for the default
      */
     public Integer getTimeout() {
-<span class="nc" id="L74">        return timeout;</span>
+<span class="fc" id="L74">        return timeout;</span>
     }
 
     /**

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="nc" id="L37">public class ProviderConfig {</span>
+<span class="fc" id="L37">public class ProviderConfig {</span>
 
     @JsonProperty(&quot;type&quot;)
     private String type;
@@ -63,7 +63,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the provider type (e.g., &quot;openai&quot;, &quot;azure&quot;)
      */
     public String getType() {
-<span class="nc" id="L66">        return type;</span>
+<span class="fc" id="L66">        return type;</span>
     }
 
     /**
@@ -80,8 +80,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setType(String type) {
-<span class="nc" id="L83">        this.type = type;</span>
-<span class="nc" id="L84">        return this;</span>
+<span class="fc" id="L83">        this.type = type;</span>
+<span class="fc" id="L84">        return this;</span>
     }
 
     /**
@@ -90,7 +90,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the wire API format
      */
     public String getWireApi() {
-<span class="nc" id="L93">        return wireApi;</span>
+<span class="fc" id="L93">        return wireApi;</span>
     }
 
     /**
@@ -104,8 +104,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setWireApi(String wireApi) {
-<span class="nc" id="L107">        this.wireApi = wireApi;</span>
-<span class="nc" id="L108">        return this;</span>
+<span class="fc" id="L107">        this.wireApi = wireApi;</span>
+<span class="fc" id="L108">        return this;</span>
     }
 
     /**
@@ -114,7 +114,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the API base URL
      */
     public String getBaseUrl() {
-<span class="nc" id="L117">        return baseUrl;</span>
+<span class="fc" id="L117">        return baseUrl;</span>
     }
 
     /**
@@ -127,8 +127,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setBaseUrl(String baseUrl) {
-<span class="nc" id="L130">        this.baseUrl = baseUrl;</span>
-<span class="nc" id="L131">        return this;</span>
+<span class="fc" id="L130">        this.baseUrl = baseUrl;</span>
+<span class="fc" id="L131">        return this;</span>
     }
 
     /**
@@ -137,7 +137,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the API key
      */
     public String getApiKey() {
-<span class="nc" id="L140">        return apiKey;</span>
+<span class="fc" id="L140">        return apiKey;</span>
     }
 
     /**
@@ -148,8 +148,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setApiKey(String apiKey) {
-<span class="nc" id="L151">        this.apiKey = apiKey;</span>
-<span class="nc" id="L152">        return this;</span>
+<span class="fc" id="L151">        this.apiKey = apiKey;</span>
+<span class="fc" id="L152">        return this;</span>
     }
 
     /**
@@ -158,7 +158,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the bearer token
      */
     public String getBearerToken() {
-<span class="nc" id="L161">        return bearerToken;</span>
+<span class="fc" id="L161">        return bearerToken;</span>
     }
 
     /**
@@ -176,8 +176,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setBearerToken(String bearerToken) {
-<span class="nc" id="L179">        this.bearerToken = bearerToken;</span>
-<span class="nc" id="L180">        return this;</span>
+<span class="fc" id="L179">        this.bearerToken = bearerToken;</span>
+<span class="fc" id="L180">        return this;</span>
     }
 
     /**
@@ -186,7 +186,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the Azure options
      */
     public AzureOptions getAzure() {
-<span class="nc" id="L189">        return azure;</span>
+<span class="fc" id="L189">        return azure;</span>
     }
 
     /**
@@ -198,8 +198,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @see AzureOptions
      */
     public ProviderConfig setAzure(AzureOptions azure) {
-<span class="nc" id="L201">        this.azure = azure;</span>
-<span class="nc" id="L202">        return this;</span>
+<span class="fc" id="L201">        this.azure = azure;</span>
+<span class="fc" id="L202">        return this;</span>
     }
 
     /**
@@ -208,7 +208,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the headers map, or {@code null} if not set
      */
     public Map&lt;String, String&gt; getHeaders() {
-<span class="nc bnc" id="L211" title="All 2 branches missed.">        return headers == null ? null : Collections.unmodifiableMap(headers);</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        return headers == null ? null : Collections.unmodifiableMap(headers);</span>
     }
 
     /**

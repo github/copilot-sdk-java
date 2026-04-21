@@ -40,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="nc" id="L43">public class MessageOptions {</span>
+<span class="fc" id="L43">public class MessageOptions {</span>
 
     private String prompt;
     private List&lt;MessageAttachment&gt; attachments;
@@ -53,7 +53,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the prompt text
      */
     public String getPrompt() {
-<span class="nc" id="L56">        return prompt;</span>
+<span class="fc" id="L56">        return prompt;</span>
     }
 
     /**
@@ -64,8 +64,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setPrompt(String prompt) {
-<span class="nc" id="L67">        this.prompt = prompt;</span>
-<span class="nc" id="L68">        return this;</span>
+<span class="fc" id="L67">        this.prompt = prompt;</span>
+<span class="fc" id="L68">        return this;</span>
     }
 
     /**
@@ -74,7 +74,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the list of attachments
      */
     public List&lt;MessageAttachment&gt; getAttachments() {
-<span class="nc bnc" id="L77" title="All 2 branches missed.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
     }
 
     /**
@@ -95,8 +95,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @see BlobAttachment
      */
     public MessageOptions setAttachments(List&lt;? extends MessageAttachment&gt; attachments) {
-<span class="nc bnc" id="L98" title="All 2 branches missed.">        this.attachments = attachments != null ? new ArrayList&lt;&gt;(attachments) : null;</span>
-<span class="nc" id="L99">        return this;</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        this.attachments = attachments != null ? new ArrayList&lt;&gt;(attachments) : null;</span>
+<span class="fc" id="L99">        return this;</span>
     }
 
     /**
@@ -113,8 +113,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setMode(String mode) {
-<span class="nc" id="L116">        this.mode = mode;</span>
-<span class="nc" id="L117">        return this;</span>
+<span class="fc" id="L116">        this.mode = mode;</span>
+<span class="fc" id="L117">        return this;</span>
     }
 
     /**
@@ -123,7 +123,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the delivery mode
      */
     public String getMode() {
-<span class="nc" id="L126">        return mode;</span>
+<span class="fc" id="L126">        return mode;</span>
     }
 
     /**
@@ -132,7 +132,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the headers map, or {@code null} if not set
      */
     public Map&lt;String, String&gt; getRequestHeaders() {
-<span class="nc bnc" id="L135" title="All 2 branches missed.">        return requestHeaders == null ? null : Collections.unmodifiableMap(requestHeaders);</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        return requestHeaders == null ? null : Collections.unmodifiableMap(requestHeaders);</span>
     }
 
     /**
@@ -163,12 +163,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Override
     public MessageOptions clone() {
-<span class="nc" id="L166">        MessageOptions copy = new MessageOptions();</span>
-<span class="nc" id="L167">        copy.prompt = this.prompt;</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
-<span class="nc" id="L169">        copy.mode = this.mode;</span>
-<span class="nc bnc" id="L170" title="All 2 branches missed.">        copy.requestHeaders = this.requestHeaders != null ? new HashMap&lt;&gt;(this.requestHeaders) : null;</span>
-<span class="nc" id="L171">        return copy;</span>
+<span class="fc" id="L166">        MessageOptions copy = new MessageOptions();</span>
+<span class="fc" id="L167">        copy.prompt = this.prompt;</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
+<span class="fc" id="L169">        copy.mode = this.mode;</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        copy.requestHeaders = this.requestHeaders != null ? new HashMap&lt;&gt;(this.requestHeaders) : null;</span>
+<span class="fc" id="L171">        return copy;</span>
     }
 
 }
