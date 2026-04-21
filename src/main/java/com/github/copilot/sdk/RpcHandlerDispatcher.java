@@ -191,6 +191,9 @@ final class RpcHandlerDispatcher {
 
                 CopilotSession session = sessions.get(sessionId);
                 if (session == null) {
+                    session = findSessionWithPermissionHandler();
+                }
+                if (session == null) {
                     var result = new PermissionRequestResult()
                             .setKind(PermissionRequestResultKind.DENIED_COULD_NOT_REQUEST_FROM_USER);
                     rpc.sendResponse(Long.parseLong(requestId), Map.of("result", result));
@@ -292,7 +295,11 @@ final class RpcHandlerDispatcher {
 
                 CopilotSession session = sessions.get(sessionId);
                 if (session == null) {
-                    rpc.sendErrorResponse(Long.parseLong(requestId), -32602, "Unknown session " + sessionId);
+                    session = findSessionWithHooks();
+                }
+                if (session == null) {
+                    // No registered session has hooks — return null output (no-op).
+                    rpc.sendResponse(Long.parseLong(requestId), Collections.singletonMap("output", null));
                     return;
                 }
 
@@ -364,6 +371,42 @@ final class RpcHandlerDispatcher {
                 LOG.log(Level.SEVERE, "Error handling systemMessage.transform", e);
             }
         });
+    }
+
+    /**
+     * Finds a registered session that has hooks handlers.
+     * <p>
+     * Used as a fallback when the CLI sends a {@code hooks.invoke} call with a
+     * session ID that is not in the registry (e.g. for CLI-created sub-agent
+     * sessions).
+     *
+     * @return a session with hooks registered, or {@code null} if none exists
+     */
+    private CopilotSession findSessionWithHooks() {
+        for (CopilotSession s : sessions.values()) {
+            if (s.hasHooksHandler()) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds a registered session that has a permission handler.
+     * <p>
+     * Used as a fallback when the CLI sends a {@code permission.request} call with
+     * a session ID that is not in the registry (e.g. for CLI-created sub-agent
+     * sessions).
+     *
+     * @return a session with a permission handler, or {@code null} if none exists
+     */
+    private CopilotSession findSessionWithPermissionHandler() {
+        for (CopilotSession s : sessions.values()) {
+            if (s.hasPermissionHandler()) {
+                return s;
+            }
+        }
+        return null;
     }
 
     private void runAsync(Runnable task) {

@@ -1220,6 +1220,15 @@ public final class CopilotSession implements AutoCloseable {
     }
 
     /**
+     * Returns whether this session has a permission handler registered.
+     *
+     * @return {@code true} if a permission handler is registered
+     */
+    boolean hasPermissionHandler() {
+        return permissionHandler.get() != null;
+    }
+
+    /**
      * Handles a permission request from the Copilot CLI.
      * <p>
      * Called internally when the server requests permission for an operation.
@@ -1348,6 +1357,15 @@ public final class CopilotSession implements AutoCloseable {
      */
     void registerHooks(SessionHooks hooks) {
         hooksHandler.set(hooks);
+    }
+
+    /**
+     * Returns whether this session has hooks registered.
+     *
+     * @return {@code true} if a {@link SessionHooks} instance is registered
+     */
+    boolean hasHooksHandler() {
+        return hooksHandler.get() != null;
     }
 
     /**

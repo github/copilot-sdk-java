@@ -295,7 +295,8 @@ class RpcHandlerDispatcherTest {
     // ===== permission.request tests =====
 
     @Test
-    void permissionRequestWithUnknownSession() throws Exception {
+    void permissionRequestWithUnknownSessionNoFallback() throws Exception {
+        // No sessions registered at all — returns denied
         ObjectNode params = MAPPER.createObjectNode();
         params.put("sessionId", "nonexistent");
         params.putObject("permissionRequest");
@@ -305,6 +306,25 @@ class RpcHandlerDispatcherTest {
         JsonNode response = readResponse();
         JsonNode result = response.get("result").get("result");
         assertEquals("denied-no-approval-rule-and-could-not-request-from-user", result.get("kind").asText());
+    }
+
+    @Test
+    void permissionRequestFallsBackToSessionWithHandler() throws Exception {
+        // Register a session with a permission handler under a different ID
+        CopilotSession session = createSession("parent-session");
+        session.registerPermissionHandler((request, invocation) -> CompletableFuture
+                .completedFuture(new PermissionRequestResult().setKind("allow")));
+
+        // Send permission.request with an unknown sub-agent session ID
+        ObjectNode params = MAPPER.createObjectNode();
+        params.put("sessionId", "sub-agent-session");
+        params.putObject("permissionRequest");
+
+        invokeHandler("permission.request", "14", params);
+
+        JsonNode response = readResponse();
+        JsonNode result = response.get("result").get("result");
+        assertEquals("allow", result.get("kind").asText());
     }
 
     @Test
@@ -453,7 +473,8 @@ class RpcHandlerDispatcherTest {
     // ===== hooks.invoke tests =====
 
     @Test
-    void hooksInvokeWithUnknownSession() throws Exception {
+    void hooksInvokeWithUnknownSessionNoFallback() throws Exception {
+        // No sessions registered at all — returns null output (no-op)
         ObjectNode params = MAPPER.createObjectNode();
         params.put("sessionId", "nonexistent");
         params.put("hookType", "preToolUse");
@@ -462,8 +483,31 @@ class RpcHandlerDispatcherTest {
         invokeHandler("hooks.invoke", "30", params);
 
         JsonNode response = readResponse();
-        assertNotNull(response.get("error"));
-        assertEquals(-32602, response.get("error").get("code").asInt());
+        JsonNode output = response.get("result").get("output");
+        assertTrue(output == null || output.isNull(), "Output should be null when no session has hooks");
+    }
+
+    @Test
+    void hooksInvokeFallsBackToSessionWithHooks() throws Exception {
+        // Register a session with hooks under a different ID
+        CopilotSession session = createSession("parent-session");
+        session.registerHooks(new SessionHooks().setOnPreToolUse(
+                (input, invocation) -> CompletableFuture.completedFuture(PreToolUseHookOutput.allow())));
+
+        // Send hooks.invoke with an unknown sub-agent session ID
+        ObjectNode params = MAPPER.createObjectNode();
+        params.put("sessionId", "sub-agent-session");
+        params.put("hookType", "preToolUse");
+        ObjectNode input = params.putObject("input");
+        input.put("toolName", "glob");
+        input.put("toolCallId", "tc-sub");
+
+        invokeHandler("hooks.invoke", "35", params);
+
+        JsonNode response = readResponse();
+        JsonNode output = response.get("result").get("output");
+        assertNotNull(output, "Should fall back to the registered session's hooks");
+        assertEquals("allow", output.get("permissionDecision").asText());
     }
 
     @Test
