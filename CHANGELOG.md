@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 > **Reference implementation sync:** [`github/copilot-sdk@c3fa6cb`](https://github.com/github/copilot-sdk/commit/c3fa6cbfb83d4a20b7912b1a17013d48f5a277a1)
 
+## [0.3.0-java-preview.0] - 2026-04-21
+
+> **Reference implementation sync:** [`github/copilot-sdk@c3fa6cb`](https://github.com/github/copilot-sdk/commit/c3fa6cbfb83d4a20b7912b1a17013d48f5a277a1)
 ## [0.2.2-java.1] - 2026-04-07
 
 > **Reference implementation sync:** [`github/copilot-sdk@c3fa6cb`](https://github.com/github/copilot-sdk/commit/c3fa6cbfb83d4a20b7912b1a17013d48f5a277a1)
@@ -488,21 +491,28 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 - Pre-commit hook for Spotless code formatting
 - Comprehensive API documentation
 
-[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...HEAD
+[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.3.0-java-preview.0...HEAD
+[0.3.0-java-preview.0]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...v0.3.0-java-preview.0
+[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.3.0-java-preview.0...HEAD
+[0.3.0-java-preview.0]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...v0.3.0-java-preview.0
 [0.2.2-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.1...v0.2.2-java.1
-[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...HEAD
+[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.3.0-java-preview.0...HEAD
+[0.3.0-java-preview.0]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...v0.3.0-java-preview.0
 [0.2.2-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.1...v0.2.2-java.1
 [0.2.1-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.0...v0.2.1-java.1
-[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...HEAD
+[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.3.0-java-preview.0...HEAD
+[0.3.0-java-preview.0]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...v0.3.0-java-preview.0
 [0.2.2-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.1...v0.2.2-java.1
 [0.2.1-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.0...v0.2.1-java.1
 [0.2.1-java.0]: https://github.com/github/copilot-sdk-java/compare/v0.1.32-java.0...v0.2.1-java.0
-[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...HEAD
+[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.3.0-java-preview.0...HEAD
+[0.3.0-java-preview.0]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...v0.3.0-java-preview.0
 [0.2.2-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.1...v0.2.2-java.1
 [0.2.1-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.0...v0.2.1-java.1
 [0.2.1-java.0]: https://github.com/github/copilot-sdk-java/compare/v0.1.32-java.0...v0.2.1-java.0
 [0.1.32-java.0]: https://github.com/github/copilot-sdk-java/compare/v1.0.11...v0.1.32-java.0
-[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...HEAD
+[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v0.3.0-java-preview.0...HEAD
+[0.3.0-java-preview.0]: https://github.com/github/copilot-sdk-java/compare/v0.2.2-java.1...v0.3.0-java-preview.0
 [0.2.2-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.1...v0.2.2-java.1
 [0.2.1-java.1]: https://github.com/github/copilot-sdk-java/compare/v0.2.1-java.0...v0.2.1-java.1
 [0.2.1-java.0]: https://github.com/github/copilot-sdk-java/compare/v0.1.32-java.0...v0.2.1-java.0
