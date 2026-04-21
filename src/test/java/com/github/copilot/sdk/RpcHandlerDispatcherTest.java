@@ -295,7 +295,8 @@ class RpcHandlerDispatcherTest {
     // ===== permission.request tests =====
 
     @Test
-    void permissionRequestWithUnknownSession() throws Exception {
+    void permissionRequestWithUnknownSessionAndNoFallback() throws Exception {
+        // No sessions registered → denied
         ObjectNode params = MAPPER.createObjectNode();
         params.put("sessionId", "nonexistent");
         params.putObject("permissionRequest");
@@ -305,6 +306,25 @@ class RpcHandlerDispatcherTest {
         JsonNode response = readResponse();
         JsonNode result = response.get("result").get("result");
         assertEquals("denied-no-approval-rule-and-could-not-request-from-user", result.get("kind").asText());
+    }
+
+    @Test
+    void permissionRequestWithSubAgentSessionFallsBackToParentWithHandler() throws Exception {
+        // Register a parent session with a permission handler, invoke with a sub-agent
+        // session ID
+        CopilotSession parentSession = createSession("parent-session");
+        parentSession.registerPermissionHandler((request, invocation) -> CompletableFuture
+                .completedFuture(new PermissionRequestResult().setKind("allow")));
+
+        ObjectNode params = MAPPER.createObjectNode();
+        params.put("sessionId", "sub-agent-session-id"); // Not in registry
+        params.putObject("permissionRequest");
+
+        invokeHandler("permission.request", "15", params);
+
+        JsonNode response = readResponse();
+        JsonNode result = response.get("result").get("result");
+        assertEquals("allow", result.get("kind").asText());
     }
 
     @Test
@@ -453,7 +473,8 @@ class RpcHandlerDispatcherTest {
     // ===== hooks.invoke tests =====
 
     @Test
-    void hooksInvokeWithUnknownSession() throws Exception {
+    void hooksInvokeWithUnknownSessionAndNoFallback() throws Exception {
+        // No sessions registered at all → returns null output (no-op)
         ObjectNode params = MAPPER.createObjectNode();
         params.put("sessionId", "nonexistent");
         params.put("hookType", "preToolUse");
@@ -462,8 +483,52 @@ class RpcHandlerDispatcherTest {
         invokeHandler("hooks.invoke", "30", params);
 
         JsonNode response = readResponse();
-        assertNotNull(response.get("error"));
-        assertEquals(-32602, response.get("error").get("code").asInt());
+        // No sessions with hooks → null output, not an error
+        assertNull(response.get("error"), "Should not return an error when no fallback session exists");
+        JsonNode output = response.get("result").get("output");
+        assertTrue(output == null || output.isNull(), "Output should be null when no session with hooks is found");
+    }
+
+    @Test
+    void hooksInvokeWithSubAgentSessionFallsBackToParentWithHooks() throws Exception {
+        // Register a parent session with hooks, but invoke with a sub-agent session ID
+        CopilotSession parentSession = createSession("parent-session");
+        parentSession.registerHooks(new SessionHooks().setOnPreToolUse(
+                (input, invocation) -> CompletableFuture.completedFuture(PreToolUseHookOutput.allow())));
+
+        ObjectNode params = MAPPER.createObjectNode();
+        params.put("sessionId", "sub-agent-session-id"); // Not in registry
+        params.put("hookType", "preToolUse");
+        ObjectNode input = params.putObject("input");
+        input.put("toolName", "glob");
+        input.put("toolCallId", "tc-sub-1");
+
+        invokeHandler("hooks.invoke", "35", params);
+
+        JsonNode response = readResponse();
+        assertNull(response.get("error"), "Should not return an error when a fallback session with hooks exists");
+        JsonNode output = response.get("result").get("output");
+        assertNotNull(output);
+        assertEquals("allow", output.get("permissionDecision").asText());
+    }
+
+    @Test
+    void hooksInvokeWithSubAgentSessionAndNoSessionHasHooks() throws Exception {
+        // Register a parent session WITHOUT hooks, invoke with unknown sub-agent
+        // session ID
+        createSession("parent-session-no-hooks");
+
+        ObjectNode params = MAPPER.createObjectNode();
+        params.put("sessionId", "sub-agent-session-id"); // Not in registry
+        params.put("hookType", "preToolUse");
+        params.putObject("input");
+
+        invokeHandler("hooks.invoke", "36", params);
+
+        JsonNode response = readResponse();
+        assertNull(response.get("error"), "Should not return an error when no fallback session has hooks");
+        JsonNode output = response.get("result").get("output");
+        assertTrue(output == null || output.isNull(), "Output should be null when no session with hooks is found");
     }
 
     @Test

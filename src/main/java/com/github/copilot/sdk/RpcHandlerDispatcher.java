@@ -191,6 +191,12 @@ final class RpcHandlerDispatcher {
 
                 CopilotSession session = sessions.get(sessionId);
                 if (session == null) {
+                    // Fall back to any registered session that has a permission handler.
+                    // This handles sub-agent sessions created internally by the CLI whose IDs
+                    // are not in the SDK's session registry.
+                    session = findSessionWithPermissionHandler();
+                }
+                if (session == null) {
                     var result = new PermissionRequestResult()
                             .setKind(PermissionRequestResultKind.DENIED_COULD_NOT_REQUEST_FROM_USER);
                     rpc.sendResponse(Long.parseLong(requestId), Map.of("result", result));
@@ -292,7 +298,14 @@ final class RpcHandlerDispatcher {
 
                 CopilotSession session = sessions.get(sessionId);
                 if (session == null) {
-                    rpc.sendErrorResponse(Long.parseLong(requestId), -32602, "Unknown session " + sessionId);
+                    // Fall back to any registered session that has hooks registered.
+                    // This handles sub-agent sessions created internally by the CLI whose IDs
+                    // are not in the SDK's session registry.
+                    session = findSessionWithHooks();
+                }
+                if (session == null) {
+                    // No session with hooks — return null output (no-op) rather than an error.
+                    rpc.sendResponse(Long.parseLong(requestId), Collections.singletonMap("output", null));
                     return;
                 }
 
@@ -364,6 +377,34 @@ final class RpcHandlerDispatcher {
                 LOG.log(Level.SEVERE, "Error handling systemMessage.transform", e);
             }
         });
+    }
+
+    /**
+     * Finds the first registered session that has a hooks handler registered.
+     *
+     * @return a session with hooks, or {@code null} if none is found
+     */
+    private CopilotSession findSessionWithHooks() {
+        for (CopilotSession s : sessions.values()) {
+            if (s.hasHooksHandler()) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds the first registered session that has a permission handler registered.
+     *
+     * @return a session with a permission handler, or {@code null} if none is found
+     */
+    private CopilotSession findSessionWithPermissionHandler() {
+        for (CopilotSession s : sessions.values()) {
+            if (s.hasPermissionHandler()) {
+                return s;
+            }
+        }
+        return null;
     }
 
     private void runAsync(Runnable task) {
