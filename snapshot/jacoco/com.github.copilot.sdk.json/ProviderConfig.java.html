@@ -4,6 +4,9 @@
 
 package com.github.copilot.sdk.json;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -31,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L34">public class ProviderConfig {</span>
+<span class="nc" id="L37">public class ProviderConfig {</span>
 
     @JsonProperty(&quot;type&quot;)
     private String type;
@@ -51,13 +54,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JsonProperty(&quot;azure&quot;)
     private AzureOptions azure;
 
+    @JsonProperty(&quot;headers&quot;)
+    private Map&lt;String, String&gt; headers;
+
     /**
      * Gets the provider type.
      *
      * @return the provider type (e.g., &quot;openai&quot;, &quot;azure&quot;)
      */
     public String getType() {
-<span class="fc" id="L60">        return type;</span>
+<span class="nc" id="L66">        return type;</span>
     }
 
     /**
@@ -74,8 +80,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setType(String type) {
-<span class="fc" id="L77">        this.type = type;</span>
-<span class="fc" id="L78">        return this;</span>
+<span class="nc" id="L83">        this.type = type;</span>
+<span class="nc" id="L84">        return this;</span>
     }
 
     /**
@@ -84,7 +90,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the wire API format
      */
     public String getWireApi() {
-<span class="fc" id="L87">        return wireApi;</span>
+<span class="nc" id="L93">        return wireApi;</span>
     }
 
     /**
@@ -98,8 +104,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setWireApi(String wireApi) {
-<span class="fc" id="L101">        this.wireApi = wireApi;</span>
-<span class="fc" id="L102">        return this;</span>
+<span class="nc" id="L107">        this.wireApi = wireApi;</span>
+<span class="nc" id="L108">        return this;</span>
     }
 
     /**
@@ -108,7 +114,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the API base URL
      */
     public String getBaseUrl() {
-<span class="fc" id="L111">        return baseUrl;</span>
+<span class="nc" id="L117">        return baseUrl;</span>
     }
 
     /**
@@ -121,8 +127,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setBaseUrl(String baseUrl) {
-<span class="fc" id="L124">        this.baseUrl = baseUrl;</span>
-<span class="fc" id="L125">        return this;</span>
+<span class="nc" id="L130">        this.baseUrl = baseUrl;</span>
+<span class="nc" id="L131">        return this;</span>
     }
 
     /**
@@ -131,7 +137,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the API key
      */
     public String getApiKey() {
-<span class="fc" id="L134">        return apiKey;</span>
+<span class="nc" id="L140">        return apiKey;</span>
     }
 
     /**
@@ -142,8 +148,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setApiKey(String apiKey) {
-<span class="fc" id="L145">        this.apiKey = apiKey;</span>
-<span class="fc" id="L146">        return this;</span>
+<span class="nc" id="L151">        this.apiKey = apiKey;</span>
+<span class="nc" id="L152">        return this;</span>
     }
 
     /**
@@ -152,7 +158,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the bearer token
      */
     public String getBearerToken() {
-<span class="fc" id="L155">        return bearerToken;</span>
+<span class="nc" id="L161">        return bearerToken;</span>
     }
 
     /**
@@ -170,8 +176,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setBearerToken(String bearerToken) {
-<span class="fc" id="L173">        this.bearerToken = bearerToken;</span>
-<span class="fc" id="L174">        return this;</span>
+<span class="nc" id="L179">        this.bearerToken = bearerToken;</span>
+<span class="nc" id="L180">        return this;</span>
     }
 
     /**
@@ -180,7 +186,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the Azure options
      */
     public AzureOptions getAzure() {
-<span class="fc" id="L183">        return azure;</span>
+<span class="nc" id="L189">        return azure;</span>
     }
 
     /**
@@ -192,8 +198,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @see AzureOptions
      */
     public ProviderConfig setAzure(AzureOptions azure) {
-<span class="fc" id="L195">        this.azure = azure;</span>
-<span class="fc" id="L196">        return this;</span>
+<span class="nc" id="L201">        this.azure = azure;</span>
+<span class="nc" id="L202">        return this;</span>
+    }
+
+    /**
+     * Gets the custom HTTP headers for outbound provider requests.
+     *
+     * @return the headers map, or {@code null} if not set
+     */
+    public Map&lt;String, String&gt; getHeaders() {
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        return headers == null ? null : Collections.unmodifiableMap(headers);</span>
+    }
+
+    /**
+     * Sets custom HTTP headers to include in outbound provider requests.
+     * &lt;p&gt;
+     * Use this to pass additional authentication headers or custom metadata to the
+     * provider API.
+     *
+     * @param headers
+     *            the headers map
+     * @return this config for method chaining
+     */
+    public ProviderConfig setHeaders(Map&lt;String, String&gt; headers) {
+<span class="nc" id="L225">        this.headers = headers;</span>
+<span class="nc" id="L226">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

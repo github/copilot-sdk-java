@@ -6,6 +6,7 @@ package com.github.copilot.sdk.json;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L25">public final class SendMessageRequest {</span>
+<span class="nc" id="L26">public final class SendMessageRequest {</span>
 
     @JsonProperty(&quot;sessionId&quot;)
     private String sessionId;
@@ -36,44 +37,57 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JsonProperty(&quot;mode&quot;)
     private String mode;
 
+    @JsonProperty(&quot;requestHeaders&quot;)
+    private Map&lt;String, String&gt; requestHeaders;
+
     /** Gets the session ID. @return the session ID */
     public String getSessionId() {
-<span class="fc" id="L41">        return sessionId;</span>
+<span class="nc" id="L45">        return sessionId;</span>
     }
 
     /** Sets the session ID. @param sessionId the session ID */
     public void setSessionId(String sessionId) {
-<span class="fc" id="L46">        this.sessionId = sessionId;</span>
-<span class="fc" id="L47">    }</span>
+<span class="nc" id="L50">        this.sessionId = sessionId;</span>
+<span class="nc" id="L51">    }</span>
 
     /** Gets the message prompt. @return the prompt text */
     public String getPrompt() {
-<span class="fc" id="L51">        return prompt;</span>
+<span class="nc" id="L55">        return prompt;</span>
     }
 
     /** Sets the message prompt. @param prompt the prompt text */
     public void setPrompt(String prompt) {
-<span class="fc" id="L56">        this.prompt = prompt;</span>
-<span class="fc" id="L57">    }</span>
+<span class="nc" id="L60">        this.prompt = prompt;</span>
+<span class="nc" id="L61">    }</span>
 
     /** Gets the attachments. @return the list of attachments */
     public List&lt;MessageAttachment&gt; getAttachments() {
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
     }
 
     /** Sets the attachments. @param attachments the list of attachments */
     public void setAttachments(List&lt;MessageAttachment&gt; attachments) {
-<span class="fc" id="L66">        this.attachments = attachments;</span>
-<span class="fc" id="L67">    }</span>
+<span class="nc" id="L70">        this.attachments = attachments;</span>
+<span class="nc" id="L71">    }</span>
 
     /** Gets the mode. @return the message mode */
     public String getMode() {
-<span class="fc" id="L71">        return mode;</span>
+<span class="nc" id="L75">        return mode;</span>
     }
 
     /** Sets the mode. @param mode the message mode */
     public void setMode(String mode) {
-<span class="fc" id="L76">        this.mode = mode;</span>
-<span class="fc" id="L77">    }</span>
+<span class="nc" id="L80">        this.mode = mode;</span>
+<span class="nc" id="L81">    }</span>
+
+    /** Gets the per-turn request headers. @return the headers map */
+    public Map&lt;String, String&gt; getRequestHeaders() {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        return requestHeaders == null ? null : Collections.unmodifiableMap(requestHeaders);</span>
+    }
+
+    /** Sets the per-turn request headers. @param requestHeaders the headers map */
+    public void setRequestHeaders(Map&lt;String, String&gt; requestHeaders) {
+<span class="nc" id="L90">        this.requestHeaders = requestHeaders;</span>
+<span class="nc" id="L91">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

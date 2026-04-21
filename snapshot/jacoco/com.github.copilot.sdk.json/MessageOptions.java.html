@@ -6,7 +6,9 @@ package com.github.copilot.sdk.json;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -38,11 +40,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L41">public class MessageOptions {</span>
+<span class="nc" id="L43">public class MessageOptions {</span>
 
     private String prompt;
     private List&lt;MessageAttachment&gt; attachments;
     private String mode;
+    private Map&lt;String, String&gt; requestHeaders;
 
     /**
      * Gets the message prompt.
@@ -50,7 +53,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the prompt text
      */
     public String getPrompt() {
-<span class="fc" id="L53">        return prompt;</span>
+<span class="nc" id="L56">        return prompt;</span>
     }
 
     /**
@@ -61,8 +64,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setPrompt(String prompt) {
-<span class="fc" id="L64">        this.prompt = prompt;</span>
-<span class="fc" id="L65">        return this;</span>
+<span class="nc" id="L67">        this.prompt = prompt;</span>
+<span class="nc" id="L68">        return this;</span>
     }
 
     /**
@@ -71,7 +74,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the list of attachments
      */
     public List&lt;MessageAttachment&gt; getAttachments() {
-<span class="fc bfc" id="L74" title="All 2 branches covered.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
     }
 
     /**
@@ -92,8 +95,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @see BlobAttachment
      */
     public MessageOptions setAttachments(List&lt;? extends MessageAttachment&gt; attachments) {
-<span class="fc bfc" id="L95" title="All 2 branches covered.">        this.attachments = attachments != null ? new ArrayList&lt;&gt;(attachments) : null;</span>
-<span class="fc" id="L96">        return this;</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        this.attachments = attachments != null ? new ArrayList&lt;&gt;(attachments) : null;</span>
+<span class="nc" id="L99">        return this;</span>
     }
 
     /**
@@ -110,8 +113,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setMode(String mode) {
-<span class="fc" id="L113">        this.mode = mode;</span>
-<span class="fc" id="L114">        return this;</span>
+<span class="nc" id="L116">        this.mode = mode;</span>
+<span class="nc" id="L117">        return this;</span>
     }
 
     /**
@@ -120,7 +123,32 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the delivery mode
      */
     public String getMode() {
-<span class="fc" id="L123">        return mode;</span>
+<span class="nc" id="L126">        return mode;</span>
+    }
+
+    /**
+     * Gets the custom per-turn HTTP headers for outbound model requests.
+     *
+     * @return the headers map, or {@code null} if not set
+     */
+    public Map&lt;String, String&gt; getRequestHeaders() {
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        return requestHeaders == null ? null : Collections.unmodifiableMap(requestHeaders);</span>
+    }
+
+    /**
+     * Sets custom per-turn HTTP headers for outbound model requests.
+     * &lt;p&gt;
+     * These headers are included in the model API request for this specific message
+     * turn. Use this to pass per-request authentication, tracing, or custom
+     * metadata.
+     *
+     * @param requestHeaders
+     *            the headers map
+     * @return this options instance for method chaining
+     */
+    public MessageOptions setRequestHeaders(Map&lt;String, String&gt; requestHeaders) {
+<span class="nc" id="L150">        this.requestHeaders = requestHeaders;</span>
+<span class="nc" id="L151">        return this;</span>
     }
 
     /**
@@ -135,11 +163,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Override
     public MessageOptions clone() {
-<span class="fc" id="L138">        MessageOptions copy = new MessageOptions();</span>
-<span class="fc" id="L139">        copy.prompt = this.prompt;</span>
-<span class="fc bfc" id="L140" title="All 2 branches covered.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
-<span class="fc" id="L141">        copy.mode = this.mode;</span>
-<span class="fc" id="L142">        return copy;</span>
+<span class="nc" id="L166">        MessageOptions copy = new MessageOptions();</span>
+<span class="nc" id="L167">        copy.prompt = this.prompt;</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
+<span class="nc" id="L169">        copy.mode = this.mode;</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        copy.requestHeaders = this.requestHeaders != null ? new HashMap&lt;&gt;(this.requestHeaders) : null;</span>
+<span class="nc" id="L171">        return copy;</span>
     }
 
 }
