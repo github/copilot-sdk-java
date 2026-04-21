@@ -30,7 +30,7 @@ jbang MultipleSessions.java
 
 **Code:**
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.json.MessageOptions;
@@ -123,7 +123,7 @@ try {
 ## Managing session lifecycle with CompletableFuture
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
 import java.util.concurrent.CompletableFuture;
 import java.util.List;
 

@@ -34,7 +34,7 @@ jbang ManagingLocalFiles.java
 
 **Code:**
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.generated.SessionIdleEvent;
@@ -161,7 +161,7 @@ session.send(new MessageOptions().setPrompt(prompt));
 ## Interactive file organization
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
