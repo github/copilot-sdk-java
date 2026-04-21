@@ -381,6 +381,13 @@ final class RpcHandlerDispatcher {
 
     /**
      * Finds the first registered session that has a hooks handler registered.
+     * <p>
+     * Used as a fallback when the session ID in an incoming {@code hooks.invoke}
+     * request is not in the registry (e.g. sub-agent sessions created internally by
+     * the CLI). When multiple sessions have hooks registered, the selection is
+     * non-deterministic because the underlying
+     * {@link java.util.concurrent.ConcurrentHashMap} does not guarantee iteration
+     * order.
      *
      * @return a session with hooks, or {@code null} if none is found
      */
@@ -395,6 +402,13 @@ final class RpcHandlerDispatcher {
 
     /**
      * Finds the first registered session that has a permission handler registered.
+     * <p>
+     * Used as a fallback when the session ID in an incoming
+     * {@code permission.request} request is not in the registry (e.g. sub-agent
+     * sessions created internally by the CLI). When multiple sessions have
+     * permission handlers registered, the selection is non-deterministic because
+     * the underlying {@link java.util.concurrent.ConcurrentHashMap} does not
+     * guarantee iteration order.
      *
      * @return a session with a permission handler, or {@code null} if none is found
      */
