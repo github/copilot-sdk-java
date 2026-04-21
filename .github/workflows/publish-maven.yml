@@ -80,6 +80,10 @@ jobs:
                   # Determine next development version
                   if [ -n "${{ inputs.developmentVersion }}" ]; then
                     DEV_VERSION="${{ inputs.developmentVersion }}"
+                    if [[ "$DEV_VERSION" != *-SNAPSHOT ]]; then
+                      echo "::error::developmentVersion '${DEV_VERSION}' must end with '-SNAPSHOT' (e.g., '${DEV_VERSION}-SNAPSHOT'). The maven-release-plugin requires the next development version to be a snapshot."
+                      exit 1
+                    fi
                   else
                     # Split version: supports both "0.1.32" and "0.1.32-java.0" formats
                     # Validate RELEASE_VERSION format explicitly to provide clear errors
