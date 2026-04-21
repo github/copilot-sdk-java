@@ -31,8 +31,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,HookEndEvent.HookEnd
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ToolExecutionPartialResultEvent.ToolExecutionPartialResultEventData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SystemMessageEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionHandoffEvent.SessionHandoffEventData.SessionHandoffEventDataSourceType,8,49,2,2,1,7,2,4,0,4
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionPlanChangedEvent.SessionPlanChangedEventData,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ExternalToolRequestedEvent,0,12,0,0,0,4,0,4,0,4
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionPlanChangedEvent.SessionPlanChangedEventData,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ElicitationCompletedEvent.ElicitationCompletedEventData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,CommandQueuedEvent.CommandQueuedEventData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionExtensionsLoadedEvent.SessionExtensionsLoadedEventData.SessionExtensionsLoadedEventDataExtensionsItem,0,15,0,0,0,1,0,1,0,1
@@ -68,8 +68,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AssistantTurnStartEv
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionTruncationEvent.SessionTruncationEventData,0,27,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SamplingRequestedEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ElicitationCompletedEvent,0,12,0,0,0,4,0,4,0,4
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionShutdownEvent.SessionShutdownEventData.SessionShutdownEventDataCodeChanges,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SystemMessageEvent.SystemMessageEventData.SystemMessageEventDataMetadata,0,9,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionShutdownEvent.SessionShutdownEventData.SessionShutdownEventDataCodeChanges,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SamplingCompletedEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionMcpServersLoadedEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ExternalToolCompletedEvent,0,12,0,0,0,4,0,4,0,4
@@ -78,8 +78,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AssistantUsageEvent.
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ToolExecutionStartEvent.ToolExecutionStartEventData,0,21,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionExtensionsLoadedEvent.SessionExtensionsLoadedEventData,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AssistantReasoningDeltaEvent,0,12,0,0,0,4,0,4,0,4
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AssistantIntentEvent.AssistantIntentEventData,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ExitPlanModeRequestedEvent.ExitPlanModeRequestedEventData,0,18,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AssistantIntentEvent.AssistantIntentEventData,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionCompactionCompleteEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionBackgroundTasksChangedEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ToolExecutionProgressEvent,0,12,0,0,0,4,0,4,0,4
@@ -110,8 +110,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionEvent,0,31,0,
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ElicitationRequestedEvent.ElicitationRequestedEventData,0,24,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,UserInputCompletedEvent.UserInputCompletedEventData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,CommandsChangedEvent.CommandsChangedEventData.CommandsChangedEventDataCommandsItem,0,9,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AssistantTurnStartEvent.AssistantTurnStartEventData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionModeChangedEvent.SessionModeChangedEventData,0,9,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AssistantTurnStartEvent.AssistantTurnStartEventData,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionModelChangeEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SubagentStartedEvent.SubagentStartedEventData,0,15,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ToolUserRequestedEvent.ToolUserRequestedEventData,0,12,0,0,0,1,0,1,0,1
@@ -148,8 +148,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,CommandCompletedEven
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionContextChangedEvent.SessionContextChangedEventData.SessionContextChangedEventDataHostType,0,57,0,4,0,8,0,6,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionMcpServerStatusChangedEvent.SessionMcpServerStatusChangedEventData.SessionMcpServerStatusChangedEventDataStatus,8,77,2,2,1,11,2,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,AbortEvent.AbortEventData,0,6,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionInfoEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SubagentSelectedEvent,0,12,0,0,0,4,0,4,0,4
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionInfoEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,HookStartEvent.HookStartEventData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,McpOauthRequiredEvent.McpOauthRequiredEventData.McpOauthRequiredEventDataStaticClientConfig,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionMcpServersLoadedEvent.SessionMcpServersLoadedEventData.SessionMcpServersLoadedEventDataServersItem.SessionMcpServersLoadedEventDataServersItemStatus,0,85,0,4,0,12,0,6,0,4
@@ -185,8 +185,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SubagentCompletedEve
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,CommandCompletedEvent,0,12,0,0,0,4,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,ExternalToolRequestedEvent.ExternalToolRequestedEventData,0,24,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionWorkspaceFileChangedEvent.SessionWorkspaceFileChangedEventData,0,9,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionCompactionCompleteEvent.SessionCompactionCompleteEventData.SessionCompactionCompleteEventDataCompactionTokensUsed,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionTruncationEvent,0,12,0,0,0,4,0,4,0,4
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionCompactionCompleteEvent.SessionCompactionCompleteEventData.SessionCompactionCompleteEventDataCompactionTokensUsed,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionCompactionStartEvent.SessionCompactionStartEventData,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,UserMessageEvent.UserMessageEventData.UserMessageEventDataAgentMode,29,42,4,0,3,7,3,3,1,3
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated,SessionStartEvent.SessionStartEventData,0,33,0,0,0,1,0,1,0,1
@@ -214,8 +214,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SessionUiCapabilities,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,CommandDefinition,0,27,0,0,0,10,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SectionOverrideAction,3,46,0,0,1,9,1,2,1,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SectionOverride,0,27,0,0,0,10,0,7,0,7
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ProviderConfig,8,57,1,1,2,20,2,14,1,14
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,InfiniteSessionConfig,0,27,0,0,0,10,0,7,0,7
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ProviderConfig,8,57,1,1,2,20,2,14,1,14
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ElicitationSchema,0,30,0,0,0,11,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,CopilotClientOptions,0,299,4,18,0,75,4,41,0,34
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,McpServerConfig,7,18,1,1,2,5,2,4,1,4
@@ -275,8 +275,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ModelSupports,0,19,0,0,0,
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SessionEndHookOutput,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,Attachment,0,15,0,0,0,2,0,2,0,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ModelLimits,0,27,0,0,0,10,0,7,0,7
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,PermissionRequest,0,24,0,0,0,10,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ResumeSessionRequest,12,235,4,12,0,85,4,61,0,57
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,PermissionRequest,0,24,0,0,0,10,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ToolInvocation.new TypeReference() {...},0,3,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SessionStartHookOutput,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ModelPolicy,0,19,0,0,0,7,0,5,0,5
@@ -297,8 +297,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionWorkspace
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ToolsListResult.ToolsListResultToolsItem,0,18,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsReaddirWithTypesResult.SessionFsReaddirWithTypesResultEntriesItem.SessionFsReaddirWithTypesResultEntriesItemType,0,57,0,4,0,8,0,6,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ModelsListResult.ModelsListResultModelsItem.ModelsListResultModelsItemCapabilities.ModelsListResultModelsItemCapabilitiesLimits.ModelsListResultModelsItemCapabilitiesLimitsVision,12,0,0,0,1,0,1,0,1,0
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionShellExecParams,0,15,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsStatResult,0,18,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionShellExecParams,0,15,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsAppendFileParams,0,15,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionHistoryApi,0,40,0,0,0,9,0,4,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionAgentListResult.SessionAgentListResultAgentsItem,0,12,0,0,0,1,0,1,0,1
@@ -306,12 +306,12 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionHistoryCo
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionWorkspaceApi,0,58,0,0,0,12,0,5,0,5
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUiElicitationParams.SessionUiElicitationParamsRequestedSchema,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPluginsApi,0,19,0,0,0,5,0,2,0,2
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionsForkParams,0,9,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ServerModelsApi,0,13,0,0,0,4,0,2,0,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionExtensionsListResult.SessionExtensionsListResultExtensionsItem,0,18,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ServerModelsApi,0,13,0,0,0,4,0,2,0,2
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionsForkParams,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPlanUpdateResult,0,3,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionModeSetResult.SessionModeSetResultMode,29,35,4,0,3,6,3,3,1,3
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionExtensionsDisableParams,0,9,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionModeSetResult.SessionModeSetResultMode,29,35,4,0,3,6,3,3,1,3
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsSetProviderResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionMcpReloadParams,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPlanDeleteResult,0,3,0,0,0,1,0,1,0,1
@@ -329,14 +329,14 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUiHandleP
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUsageGetMetricsResult.SessionUsageGetMetricsResultModelMetricsValue,9,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,AccountGetQuotaResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUsageGetMetricsResult.SessionUsageGetMetricsResultModelMetricsValue.SessionUsageGetMetricsResultModelMetricsValueRequests,9,0,0,0,1,0,1,0,1,0
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPlanDeleteParams,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionModelApi,0,40,0,0,0,9,0,4,0,4
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPlanDeleteParams,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ServerRpc,0,49,0,0,0,10,0,2,0,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsSetProviderParams,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,McpDiscoverParams,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,RpcMapper,0,29,0,0,0,7,0,2,0,2
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPluginsListResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,McpConfigRemoveParams,0,6,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPluginsListResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionModelSwitchToParams.SessionModelSwitchToParamsModelCapabilities,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ServerMcpApi,0,19,0,0,0,5,0,2,0,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUiHandlePendingElicitationResult,0,6,0,0,0,1,0,1,0,1
@@ -353,8 +353,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionHistoryCo
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionMcpApi,0,68,0,0,0,13,0,6,0,6
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionLogParams,0,18,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionExtensionsListResult,0,6,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ServerAccountApi,0,13,0,0,0,4,0,2,0,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionSkillsReloadResult,0,3,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ServerAccountApi,0,13,0,0,0,4,0,2,0,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionModelSwitchToParams,0,15,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionAgentReloadResult.SessionAgentReloadResultAgentsItem,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionExtensionsReloadResult,0,3,0,0,0,1,0,1,0,1
@@ -376,8 +376,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsReaddir
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ModelsListResult.ModelsListResultModelsItem.ModelsListResultModelsItemCapabilities,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUsageApi,0,19,0,0,0,5,0,2,0,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionMcpListResult,0,6,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionSkillsEnableParams,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionModeApi,0,40,0,0,0,9,0,4,0,4
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionSkillsEnableParams,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionExtensionsEnableParams,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUsageGetMetricsParams,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionHistoryCompactResult,0,15,0,0,0,1,0,1,0,1
@@ -397,8 +397,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,McpConfigAddPara
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionCommandsHandlePendingCommandResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUiElicitationResult.SessionUiElicitationResultAction,0,64,0,4,0,9,0,6,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsExistsParams,0,9,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionShellExecResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUsageGetMetricsResult.SessionUsageGetMetricsResultModelMetricsValue.SessionUsageGetMetricsResultModelMetricsValueUsage,18,0,0,0,1,0,1,0,1,0
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionShellExecResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,McpConfigUpdateParams,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,McpDiscoverResult.McpDiscoverResultServersItem.McpDiscoverResultServersItemSource,0,71,0,4,0,10,0,6,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionSkillsDisableResult,0,3,0,0,0,1,0,1,0,1
@@ -426,9 +426,9 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionSkillsEna
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionAgentReloadParams,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionAgentApi,0,70,0,0,0,12,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionHistoryTruncateResult,0,6,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUiElicitationResult,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionPlanApi,0,50,0,0,0,10,0,5,0,5
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,McpDiscoverResult.McpDiscoverResultServersItem,0,15,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUiElicitationResult,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionWorkspaceListFilesResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionShellKillResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionToolsApi,0,30,0,0,0,8,0,3,0,3
@@ -444,8 +444,8 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionUiApi,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionFsReadFileParams,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionSkillsReloadParams,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionMcpEnableParams,0,9,0,0,0,1,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ModelsListResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionLogResult,0,6,0,0,0,1,0,1,0,1
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ModelsListResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,SessionShellKillParams.SessionShellKillParamsSignal,0,64,0,4,0,9,0,6,0,4
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,ToolsListResult,0,6,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.generated.rpc,AccountGetQuotaResult.AccountGetQuotaResultQuotaSnapshotsValue,0,21,0,0,0,1,0,1,0,1
