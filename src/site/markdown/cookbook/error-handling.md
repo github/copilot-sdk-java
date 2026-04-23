@@ -30,7 +30,7 @@ jbang BasicErrorHandling.java
 
 **Code:**
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.json.MessageOptions;
@@ -64,7 +64,7 @@ public class BasicErrorHandling {
 ## Handling specific error types
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
 import com.github.copilot.sdk.CopilotClient;
 import java.util.concurrent.ExecutionException;
 
@@ -99,7 +99,7 @@ public class SpecificErrorHandling {
 ## Timeout handling
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
 import com.github.copilot.sdk.CopilotSession;
 import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.json.MessageOptions;
@@ -130,7 +130,7 @@ public class TimeoutHandling {
 ## Aborting a request
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
 import com.github.copilot.sdk.CopilotSession;
 import com.github.copilot.sdk.json.MessageOptions;
 import java.util.concurrent.Executors;
@@ -162,7 +162,7 @@ public class AbortRequest {
 ## Graceful shutdown
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
 import com.github.copilot.sdk.CopilotClient;
 
 public class GracefulShutdown {
@@ -192,7 +192,7 @@ public class GracefulShutdown {
 ## Try-with-resources pattern
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.json.MessageOptions;
@@ -224,7 +224,7 @@ public class TryWithResources {
 ## Handling tool errors
 
 ```java
-//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1-java-preview.0
+//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.json.MessageOptions;

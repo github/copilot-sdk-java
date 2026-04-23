@@ -85,10 +85,10 @@ jobs:
                       exit 1
                     fi
                   else
-                    # Split version: supports both "0.1.32" and "0.1.32-java.0" formats
+                    # Split version: supports "0.1.32", "0.1.32-java.0", and "0.1.32-java-preview.0" formats
                     # Validate RELEASE_VERSION format explicitly to provide clear errors
-                    if ! echo "$RELEASE_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?$'; then
-                      echo "Error: RELEASE_VERSION '$RELEASE_VERSION' is invalid. Expected format: M.M.P or M.M.P-java.N (e.g., 1.2.3 or 1.2.3-java.0)." >&2
+                    if ! echo "$RELEASE_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-java(-preview)?\.[0-9]+)?$'; then
+                      echo "Error: RELEASE_VERSION '$RELEASE_VERSION' is invalid. Expected format: M.M.P, M.M.P-java.N, or M.M.P-java-preview.N (e.g., 1.2.3, 1.2.3-java.0, or 1.2.3-java-preview.0)." >&2
                       exit 1
                     fi
                     # Extract the base M.M.P portion (before any qualifier)
@@ -121,21 +121,21 @@ jobs:
                   # Update CHANGELOG.md with release version and Reference implementation sync hash
                   ./.github/scripts/release/update-changelog.sh "${VERSION}" "${REFERENCE_IMPL_HASH}"
                   
-                  # Update version in README.md (supports versions like 1.0.0 and 0.1.32-java.0)
-                  sed -i "s|<version>[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}</version>|<version>${VERSION}</version>|g" README.md
-                  sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" README.md
+                  # Update version in README.md (supports versions like 1.0.0, 0.1.32-java.0, and 0.3.0-java-preview.0)
+                  sed -i "s|<version>[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\(-preview\)\{0,1\}\.[0-9][0-9]*\)\{0,1\}</version>|<version>${VERSION}</version>|g" README.md
+                  sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\(-preview\)\{0,1\}\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" README.md
                   
                   # Update snapshot version in README.md
                   DEV_VERSION="${{ steps.versions.outputs.dev_version }}"
-                  sed -i "s|<version>[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}-SNAPSHOT</version>|<version>${DEV_VERSION}</version>|g" README.md
+                  sed -i "s|<version>[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\(-preview\)\{0,1\}\.[0-9][0-9]*\)\{0,1\}-SNAPSHOT</version>|<version>${DEV_VERSION}</version>|g" README.md
                   
                   # Update version in jbang-example.java
-                  sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" jbang-example.java
+                  sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\(-preview\)\{0,1\}\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" jbang-example.java
                   sed -i 's|copilot-sdk-java:${project\.version}|copilot-sdk-java:'"${VERSION}"'|g' jbang-example.java
                   
                   # Update version in cookbook files (hardcoded for direct GitHub browsing and JBang usage)
                   find src/site/markdown/cookbook -name "*.md" -type f -exec \
-                    sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" {} \;
+                    sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-java\(-preview\)\{0,1\}\.[0-9][0-9]*\)\{0,1\}|copilot-sdk-java:${VERSION}|g" {} \;
                   
                   # Commit the documentation changes before release:prepare (requires clean working directory)
                   git add CHANGELOG.md README.md jbang-example.java src/site/markdown/cookbook/
@@ -206,7 +206,7 @@ jobs:
                   
                   # Get the previous tag for generating notes
                   PREV_TAG=$(git tag --list 'v*' --sort=-version:refname \
-                    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?$' \
+                    | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+(-java(-preview)?\.[0-9]+)?$' \
                     | grep -Fxv "${CURRENT_TAG}" \
                     | head -n 1)
                   
