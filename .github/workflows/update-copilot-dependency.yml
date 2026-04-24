@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 jobs:
   update:
@@ -98,7 +99,12 @@ jobs:
 
           copilot --yolo --prompt "$(cat /tmp/verify-codegen-prompt.txt)"
 
-      - name: Create pull request
+      # --- Commit, create PR, then run mvn verify ---
+      # The PR must exist before triggering the agentic fix workflow, which
+      # uses push-to-pull-request-branch safe-output to push fixes.
+
+      - name: Commit and push changes
+        id: commit-changes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ inputs.version }}
@@ -118,6 +124,7 @@ jobs:
 
           if git diff --cached --quiet; then
             echo "No changes detected; skipping commit and PR creation."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -126,11 +133,22 @@ jobs:
           - Updated @github/copilot in scripts/codegen
           - Re-ran Java code generator"
           git push origin "$BRANCH" --force-with-lease
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
+      - name: Create pull request
+        id: create-pr
+        if: steps.commit-changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          BRANCH: ${{ steps.commit-changes.outputs.branch }}
+        run: |
           if gh pr view "$BRANCH" >/dev/null 2>&1; then
             echo "Pull request for branch '$BRANCH' already exists; updated branch only."
+            PR_NUMBER=$(gh pr view "$BRANCH" --json number --jq .number)
           else
-            gh pr create \
+            PR_NUMBER=$(gh pr create \
               --title "Update @github/copilot to $VERSION" \
               --body "Automated update of \`@github/copilot\` to version \`$VERSION\`.
 
@@ -140,5 +158,105 @@ jobs:
 
           > Created by the **Update @github/copilot Dependency** workflow." \
               --base main \
-              --head "$BRANCH"
+              --head "$BRANCH" \
+            | grep -oP '\d+$' || gh pr view "$BRANCH" --json number --jq .number)
           fi
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      # --- Build verification ---
+
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        if: steps.commit-changes.outputs.has_changes == 'true'
+        with:
+          java-version: "17"
+          distribution: "microsoft"
+          cache: "maven"
+
+      - name: Run mvn verify
+        id: mvn-verify
+        if: steps.commit-changes.outputs.has_changes == 'true'
+        continue-on-error: true
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+        run: |
+          mvn verify 2>&1 | tee /tmp/mvn-verify-output.txt
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Capture error summary
+        id: error-summary
+        if: steps.mvn-verify.outcome == 'failure'
+        run: |
+          # Extract the last 80 lines as error summary (enough context for the agent)
+          SUMMARY=$(tail -80 /tmp/mvn-verify-output.txt)
+          # Write to file to avoid shell escaping issues with multiline strings
+          echo "$SUMMARY" > /tmp/error-summary.txt
+          echo "has_errors=true" >> "$GITHUB_OUTPUT"
+
+      # --- Agentic fix on failure ---
+
+      - name: Trigger agentic fix workflow
+        id: trigger-fix
+        if: steps.error-summary.outputs.has_errors == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.commit-changes.outputs.branch }}
+          PR_NUMBER: ${{ steps.create-pr.outputs.pr_number }}
+        run: |
+          ERROR_SUMMARY=$(cat /tmp/error-summary.txt)
+          gh workflow run codegen-agentic-fix.lock.yml \
+            --ref "$BRANCH" \
+            -f branch="$BRANCH" \
+            -f pr_number="$PR_NUMBER" \
+            -f error_summary="$ERROR_SUMMARY"
+          echo "Triggered codegen-agentic-fix workflow on branch $BRANCH"
+
+      - name: Wait for agentic fix to complete
+        if: steps.trigger-fix.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Waiting for agentic fix workflow to start..."
+          sleep 30
+
+          # Find the most recent run of codegen-agentic-fix triggered after us
+          for i in $(seq 1 60); do
+            RUN_ID=$(gh run list \
+              --workflow=codegen-agentic-fix.lock.yml \
+              --limit=1 \
+              --json databaseId,status \
+              --jq '.[0].databaseId')
+
+            STATUS=$(gh run list \
+              --workflow=codegen-agentic-fix.lock.yml \
+              --limit=1 \
+              --json databaseId,status \
+              --jq '.[0].status')
+
+            if [ "$STATUS" = "completed" ]; then
+              echo "Agentic fix workflow run $RUN_ID completed."
+              CONCLUSION=$(gh run view "$RUN_ID" --json conclusion --jq .conclusion)
+              echo "Conclusion: $CONCLUSION"
+              break
+            fi
+
+            echo "Run $RUN_ID status: $STATUS (attempt $i/60)"
+            sleep 30
+          done
+
+          if [ "$STATUS" != "completed" ]; then
+            echo "::warning::Agentic fix workflow did not complete within 30 minutes."
+          fi
+
+      - name: Fetch latest changes after agentic fix
+        if: steps.trigger-fix.outcome == 'success'
+        env:
+          BRANCH: ${{ steps.commit-changes.outputs.branch }}
+        run: |
+          git fetch origin "$BRANCH"
+          git reset --hard "origin/$BRANCH"
+
+      - name: Final mvn verify after agentic fix
+        if: steps.trigger-fix.outcome == 'success'
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
+        run: mvn verify
