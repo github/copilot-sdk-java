@@ -97,6 +97,29 @@ interface JavaTypeResult {
     imports: Set<string>;
 }
 
+// Module-level state for $ref resolution during codegen.
+// Set before each schema generation pass; used by schemaTypeToJava and helpers.
+let currentDefinitions: Record<string, JSONSchema7> = {};
+const pendingStandaloneTypes = new Map<string, JSONSchema7>();
+
+/**
+ * Resolve a $ref in a JSON Schema against the current definitions.
+ * Returns the resolved schema, or the original if no $ref is present.
+ */
+function resolveRef(schema: JSONSchema7 | undefined): JSONSchema7 | undefined {
+    if (!schema) return schema;
+    if (schema.$ref) {
+        const name = schema.$ref.replace(/^#\/definitions\//, "");
+        const resolved = currentDefinitions[name];
+        if (!resolved) {
+            console.warn(`[codegen] Unresolved $ref: ${schema.$ref}`);
+            return schema;
+        }
+        return resolved;
+    }
+    return schema;
+}
+
 function schemaTypeToJava(
     schema: JSONSchema7,
     required: boolean,
@@ -105,6 +128,25 @@ function schemaTypeToJava(
     nestedTypes: Map<string, JavaClassDef>
 ): JavaTypeResult {
     const imports = new Set<string>();
+
+    // Resolve $ref first — register standalone types for generation
+    if (schema.$ref) {
+        const name = schema.$ref.replace(/^#\/definitions\//, "");
+        const resolved = currentDefinitions[name];
+        if (resolved) {
+            // Enum or object types → register for standalone generation, return ref name
+            if ((resolved.type === "string" && resolved.enum) ||
+                (resolved.type === "object" && resolved.properties)) {
+                pendingStandaloneTypes.set(name, resolved);
+                return { javaType: name, imports };
+            }
+            // Other types (primitives, arrays, maps, anyOf unions) → resolve and recurse
+            return schemaTypeToJava(resolved, required, context, propName, nestedTypes);
+        }
+        // Unresolved $ref — return name as-is
+        console.warn(`[codegen] Unresolved $ref: ${schema.$ref}`);
+        return { javaType: name, imports };
+    }
 
     if (schema.anyOf) {
         const hasNull = schema.anyOf.some((s) => typeof s === "object" && (s as JSONSchema7).type === "null");
@@ -206,11 +248,6 @@ function schemaTypeToJava(
         return { javaType: "Map<String, Object>", imports };
     }
 
-    if (schema.$ref) {
-        const refName = schema.$ref.split("/").pop()!;
-        return { javaType: refName, imports };
-    }
-
     console.warn(`[codegen] ${context}.${propName}: unrecognized schema (type=${JSON.stringify(schema.type)}) — falling back to Object`);
     return { javaType: "Object", imports };
 }
@@ -235,21 +272,34 @@ interface EventVariant {
 }
 
 function extractEventVariants(schema: JSONSchema7): EventVariant[] {
-    const sessionEvent = (schema.definitions as Record<string, JSONSchema7>)?.SessionEvent;
+    const definitions = schema.definitions as Record<string, JSONSchema7>;
+    const sessionEvent = definitions?.SessionEvent;
     if (!sessionEvent?.anyOf) throw new Error("Schema must have SessionEvent definition with anyOf");
 
     return (sessionEvent.anyOf as JSONSchema7[])
         .map((variant) => {
-            const typeSchema = variant.properties?.type as JSONSchema7;
+            // Resolve $ref if present (1.0.35+ schema uses $ref to named definitions)
+            let resolved = variant;
+            if (variant.$ref) {
+                const refName = variant.$ref.replace(/^#\/definitions\//, "");
+                resolved = definitions[refName];
+                if (!resolved) throw new Error(`Unresolved $ref: ${variant.$ref}`);
+            }
+            const typeSchema = resolved.properties?.type as JSONSchema7;
             const typeName = typeSchema?.const as string;
             if (!typeName) throw new Error("Variant must have type.const");
             const baseName = toJavaClassName(typeName);
-            const dataSchema = variant.properties?.data as JSONSchema7 | undefined;
+            let dataSchema = resolved.properties?.data as JSONSchema7 | undefined;
+            // Resolve $ref on data schema if present
+            if (dataSchema?.$ref) {
+                const dataRefName = dataSchema.$ref.replace(/^#\/definitions\//, "");
+                dataSchema = definitions[dataRefName];
+            }
             return {
                 typeName,
                 className: `${baseName}Event`,
                 dataSchema: dataSchema ?? null,
-                description: variant.description,
+                description: resolved.description,
             };
         })
         .filter((v) => !EXCLUDED_EVENT_TYPES.has(v.typeName));
@@ -259,6 +309,10 @@ async function generateSessionEvents(schemaPath: string): Promise<void> {
     console.log("\n📋 Generating session event classes...");
     const schemaContent = await fs.readFile(schemaPath, "utf-8");
     const schema = JSON.parse(schemaContent) as JSONSchema7;
+
+    // Set module-level definitions for $ref resolution
+    currentDefinitions = (schema.definitions ?? {}) as Record<string, JSONSchema7>;
+    pendingStandaloneTypes.clear();
 
     const variants = extractEventVariants(schema);
     const packageName = "com.github.copilot.sdk.generated";
@@ -271,6 +325,9 @@ async function generateSessionEvents(schemaPath: string): Promise<void> {
     for (const variant of variants) {
         await generateEventVariantClass(variant, packageName, packageDir);
     }
+
+    // Generate standalone types discovered via $ref resolution
+    await generatePendingStandaloneTypes(packageName, packageDir, GENERATED_FROM_SESSION_EVENTS);
 
     console.log(`✅ Generated ${variants.length + 1} session event files`);
 }
@@ -597,6 +654,141 @@ async function generateEventVariantClass(
     await writeGeneratedFile(`${packageDir}/${variant.className}.java`, lines.join("\n"));
 }
 
+// ── Standalone $ref type generation ──────────────────────────────────────────
+
+/**
+ * Generate all pending standalone types discovered via $ref resolution.
+ * Iterates until no new types are discovered (handles transitive $ref chains).
+ */
+async function generatePendingStandaloneTypes(
+    packageName: string,
+    packageDir: string,
+    headerComment: string
+): Promise<void> {
+    const generated = new Set<string>();
+
+    while (true) {
+        const batch: [string, JSONSchema7][] = [];
+        for (const [name, schema] of pendingStandaloneTypes) {
+            if (!generated.has(name)) {
+                batch.push([name, schema]);
+                generated.add(name);
+            }
+        }
+        pendingStandaloneTypes.clear();
+
+        if (batch.length === 0) break;
+
+        for (const [name, schema] of batch) {
+            if (schema.type === "string" && schema.enum) {
+                await generateStandaloneEnum(name, schema, packageName, packageDir, headerComment);
+            } else if (schema.type === "object" && schema.properties) {
+                await generateStandaloneRecord(name, schema, packageName, packageDir, headerComment);
+            } else {
+                console.warn(`[codegen] Cannot generate standalone type for ${name}: type=${schema.type}`);
+            }
+        }
+        // Generating records may have discovered more $ref targets — loop again
+    }
+}
+
+async function generateStandaloneEnum(
+    name: string,
+    schema: JSONSchema7,
+    packageName: string,
+    packageDir: string,
+    headerComment: string
+): Promise<void> {
+    const values = schema.enum as string[];
+    const lines: string[] = [];
+    lines.push(COPYRIGHT);
+    lines.push("");
+    lines.push(AUTO_GENERATED_HEADER);
+    lines.push(headerComment);
+    lines.push("");
+    lines.push(`package ${packageName};`);
+    lines.push("");
+    lines.push(`import javax.annotation.processing.Generated;`);
+    lines.push("");
+    if (schema.description) {
+        lines.push(`/**`);
+        lines.push(` * ${schema.description}`);
+        lines.push(` *`);
+        lines.push(` * @since 1.0.0`);
+        lines.push(` */`);
+    }
+    lines.push(GENERATED_ANNOTATION);
+    lines.push(`public enum ${name} {`);
+    for (let i = 0; i < values.length; i++) {
+        const v = values[i];
+        const comma = i < values.length - 1 ? "," : ";";
+        lines.push(`    /** The {@code ${v}} variant. */`);
+        lines.push(`    ${toEnumConstant(v)}("${v}")${comma}`);
+    }
+    lines.push("");
+    lines.push(`    private final String value;`);
+    lines.push(`    ${name}(String value) { this.value = value; }`);
+    lines.push(`    @com.fasterxml.jackson.annotation.JsonValue`);
+    lines.push(`    public String getValue() { return value; }`);
+    lines.push(`    @com.fasterxml.jackson.annotation.JsonCreator`);
+    lines.push(`    public static ${name} fromValue(String value) {`);
+    lines.push(`        for (${name} v : values()) {`);
+    lines.push(`            if (v.value.equals(value)) return v;`);
+    lines.push(`        }`);
+    lines.push(`        throw new IllegalArgumentException("Unknown ${name} value: " + value);`);
+    lines.push(`    }`);
+    lines.push(`}`);
+    lines.push("");
+
+    await writeGeneratedFile(`${packageDir}/${name}.java`, lines.join("\n"));
+}
+
+async function generateStandaloneRecord(
+    name: string,
+    schema: JSONSchema7,
+    packageName: string,
+    packageDir: string,
+    headerComment: string
+): Promise<void> {
+    const nestedTypes = new Map<string, { code: string }>();
+    const { code, imports } = generateRpcClass(name, schema, nestedTypes, packageName);
+
+    const lines: string[] = [];
+    lines.push(COPYRIGHT);
+    lines.push("");
+    lines.push(AUTO_GENERATED_HEADER);
+    lines.push(headerComment);
+    lines.push("");
+    lines.push(`package ${packageName};`);
+    lines.push("");
+
+    const allImports = new Set<string>([
+        "com.fasterxml.jackson.annotation.JsonIgnoreProperties",
+        "com.fasterxml.jackson.annotation.JsonProperty",
+        "com.fasterxml.jackson.annotation.JsonInclude",
+        "javax.annotation.processing.Generated",
+        ...imports,
+    ]);
+    const sortedImports = [...allImports].sort();
+    for (const imp of sortedImports) {
+        lines.push(`import ${imp};`);
+    }
+    lines.push("");
+
+    if (schema.description) {
+        lines.push(`/**`);
+        lines.push(` * ${schema.description}`);
+        lines.push(` *`);
+        lines.push(` * @since 1.0.0`);
+        lines.push(` */`);
+    }
+    lines.push(GENERATED_ANNOTATION);
+    lines.push(code);
+    lines.push("");
+
+    await writeGeneratedFile(`${packageDir}/${name}.java`, lines.join("\n"));
+}
+
 // ── RPC types codegen ─────────────────────────────────────────────────────────
 
 interface RpcMethod {
@@ -685,7 +877,12 @@ async function generateRpcTypes(schemaPath: string): Promise<void> {
         server?: Record<string, unknown>;
         session?: Record<string, unknown>;
         clientSession?: Record<string, unknown>;
+        definitions?: Record<string, JSONSchema7>;
     };
+
+    // Set module-level definitions for $ref resolution
+    currentDefinitions = (schema.definitions ?? {}) as Record<string, JSONSchema7>;
+    pendingStandaloneTypes.clear();
 
     const packageName = "com.github.copilot.sdk.generated.rpc";
     const packageDir = `src/generated/java/com/github/copilot/sdk/generated/rpc`;
@@ -704,25 +901,32 @@ async function generateRpcTypes(schemaPath: string): Promise<void> {
         for (const [, method] of methods) {
             const className = rpcMethodToClassName(method.rpcMethod);
 
-            // Generate params class
-            if (method.params && typeof method.params === "object" && (method.params as JSONSchema7).properties) {
+            // Generate params class — resolve $ref if params is a reference
+            let paramsSchema = method.params as JSONSchema7 | null;
+            if (paramsSchema?.$ref) paramsSchema = resolveRef(paramsSchema) as JSONSchema7;
+            if (paramsSchema && typeof paramsSchema === "object" && paramsSchema.properties) {
                 const paramsClassName = `${className}Params`;
                 if (!generatedClasses.has(paramsClassName)) {
                     generatedClasses.set(paramsClassName, true);
-                    allFiles.push(await generateRpcDataClass(paramsClassName, method.params as JSONSchema7, packageName, packageDir, method.rpcMethod, "params"));
+                    allFiles.push(await generateRpcDataClass(paramsClassName, paramsSchema, packageName, packageDir, method.rpcMethod, "params"));
                 }
             }
 
-            // Generate result class
-            if (method.result && typeof method.result === "object" && (method.result as JSONSchema7).properties) {
+            // Generate result class — resolve $ref if result is a reference
+            let resultSchema = method.result as JSONSchema7 | null;
+            if (resultSchema?.$ref) resultSchema = resolveRef(resultSchema) as JSONSchema7;
+            if (resultSchema && typeof resultSchema === "object" && resultSchema.properties) {
                 const resultClassName = `${className}Result`;
                 if (!generatedClasses.has(resultClassName)) {
                     generatedClasses.set(resultClassName, true);
-                    allFiles.push(await generateRpcDataClass(resultClassName, method.result as JSONSchema7, packageName, packageDir, method.rpcMethod, "result"));
+                    allFiles.push(await generateRpcDataClass(resultClassName, resultSchema, packageName, packageDir, method.rpcMethod, "result"));
                 }
             }
         }
     }
+
+    // Generate standalone types discovered via $ref resolution
+    await generatePendingStandaloneTypes(packageName, packageDir, GENERATED_FROM_API);
 
     console.log(`✅ Generated ${allFiles.length} RPC type files`);
 }
@@ -835,11 +1039,13 @@ function apiClassName(prefix: string, path: string[]): string {
  * If the result schema has no properties we use Void; if no result schema we also use Void.
  */
 function wrapperResultClassName(method: RpcMethodNode): string {
+    let result = method.result;
+    if (result?.$ref) result = resolveRef(result) as JSONSchema7;
     if (
-        method.result &&
-        typeof method.result === "object" &&
-        method.result.properties &&
-        Object.keys(method.result.properties).length > 0
+        result &&
+        typeof result === "object" &&
+        result.properties &&
+        Object.keys(result.properties).length > 0
     ) {
         return rpcMethodToClassName(method.rpcMethod) + "Result";
     }
@@ -851,8 +1057,10 @@ function wrapperResultClassName(method: RpcMethodNode): string {
  * other than sessionId (i.e. there are user-supplied parameters).
  */
 function wrapperParamsClassName(method: RpcMethodNode): string | null {
-    if (!method.params || typeof method.params !== "object") return null;
-    const props = method.params.properties ?? {};
+    let params = method.params;
+    if (params?.$ref) params = resolveRef(params) as JSONSchema7;
+    if (!params || typeof params !== "object") return null;
+    const props = params.properties ?? {};
     const userProps = Object.keys(props).filter((k) => k !== "sessionId");
     if (userProps.length === 0) return null;
     return rpcMethodToClassName(method.rpcMethod) + "Params";
@@ -860,7 +1068,9 @@ function wrapperParamsClassName(method: RpcMethodNode): string | null {
 
 /** True if the method's params schema contains a "sessionId" property */
 function methodHasSessionId(method: RpcMethodNode): boolean {
-    return !!method.params?.properties && "sessionId" in method.params.properties;
+    let params = method.params;
+    if (params?.$ref) params = resolveRef(params) as JSONSchema7;
+    return !!params?.properties && "sessionId" in params.properties;
 }
 
 /**
@@ -1290,7 +1500,11 @@ async function generateRpcWrappers(schemaPath: string): Promise<void> {
         server?: Record<string, unknown>;
         session?: Record<string, unknown>;
         clientSession?: Record<string, unknown>;
+        definitions?: Record<string, JSONSchema7>;
     };
+
+    // Set module-level definitions for $ref resolution in wrapper helpers
+    currentDefinitions = (schema.definitions ?? {}) as Record<string, JSONSchema7>;
 
     const packageName = "com.github.copilot.sdk.generated.rpc";
     const packageDir = `src/generated/java/com/github/copilot/sdk/generated/rpc`;
