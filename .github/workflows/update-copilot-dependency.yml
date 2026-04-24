@@ -205,7 +205,6 @@ jobs:
         run: |
           ERROR_SUMMARY=$(cat /tmp/error-summary.txt)
           gh workflow run codegen-agentic-fix.lock.yml \
-            --ref "$BRANCH" \
             -f branch="$BRANCH" \
             -f pr_number="$PR_NUMBER" \
             -f error_summary="$ERROR_SUMMARY"

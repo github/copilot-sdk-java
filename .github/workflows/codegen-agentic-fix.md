@@ -82,8 +82,10 @@ mvn --version
 Run `mvn verify` to see the current errors:
 
 ```bash
-mvn verify 2>&1 | tail -100
+mvn verify 2>&1 | tee /tmp/mvn-verify.log
 ```
+
+Review the full log at `/tmp/mvn-verify.log` if the tail output is insufficient. The earliest errors are often the root cause.
 
 If `mvn verify` succeeds (exit code 0), there is nothing to fix. Call the `noop` safe-output with message "mvn verify already passes on branch ${{ inputs.branch }}. No fixes needed." and stop.
 
@@ -111,8 +113,10 @@ For each attempt:
 
 4. **Verify the fix:**
    ```bash
-   mvn verify 2>&1 | tail -100
+   mvn verify 2>&1 | tee /tmp/mvn-verify.log
    ```
+
+   If the output is long, check `/tmp/mvn-verify.log` for the full error details — root causes often appear early in the log.
 
 5. If `mvn verify` passes, proceed to Step 3.
    If it fails and you have attempts remaining, go back to sub-step 1.

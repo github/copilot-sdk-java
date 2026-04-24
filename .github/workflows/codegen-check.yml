@@ -85,8 +85,15 @@ jobs:
           Auto-committed by codegen-check workflow."
           git push origin "HEAD:$HEAD_REF"
 
+      - name: Fail if regenerated files could not be pushed
+        if: steps.push-regen.outcome == 'failure'
+        run: |
+          echo "::error::Could not push regenerated files to the PR branch. This is expected for Dependabot PRs (read-only token) and fork PRs."
+          echo "To fix: check out this PR branch locally, run 'cd scripts/codegen && npm run generate', commit, and push."
+          exit 1
+
       - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
-        if: steps.check-changes.outputs.changed == 'true' && github.event_name == 'pull_request'
+        if: steps.push-regen.outcome == 'success'
         with:
           java-version: "17"
           distribution: "microsoft"
@@ -94,7 +101,7 @@ jobs:
 
       - name: Run mvn verify
         id: mvn-verify
-        if: steps.check-changes.outputs.changed == 'true' && github.event_name == 'pull_request'
+        if: steps.push-regen.outcome == 'success'
         continue-on-error: true
         env:
           COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}
@@ -113,7 +120,7 @@ jobs:
 
       - name: Trigger agentic fix workflow
         id: trigger-fix
-        if: steps.error-summary.outputs.has_errors == 'true'
+        if: steps.error-summary.outputs.has_errors == 'true' && steps.push-regen.outcome == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -122,7 +129,6 @@ jobs:
           ERROR_SUMMARY=$(cat /tmp/error-summary.txt)
 
           gh workflow run codegen-agentic-fix.lock.yml \
-            --ref "$BRANCH" \
             -f branch="$BRANCH" \
             -f pr_number="$PR_NUMBER" \
             -f error_summary="$ERROR_SUMMARY"
