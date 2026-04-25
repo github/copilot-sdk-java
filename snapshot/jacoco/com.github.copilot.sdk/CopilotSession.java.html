@@ -566,7 +566,7 @@ public final class CopilotSession implements AutoCloseable {
 <span class="pc bpc" id="L566" title="1 of 2 branches missed.">            if (taskToCancel != null) {</span>
 <span class="fc" id="L567">                taskToCancel.cancel(false);</span>
             }
-<span class="fc bfc" id="L569" title="All 2 branches covered.">            if (!result.isDone()) {</span>
+<span class="pc bpc" id="L569" title="1 of 2 branches missed.">            if (!result.isDone()) {</span>
 <span class="fc bfc" id="L570" title="All 2 branches covered.">                if (ex != null) {</span>
 <span class="fc" id="L571">                    result.completeExceptionally(ex);</span>
                 } else {
