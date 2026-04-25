@@ -17,7 +17,7 @@ updates:
       # via .github/aw/actions-lock.json, not by Dependabot.
       # Dependabot's find-and-replace breaks lockfile metadata headers.
       - dependency-name: "actions/github-script"
-      - dependency-name: "github/gh-aw-actions/*"
+      - dependency-name: "github/gh-aw-actions"
 
   - package-ecosystem: "maven"
     directory: "/"
