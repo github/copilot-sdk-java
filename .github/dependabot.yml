@@ -18,9 +18,16 @@ updates:
       # Dependabot's find-and-replace breaks lockfile metadata headers.
       - dependency-name: "actions/github-script"
       - dependency-name: "github/gh-aw-actions"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    groups:
+      maven-deps:
+        patterns:
+          - "*"
