@@ -18,6 +18,10 @@ updates:
       # Dependabot's find-and-replace breaks lockfile metadata headers.
       - dependency-name: "actions/github-script"
       - dependency-name: "github/gh-aw-actions"
+      # Major version bumps may have breaking changes and must be
+      # evaluated and applied manually.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       github-actions:
         patterns:
@@ -27,6 +31,11 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # Major version bumps often drop Java 17 support or have breaking
+      # API changes. These must be evaluated and applied manually.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
       maven-deps:
         patterns:
