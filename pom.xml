@@ -223,7 +223,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.6.3</version>
                 <executions>
                     <execution>
                         <id>install-harness-dependencies</id>
@@ -659,7 +659,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.6.2</version>
+                        <version>3.6.3</version>
                         <executions>
                             <execution>
                                 <id>update-copilot-schema-version</id>
@@ -712,7 +712,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.6.2</version>
+                        <version>3.6.3</version>
                         <executions>
                             <execution>
                                 <id>codegen-npm-install</id>
