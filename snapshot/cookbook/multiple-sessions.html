@@ -126,7 +126,7 @@
           <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2026-04-26<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 0.3.0-java.1-SNAPSHOT<span class="divider">|</span></li>
+          <li id="projectVersion">Version: 0.3.1-java.1-SNAPSHOT<span class="divider">|</span></li>
       <li><a href="../index.html">Home</a><span class="divider">/</span></li>
     <li class="active">Working with Multiple Sessions</li>
           </ul>
@@ -207,7 +207,7 @@ scoop install jbang
 </code></pre>
 <p><strong>Code:</strong></p>
 
-<pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
+<pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.3.0-java.2
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.generated.AssistantMessageEvent;
 import com.github.copilot.sdk.json.MessageOptions;
@@ -291,7 +291,7 @@ try {
 </code></pre></section><section><a id="Managing_session_lifecycle_with_CompletableFuture"></a>
 <h2>Managing session lifecycle with CompletableFuture</h2>
 
-<pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.3.0-java-preview.1
+<pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.3.0-java.2
 import java.util.concurrent.CompletableFuture;
 import java.util.List;
 
@@ -340,7 +340,7 @@ are unavailable for other work&#x2014;a condition known as <em>pool starvation</
 pool so that SDK work does not compete with the rest of your application for
 common-pool threads:</p>
 
-<pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.3.0-java.1-SNAPSHOT
+<pre class="prettyprint"><code class="language-java">//DEPS com.github:copilot-sdk-java:0.3.1-java.1-SNAPSHOT
 import com.github.copilot.sdk.CopilotClient;
 import com.github.copilot.sdk.json.CopilotClientOptions;
 import com.github.copilot.sdk.json.SessionConfig;
