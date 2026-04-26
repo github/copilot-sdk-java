@@ -387,8 +387,8 @@ public final class CopilotClient implements AutoCloseable {
                 }
 <span class="fc" id="L388">                return session;</span>
 <span class="fc" id="L389">            }).exceptionally(ex -&gt; {</span>
-<span class="nc" id="L390">                sessions.remove(sessionId);</span>
-<span class="nc bnc" id="L391" title="All 2 branches missed.">                throw ex instanceof RuntimeException re ? re : new RuntimeException(ex);</span>
+<span class="fc" id="L390">                sessions.remove(sessionId);</span>
+<span class="pc bpc" id="L391" title="1 of 2 branches missed.">                throw ex instanceof RuntimeException re ? re : new RuntimeException(ex);</span>
             });
         });
     }

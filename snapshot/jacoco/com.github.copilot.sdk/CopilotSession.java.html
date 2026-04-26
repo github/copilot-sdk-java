@@ -1224,7 +1224,7 @@ public final class CopilotSession implements AutoCloseable {
 <span class="fc" id="L1224">        PermissionHandler handler = permissionHandler.get();</span>
 <span class="fc bfc" id="L1225" title="All 2 branches covered.">        if (handler == null) {</span>
 <span class="fc" id="L1226">            PermissionRequestResult result = new PermissionRequestResult();</span>
-<span class="fc" id="L1227">            result.setKind(&quot;denied-no-approval-rule-and-could-not-request-from-user&quot;);</span>
+<span class="fc" id="L1227">            result.setKind(PermissionRequestResultKind.USER_NOT_AVAILABLE);</span>
 <span class="fc" id="L1228">            return CompletableFuture.completedFuture(result);</span>
         }
 
@@ -1235,13 +1235,13 @@ public final class CopilotSession implements AutoCloseable {
 <span class="fc" id="L1235">            return handler.handle(request, invocation).exceptionally(ex -&gt; {</span>
 <span class="fc" id="L1236">                LOG.log(Level.SEVERE, &quot;Permission handler threw an exception&quot;, ex);</span>
 <span class="fc" id="L1237">                PermissionRequestResult result = new PermissionRequestResult();</span>
-<span class="fc" id="L1238">                result.setKind(&quot;denied-no-approval-rule-and-could-not-request-from-user&quot;);</span>
+<span class="fc" id="L1238">                result.setKind(PermissionRequestResultKind.USER_NOT_AVAILABLE);</span>
 <span class="fc" id="L1239">                return result;</span>
             });
 <span class="fc" id="L1241">        } catch (Exception e) {</span>
 <span class="fc" id="L1242">            LOG.log(Level.SEVERE, &quot;Failed to process permission request&quot;, e);</span>
 <span class="fc" id="L1243">            PermissionRequestResult result = new PermissionRequestResult();</span>
-<span class="fc" id="L1244">            result.setKind(&quot;denied-no-approval-rule-and-could-not-request-from-user&quot;);</span>
+<span class="fc" id="L1244">            result.setKind(PermissionRequestResultKind.USER_NOT_AVAILABLE);</span>
 <span class="fc" id="L1245">            return CompletableFuture.completedFuture(result);</span>
         }
     }

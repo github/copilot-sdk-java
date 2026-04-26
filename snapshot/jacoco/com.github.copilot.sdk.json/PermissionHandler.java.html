@@ -20,11 +20,13 @@ import java.util.concurrent.CompletableFuture;
  * 	// Check the permission kind
  * 	if (&quot;dangerous-action&quot;.equals(request.getKind())) {
  * 		// Deny dangerous actions
- * 		return CompletableFuture.completedFuture(new PermissionRequestResult().setKind(&quot;user-denied&quot;));
+ * 		return CompletableFuture
+ * 				.completedFuture(new PermissionRequestResult().setKind(PermissionRequestResultKind.REJECTED));
  * 	}
  *
  * 	// Approve other requests
- * 	return CompletableFuture.completedFuture(new PermissionRequestResult().setKind(&quot;user-approved&quot;));
+ * 	return CompletableFuture
+ * 			.completedFuture(new PermissionRequestResult().setKind(PermissionRequestResultKind.APPROVED));
  * };
  * }&lt;/pre&gt;
  *
@@ -45,8 +47,8 @@ public interface PermissionHandler {
      *
      * @since 1.0.11
      */
-<span class="fc" id="L48">    PermissionHandler APPROVE_ALL = (request, invocation) -&gt; CompletableFuture</span>
-<span class="fc" id="L49">            .completedFuture(new PermissionRequestResult().setKind(PermissionRequestResultKind.APPROVED));</span>
+<span class="fc" id="L50">    PermissionHandler APPROVE_ALL = (request, invocation) -&gt; CompletableFuture</span>
+<span class="fc" id="L51">            .completedFuture(new PermissionRequestResult().setKind(PermissionRequestResultKind.APPROVED));</span>
 
     /**
      * Handles a permission request from the assistant.

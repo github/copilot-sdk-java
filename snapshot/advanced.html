@@ -919,20 +919,20 @@ var session = client.createSession(
 <th>Meaning</th></tr></thead><tbody>
 <tr class="b">
 <td><code>PermissionRequestResultKind.APPROVED</code></td>
-<td><code>&quot;approved&quot;</code></td>
-<td>The permission was approved</td></tr>
+<td><code>&quot;approve-once&quot;</code></td>
+<td>The permission was approved for this one instance</td></tr>
 <tr class="a">
-<td><code>PermissionRequestResultKind.DENIED_BY_RULES</code></td>
-<td><code>&quot;denied-by-rules&quot;</code></td>
-<td>Denied by policy rules</td></tr>
+<td><code>PermissionRequestResultKind.REJECTED</code></td>
+<td><code>&quot;reject&quot;</code></td>
+<td>The permission was denied interactively by the user</td></tr>
 <tr class="b">
-<td><code>PermissionRequestResultKind.DENIED_COULD_NOT_REQUEST_FROM_USER</code></td>
-<td><code>&quot;denied-no-approval-rule-and-could-not-request-from-user&quot;</code></td>
-<td>No rule and user could not be prompted</td></tr>
+<td><code>PermissionRequestResultKind.USER_NOT_AVAILABLE</code></td>
+<td><code>&quot;user-not-available&quot;</code></td>
+<td>Denied because user confirmation was unavailable</td></tr>
 <tr class="a">
-<td><code>PermissionRequestResultKind.DENIED_INTERACTIVELY_BY_USER</code></td>
-<td><code>&quot;denied-interactively-by-user&quot;</code></td>
-<td>User denied interactively</td></tr></tbody>
+<td><code>PermissionRequestResultKind.NO_RESULT</code></td>
+<td><code>&quot;no-result&quot;</code></td>
+<td>No permission decision was made (protocol v3 only)</td></tr></tbody>
 </table>
 
 <p>You can also pass a raw string to <code>setKind(String)</code> for custom or extension values. Use

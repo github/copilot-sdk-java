@@ -19,13 +19,13 @@ import com.fasterxml.jackson.annotation.JsonValue;
  *
  * &lt;h2&gt;Well-known kinds&lt;/h2&gt;
  * &lt;ul&gt;
- * &lt;li&gt;{@link #APPROVED} — the permission was approved.&lt;/li&gt;
- * &lt;li&gt;{@link #DENIED_BY_RULES} — the permission was denied by policy
- * rules.&lt;/li&gt;
- * &lt;li&gt;{@link #DENIED_COULD_NOT_REQUEST_FROM_USER} — the permission was denied
- * because no approval rule was found and the user could not be prompted.&lt;/li&gt;
- * &lt;li&gt;{@link #DENIED_INTERACTIVELY_BY_USER} — the permission was denied
- * interactively by the user.&lt;/li&gt;
+ * &lt;li&gt;{@link #APPROVED} — the permission was approved for this one
+ * instance.&lt;/li&gt;
+ * &lt;li&gt;{@link #REJECTED} — the permission was denied interactively by the
+ * user.&lt;/li&gt;
+ * &lt;li&gt;{@link #USER_NOT_AVAILABLE} — the permission was denied because user
+ * confirmation was unavailable.&lt;/li&gt;
+ * &lt;li&gt;{@link #NO_RESULT} — no permission decision was made.&lt;/li&gt;
  * &lt;/ul&gt;
  *
  * @see PermissionRequestResult
@@ -33,23 +33,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public final class PermissionRequestResultKind {
 
-    /** The permission was approved. */
-<span class="fc" id="L37">    public static final PermissionRequestResultKind APPROVED = new PermissionRequestResultKind(&quot;approved&quot;);</span>
-
-    /** The permission was denied by policy rules. */
-<span class="fc" id="L40">    public static final PermissionRequestResultKind DENIED_BY_RULES = new PermissionRequestResultKind(</span>
-            &quot;denied-by-rules&quot;);
-
-    /**
-     * The permission was denied because no approval rule was found and the user
-     * could not be prompted.
-     */
-<span class="fc" id="L47">    public static final PermissionRequestResultKind DENIED_COULD_NOT_REQUEST_FROM_USER = new PermissionRequestResultKind(</span>
-            &quot;denied-no-approval-rule-and-could-not-request-from-user&quot;);
+    /** The permission was approved for this one instance. */
+<span class="fc" id="L37">    public static final PermissionRequestResultKind APPROVED = new PermissionRequestResultKind(&quot;approve-once&quot;);</span>
 
     /** The permission was denied interactively by the user. */
-<span class="fc" id="L51">    public static final PermissionRequestResultKind DENIED_INTERACTIVELY_BY_USER = new PermissionRequestResultKind(</span>
-            &quot;denied-interactively-by-user&quot;);
+<span class="fc" id="L40">    public static final PermissionRequestResultKind REJECTED = new PermissionRequestResultKind(&quot;reject&quot;);</span>
+
+    /** The permission was denied because user confirmation was unavailable. */
+<span class="fc" id="L43">    public static final PermissionRequestResultKind USER_NOT_AVAILABLE = new PermissionRequestResultKind(</span>
+            &quot;user-not-available&quot;);
 
     /**
      * Leaves the pending permission request unanswered.
@@ -64,7 +56,25 @@ public final class PermissionRequestResultKind {
      * will throw {@link IllegalStateException} because v2 expects exactly one
      * response per permission request.
      */
-<span class="fc" id="L67">    public static final PermissionRequestResultKind NO_RESULT = new PermissionRequestResultKind(&quot;no-result&quot;);</span>
+<span class="fc" id="L59">    public static final PermissionRequestResultKind NO_RESULT = new PermissionRequestResultKind(&quot;no-result&quot;);</span>
+
+    /**
+     * @deprecated Use {@link #REJECTED} instead.
+     */
+    @Deprecated
+<span class="fc" id="L65">    public static final PermissionRequestResultKind DENIED_INTERACTIVELY_BY_USER = REJECTED;</span>
+
+    /**
+     * @deprecated Use {@link #USER_NOT_AVAILABLE} instead.
+     */
+    @Deprecated
+<span class="fc" id="L71">    public static final PermissionRequestResultKind DENIED_COULD_NOT_REQUEST_FROM_USER = USER_NOT_AVAILABLE;</span>
+
+    /**
+     * @deprecated Use {@link #USER_NOT_AVAILABLE} instead.
+     */
+    @Deprecated
+<span class="fc" id="L77">    public static final PermissionRequestResultKind DENIED_BY_RULES = USER_NOT_AVAILABLE;</span>
 
     private final String value;
 
@@ -76,9 +86,9 @@ public final class PermissionRequestResultKind {
      *            the string value; {@code null} is treated as an empty string
      */
     @JsonCreator
-<span class="fc" id="L79">    public PermissionRequestResultKind(String value) {</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        this.value = value != null ? value : &quot;&quot;;</span>
-<span class="fc" id="L81">    }</span>
+<span class="fc" id="L89">    public PermissionRequestResultKind(String value) {</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        this.value = value != null ? value : &quot;&quot;;</span>
+<span class="fc" id="L91">    }</span>
 
     /**
      * Returns the underlying string value of this kind.
@@ -87,29 +97,29 @@ public final class PermissionRequestResultKind {
      */
     @JsonValue
     public String getValue() {
-<span class="fc" id="L90">        return value;</span>
+<span class="fc" id="L100">        return value;</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L95">        return value;</span>
+<span class="fc" id="L105">        return value;</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L101">            return true;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        if (this == obj) {</span>
+<span class="fc" id="L111">            return true;</span>
         }
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (!(obj instanceof PermissionRequestResultKind)) {</span>
-<span class="fc" id="L104">            return false;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (!(obj instanceof PermissionRequestResultKind)) {</span>
+<span class="fc" id="L114">            return false;</span>
         }
-<span class="fc" id="L106">        PermissionRequestResultKind other = (PermissionRequestResultKind) obj;</span>
-<span class="fc" id="L107">        return value.equalsIgnoreCase(other.value);</span>
+<span class="fc" id="L116">        PermissionRequestResultKind other = (PermissionRequestResultKind) obj;</span>
+<span class="fc" id="L117">        return value.equalsIgnoreCase(other.value);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L112">        return Objects.hashCode(value.toLowerCase(java.util.Locale.ROOT));</span>
+<span class="fc" id="L122">        return Objects.hashCode(value.toLowerCase(java.util.Locale.ROOT));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
