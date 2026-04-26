@@ -753,10 +753,10 @@ The `PermissionRequestResultKind` class provides well-known constants for common
 
 | Constant | Value | Meaning |
 |---|---|---|
-| `PermissionRequestResultKind.APPROVED` | `"approved"` | The permission was approved |
-| `PermissionRequestResultKind.DENIED_BY_RULES` | `"denied-by-rules"` | Denied by policy rules |
-| `PermissionRequestResultKind.DENIED_COULD_NOT_REQUEST_FROM_USER` | `"denied-no-approval-rule-and-could-not-request-from-user"` | No rule and user could not be prompted |
-| `PermissionRequestResultKind.DENIED_INTERACTIVELY_BY_USER` | `"denied-interactively-by-user"` | User denied interactively |
+| `PermissionRequestResultKind.APPROVED` | `"approve-once"` | The permission was approved for this one instance |
+| `PermissionRequestResultKind.REJECTED` | `"reject"` | The permission was denied interactively by the user |
+| `PermissionRequestResultKind.USER_NOT_AVAILABLE` | `"user-not-available"` | Denied because user confirmation was unavailable |
+| `PermissionRequestResultKind.NO_RESULT` | `"no-result"` | No permission decision was made (protocol v3 only) |
 
 You can also pass a raw string to `setKind(String)` for custom or extension values. Use
 [`PermissionHandler.APPROVE_ALL`](apidocs/com/github/copilot/sdk/json/PermissionHandler.html) to approve all
