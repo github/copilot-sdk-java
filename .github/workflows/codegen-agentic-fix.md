@@ -33,9 +33,8 @@ tools:
     toolsets: [context, repos]
 
 safe-outputs:
-  push_to_pull_request_branch:
-    max: 3
-  add_comment:
+  push-to-pull-request-branch:
+  add-comment:
     target: "*"
     max: 5
   noop:
@@ -204,7 +203,7 @@ For each attempt:
 
 ### Step 5: Push fixes
 
-After `mvn verify` passes, commit all changes and use the `push_to_pull_request_branch` safe-output tool to push to PR #${{ inputs.pr_number }}:
+After `mvn verify` passes, commit all changes and use the `push-to-pull-request-branch` safe-output tool to push to PR #${{ inputs.pr_number }}:
 
 ```bash
 git add -A
@@ -213,13 +212,13 @@ git commit -m "Fix codegen and build failures after @github/copilot update
 Automated fix applied by codegen-agentic-fix workflow."
 ```
 
-Then call the `push_to_pull_request_branch` tool to push your commits to the PR branch.
+Then call the `push-to-pull-request-branch` tool to push your commits to the PR branch.
 
 ### Step 6: Failure handling
 
 If all 3 attempts fail:
 
-1. Call the `add_comment` tool on PR #${{ inputs.pr_number }} explaining:
+1. Call the `add-comment` tool on PR #${{ inputs.pr_number }} explaining:
    - What errors remain
    - What fixes were attempted
    - Whether the issue is in the code generator or handwritten code
