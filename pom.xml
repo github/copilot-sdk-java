@@ -103,7 +103,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.21.2</version>
+            <version>2.21.3</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -113,7 +113,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.21.2</version>
+            <version>2.21.3</version>
         </dependency>
 
         <!-- SpotBugs annotations for suppressing warnings -->
@@ -128,7 +128,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.14.3</version>
+            <version>5.14.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
