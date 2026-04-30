@@ -5,8 +5,10 @@
 # Finalises a reference implementation merge:
 #   1. Runs format + test + build  (via format-and-test.sh)
 #   2. Updates .lastmerge to reference implementation HEAD
-#   3. Commits the .lastmerge update
-#   4. Pushes the branch to origin
+#   3. Syncs the @github/copilot version property in pom.xml from the
+#      cloned reference implementation's nodejs/package.json
+#   4. Commits the .lastmerge + pom.xml updates
+#   5. Pushes the branch to origin
 #
 # Usage:  ./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh
 #         ./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh --skip-tests
@@ -48,8 +50,14 @@ echo "▸ Updating .lastmerge…"
 NEW_COMMIT=$(cd "$REFERENCE_IMPL_DIR" && git rev-parse origin/main)
 echo "$NEW_COMMIT" > "$ROOT_DIR/.lastmerge"
 
-git add .lastmerge
-git commit -m "Update .lastmerge to $NEW_COMMIT"
+# ── 2b. Sync pom.xml @github/copilot version ─────────────────
+# Keeps the canonical CLI version in pom.xml aligned with what the
+# reference implementation pinned in .lastmerge depends on.
+echo "▸ Syncing @github/copilot version in pom.xml from reference implementation…"
+"$ROOT_DIR/.github/scripts/reference-impl-sync/sync-cli-version-from-reference-impl.sh" "$REFERENCE_IMPL_DIR"
+
+git add .lastmerge pom.xml
+git commit -m "Update .lastmerge to $NEW_COMMIT and sync pom.xml CLI version"
 
 # ── 3. Push branch ───────────────────────────────────────────
 echo "▸ Pushing branch $BRANCH_NAME to origin…"

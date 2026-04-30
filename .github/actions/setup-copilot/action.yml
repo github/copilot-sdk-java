@@ -4,15 +4,36 @@ outputs:
   cli-path:
     description: "Path to the Copilot CLI executable"
     value: ${{ steps.cli-path.outputs.path }}
+  cli-version:
+    description: "Pinned @github/copilot version installed (read from pom.xml)"
+    value: ${{ steps.cli-version.outputs.version }}
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v6
+    - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v6
       with:
         node-version: 22
-    - name: Install Copilot CLI
-      run: npm install -g @github/copilot
+    - name: Read pinned @github/copilot version from pom.xml
+      id: cli-version
       shell: bash
+      # The version is the SINGLE SOURCE OF TRUTH for the Copilot CLI version
+      # used across all CI paths. It is kept in sync with the reference
+      # implementation pinned in .lastmerge by
+      # .github/scripts/reference-impl-sync/sync-cli-version-from-reference-impl.sh.
+      run: |
+        PROP="readonly-copilot-sdk-ref-impl-version-from-lastmerge-file-updated-by-weekly-reference-impl-sync"
+        VERSION=$(sed -n "s|.*<${PROP}>\(.*\)</${PROP}>.*|\1|p" pom.xml | head -n 1 | tr -d '[:space:]')
+        if [[ -z "$VERSION" || "$VERSION" == "PRIMER_TO_REPLACE" ]]; then
+          echo "::error::Could not read pinned @github/copilot version from pom.xml property <${PROP}>" >&2
+          exit 1
+        fi
+        echo "Pinned @github/copilot version: $VERSION"
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+    - name: Install Copilot CLI (pinned to pom.xml version)
+      shell: bash
+      env:
+        CLI_VERSION: ${{ steps.cli-version.outputs.version }}
+      run: npm install -g "@github/copilot@${CLI_VERSION}"
     - name: Set CLI path
       id: cli-path
       run: echo "path=$(which copilot)" >> $GITHUB_OUTPUT

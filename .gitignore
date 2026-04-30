@@ -13,3 +13,4 @@ changebundle.txt*
 .settings
 scripts/codegen/node_modules/
 *~
+*.sln

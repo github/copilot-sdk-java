@@ -49,10 +49,53 @@
         <!-- Directory where the copilot-sdk repo will be cloned for tests -->
         <copilot.sdk.clone.dir>${project.build.directory}/copilot-sdk</copilot.sdk.clone.dir>
         <copilot.tests.dir>${copilot.sdk.clone.dir}/test</copilot.tests.dir>
+        <!--
+            Path to the Copilot CLI entry point used by the SDK tests. Defaults
+            to the CLI installed under target/copilot-sdk/nodejs by the
+            install-nodejs-cli-dependencies execution. Surefire injects this
+            into the test JVM as the COPILOT_CLI_PATH environment variable, so
+            `mvn verify` is self-contained and the developer never has to set
+            it manually. Override on the command line to point at a different
+            CLI build, e.g.:
+              mvn verify -Dcopilot.cli.path=/some/other/copilot/index.js
+        -->
+        <copilot.cli.path>${copilot.sdk.clone.dir}/nodejs/node_modules/@github/copilot/index.js</copilot.cli.path>
         <!-- Set to true (via -Pskip-test-harness) to skip git-clone + npm install of test harness -->
         <skip.test.harness>false</skip.test.harness>
+        <!--
+            Whether to skip the install-nodejs-cli-dependencies execution
+            (npm ci of the @github/copilot CLI). Defaults to ${skip.test.harness}
+            so it tracks the rest of the test-harness setup, but is also
+            forced to true when Maven tests are skipped (-DskipTests or
+            -Dmaven.test.skip) via the skip-cli-install-when-tests-skipped
+            and skip-cli-install-when-maven-test-skip profiles below, so that
+            non-test builds (e.g. package/deploy with tests skipped) do not
+            require npm or network access.
+        -->
+        <skip.cli.install>${skip.test.harness}</skip.cli.install>
         <!-- Extra JVM args for Surefire; overridden by the jdk21+ profile -->
         <surefire.jvm.args />
+        <!--
+            The version of the @github/copilot npm package that the reference implementation
+            commit pinned in .lastmerge depends on. Mirrors the value of dependencies."@github/copilot"
+            in target/copilot-sdk/nodejs/package.json after the reference impl is cloned/reset to the
+            commit in .lastmerge.
+
+            The previously mentioned package.json contains the SINGLE
+            SOURCE OF TRUTH for the Copilot CLI version that all paths
+            (build-test.yml, run-smoke-test.yml,
+            update-copilot-dependency.yml, setup-copilot action) must
+            pin to. It is updated automatically by
+            .github/scripts/reference-impl-sync/sync-cli-version-from-reference-impl.sh,
+            which is called from merge-reference-impl-finish.sh
+            whenever .lastmerge is updated.
+
+            DO NOT EDIT MANUALLY. To update, run the
+            reference-impl-sync workflow and deal with the subsequent
+            PR.
+        -->
+        <readonly-copilot-sdk-ref-impl-version-from-lastmerge-file-updated-by-weekly-reference-impl-sync>^1.0.36-0</readonly-copilot-sdk-ref-impl-version-from-lastmerge-file-updated-by-weekly-reference-impl-sync>
+
     </properties>
 
     <dependencies>
@@ -240,6 +283,35 @@
                             </arguments>
                         </configuration>
                     </execution>
+                    <!--
+                        Install the @github/copilot CLI declared by
+                        target/copilot-sdk/nodejs/package.json. This is the CLI
+                        version the SDK tests must run against (independent of
+                        the older pin in test/harness/package.json which is
+                        incidental to harness internals). Mirrors what
+                        .github/workflows/build-test.yml does manually so that
+                        `mvn clean verify` is self-contained: the prior
+                        target/copilot-sdk/nodejs/node_modules is wiped by
+                        clean, but this re-creates it before tests run.
+                        Uses npm ci with the ignore-scripts flag, matching
+                        build-test.yml.
+                    -->
+                    <execution>
+                        <id>install-nodejs-cli-dependencies</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skip.cli.install}</skip>
+                            <executable>npm</executable>
+                            <workingDirectory>${copilot.sdk.clone.dir}/nodejs</workingDirectory>
+                            <arguments>
+                                <argument>ci</argument>
+                                <argument>--ignore-scripts</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -253,6 +325,15 @@
                         <copilot.tests.dir>${copilot.tests.dir}</copilot.tests.dir>
                         <copilot.sdk.dir>${copilot.sdk.clone.dir}</copilot.sdk.dir>
                     </systemPropertyVariables>
+                    <!--
+                        Set COPILOT_CLI_PATH for the forked test JVM so the SDK
+                        tests transparently use the pinned CLI under
+                        target/copilot-sdk/nodejs/. See the copilot.cli.path
+                        property above for the override mechanism.
+                    -->
+                    <environmentVariables>
+                        <COPILOT_CLI_PATH>${copilot.cli.path}</COPILOT_CLI_PATH>
+                    </environmentVariables>
                 </configuration>
             </plugin>
             <!-- Add src/generated/java as an additional source root -->
@@ -585,6 +666,39 @@
             <id>skip-test-harness</id>
             <properties>
                 <skip.test.harness>true</skip.test.harness>
+            </properties>
+        </profile>
+        <!--
+            Skip the install-nodejs-cli-dependencies (npm ci) execution when
+            tests are skipped via -DskipTests, so non-test builds do not
+            require npm or network access. Activates automatically; no manual
+            -P needed.
+        -->
+        <profile>
+            <id>skip-cli-install-when-tests-skipped</id>
+            <activation>
+                <property>
+                    <name>skipTests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <skip.cli.install>true</skip.cli.install>
+            </properties>
+        </profile>
+        <!--
+            Same as above, but for -Dmaven.test.skip=true.
+        -->
+        <profile>
+            <id>skip-cli-install-when-maven-test-skip</id>
+            <activation>
+                <property>
+                    <name>maven.test.skip</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <skip.cli.install>true</skip.cli.install>
             </properties>
         </profile>
         <!-- Debug profile for FINE logging during tests -->

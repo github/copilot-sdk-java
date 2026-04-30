@@ -38,7 +38,9 @@ If you have ideas for entirely new features, please post an issue or start a dis
 1. Push to your fork and [submit a pull request][pr]
 1. Pat yourself on the back and wait for your pull request to be reviewed and merged.
 
-### Running tests and linters
+### Running locally, including tests and linters
+
+The POM has logic to ensure a known correct installation of Copilot CLI is used when executing the tests. If you want to test against a different installation of Copilot CLI, set the value of the `copilot.cli.path` maven property to the fully qualified path to the Copilot CLI.
 
 ```bash
 # Build and run all tests
@@ -52,6 +54,22 @@ mvn spotless:apply
 
 # Check formatting only
 mvn spotless:check
+```
+
+## Running the known correct Copilot CLI installation
+
+### POSIX
+
+```bash
+export COPILOT_CLI_PATH="$(find "$PWD/target" -type f -path '*/nodejs/node_modules/@github/copilot/index.js' | head -n 1)"
+node ${COPILOT_CLI_PATH}
+```
+
+### PowerShell
+
+```PowerShell
+$env:COPILOT_CLI_PATH = (Get-ChildItem -Path "$PWD\target" -Recurse -Filter 'index.js' -File | Where-Object { $_.FullName -match '[\\/]nodejs[\\/]node_modules[\\/]@github[\\/]copilot[\\/]index\.js$' } | Select-Object -First 1 -ExpandProperty FullName)
+node $env:COPILOT_CLI_PATH
 ```
 
 Here are a few things you can do that will increase the likelihood of your pull request being accepted:
