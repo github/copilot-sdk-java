@@ -205,8 +205,8 @@
 <th>Errors</th>
 <th>Missing Classes</th></tr>
 <tr class="b">
-<td>544</td>
-<td>69</td>
+<td>558</td>
+<td>71</td>
 <td>0</td>
 <td>0</td></tr></table></section><section>
 <h1>Files</h1>
@@ -269,57 +269,60 @@
 <td><a href="#com.github.copilot.sdk.generated.rpc.SessionSkillsListResult">com.github.copilot.sdk.generated.rpc.SessionSkillsListResult</a></td>
 <td>2</td></tr>
 <tr class="b">
+<td><a href="#com.github.copilot.sdk.generated.rpc.SessionTasksListResult">com.github.copilot.sdk.generated.rpc.SessionTasksListResult</a></td>
+<td>2</td></tr>
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.generated.rpc.SessionUiElicitationResult">com.github.copilot.sdk.generated.rpc.SessionUiElicitationResult</a></td>
 <td>2</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.generated.rpc.SessionUsageGetMetricsResult">com.github.copilot.sdk.generated.rpc.SessionUsageGetMetricsResult</a></td>
 <td>2</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.generated.rpc.SessionWorkspaceListFilesResult">com.github.copilot.sdk.generated.rpc.SessionWorkspaceListFilesResult</a></td>
 <td>2</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.generated.rpc.SessionWorkspacesListFilesResult">com.github.copilot.sdk.generated.rpc.SessionWorkspacesListFilesResult</a></td>
 <td>2</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.generated.rpc.SkillsConfigSetDisabledSkillsParams">com.github.copilot.sdk.generated.rpc.SkillsConfigSetDisabledSkillsParams</a></td>
 <td>2</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.generated.rpc.SkillsDiscoverParams">com.github.copilot.sdk.generated.rpc.SkillsDiscoverParams</a></td>
 <td>4</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.generated.rpc.SkillsDiscoverResult">com.github.copilot.sdk.generated.rpc.SkillsDiscoverResult</a></td>
 <td>2</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.generated.rpc.Tool">com.github.copilot.sdk.generated.rpc.Tool</a></td>
 <td>2</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.generated.rpc.ToolsListResult">com.github.copilot.sdk.generated.rpc.ToolsListResult</a></td>
 <td>2</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.generated.rpc.UIElicitationResponse">com.github.copilot.sdk.generated.rpc.UIElicitationResponse</a></td>
 <td>2</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.generated.rpc.UIElicitationSchema">com.github.copilot.sdk.generated.rpc.UIElicitationSchema</a></td>
 <td>4</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.json.BlobAttachment">com.github.copilot.sdk.json.BlobAttachment</a></td>
 <td>1</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.json.CopilotClientOptions">com.github.copilot.sdk.json.CopilotClientOptions</a></td>
 <td>1</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.json.McpHttpServerConfig">com.github.copilot.sdk.json.McpHttpServerConfig</a></td>
 <td>1</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.json.McpStdioServerConfig">com.github.copilot.sdk.json.McpStdioServerConfig</a></td>
 <td>1</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.json.MessageOptions">com.github.copilot.sdk.json.MessageOptions</a></td>
 <td>1</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#com.github.copilot.sdk.json.ResumeSessionConfig">com.github.copilot.sdk.json.ResumeSessionConfig</a></td>
 <td>1</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#com.github.copilot.sdk.json.SessionConfig">com.github.copilot.sdk.json.SessionConfig</a></td>
 <td>1</td></tr></table></section><a name="com.github.copilot.sdk.generated.rpc.AccountGetQuotaResult"></a><section>
 <h2>com.github.copilot.sdk.generated.rpc.AccountGetQuotaResult</h2>
@@ -678,6 +681,26 @@
 <td>Medium</td></tr>
 <tr class="a">
 <td>new com.github.copilot.sdk.generated.rpc.SessionSkillsListResult(List) may expose internal representation by storing an externally mutable object into SessionSkillsListResult.skills</td>
+<td>MALICIOUS_CODE</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#EI_EXPOSE_REP2">EI_EXPOSE_REP2</a></td>
+<td>24</td>
+<td>Medium</td></tr></table></section><a name="com.github.copilot.sdk.generated.rpc.SessionTasksListResult"></a><section>
+<h2>com.github.copilot.sdk.generated.rpc.SessionTasksListResult</h2>
+<table class="table table-striped">
+<tr class="a">
+<th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th></tr>
+<tr class="b">
+<td>com.github.copilot.sdk.generated.rpc.SessionTasksListResult.tasks() may expose internal representation by returning SessionTasksListResult.tasks</td>
+<td>MALICIOUS_CODE</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#EI_EXPOSE_REP">EI_EXPOSE_REP</a></td>
+<td>21</td>
+<td>Medium</td></tr>
+<tr class="a">
+<td>new com.github.copilot.sdk.generated.rpc.SessionTasksListResult(List) may expose internal representation by storing an externally mutable object into SessionTasksListResult.tasks</td>
 <td>MALICIOUS_CODE</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#EI_EXPOSE_REP2">EI_EXPOSE_REP2</a></td>
 <td>24</td>
