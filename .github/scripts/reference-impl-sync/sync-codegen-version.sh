@@ -63,7 +63,9 @@ if [[ ! -f "$CODEGEN_PKG" ]]; then
 fi
 
 # Update scripts/codegen/package.json with the new version and regenerate the lock file.
+# Intentionally omit --save-exact to preserve the version specifier used by the reference
+# implementation (e.g. a caret range like '^1.0.36-0' rather than an exact pin '1.0.36-0').
 echo "▸ Updating scripts/codegen/package.json: @github/copilot → ${CLI_VERSION}"
 cd "$CODEGEN_DIR"
-npm install "@github/copilot@${CLI_VERSION}" --save-exact
+npm install "@github/copilot@${CLI_VERSION}"
 echo "▸ Updated scripts/codegen to @github/copilot@${CLI_VERSION}"

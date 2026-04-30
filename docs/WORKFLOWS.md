@@ -6,11 +6,11 @@
 |----------|-------------|----------|----------|
 | [Build & Test](workflows/build-test.yml) | Builds, lints, and tests the Java SDK | `push` (main), `pull_request`, `merge_group`, `workflow_dispatch` | Sundays at 00:00 UTC |
 | [Codegen Check](workflows/codegen-check.yml) | Verifies that generated Java files are up-to-date with the JSON schemas | `push` (main), `pull_request`, `workflow_dispatch` | — |
-| [Update @github/copilot Dependency](workflows/update-copilot-dependency.yml) | Updates the `@github/copilot` npm package, re-runs code generation, and opens a PR | `workflow_dispatch` | — |
+| [Update @github/copilot Dependency](workflows/update-copilot-dependency.yml) | _(Codegen-only)_ Updates the `@github/copilot` npm package in `scripts/codegen`, re-runs code generation, and opens a PR. Does **not** update `pom.xml`; use the Reference Implementation Sync for full version alignment. | `workflow_dispatch` | — |
 | [Deploy Documentation](workflows/deploy-site.yml) | Generates and deploys versioned docs to GitHub Pages | `workflow_run` (after Build & Test), `release`, `workflow_dispatch` | — |
 | [Publish to Maven Central](workflows/publish-maven.yml) | Releases the SDK to Maven Central and creates a GitHub Release | `workflow_dispatch` | — |
 | [Reference Implementation Sync](workflows/reference-impl-sync.yml) | Checks for new reference implementation commits and creates an issue for Copilot to merge | `workflow_dispatch` | [See workflow](workflows/reference-impl-sync.yml) |
-| [Reference Implementation Sync (Agentic)](workflows/reference-impl-sync.lock.yml) | Compiled agentic workflow that executes the reference implementation sync via `gh-aw` | `workflow_dispatch` | [See workflow](workflows/reference-impl-sync.yml) |
+| [Reference Implementation Sync (Agentic)](workflows/reference-impl-sync.lock.yml) | Compiled agentic workflow that executes the reference implementation sync via `gh-aw` | `workflow_dispatch` | [See workflow](workflows/reference-impl-sync.lock.yml) |
 | [Copilot Setup Steps](workflows/copilot-setup-steps.yml) | Configures the environment for the GitHub Copilot coding agent | `push` (on self-change), `workflow_dispatch` | — |
 
 ---
@@ -112,6 +112,8 @@ If changes appear, commit the updated generated files.
 ## Update @github/copilot Dependency
 
 **File:** [`update-copilot-dependency.yml`](workflows/update-copilot-dependency.yml)
+
+> **Note:** This workflow is for codegen-only updates to `scripts/codegen`. It does **not** update `pom.xml`. For full version alignment (both CLI and codegen in lockstep), use the **Reference Implementation Sync** workflow instead.
 
 Manual workflow triggered when a new version of the `@github/copilot` npm package is published. Accepts a `version` input (e.g. `1.0.25`).
 

@@ -67,7 +67,7 @@ echo "▸ Syncing @github/copilot version in scripts/codegen/package.json…"
 "$ROOT_DIR/.github/scripts/reference-impl-sync/sync-codegen-version.sh" "$REFERENCE_IMPL_DIR"
 
 git add .lastmerge pom.xml scripts/codegen/package.json scripts/codegen/package-lock.json
-git commit -m "Update .lastmerge to $NEW_COMMIT and sync pom.xml CLI version"
+git commit -m "Update .lastmerge to $NEW_COMMIT, sync pom.xml CLI version, and update scripts/codegen @github/copilot version"
 
 # ── 3. Push branch ───────────────────────────────────────────
 echo "▸ Pushing branch $BRANCH_NAME to origin…"
