@@ -1,13 +1,5 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/scripts/codegen"
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 1
-    allow:
-      - dependency-name: "@github/copilot"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

@@ -1,31 +1,21 @@
 #!/usr/bin/env bash
 # ──────────────────────────────────────────────────────────────
-# sync-cli-version-from-reference-impl.sh
+# sync-codegen-version.sh
 #
-# Reads the @github/copilot version specifier from the cloned
-# reference implementation's nodejs/package.json, and updates the
-# corresponding property in pom.xml:
-#
-#   <readonly-copilot-sdk-ref-impl-version-from-lastmerge-file-updated-by-reference-impl-sync>
-#
-# This keeps the canonical Copilot CLI version (declared in pom.xml)
-# in sync with whatever the reference implementation pinned in
-# .lastmerge depends on. All workflows that install the Copilot CLI
-# (build-test.yml — implicitly via cloned SDK, run-smoke-test.yml and
-# update-copilot-dependency.yml — via the setup-copilot action) read
-# this single property so every CI path uses the same CLI version.
+# Updates the @github/copilot dependency in scripts/codegen/package.json
+# to match the version used by the reference implementation. This keeps
+# the code generator schemas in lockstep with the CLI version used for
+# testing, eliminating the gap where Dependabot could race ahead.
 #
 # Usage:
-#   ./sync-cli-version-from-reference-impl.sh <reference-impl-dir>
+#   ./sync-codegen-version.sh <reference-impl-dir>
 #
-# Or, when invoked from merge-reference-impl-finish.sh, sources
-# REFERENCE_IMPL_DIR from the .merge-env file.
+# Or, when invoked from merge-reference-impl-finish.sh, the directory
+# is passed as $1.
 # ──────────────────────────────────────────────────────────────
 set -euo pipefail
 
 # Locate the repo root by walking up from this script until we find a pom.xml.
-# This is resilient to the script being moved to a different depth under
-# .github/scripts/ in the future.
 find_repo_root() {
     local dir
     dir="$(cd "$(dirname "$0")" && pwd)"
@@ -54,7 +44,7 @@ if [[ ! -f "$PKG_JSON" ]]; then
     exit 1
 fi
 
-# node is always available since the reference implementation uses npm.
+# Extract the @github/copilot version from the reference implementation.
 CLI_VERSION=$(node -e \
     "const fs=require('fs');const p=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));const v=(p.dependencies&&p.dependencies['@github/copilot'])||(p.devDependencies&&p.devDependencies['@github/copilot']);process.stdout.write(v||'');" \
     "$PKG_JSON")
@@ -64,17 +54,16 @@ if [[ -z "$CLI_VERSION" ]]; then
     exit 1
 fi
 
-POM="$ROOT_DIR/pom.xml"
-PROP="readonly-copilot-sdk-ref-impl-version-from-lastmerge-file-updated-by-reference-impl-sync"
+CODEGEN_DIR="$ROOT_DIR/scripts/codegen"
+CODEGEN_PKG="$CODEGEN_DIR/package.json"
 
-if ! grep -q "<${PROP}>" "$POM"; then
-    echo "❌ Property <${PROP}> not found in $POM" >&2
+if [[ ! -f "$CODEGEN_PKG" ]]; then
+    echo "❌ Cannot find $CODEGEN_PKG" >&2
     exit 1
 fi
 
-# Use a portable sed invocation (works on both BSD/macOS and GNU/Linux).
-TMP="$(mktemp)"
-sed -E "s|<${PROP}>[^<]*</${PROP}>|<${PROP}>${CLI_VERSION}</${PROP}>|" "$POM" > "$TMP"
-mv "$TMP" "$POM"
-
-echo "▸ Updated pom.xml: <${PROP}> = ${CLI_VERSION}"
+# Update scripts/codegen/package.json with the new version and regenerate the lock file.
+echo "▸ Updating scripts/codegen/package.json: @github/copilot → ${CLI_VERSION}"
+cd "$CODEGEN_DIR"
+npm install "@github/copilot@${CLI_VERSION}" --save-exact
+echo "▸ Updated scripts/codegen to @github/copilot@${CLI_VERSION}"

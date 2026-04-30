@@ -7,8 +7,10 @@
 #   2. Updates .lastmerge to reference implementation HEAD
 #   3. Syncs the @github/copilot version property in pom.xml from the
 #      cloned reference implementation's nodejs/package.json
-#   4. Commits the .lastmerge + pom.xml updates
-#   5. Pushes the branch to origin
+#   4. Syncs scripts/codegen/package.json to the same @github/copilot
+#      version so the code generator uses matching schemas
+#   5. Commits the .lastmerge + pom.xml + codegen package updates
+#   6. Pushes the branch to origin
 #
 # Usage:  ./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh
 #         ./.github/scripts/reference-impl-sync/merge-reference-impl-finish.sh --skip-tests
@@ -56,7 +58,15 @@ echo "$NEW_COMMIT" > "$ROOT_DIR/.lastmerge"
 echo "▸ Syncing @github/copilot version in pom.xml from reference implementation…"
 "$ROOT_DIR/.github/scripts/reference-impl-sync/sync-cli-version-from-reference-impl.sh" "$REFERENCE_IMPL_DIR"
 
-git add .lastmerge pom.xml
+# ── 2c. Sync scripts/codegen @github/copilot version ─────────
+# Keeps scripts/codegen/package.json in lockstep so the code generator
+# uses schemas from the same CLI version that the tests run against.
+# This eliminates the gap where Dependabot could race ahead of the
+# reference implementation sync.
+echo "▸ Syncing @github/copilot version in scripts/codegen/package.json…"
+"$ROOT_DIR/.github/scripts/reference-impl-sync/sync-codegen-version.sh" "$REFERENCE_IMPL_DIR"
+
+git add .lastmerge pom.xml scripts/codegen/package.json scripts/codegen/package-lock.json
 git commit -m "Update .lastmerge to $NEW_COMMIT and sync pom.xml CLI version"
 
 # ── 3. Push branch ───────────────────────────────────────────

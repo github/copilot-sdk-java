@@ -1,9 +1,9 @@
-name: "Weekly Reference Implementation Sync"
+name: "Reference Implementation Sync"
 
 on:
   schedule:
-    # Every Monday at 10:00 UTC (5:00 AM EST / 6:00 AM EDT)
-    - cron: '0 10 * * 1'
+    # Daily at 10:00 UTC (5:00 AM EST / 6:00 AM EDT)
+    - cron: '0 10 * * *'
   workflow_dispatch:
 
 permissions:
@@ -152,7 +152,7 @@ jobs:
           ISSUE_URL="${{ steps.create-issue.outputs.issue_url }}"
 
           {
-            echo "## Weekly Reference Implementation Sync"
+            echo "## Reference Implementation Sync"
             echo ""
             if [ "$HAS_CHANGES" = "true" ]; then
               echo "### ✅ New reference implementation changes detected"

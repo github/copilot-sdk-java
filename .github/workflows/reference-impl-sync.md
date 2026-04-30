@@ -1,10 +1,10 @@
 ---
 description: |
-  Weekly reference implementation sync workflow. Checks for new commits in the official
+  Reference implementation sync workflow. Checks for new commits in the official
   Copilot SDK (github/copilot-sdk) and assigns to Copilot to port changes.
 
 on:
-  schedule: weekly
+  schedule: daily
   workflow_dispatch:
 
 permissions:
@@ -41,7 +41,7 @@ safe-outputs:
   noop:
     report-as-issue: false
 ---
-# Weekly Reference Implementation Sync
+# Reference Implementation Sync
 
 You are an automation agent that detects new reference implementation changes and creates GitHub issues. You do **NOT** perform any code merges, edits, or pushes. Do **NOT** invoke any skills (especially `agentic-merge-reference-impl`). Your only job is to check for changes and use safe-output tools to create or close issues.
 

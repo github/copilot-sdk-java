@@ -9,8 +9,8 @@
 | [Update @github/copilot Dependency](workflows/update-copilot-dependency.yml) | Updates the `@github/copilot` npm package, re-runs code generation, and opens a PR | `workflow_dispatch` | — |
 | [Deploy Documentation](workflows/deploy-site.yml) | Generates and deploys versioned docs to GitHub Pages | `workflow_run` (after Build & Test), `release`, `workflow_dispatch` | — |
 | [Publish to Maven Central](workflows/publish-maven.yml) | Releases the SDK to Maven Central and creates a GitHub Release | `workflow_dispatch` | — |
-| [Weekly Reference Implementation Sync](workflows/weekly-reference-impl-sync.yml) | Checks for new reference implementation commits and creates an issue for Copilot to merge | `workflow_dispatch` | Mondays at 10:00 UTC |
-| [Weekly Reference Implementation Sync (Agentic)](workflows/weekly-reference-impl-sync.lock.yml) | Compiled agentic workflow that executes the reference implementation sync via `gh-aw` | `workflow_dispatch` | Tuesdays at 08:39 UTC (scattered) |
+| [Reference Implementation Sync](workflows/reference-impl-sync.yml) | Checks for new reference implementation commits and creates an issue for Copilot to merge | `workflow_dispatch` | Daily at 10:00 UTC |
+| [Reference Implementation Sync (Agentic)](workflows/reference-impl-sync.lock.yml) | Compiled agentic workflow that executes the reference implementation sync via `gh-aw` | `workflow_dispatch` | Daily (scattered) |
 | [Copilot Setup Steps](workflows/copilot-setup-steps.yml) | Configures the environment for the GitHub Copilot coding agent | `push` (on self-change), `workflow_dispatch` | — |
 
 ---
@@ -64,11 +64,11 @@ Manual-only workflow that performs a full release:
 
 ---
 
-## Weekly Reference Implementation Sync
+## Reference Implementation Sync
 
-**File:** [`weekly-reference-impl-sync.yml`](workflows/weekly-reference-impl-sync.yml)
+**File:** [`reference-impl-sync.yml`](workflows/reference-impl-sync.yml)
 
-Runs every Monday at 10:00 UTC. Clones the official `github/copilot-sdk` repository and compares `HEAD` against the commit hash stored in `.lastmerge`.
+Runs daily at 10:00 UTC. Clones the official `github/copilot-sdk` repository and compares `HEAD` against the commit hash stored in `.lastmerge`.
 
 If new commits are found:
 1. Closes any previously open `reference-impl-sync` issues
@@ -79,9 +79,9 @@ If no changes are found, any stale open `reference-impl-sync` issues are closed.
 
 ---
 
-## Weekly Reference Implementation Sync (Agentic Workflow: Experimental)
+## Reference Implementation Sync (Agentic Workflow: Experimental)
 
-**File:** [`weekly-reference-impl-sync.lock.yml`](workflows/weekly-reference-impl-sync.lock.yml)
+**File:** [`reference-impl-sync.lock.yml`](workflows/reference-impl-sync.lock.yml)
 
 Auto-generated compiled workflow produced by `gh aw compile` from the corresponding `.md` source. This is the agentic counterpart that actually executes the reference implementation merge using the `gh-aw` MCP server and Copilot coding agent.
 

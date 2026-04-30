@@ -165,7 +165,7 @@ Contributions are welcome! Please see the [Contributing Guide](CONTRIBUTING.md) 
 
 This SDK tracks the official [Copilot SDK](https://github.com/github/copilot-sdk) (.NET reference implementation) and ports changes to Java. The reference implementation merge process is automated with AI assistance:
 
-**Weekly automated sync** — A [scheduled GitHub Actions workflow](.github/workflows/weekly-reference-impl-sync.yml) runs every Monday at 5 AM ET. It checks for new reference implementation commits since the last merge (tracked in [`.lastmerge`](.lastmerge)), and if changes are found, creates an issue labeled `reference-impl-sync` and assigns it to the GitHub Copilot coding agent. Any previously open `reference-impl-sync` issues are automatically closed.
+**Daily automated sync** — A [scheduled GitHub Actions workflow](.github/workflows/reference-impl-sync.yml) runs daily at 10:00 UTC. It checks for new reference implementation commits since the last merge (tracked in [`.lastmerge`](.lastmerge)), and if changes are found, creates an issue labeled `reference-impl-sync` and assigns it to the GitHub Copilot coding agent. Any previously open `reference-impl-sync` issues are automatically closed. The sync also updates the `@github/copilot` version in both `pom.xml` and `scripts/codegen/package.json` to keep schemas and test CLI in lockstep.
 
 **Reusable prompt** — The merge workflow is defined in [`agentic-merge-reference-impl.prompt.md`](.github/prompts/agentic-merge-reference-impl.prompt.md). It can be triggered manually from:
 - **VS Code Copilot Chat** — type `/agentic-merge-reference-impl`

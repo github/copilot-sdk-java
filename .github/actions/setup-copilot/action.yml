@@ -21,7 +21,7 @@ runs:
       # implementation pinned in .lastmerge by
       # .github/scripts/reference-impl-sync/sync-cli-version-from-reference-impl.sh.
       run: |
-        PROP="readonly-copilot-sdk-ref-impl-version-from-lastmerge-file-updated-by-weekly-reference-impl-sync"
+        PROP="readonly-copilot-sdk-ref-impl-version-from-lastmerge-file-updated-by-reference-impl-sync"
         VERSION=$(sed -n "s|.*<${PROP}>\(.*\)</${PROP}>.*|\1|p" pom.xml | head -n 1 | tr -d '[:space:]')
         if [[ -z "$VERSION" || "$VERSION" == "PRIMER_TO_REPLACE" ]]; then
           echo "::error::Could not read pinned @github/copilot version from pom.xml property <${PROP}>" >&2

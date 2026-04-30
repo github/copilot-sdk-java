@@ -1,5 +1,5 @@
-<!-- Custom instructions for the Copilot coding agent when triggered by the weekly reference implementation sync workflow. -->
-<!-- This file is read by .github/workflows/weekly-reference-impl-sync.yml and passed as custom_instructions. -->
+<!-- Custom instructions for the Copilot coding agent when triggered by the reference implementation sync workflow. -->
+<!-- This file is read by .github/workflows/reference-impl-sync.yml and passed as custom_instructions. -->
 
 Follow the agentic-merge-reference-impl prompt at .github/prompts/agentic-merge-reference-impl.prompt.md
 to port reference implementation changes to the Java SDK.
