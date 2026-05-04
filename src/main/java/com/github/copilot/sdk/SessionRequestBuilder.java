@@ -122,6 +122,7 @@ final class SessionRequestBuilder {
         request.setAgent(config.getAgent());
         request.setInfiniteSessions(config.getInfiniteSessions());
         request.setSkillDirectories(config.getSkillDirectories());
+        request.setInstructionDirectories(config.getInstructionDirectories());
         request.setDisabledSkills(config.getDisabledSkills());
         request.setConfigDir(config.getConfigDir());
         request.setEnableConfigDiscovery(config.getEnableConfigDiscovery());
@@ -199,8 +200,10 @@ final class SessionRequestBuilder {
         request.setDefaultAgent(config.getDefaultAgent());
         request.setAgent(config.getAgent());
         request.setSkillDirectories(config.getSkillDirectories());
+        request.setInstructionDirectories(config.getInstructionDirectories());
         request.setDisabledSkills(config.getDisabledSkills());
         request.setInfiniteSessions(config.getInfiniteSessions());
+        request.setContinuePendingWork(config.getContinuePendingWork());
         request.setModelCapabilities(config.getModelCapabilities());
 
         if (config.getCommands() != null && !config.getCommands().isEmpty()) {

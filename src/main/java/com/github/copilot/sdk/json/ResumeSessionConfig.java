@@ -59,8 +59,10 @@ public class ResumeSessionConfig {
     private DefaultAgentConfig defaultAgent;
     private String agent;
     private List<String> skillDirectories;
+    private List<String> instructionDirectories;
     private List<String> disabledSkills;
     private InfiniteSessionConfig infiniteSessions;
+    private Boolean continuePendingWork;
     private Consumer<SessionEvent> onEvent;
     private List<CommandDefinition> commands;
     private ElicitationHandler onElicitationRequest;
@@ -592,6 +594,29 @@ public class ResumeSessionConfig {
     }
 
     /**
+     * Gets the instruction directories.
+     *
+     * @return the list of instruction directory paths
+     * @since 1.4.0
+     */
+    public List<String> getInstructionDirectories() {
+        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);
+    }
+
+    /**
+     * Sets additional directories to search for custom instruction files.
+     *
+     * @param instructionDirectories
+     *            the list of instruction directory paths
+     * @return this config for method chaining
+     * @since 1.4.0
+     */
+    public ResumeSessionConfig setInstructionDirectories(List<String> instructionDirectories) {
+        this.instructionDirectories = instructionDirectories;
+        return this;
+    }
+
+    /**
      * Gets the disabled skills.
      *
      * @return the list of disabled skill names
@@ -632,6 +657,37 @@ public class ResumeSessionConfig {
      */
     public ResumeSessionConfig setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
         this.infiniteSessions = infiniteSessions;
+        return this;
+    }
+
+    /**
+     * Gets whether to continue pending work on resume.
+     *
+     * @return {@code true} to continue pending work, {@code false} or {@code null}
+     *         to treat pending work as interrupted
+     * @since 1.4.0
+     */
+    public Boolean getContinuePendingWork() {
+        return continuePendingWork;
+    }
+
+    /**
+     * Sets whether to continue any tool calls or permission prompts that were still
+     * pending when the session was last suspended.
+     * <p>
+     * When {@code true}, the runtime continues pending work on resume. When
+     * {@code false} (the default), the runtime treats pending work as interrupted.
+     * For permission requests, the runtime re-emits {@code permission.requested} so
+     * the registered handler can re-prompt; for external tool calls, the consumer
+     * is expected to supply the result via the corresponding low-level RPC method.
+     *
+     * @param continuePendingWork
+     *            whether to continue pending work
+     * @return this config for method chaining
+     * @since 1.4.0
+     */
+    public ResumeSessionConfig setContinuePendingWork(Boolean continuePendingWork) {
+        this.continuePendingWork = continuePendingWork;
         return this;
     }
 
@@ -775,8 +831,12 @@ public class ResumeSessionConfig {
         copy.defaultAgent = this.defaultAgent;
         copy.agent = this.agent;
         copy.skillDirectories = this.skillDirectories != null ? new ArrayList<>(this.skillDirectories) : null;
+        copy.instructionDirectories = this.instructionDirectories != null
+                ? new ArrayList<>(this.instructionDirectories)
+                : null;
         copy.disabledSkills = this.disabledSkills != null ? new ArrayList<>(this.disabledSkills) : null;
         copy.infiniteSessions = this.infiniteSessions;
+        copy.continuePendingWork = this.continuePendingWork;
         copy.onEvent = this.onEvent;
         copy.commands = this.commands != null ? new ArrayList<>(this.commands) : null;
         copy.onElicitationRequest = this.onElicitationRequest;

@@ -98,11 +98,17 @@ public final class ResumeSessionRequest {
     @JsonProperty("skillDirectories")
     private List<String> skillDirectories;
 
+    @JsonProperty("instructionDirectories")
+    private List<String> instructionDirectories;
+
     @JsonProperty("disabledSkills")
     private List<String> disabledSkills;
 
     @JsonProperty("infiniteSessions")
     private InfiniteSessionConfig infiniteSessions;
+
+    @JsonProperty("continuePendingWork")
+    private Boolean continuePendingWork;
 
     @JsonProperty("commands")
     private List<CommandWireDefinition> commands;
@@ -366,6 +372,18 @@ public final class ResumeSessionRequest {
         this.skillDirectories = skillDirectories;
     }
 
+    /** Gets instruction directories. @return the instruction directories */
+    public List<String> getInstructionDirectories() {
+        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);
+    }
+
+    /**
+     * Sets instruction directories. @param instructionDirectories the directories
+     */
+    public void setInstructionDirectories(List<String> instructionDirectories) {
+        this.instructionDirectories = instructionDirectories;
+    }
+
     /** Gets disabled skills. @return the disabled skill names */
     public List<String> getDisabledSkills() {
         return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);
@@ -387,6 +405,16 @@ public final class ResumeSessionRequest {
      */
     public void setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
         this.infiniteSessions = infiniteSessions;
+    }
+
+    /** Gets the continuePendingWork flag. @return the flag */
+    public Boolean getContinuePendingWork() {
+        return continuePendingWork;
+    }
+
+    /** Sets the continuePendingWork flag. @param continuePendingWork the flag */
+    public void setContinuePendingWork(Boolean continuePendingWork) {
+        this.continuePendingWork = continuePendingWork;
     }
 
     /** Gets the commands wire definitions. @return the commands */

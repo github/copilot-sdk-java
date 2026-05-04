@@ -115,6 +115,16 @@ final class CliServerManager {
             pb.environment().put("COPILOT_SDK_AUTH_TOKEN", options.getGitHubToken());
         }
 
+        // Set connection token in environment if provided
+        if (options.getTcpConnectionToken() != null && !options.getTcpConnectionToken().isEmpty()) {
+            pb.environment().put("COPILOT_CONNECTION_TOKEN", options.getTcpConnectionToken());
+        }
+
+        // Set copilot home directory in environment if provided
+        if (options.getCopilotHome() != null && !options.getCopilotHome().isEmpty()) {
+            pb.environment().put("COPILOT_HOME", options.getCopilotHome());
+        }
+
         // Set telemetry environment variables if configured
         if (options.getTelemetry() != null) {
             var telemetry = options.getTelemetry();
