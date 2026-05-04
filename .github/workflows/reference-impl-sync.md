@@ -24,7 +24,6 @@ tools:
 safe-outputs:
   create-issue:
     title-prefix: "[reference-impl-sync] "
-    assignees: [copilot-swe-agent]
     labels: [reference-impl-sync]
     expires: 6
   close-issue:
