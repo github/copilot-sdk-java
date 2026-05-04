@@ -129,13 +129,12 @@ jobs:
 
           Follow the [agentic-merge-reference-impl](.github/prompts/agentic-merge-reference-impl.prompt.md) prompt to port these changes to the Java SDK."
 
-          # Create the issue and assign to Copilot coding agent
+          # Create the issue (Copilot coding agent picks it up via the label)
           ISSUE_URL=$(gh issue create \
             --repo "$REPO" \
             --title "Reference implementation sync: ${COMMIT_COUNT} new commits (${DATE})" \
             --body "$BODY" \
-            --label "reference-impl-sync" \
-            --assignee "copilot-swe-agent")
+            --label "reference-impl-sync")
 
           echo "issue_url=$ISSUE_URL" >> "$GITHUB_OUTPUT"
           echo "✅ Issue created and assigned to Copilot coding agent: $ISSUE_URL"
