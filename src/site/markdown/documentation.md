@@ -644,11 +644,13 @@ When resuming a session, you can optionally reconfigure many settings. This is u
 | `customAgents` | Configure custom agents |
 | `agent` | Pre-select a custom agent at session start |
 | `skillDirectories` | Directories to load skills from |
+| `instructionDirectories` | Additional directories to search for custom instruction files |
 | `disabledSkills` | Skills to disable |
 | `infiniteSessions` | Configure infinite session behavior |
 | `commands` | Slash command definitions for the resumed session |
 | `onElicitationRequest` | Handler for incoming elicitation requests |
 | `disableResume` | When `true`, resumes without emitting a `session.resume` event |
+| `continuePendingWork` | When `true`, continues pending tool calls/permissions from prior suspend |
 | `onEvent` | Event handler registered before session resumption |
 
 **Example: Changing Model on Resume**

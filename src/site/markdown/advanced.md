@@ -25,6 +25,7 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
 - [Skills Configuration](#Skills_Configuration)
   - [Loading Skills](#Loading_Skills)
   - [Disabling Skills](#Disabling_Skills)
+- [Instruction Directories](#Instruction_Directories)
 - [Custom Configuration Directory](#Custom_Configuration_Directory)
 - [Session Logging](#Session_Logging)
 - [Early Event Registration](#Early_Event_Registration)
@@ -32,6 +33,8 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
 - [Permission Handling](#Permission_Handling)
 - [Session Hooks](#Session_Hooks)
 - [Manual Server Control](#Manual_Server_Control)
+- [Copilot Home Directory](#Copilot_Home_Directory)
+- [TCP Connection Token](#TCP_Connection_Token)
 - [Session Context and Filtering](#Session_Context_and_Filtering)
   - [Listing Sessions with Context](#Listing_Sessions_with_Context)
   - [Filtering Sessions by Context](#Filtering_Sessions_by_Context)
@@ -626,6 +629,28 @@ var session = client.createSession(
 
 ---
 
+## Instruction Directories
+
+Specify additional directories to search for custom instruction files. Instruction files (`.instructions.md`) placed in `.github/instructions/` subdirectories of the specified paths will be included in the session's system message:
+
+```java
+var session = client.createSession(
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setInstructionDirectories(List.of("/path/to/extra/instructions"))
+).get();
+```
+
+This works with both `createSession` and `resumeSession`:
+
+```java
+var resumed = client.resumeSession(sessionId,
+    new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setInstructionDirectories(List.of("/path/to/instructions"))
+).get();
+```
+
+---
+
 ## Custom Configuration Directory
 
 Use a custom configuration directory for session settings:
@@ -827,6 +852,33 @@ client.forceStop().get();
 
 > **Tip:** In `try-with-resources` blocks, `close()` delegates to `stop()`, so graceful session cleanup happens automatically.
 > `close()` is blocking and waits up to `CopilotClient.AUTOCLOSEABLE_TIMEOUT_SECONDS` seconds for shutdown to complete.
+
+---
+
+## Copilot Home Directory
+
+Configure a custom base directory for Copilot data (session state, config, etc.). This sets the `COPILOT_HOME` environment variable on the spawned CLI process:
+
+```java
+var options = new CopilotClientOptions()
+    .setCopilotHome("/custom/data/dir");
+```
+
+When not set, the CLI defaults to `~/.copilot`. This option is only used when the SDK spawns the CLI process; it is ignored when connecting to an external server via `setCliUrl()`.
+
+---
+
+## TCP Connection Token
+
+When the SDK spawns the CLI in TCP mode, a connection token is generated automatically to secure the loopback listener. You can provide your own token:
+
+```java
+var options = new CopilotClientOptions()
+    .setUseStdio(false)
+    .setTcpConnectionToken("my-secret-token");
+```
+
+This cannot be combined with `setUseStdio(true)`. When omitted in TCP mode, the SDK auto-generates a UUID token.
 
 ---
 
