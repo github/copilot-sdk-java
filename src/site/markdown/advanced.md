@@ -25,13 +25,17 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
 - [Skills Configuration](#Skills_Configuration)
   - [Loading Skills](#Loading_Skills)
   - [Disabling Skills](#Disabling_Skills)
+- [Instruction Directories](#Instruction_Directories)
 - [Custom Configuration Directory](#Custom_Configuration_Directory)
+- [Continuing Pending Work on Resume](#Continuing_Pending_Work_on_Resume)
 - [Session Logging](#Session_Logging)
 - [Early Event Registration](#Early_Event_Registration)
 - [User Input Handling](#User_Input_Handling)
 - [Permission Handling](#Permission_Handling)
 - [Session Hooks](#Session_Hooks)
 - [Manual Server Control](#Manual_Server_Control)
+  - [Copilot Home Directory](#Copilot_Home_Directory)
+  - [TCP Connection Token](#TCP_Connection_Token)
 - [Session Context and Filtering](#Session_Context_and_Filtering)
   - [Listing Sessions with Context](#Listing_Sessions_with_Context)
   - [Filtering Sessions by Context](#Filtering_Sessions_by_Context)
@@ -626,6 +630,32 @@ var session = client.createSession(
 
 ---
 
+## Instruction Directories
+
+Specify additional directories to search for custom instruction files. These directories are scanned
+for `.instructions.md` files (typically placed under `.github/instructions/`) which are included in
+the system message for the session.
+
+```java
+var session = client.createSession(
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setWorkingDirectory("/path/to/project")
+        .setInstructionDirectories(List.of("/path/to/extra-instructions"))
+).get();
+```
+
+Instruction directories can also be set when resuming a session:
+
+```java
+var session = client.resumeSession(sessionId,
+    new ResumeSessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setInstructionDirectories(List.of("/path/to/extra-instructions"))
+).get();
+```
+
+---
+
 ## Custom Configuration Directory
 
 Use a custom configuration directory for session settings:
@@ -638,6 +668,25 @@ var session = client.createSession(
 ```
 
 This is useful when you need to isolate session configuration or use different settings for different environments.
+
+---
+
+## Continuing Pending Work on Resume
+
+When resuming a suspended session, you can instruct the runtime to continue any tool calls or
+permission prompts that were still pending when the session was last suspended:
+
+```java
+var session = client.resumeSession(sessionId,
+    new ResumeSessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setContinuePendingWork(true)
+).get();
+```
+
+When `continuePendingWork` is `false` (the default), the runtime treats pending work as
+interrupted on resume. For permission requests, the runtime re-emits `permission.requested`
+so the registered handler can re-prompt.
 
 ---
 
@@ -827,6 +876,32 @@ client.forceStop().get();
 
 > **Tip:** In `try-with-resources` blocks, `close()` delegates to `stop()`, so graceful session cleanup happens automatically.
 > `close()` is blocking and waits up to `CopilotClient.AUTOCLOSEABLE_TIMEOUT_SECONDS` seconds for shutdown to complete.
+
+### Copilot Home Directory
+
+Configure a custom base directory for Copilot data (session state, config, etc.):
+
+```java
+var client = new CopilotClient(
+    new CopilotClientOptions().setCopilotHome("/custom/copilot/data")
+);
+```
+
+This sets the `COPILOT_HOME` environment variable on the spawned CLI process. When not set, the CLI defaults to `~/.copilot`. This option is only used when the SDK spawns the CLI process; it is ignored when connecting to an external server via `setCliUrl()`.
+
+### TCP Connection Token
+
+When using TCP transport, you can set a connection token for authentication:
+
+```java
+var client = new CopilotClient(
+    new CopilotClientOptions()
+        .setUseStdio(false)
+        .setTcpConnectionToken("my-secret-token")
+);
+```
+
+When the SDK spawns its own CLI in TCP mode and no token is specified, a UUID is generated automatically so the loopback listener is safe by default. The token cannot be used with stdio transport.
 
 ---
 
