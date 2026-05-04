@@ -626,6 +626,31 @@ var session = client.createSession(
 
 ---
 
+## Instruction Directories
+
+Provide additional directories containing custom instruction files. These instructions are automatically included in the system message for all conversations in the session.
+
+```java
+var session = client.createSession(
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setInstructionDirectories(List.of("/path/to/instructions"))
+).get();
+```
+
+Instruction files are discovered from `.github/instructions/` subdirectories within each specified path and should use the `.instructions.md` extension.
+
+This is also supported on session resume:
+
+```java
+var session = client.resumeSession(sessionId,
+    new ResumeSessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setInstructionDirectories(List.of("/path/to/instructions"))
+);
+```
+
+---
+
 ## Custom Configuration Directory
 
 Use a custom configuration directory for session settings:
