@@ -51,6 +51,7 @@ public class ResumeSessionConfig {
     private String workingDirectory;
     private String configDir;
     private Boolean enableConfigDiscovery;
+    private Boolean continuePendingWork;
     private boolean disableResume;
     private boolean streaming;
     private Boolean includeSubAgentStreamingEvents;
@@ -59,6 +60,7 @@ public class ResumeSessionConfig {
     private DefaultAgentConfig defaultAgent;
     private String agent;
     private List<String> skillDirectories;
+    private List<String> instructionDirectories;
     private List<String> disabledSkills;
     private InfiniteSessionConfig infiniteSessions;
     private Consumer<SessionEvent> onEvent;
@@ -459,6 +461,40 @@ public class ResumeSessionConfig {
     }
 
     /**
+     * Returns whether to continue pending work on resume.
+     * <p>
+     * When {@code true}, instructs the runtime to continue any tool calls or
+     * permission prompts that were still pending when the session was last
+     * suspended. When {@code false} (the default), the runtime treats pending work
+     * as interrupted on resume.
+     *
+     * @return {@code true} to continue pending work, {@code false} or {@code null}
+     *         to treat as interrupted
+     * @since 1.4.0
+     */
+    public Boolean getContinuePendingWork() {
+        return continuePendingWork;
+    }
+
+    /**
+     * Sets whether to continue pending work on resume.
+     * <p>
+     * When {@code true}, instructs the runtime to continue any tool calls or
+     * permission prompts that were still pending when the session was last
+     * suspended. When {@code false} (the default), the runtime treats pending work
+     * as interrupted on resume.
+     *
+     * @param continuePendingWork
+     *            {@code true} to continue pending work
+     * @return this config for method chaining
+     * @since 1.4.0
+     */
+    public ResumeSessionConfig setContinuePendingWork(Boolean continuePendingWork) {
+        this.continuePendingWork = continuePendingWork;
+        return this;
+    }
+
+    /**
      * Returns whether streaming is enabled.
      *
      * @return {@code true} if streaming is enabled
@@ -588,6 +624,29 @@ public class ResumeSessionConfig {
      */
     public ResumeSessionConfig setSkillDirectories(List<String> skillDirectories) {
         this.skillDirectories = skillDirectories;
+        return this;
+    }
+
+    /**
+     * Gets the additional directories to search for custom instruction files.
+     *
+     * @return the list of instruction directory paths
+     * @since 1.4.0
+     */
+    public List<String> getInstructionDirectories() {
+        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);
+    }
+
+    /**
+     * Sets additional directories to search for custom instruction files.
+     *
+     * @param instructionDirectories
+     *            the list of instruction directory paths
+     * @return this config for method chaining
+     * @since 1.4.0
+     */
+    public ResumeSessionConfig setInstructionDirectories(List<String> instructionDirectories) {
+        this.instructionDirectories = instructionDirectories;
         return this;
     }
 
@@ -767,6 +826,7 @@ public class ResumeSessionConfig {
         copy.workingDirectory = this.workingDirectory;
         copy.configDir = this.configDir;
         copy.enableConfigDiscovery = this.enableConfigDiscovery;
+        copy.continuePendingWork = this.continuePendingWork;
         copy.disableResume = this.disableResume;
         copy.streaming = this.streaming;
         copy.includeSubAgentStreamingEvents = this.includeSubAgentStreamingEvents;
@@ -775,6 +835,9 @@ public class ResumeSessionConfig {
         copy.defaultAgent = this.defaultAgent;
         copy.agent = this.agent;
         copy.skillDirectories = this.skillDirectories != null ? new ArrayList<>(this.skillDirectories) : null;
+        copy.instructionDirectories = this.instructionDirectories != null
+                ? new ArrayList<>(this.instructionDirectories)
+                : null;
         copy.disabledSkills = this.disabledSkills != null ? new ArrayList<>(this.disabledSkills) : null;
         copy.infiniteSessions = this.infiniteSessions;
         copy.onEvent = this.onEvent;

@@ -104,7 +104,8 @@ public final class CopilotClient implements AutoCloseable {
     public CopilotClient(CopilotClientOptions options) {
         this.options = options != null ? options : new CopilotClientOptions();
 
-        // When cliUrl is set, auto-correct useStdio since we're connecting via TCP
+        // When cliUrl is set, force TCP mode (we connect to an external server, not
+        // spawn one)
         if (this.options.getCliUrl() != null && !this.options.getCliUrl().isEmpty()) {
             this.options.setUseStdio(false);
         }
@@ -113,6 +114,16 @@ public final class CopilotClient implements AutoCloseable {
         if (this.options.getCliUrl() != null && !this.options.getCliUrl().isEmpty()
                 && this.options.getCliPath() != null) {
             throw new IllegalArgumentException("CliUrl is mutually exclusive with CliPath");
+        }
+
+        // Validate TcpConnectionToken
+        if (this.options.getTcpConnectionToken() != null) {
+            if (this.options.getTcpConnectionToken().isEmpty()) {
+                throw new IllegalArgumentException("TcpConnectionToken must be a non-empty string");
+            }
+            if (this.options.isUseStdio()) {
+                throw new IllegalArgumentException("TcpConnectionToken cannot be used with UseStdio = true");
+            }
         }
 
         // Validate auth options with external server

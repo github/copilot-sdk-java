@@ -115,6 +115,19 @@ final class CliServerManager {
             pb.environment().put("COPILOT_SDK_AUTH_TOKEN", options.getGitHubToken());
         }
 
+        // Set COPILOT_HOME if configured
+        if (options.getCopilotHome() != null && !options.getCopilotHome().isEmpty()) {
+            pb.environment().put("COPILOT_HOME", options.getCopilotHome());
+        }
+
+        // Set connection token for TCP mode
+        if (options.getTcpConnectionToken() != null && !options.getTcpConnectionToken().isEmpty()) {
+            pb.environment().put("COPILOT_CONNECTION_TOKEN", options.getTcpConnectionToken());
+        } else if (!options.isUseStdio() && (options.getCliUrl() == null || options.getCliUrl().isEmpty())) {
+            // Auto-generate connection token for SDK-spawned TCP mode
+            pb.environment().put("COPILOT_CONNECTION_TOKEN", java.util.UUID.randomUUID().toString());
+        }
+
         // Set telemetry environment variables if configured
         if (options.getTelemetry() != null) {
             var telemetry = options.getTelemetry();

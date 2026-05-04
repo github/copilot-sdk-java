@@ -82,6 +82,22 @@ public class CopilotClientTest {
     }
 
     @Test
+    void testTcpConnectionTokenWithStdioThrows() {
+        var options = new CopilotClientOptions().setTcpConnectionToken("my-token").setUseStdio(true);
+
+        assertThrows(IllegalArgumentException.class, () -> new CopilotClient(options));
+    }
+
+    @Test
+    void testTcpConnectionTokenWithTcpMode() {
+        var options = new CopilotClientOptions().setTcpConnectionToken("my-token").setUseStdio(false);
+
+        // Should NOT throw
+        var client = new CopilotClient(options);
+        client.close();
+    }
+
+    @Test
     void testStartAndConnectUsingStdio() throws Exception {
         assertNotNull(cliPath, "Copilot CLI not found in PATH or COPILOT_CLI_PATH");
 

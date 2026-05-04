@@ -44,6 +44,7 @@ public class CopilotClientOptions {
     private String[] cliArgs;
     private String cliPath;
     private String cliUrl;
+    private String copilotHome;
     private String cwd;
     private Map<String, String> environment;
     private Executor executor;
@@ -51,6 +52,7 @@ public class CopilotClientOptions {
     private String logLevel = "info";
     private Supplier<CompletableFuture<List<ModelInfo>>> onListModels;
     private int port;
+    private String tcpConnectionToken;
     private TelemetryConfig telemetry;
     private Integer sessionIdleTimeoutSeconds;
     private Boolean useLoggedInUser;
@@ -211,6 +213,36 @@ public class CopilotClientOptions {
      */
     public CopilotClientOptions setCwd(String cwd) {
         this.cwd = Objects.requireNonNull(cwd, "cwd must not be null");
+        return this;
+    }
+
+    /**
+     * Gets the base directory for Copilot data (session state, config, etc.).
+     *
+     * @return the Copilot home directory path, or {@code null} to use the CLI
+     *         default ({@code ~/.copilot})
+     * @since 1.4.0
+     */
+    public String getCopilotHome() {
+        return copilotHome;
+    }
+
+    /**
+     * Sets the base directory for Copilot data (session state, config, etc.).
+     * <p>
+     * Sets the {@code COPILOT_HOME} environment variable on the spawned CLI
+     * process. When {@code null}, the CLI defaults to {@code ~/.copilot}.
+     * <p>
+     * This option is only used when the SDK spawns the CLI process; it is ignored
+     * when connecting to an external server via {@link #setCliUrl(String)}.
+     *
+     * @param copilotHome
+     *            the Copilot home directory path (must not be {@code null})
+     * @return this options instance for method chaining
+     * @since 1.4.0
+     */
+    public CopilotClientOptions setCopilotHome(String copilotHome) {
+        this.copilotHome = Objects.requireNonNull(copilotHome, "copilotHome must not be null");
         return this;
     }
 
@@ -406,6 +438,33 @@ public class CopilotClientOptions {
     }
 
     /**
+     * Gets the connection token for the headless CLI server (TCP only).
+     *
+     * @return the connection token, or {@code null} if not set
+     * @since 1.4.0
+     */
+    public String getTcpConnectionToken() {
+        return tcpConnectionToken;
+    }
+
+    /**
+     * Sets the connection token for the headless CLI server (TCP only).
+     * <p>
+     * When the SDK spawns its own CLI in TCP mode and this is omitted, a UUID is
+     * generated automatically so the loopback listener is safe by default. Cannot
+     * be combined with {@link #setUseStdio(boolean)} set to {@code true}.
+     *
+     * @param tcpConnectionToken
+     *            the connection token (must not be {@code null} or empty)
+     * @return this options instance for method chaining
+     * @since 1.4.0
+     */
+    public CopilotClientOptions setTcpConnectionToken(String tcpConnectionToken) {
+        this.tcpConnectionToken = Objects.requireNonNull(tcpConnectionToken, "tcpConnectionToken must not be null");
+        return this;
+    }
+
+    /**
      * Gets the OpenTelemetry configuration for the CLI server.
      *
      * @return the telemetry config, or {@code null}
@@ -533,6 +592,7 @@ public class CopilotClientOptions {
         copy.cliArgs = this.cliArgs != null ? this.cliArgs.clone() : null;
         copy.cliPath = this.cliPath;
         copy.cliUrl = this.cliUrl;
+        copy.copilotHome = this.copilotHome;
         copy.cwd = this.cwd;
         copy.environment = this.environment != null ? new java.util.HashMap<>(this.environment) : null;
         copy.executor = this.executor;
@@ -541,6 +601,7 @@ public class CopilotClientOptions {
         copy.onListModels = this.onListModels;
         copy.port = this.port;
         copy.sessionIdleTimeoutSeconds = this.sessionIdleTimeoutSeconds;
+        copy.tcpConnectionToken = this.tcpConnectionToken;
         copy.telemetry = this.telemetry;
         copy.useLoggedInUser = this.useLoggedInUser;
         copy.useStdio = this.useStdio;

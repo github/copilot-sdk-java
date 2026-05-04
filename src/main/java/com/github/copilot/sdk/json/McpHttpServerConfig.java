@@ -41,6 +41,15 @@ public final class McpHttpServerConfig extends McpServerConfig {
     @JsonProperty("headers")
     private Map<String, String> headers;
 
+    @JsonProperty("oauthClientId")
+    private String oauthClientId;
+
+    @JsonProperty("oauthPublicClient")
+    private Boolean oauthPublicClient;
+
+    @JsonProperty("oauthGrantType")
+    private String oauthGrantType;
+
     /**
      * Gets the server type discriminator.
      *
@@ -89,6 +98,79 @@ public final class McpHttpServerConfig extends McpServerConfig {
      */
     public McpHttpServerConfig setHeaders(Map<String, String> headers) {
         this.headers = headers;
+        return this;
+    }
+
+    /**
+     * Gets the optional OAuth client ID for the remote server.
+     *
+     * @return the OAuth client ID, or {@code null}
+     * @since 1.4.0
+     */
+    public String getOauthClientId() {
+        return oauthClientId;
+    }
+
+    /**
+     * Sets the optional OAuth client ID for the remote server.
+     *
+     * @param oauthClientId
+     *            the OAuth client ID
+     * @return this config for method chaining
+     * @since 1.4.0
+     */
+    public McpHttpServerConfig setOauthClientId(String oauthClientId) {
+        this.oauthClientId = oauthClientId;
+        return this;
+    }
+
+    /**
+     * Gets whether this is a public OAuth client.
+     *
+     * @return {@code true} if public, {@code null} if not set
+     * @since 1.4.0
+     */
+    public Boolean getOauthPublicClient() {
+        return oauthPublicClient;
+    }
+
+    /**
+     * Sets whether this is a public OAuth client.
+     *
+     * @param oauthPublicClient
+     *            {@code true} if public
+     * @return this config for method chaining
+     * @since 1.4.0
+     */
+    public McpHttpServerConfig setOauthPublicClient(Boolean oauthPublicClient) {
+        this.oauthPublicClient = oauthPublicClient;
+        return this;
+    }
+
+    /**
+     * Gets the optional OAuth grant type for the remote server.
+     * <p>
+     * Valid values: {@code "authorization_code"}, {@code "client_credentials"}.
+     *
+     * @return the OAuth grant type, or {@code null}
+     * @since 1.4.0
+     */
+    public String getOauthGrantType() {
+        return oauthGrantType;
+    }
+
+    /**
+     * Sets the optional OAuth grant type for the remote server.
+     * <p>
+     * Valid values: {@code "authorization_code"}, {@code "client_credentials"}.
+     *
+     * @param oauthGrantType
+     *            the OAuth grant type
+     * @return this config for method chaining
+     * @since 1.4.0
+     */
+    public McpHttpServerConfig setOauthGrantType(String oauthGrantType) {
+        this.oauthGrantType = oauthGrantType;
         return this;
     }
 
