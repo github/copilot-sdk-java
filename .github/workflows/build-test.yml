@@ -89,6 +89,39 @@ jobs:
           COPILOT_CLI_PATH: ${{ steps.setup-copilot.outputs.path }}
         run: mvn verify
 
+      - name: Validate reference-impl-sync completeness
+        if: >-
+          github.event_name == 'pull_request' &&
+          contains(github.event.pull_request.labels.*.name, 'reference-impl-sync')
+        run: |
+          git fetch origin main --depth=1
+          CHANGED=$(git diff --name-only origin/main...HEAD)
+
+          # 1. .lastmerge must be updated (proves finish script ran)
+          if echo "$CHANGED" | grep -q '^\\.lastmerge$'; then
+            echo "✅ .lastmerge was updated (finish script ran)"
+          else
+            echo "❌ .lastmerge was not updated. The merge-reference-impl-finish.sh script"
+            echo "   must be run before this PR can merge. This script updates .lastmerge,"
+            echo "   syncs the CLI version in pom.xml, and syncs scripts/codegen/package.json."
+            exit 1
+          fi
+
+          # 2. If codegen inputs changed, generated output must also have changed
+          if echo "$CHANGED" | grep -q '^scripts/codegen/'; then
+            if echo "$CHANGED" | grep -q '^src/generated/java/'; then
+              echo "✅ Codegen inputs changed and generated files were regenerated"
+            else
+              echo "❌ scripts/codegen/ was updated but src/generated/java/ has no changes."
+              echo "   The Codegen Check workflow should regenerate these files automatically."
+              echo "   If it hasn't run yet, wait for it to complete and push regenerated files."
+              echo "   Or run manually: cd scripts/codegen && npm ci && npm run generate"
+              exit 1
+            fi
+          else
+            echo "✅ No codegen input changes — regeneration not needed"
+          fi
+
       - name: Upload test results for site generation
         if: success() && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

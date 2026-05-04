@@ -104,7 +104,13 @@ Go to Step 3b.
 
      ### Instructions
 
-     Follow the [agentic-merge-reference-impl](.github/prompts/agentic-merge-reference-impl.prompt.md) prompt to port these changes to the Java SDK.
+     **You MUST follow these steps in order. Do NOT improvise or skip scripts.**
+
+     1. ✅✅Read [.github/prompts/agentic-merge-reference-impl.prompt.md](.github/prompts/agentic-merge-reference-impl.prompt.md) in full before starting✅✅
+
+     ❌❌Do NOT clone the reference implementation manually — the start script does this.❌❌
+     ❌❌Do NOT update .lastmerge manually — the finish script does this.❌❌
+     ❌❌Do NOT skip the finish script — it syncs codegen versions and updates .lastmerge.❌❌
      ```
 4. After creating the issue, use the `assign_to_agent` safe-output tool to assign Copilot to the newly created issue.
 
