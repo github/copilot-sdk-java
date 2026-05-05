@@ -157,11 +157,27 @@ try (var client = new CopilotClient(options)) {
 Multiple application instances can share a single CLI server:
 
 ```java
-// In different parts of your application or different containers
-var client1 = new CopilotClient(new CopilotClientOptions().setCliUrl("cli-server:4321"));
-var client2 = new CopilotClient(new CopilotClientOptions().setCliUrl("cli-server:4321"));
+// Use an explicit connection token so all clients can authenticate
+var token = "my-shared-secret";
+var client1 = new CopilotClient(new CopilotClientOptions()
+    .setCliUrl("cli-server:4321").setTcpConnectionToken(token));
+var client2 = new CopilotClient(new CopilotClientOptions()
+    .setCliUrl("cli-server:4321").setTcpConnectionToken(token));
 // Both connect to the same CLI server
 ```
+
+### Connection Token (TCP Security)
+
+When the SDK spawns the CLI in TCP mode, a random connection token is generated automatically
+to protect the loopback listener. You can also provide an explicit token:
+
+```java
+var options = new CopilotClientOptions()
+    .setUseStdio(false)
+    .setTcpConnectionToken("my-secret-token");
+```
+
+> **Note:** `tcpConnectionToken` cannot be used with `useStdio = true`.
 
 ### Deployment Patterns
 
@@ -340,10 +356,12 @@ Complete list of `CopilotClientOptions` settings:
 | `cliPath` | String | Path to CLI executable | `"copilot"` from PATH |
 | `cliUrl` | String | External CLI server URL | `null` (spawn process) |
 | `cliArgs` | String[] | Extra CLI arguments | `null` |
+| `copilotHome` | String | Base directory for Copilot data | `null` (~/.copilot) |
 | `gitHubToken` | String | GitHub OAuth token | `null` |
 | `useLoggedInUser` | Boolean | Use system credentials | `true` |
 | `useStdio` | boolean | Use stdio transport | `true` |
 | `port` | int | TCP port for CLI | `0` (random) |
+| `tcpConnectionToken` | String | Connection token for TCP mode | `null` (auto-generated) |
 | `autoStart` | boolean | Auto-start server | `true` |
 | `autoRestart` | boolean | Auto-restart on crash | `true` |
 | `logLevel` | String | CLI log level | `"info"` |
