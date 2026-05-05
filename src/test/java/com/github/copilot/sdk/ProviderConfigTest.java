@@ -46,6 +46,10 @@ public class ProviderConfigTest {
         assertNull(provider.getApiKey());
         assertNull(provider.getBearerToken());
         assertNull(provider.getAzure());
+        assertNull(provider.getModelId());
+        assertNull(provider.getWireModel());
+        assertNull(provider.getMaxInputTokens());
+        assertNull(provider.getMaxOutputTokens());
     }
 
     @Test
@@ -232,7 +236,8 @@ public class ProviderConfigTest {
     void testSerializeAllFields() throws Exception {
         var provider = new ProviderConfig().setType("azure-openai").setWireApi("completions")
                 .setBaseUrl("https://my-resource.openai.azure.com").setApiKey("my-api-key")
-                .setBearerToken("my-bearer-token").setAzure(new AzureOptions().setApiVersion("2024-02-01"));
+                .setBearerToken("my-bearer-token").setAzure(new AzureOptions().setApiVersion("2024-02-01"))
+                .setModelId("gpt-4o").setWireModel("my-deployment").setMaxInputTokens(50_000).setMaxOutputTokens(2048);
 
         JsonNode json = MAPPER.valueToTree(provider);
 
@@ -242,7 +247,11 @@ public class ProviderConfigTest {
         assertEquals("my-api-key", json.get("apiKey").asText());
         assertEquals("my-bearer-token", json.get("bearerToken").asText());
         assertEquals("2024-02-01", json.get("azure").get("apiVersion").asText());
-        assertEquals(6, json.size(), "Expected exactly 6 JSON fields");
+        assertEquals("gpt-4o", json.get("modelId").asText());
+        assertEquals("my-deployment", json.get("wireModel").asText());
+        assertEquals(50_000, json.get("maxPromptTokens").asInt());
+        assertEquals(2048, json.get("maxOutputTokens").asInt());
+        assertEquals(10, json.size(), "Expected exactly 10 JSON fields");
     }
 
     @Test
@@ -283,6 +292,30 @@ public class ProviderConfigTest {
         assertEquals(original.getBearerToken(), deserialized.getBearerToken());
         assertNotNull(deserialized.getAzure());
         assertEquals(original.getAzure().getApiVersion(), deserialized.getAzure().getApiVersion());
+    }
+
+    @Test
+    void testSerializeProviderModelAndTokenOverrides() throws Exception {
+        var provider = new ProviderConfig().setType("openai").setBaseUrl("https://example.com/provider")
+                .setHeaders(java.util.Map.of("Authorization", "Bearer provider-token")).setModelId("gpt-4o")
+                .setWireModel("my-finetune-v3").setMaxInputTokens(100_000).setMaxOutputTokens(4096);
+
+        JsonNode json = MAPPER.valueToTree(provider);
+
+        assertEquals("https://example.com/provider", json.get("baseUrl").asText());
+        assertEquals("Bearer provider-token", json.get("headers").get("Authorization").asText());
+        assertEquals("gpt-4o", json.get("modelId").asText());
+        assertEquals("my-finetune-v3", json.get("wireModel").asText());
+        assertEquals(100_000, json.get("maxPromptTokens").asInt());
+        assertEquals(4096, json.get("maxOutputTokens").asInt());
+
+        ProviderConfig deserialized = MAPPER.treeToValue(json, ProviderConfig.class);
+        assertNotNull(deserialized);
+        assertEquals("https://example.com/provider", deserialized.getBaseUrl());
+        assertEquals("gpt-4o", deserialized.getModelId());
+        assertEquals("my-finetune-v3", deserialized.getWireModel());
+        assertEquals(100_000, deserialized.getMaxInputTokens());
+        assertEquals(4096, deserialized.getMaxOutputTokens());
     }
 
     @Test

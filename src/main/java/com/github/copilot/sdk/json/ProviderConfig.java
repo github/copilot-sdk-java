@@ -57,6 +57,18 @@ public class ProviderConfig {
     @JsonProperty("headers")
     private Map<String, String> headers;
 
+    @JsonProperty("modelId")
+    private String modelId;
+
+    @JsonProperty("wireModel")
+    private String wireModel;
+
+    @JsonProperty("maxPromptTokens")
+    private Integer maxInputTokens;
+
+    @JsonProperty("maxOutputTokens")
+    private Integer maxOutputTokens;
+
     /**
      * Gets the provider type.
      *
@@ -223,6 +235,118 @@ public class ProviderConfig {
      */
     public ProviderConfig setHeaders(Map<String, String> headers) {
         this.headers = headers;
+        return this;
+    }
+
+    /**
+     * Gets the well-known model name used by the runtime to look up agent
+     * configuration (tools, prompts, reasoning behavior) and default token limits.
+     * <p>
+     * Also used as the wire model when {@link #getWireModel()} is not set. Falls
+     * back to {@link SessionConfig#getModel()}.
+     *
+     * @return the model ID, or {@code null} if not set
+     */
+    public String getModelId() {
+        return modelId;
+    }
+
+    /**
+     * Sets the well-known model name used by the runtime to look up agent
+     * configuration (tools, prompts, reasoning behavior) and default token limits.
+     * <p>
+     * Also used as the wire model when {@link #setWireModel(String)} is not set.
+     * Falls back to {@link SessionConfig#getModel()}.
+     *
+     * @param modelId
+     *            the model ID
+     * @return this config for method chaining
+     */
+    public ProviderConfig setModelId(String modelId) {
+        this.modelId = modelId;
+        return this;
+    }
+
+    /**
+     * Gets the model name sent to the provider API for inference.
+     * <p>
+     * Use this when the provider's model name (e.g. an Azure deployment name or a
+     * custom fine-tune name) differs from {@link #getModelId()}. Falls back to
+     * {@link #getModelId()}, then {@link SessionConfig#getModel()}.
+     *
+     * @return the wire model name, or {@code null} if not set
+     */
+    public String getWireModel() {
+        return wireModel;
+    }
+
+    /**
+     * Sets the model name sent to the provider API for inference.
+     * <p>
+     * Use this when the provider's model name (e.g. an Azure deployment name or a
+     * custom fine-tune name) differs from {@link #getModelId()}. Falls back to
+     * {@link #getModelId()}, then {@link SessionConfig#getModel()}.
+     *
+     * @param wireModel
+     *            the wire model name
+     * @return this config for method chaining
+     */
+    public ProviderConfig setWireModel(String wireModel) {
+        this.wireModel = wireModel;
+        return this;
+    }
+
+    /**
+     * Gets the override for the resolved model's default max prompt tokens.
+     * <p>
+     * The runtime triggers conversation compaction before sending a request when
+     * the prompt (system message, history, tool definitions, user message) would
+     * exceed this limit.
+     *
+     * @return the max input tokens, or {@code null} if not set
+     */
+    public Integer getMaxInputTokens() {
+        return maxInputTokens;
+    }
+
+    /**
+     * Sets the override for the resolved model's default max prompt tokens.
+     * <p>
+     * The runtime triggers conversation compaction before sending a request when
+     * the prompt (system message, history, tool definitions, user message) would
+     * exceed this limit.
+     *
+     * @param maxInputTokens
+     *            the max input tokens
+     * @return this config for method chaining
+     */
+    public ProviderConfig setMaxInputTokens(Integer maxInputTokens) {
+        this.maxInputTokens = maxInputTokens;
+        return this;
+    }
+
+    /**
+     * Gets the override for the resolved model's default max output tokens.
+     * <p>
+     * When hit, the model stops generating and returns a truncated response.
+     *
+     * @return the max output tokens, or {@code null} if not set
+     */
+    public Integer getMaxOutputTokens() {
+        return maxOutputTokens;
+    }
+
+    /**
+     * Sets the override for the resolved model's default max output tokens.
+     * <p>
+     * When hit, the model stops generating and returns a truncated response.
+     *
+     * @param maxOutputTokens
+     *            the max output tokens
+     * @return this config for method chaining
+     */
+    public ProviderConfig setMaxOutputTokens(Integer maxOutputTokens) {
+        this.maxOutputTokens = maxOutputTokens;
         return this;
     }
 }

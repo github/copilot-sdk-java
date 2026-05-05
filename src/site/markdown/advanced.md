@@ -421,17 +421,36 @@ foundry service status
 
 When using BYOK, be aware of these limitations:
 
+#### Model and Token Limit Overrides
+
+You can override the model name and token limits used by the provider:
+
+```java
+var session = client.createSession(
+    new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setProvider(new ProviderConfig()
+            .setType("openai")
+            .setBaseUrl("https://api.openai.com/v1")
+            .setApiKey("sk-...")
+            .setModelId("gpt-4o")              // Runtime model for config lookup
+            .setWireModel("my-finetune-v3")    // Actual model name sent to provider API
+            .setMaxInputTokens(100_000)        // Override max prompt tokens
+            .setMaxOutputTokens(4096))         // Override max output tokens
+).get();
+```
+
+| Property | Description |
+|---|---|
+| `modelId` | Well-known model name for runtime config lookup (tools, prompts, reasoning). Also used as wire model when `wireModel` is not set. Falls back to `SessionConfig.model`. |
+| `wireModel` | Model name sent to the provider API. Use when the provider's model name (e.g. Azure deployment name or fine-tune) differs from `modelId`. Falls back to `modelId`, then `SessionConfig.model`. |
+| `maxInputTokens` | Override max prompt tokens. The runtime compacts conversation before exceeding this limit. |
+| `maxOutputTokens` | Override max output tokens. The model stops generating when this limit is hit. |
+
 #### Identity Limitations
 
-BYOK authentication uses **static credentials only**. The following identity providers are NOT supported:
-
-- ❌ **Microsoft Entra ID (Azure AD)** - No support for Entra managed identities or service principals
-- ❌ **Third-party identity providers** - No OIDC, SAML, or other federated identity
-- ❌ **Managed identities** - Azure Managed Identity is not supported
+BYOK authentication uses **static credentials only**.
 
 You must use an API key or static bearer token that you manage yourself.
-
-**Why not Entra ID?** While Entra ID does issue bearer tokens, these tokens are short-lived (typically 1 hour) and require automatic refresh via the Azure Identity SDK. The `bearerToken` option only accepts a static string—there is no callback mechanism for the SDK to request fresh tokens. For long-running workloads requiring Entra authentication, you would need to implement your own token refresh logic and create new sessions with updated tokens.
 
 ---
 

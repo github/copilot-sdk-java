@@ -127,4 +127,54 @@ public class SessionConfigE2ETest {
         }
         return null;
     }
+
+    @SuppressWarnings("unchecked")
+    private static String getRequestModel(Map<String, Object> exchange) {
+        Object requestObj = exchange.get("request");
+        if (!(requestObj instanceof Map<?, ?> request)) {
+            return null;
+        }
+        Object model = request.get("model");
+        return model != null ? model.toString() : null;
+    }
+
+    @Test
+    void testShouldForwardProviderWireModel() throws Exception {
+        ctx.configureForTest("session_config", "should_forward_provider_wire_model");
+
+        try (CopilotClient client = ctx.createClient()) {
+            CopilotSession session = client.createSession(new SessionConfig().setModel("claude-sonnet-4.5")
+                    .setProvider(new com.github.copilot.sdk.json.ProviderConfig().setType("openai")
+                            .setBaseUrl(ctx.getProxyUrl()).setApiKey("test-provider-key")
+                            .setWireModel("test-wire-model").setMaxOutputTokens(1024))
+                    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)).get();
+
+            session.sendAndWait(new MessageOptions().setPrompt("What is 1+1?")).get(60, TimeUnit.SECONDS);
+
+            List<Map<String, Object>> exchanges = ctx.getExchanges();
+            assertFalse(exchanges.isEmpty(), "Should have at least one exchange");
+            assertEquals("test-wire-model", getRequestModel(exchanges.get(0)));
+        }
+    }
+
+    @Test
+    void testShouldUseProviderModelIdAsWireModel() throws Exception {
+        ctx.configureForTest("session_config", "should_use_provider_model_id_as_wire_model");
+
+        try (CopilotClient client = ctx.createClient()) {
+            CopilotSession session = client
+                    .createSession(new SessionConfig()
+                            .setProvider(new com.github.copilot.sdk.json.ProviderConfig().setType("openai")
+                                    .setBaseUrl(ctx.getProxyUrl()).setApiKey("test-provider-key")
+                                    .setModelId("claude-sonnet-4.5"))
+                            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL))
+                    .get();
+
+            session.sendAndWait(new MessageOptions().setPrompt("What is 1+1?")).get(60, TimeUnit.SECONDS);
+
+            List<Map<String, Object>> exchanges = ctx.getExchanges();
+            assertFalse(exchanges.isEmpty(), "Should have at least one exchange");
+            assertEquals("claude-sonnet-4.5", getRequestModel(exchanges.get(0)));
+        }
+    }
 }

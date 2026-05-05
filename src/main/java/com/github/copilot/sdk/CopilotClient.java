@@ -187,9 +187,9 @@ public final class CopilotClient implements AutoCloseable {
     }
 
     private Connection startCoreBody() {
+        Process process = null;
         try {
             JsonRpcClient rpc;
-            Process process = null;
 
             if (optionsHost != null && optionsPort != null) {
                 // External server (TCP)
@@ -215,12 +215,31 @@ public final class CopilotClient implements AutoCloseable {
             LOG.info("Copilot client connected");
             return connection;
         } catch (Exception e) {
+            // Clean up process if startup failed partway through
+            if (process != null) {
+                cleanupCliProcess(process);
+            }
+
             String stderr = serverManager.getStderrOutput();
             if (!stderr.isEmpty()) {
                 throw new CompletionException(new IOException(
                         CliServerManager.formatCliExitedMessage("CLI process exited unexpectedly.", stderr), e));
             }
             throw new CompletionException(e);
+        }
+    }
+
+    private static void cleanupCliProcess(Process process) {
+        try {
+            if (process.isAlive()) {
+                process.destroyForcibly();
+                process.waitFor(FORCE_KILL_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            }
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+            LOG.log(Level.FINE, "Interrupted while cleaning up CLI process", ie);
+        } catch (Exception ex) {
+            LOG.log(Level.FINE, "Error cleaning up CLI process during failed startup", ex);
         }
     }
 
