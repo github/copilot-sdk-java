@@ -23,6 +23,8 @@ permissions:
   contents: read
   actions: read
 
+timeout-minutes: 60
+
 network:
   allowed:
     - defaults
