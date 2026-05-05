@@ -836,8 +836,8 @@ public final class CopilotSession implements AutoCloseable {
 <span class="fc" id="L836">                tool.handler().invoke(invocation).thenAccept(result -&gt; {</span>
                     try {
                         ToolResultObject toolResult;
-<span class="pc bpc" id="L839" title="1 of 2 branches missed.">                        if (result instanceof ToolResultObject tr) {</span>
-<span class="nc" id="L840">                            toolResult = tr;</span>
+<span class="fc bfc" id="L839" title="All 2 branches covered.">                        if (result instanceof ToolResultObject tr) {</span>
+<span class="fc" id="L840">                            toolResult = tr;</span>
                         } else {
                             toolResult = ToolResultObject
 <span class="fc bfc" id="L843" title="All 2 branches covered.">                                    .success(result instanceof String s ? s : MAPPER.writeValueAsString(result));</span>
@@ -901,10 +901,10 @@ public final class CopilotSession implements AutoCloseable {
 <span class="fc" id="L901">                handler.handle(permissionRequest, invocation).thenAccept(result -&gt; {</span>
                     try {
 <span class="fc" id="L903">                        PermissionRequestResultKind kind = new PermissionRequestResultKind(result.getKind());</span>
-<span class="pc bpc" id="L904" title="1 of 2 branches missed.">                        if (PermissionRequestResultKind.NO_RESULT.equals(kind)) {</span>
+<span class="fc bfc" id="L904" title="All 2 branches covered.">                        if (PermissionRequestResultKind.NO_RESULT.equals(kind)) {</span>
                             // Handler explicitly abstains — leave the request unanswered
                             // so another client can handle it.
-<span class="nc" id="L907">                            return;</span>
+<span class="fc" id="L907">                            return;</span>
                         }
 <span class="fc" id="L909">                        getRpc().permissions.handlePendingPermissionRequest(</span>
                                 new SessionPermissionsHandlePendingPermissionRequestParams(sessionId, requestId,
