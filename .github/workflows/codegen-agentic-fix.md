@@ -24,6 +24,7 @@ permissions:
   actions: read
 
 timeout-minutes: 60
+threat-detection-timeout-minutes: 60
 
 network:
   allowed:
