@@ -63,9 +63,17 @@ if [[ ! -f "$CODEGEN_PKG" ]]; then
 fi
 
 # Update scripts/codegen/package.json with the new version and regenerate the lock file.
-# Intentionally omit --save-exact to preserve the version specifier used by the reference
-# implementation (e.g. a caret range like '^1.0.36-0' rather than an exact pin '1.0.36-0').
+# Write the version string directly into package.json to preserve the exact specifier
+# used by the reference implementation (e.g. '^1.0.43-0').  npm install normalises
+# caret ranges and would silently strip the prerelease suffix, causing a mismatch
+# with pom.xml.
 echo "▸ Updating scripts/codegen/package.json: @github/copilot → ${CLI_VERSION}"
 cd "$CODEGEN_DIR"
-npm install "@github/copilot@${CLI_VERSION}"
+node -e "
+const fs = require('fs');
+const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+pkg.dependencies['@github/copilot'] = process.argv[1];
+fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+" "$CLI_VERSION"
+npm install
 echo "▸ Updated scripts/codegen to @github/copilot@${CLI_VERSION}"
