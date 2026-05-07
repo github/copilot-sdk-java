@@ -326,6 +326,9 @@
                         This handles intermittent failures in E2E tests (e.g.,
                         CompactionTest) where snapshot matching can be sensitive
                         to non-deterministic compaction behaviour.
+                        TODO: Fix the root cause of CompactionTest flakiness
+                        (snapshot mismatch after compaction) so this retry is
+                        no longer needed.
                     -->
                     <rerunFailingTestsCount>2</rerunFailingTestsCount>
                     <systemPropertyVariables>
