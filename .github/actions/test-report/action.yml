@@ -25,8 +25,7 @@ runs:
         REPORT_DIR=$(dirname "${{ inputs.report-path }}")
         REPORT_PATTERN=$(basename "${{ inputs.report-path }}")
 
-        # Use compgen to check if the glob expands to any files
-        if compgen -G "${{ inputs.report-path }}" > /dev/null 2>&1; then
+        if ls ${{ inputs.report-path }} 1>/dev/null 2>&1; then
           TESTS_RUN=$(grep -h "tests=" ${{ inputs.report-path }} 2>/dev/null | sed 's/.*tests="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
           FAILURES=$(grep -h "failures=" ${{ inputs.report-path }} 2>/dev/null | sed 's/.*failures="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
           ERRORS=$(grep -h "errors=" ${{ inputs.report-path }} 2>/dev/null | sed 's/.*errors="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
