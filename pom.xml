@@ -327,9 +327,8 @@
                         This handles intermittent failures in E2E tests (e.g.,
                         CompactionTest) where snapshot matching can be sensitive
                         to non-deterministic compaction behaviour.
-                        TODO: Fix the root cause of CompactionTest flakiness
-                        (snapshot mismatch after compaction) so this retry is
-                        no longer needed.
+                        Revisit this once this issue is successfully resolved.
+                        https://github.com/github/copilot-sdk/issues/1227 
                     -->
                     <rerunFailingTestsCount>2</rerunFailingTestsCount>
                     <systemPropertyVariables>
@@ -346,6 +345,30 @@
                         <COPILOT_CLI_PATH>${copilot.cli.path}</COPILOT_CLI_PATH>
                     </environmentVariables>
                 </configuration>
+                <executions>
+                    <!--
+                        Run multi-client session resume tests in isolation BEFORE the
+                        main suite. These tests pass reliably alone but can time out
+                        when run after other E2E tests due to harness state leakage.
+                    -->
+                    <execution>
+                        <id>isolated-resume-tests</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <groups>isolated-resume</groups>
+                        </configuration>
+                    </execution>
+                    <!-- Exclude the isolated resume tests from the main run -->
+                    <execution>
+                        <id>default-test</id>
+                        <configuration>
+                            <excludedGroups>isolated-resume</excludedGroups>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Add src/generated/java as an additional source root -->
             <plugin>
