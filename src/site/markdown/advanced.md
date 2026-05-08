@@ -53,6 +53,9 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
   - [Incoming Elicitation Handler](#Incoming_Elicitation_Handler)
   - [Session Capabilities](#Session_Capabilities)
   - [Outgoing Elicitation via session.getUi()](#Outgoing_Elicitation_via_session.getUi)
+- [Mode Handlers](#Mode_Handlers)
+  - [Exit Plan Mode Handler](#Exit_Plan_Mode_Handler)
+  - [Auto Mode Switch Handler](#Auto_Mode_Switch_Handler)
 - [Getting Session Metadata by ID](#Getting_Session_Metadata_by_ID)
 
 ---
@@ -1264,6 +1267,72 @@ var result = ui.elicitation(new ElicitationParams()
 ```
 
 All `getUi()` methods throw `IllegalStateException` if the host does not support elicitation. Always check capabilities first.
+
+---
+
+## Mode Handlers
+
+Mode handlers allow your application to respond to agent requests for plan-mode transitions and automatic model switching.
+
+### Exit Plan Mode Handler
+
+Register a handler to receive exit-plan-mode requests when the agent wants to transition out of plan mode:
+
+```java
+var config = new SessionConfig()
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    .setOnExitPlanMode((request, invocation) -> {
+        System.out.println("Plan summary: " + request.getSummary());
+        System.out.println("Available actions: " + request.getActions());
+        // Approve the transition and select an action
+        return CompletableFuture.completedFuture(
+            new ExitPlanModeResult()
+                .setApproved(true)
+                .setSelectedAction("interactive")
+        );
+    });
+```
+
+The `ExitPlanModeRequest` includes:
+
+- `summary` — Summary of the plan or proposed next step
+- `planContent` — Full plan content, when available
+- `actions` — Available actions the user can select
+- `recommendedAction` — The action recommended by the runtime (default: `"autopilot"`)
+
+When no handler is registered, the SDK automatically approves the exit with default settings.
+
+See [ExitPlanModeHandler](apidocs/com/github/copilot/sdk/json/ExitPlanModeHandler.html) Javadoc for more details.
+
+### Auto Mode Switch Handler
+
+Register a handler to respond when the agent encounters a rate limit and wants to switch to a different model:
+
+```java
+var config = new SessionConfig()
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    .setOnAutoModeSwitch((request, invocation) -> {
+        System.out.println("Rate limited: " + request.getErrorCode());
+        System.out.println("Retry after: " + request.getRetryAfterSeconds() + "s");
+        // Approve the model switch
+        return CompletableFuture.completedFuture(AutoModeSwitchResponse.YES);
+    });
+```
+
+The `AutoModeSwitchRequest` includes:
+
+- `errorCode` — The rate-limit error code that triggered the request
+- `retryAfterSeconds` — Seconds until the rate limit resets, when known
+
+The `AutoModeSwitchResponse` enum provides three options:
+
+- `YES` — Approve the switch for this rate-limit cycle
+- `YES_ALWAYS` — Approve and remember the choice for this session
+- `NO` — Decline the switch
+
+When no handler is registered, the SDK declines the switch by default.
+
+See [AutoModeSwitchHandler](apidocs/com/github/copilot/sdk/json/AutoModeSwitchHandler.html) Javadoc for more details.
 
 ---
 
