@@ -229,7 +229,7 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,CommandDefinition,0,27,0,
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SectionOverrideAction,3,46,0,0,1,9,1,2,1,2
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,SectionOverride,0,27,0,0,0,10,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ProviderConfig,0,97,0,2,0,34,0,24,0,23
-GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,InfiniteSessionConfig,0,27,0,0,0,10,0,7,0,7
+GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,InfiniteSessionConfig,10,17,0,0,4,6,2,5,2,5
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,ElicitationSchema,0,30,0,0,0,11,0,7,0,7
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,CopilotClientOptions,0,350,4,18,0,91,4,49,0,42
 GitHub Copilot SDK :: Java,com.github.copilot.sdk.json,McpServerConfig,7,18,1,1,2,5,2,4,1,4
@@ -548,7 +548,7 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk,JsonRpcException,0,10,0,0,0,4,
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,EventErrorPolicy,0,15,0,0,0,3,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,ExtractedTransforms,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,ConnectionState,0,27,0,0,0,5,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession,908,1347,89,103,207,336,92,99,31,62
+GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession,908,1347,88,104,207,336,91,100,31,62
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession.AgentSelectResponse,6,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotClient.Connection,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,SdkProtocolVersion,0,24,0,0,0,7,0,4,0,4
