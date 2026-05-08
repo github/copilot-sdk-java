@@ -104,32 +104,44 @@ class JsonRpcClient implements AutoCloseable {
      * Sends a JSON-RPC request and waits for the response.
      */
     public &lt;T&gt; CompletableFuture&lt;T&gt; invoke(String method, Object params, Class&lt;T&gt; responseType) {
-<span class="fc" id="L107">        long id = requestIdCounter.incrementAndGet();</span>
-<span class="fc" id="L108">        var future = new CompletableFuture&lt;JsonNode&gt;();</span>
-<span class="fc" id="L109">        pendingRequests.put(id, future);</span>
+<span class="fc" id="L107">        long timingNanos = System.nanoTime();</span>
+<span class="fc" id="L108">        long id = requestIdCounter.incrementAndGet();</span>
+<span class="fc" id="L109">        var future = new CompletableFuture&lt;JsonNode&gt;();</span>
+<span class="fc" id="L110">        pendingRequests.put(id, future);</span>
 
-<span class="fc" id="L111">        var request = new JsonRpcRequest();</span>
-<span class="fc" id="L112">        request.setJsonrpc(&quot;2.0&quot;);</span>
-<span class="fc" id="L113">        request.setId(id);</span>
-<span class="fc" id="L114">        request.setMethod(method);</span>
-<span class="fc" id="L115">        request.setParams(params);</span>
+<span class="fc" id="L112">        var request = new JsonRpcRequest();</span>
+<span class="fc" id="L113">        request.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L114">        request.setId(id);</span>
+<span class="fc" id="L115">        request.setMethod(method);</span>
+<span class="fc" id="L116">        request.setParams(params);</span>
 
         try {
-<span class="fc" id="L118">            sendMessage(request);</span>
-<span class="fc" id="L119">        } catch (IOException e) {</span>
-<span class="fc" id="L120">            pendingRequests.remove(id);</span>
-<span class="fc" id="L121">            future.completeExceptionally(e);</span>
-<span class="fc" id="L122">        }</span>
+<span class="fc" id="L119">            sendMessage(request);</span>
+<span class="fc" id="L120">        } catch (IOException e) {</span>
+<span class="fc" id="L121">            pendingRequests.remove(id);</span>
+<span class="fc" id="L122">            future.completeExceptionally(e);</span>
+<span class="fc" id="L123">        }</span>
 
-<span class="fc" id="L124">        return future.thenApply(result -&gt; {</span>
+<span class="fc" id="L125">        return future.thenApply(result -&gt; {</span>
             try {
-<span class="fc bfc" id="L126" title="All 4 branches covered.">                if (responseType == Void.class || responseType == void.class) {</span>
-<span class="fc" id="L127">                    return null;</span>
+<span class="fc" id="L127">                T value = null;</span>
+<span class="fc bfc" id="L128" title="All 4 branches covered.">                if (responseType != Void.class &amp;&amp; responseType != void.class) {</span>
+<span class="fc" id="L129">                    value = MAPPER.treeToValue(result, responseType);</span>
                 }
-<span class="fc" id="L129">                return MAPPER.treeToValue(result, responseType);</span>
-<span class="fc" id="L130">            } catch (JsonProcessingException e) {</span>
-<span class="fc" id="L131">                throw new CompletionException(e);</span>
+<span class="fc" id="L131">                LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                        &quot;JsonRpc.invoke JSON-RPC request finished. Elapsed={Elapsed}, Method=&quot; + method + &quot;, RequestId=&quot;
+                                + id + &quot;, Status=Succeeded&quot;,
+                        timingNanos);
+<span class="fc" id="L135">                return value;</span>
+<span class="fc" id="L136">            } catch (JsonProcessingException e) {</span>
+<span class="fc" id="L137">                throw new CompletionException(e);</span>
             }
+<span class="fc" id="L139">        }).exceptionally(ex -&gt; {</span>
+<span class="fc" id="L140">            LoggingHelpers.logTiming(LOG, Level.WARNING, ex,</span>
+                    &quot;JsonRpc.invoke JSON-RPC request finished. Elapsed={Elapsed}, Method=&quot; + method + &quot;, RequestId=&quot;
+                            + id + &quot;, Status=Failed&quot;,
+                    timingNanos);
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">            throw ex instanceof RuntimeException re ? re : new RuntimeException(ex);</span>
         });
     }
 
@@ -137,214 +149,214 @@ class JsonRpcClient implements AutoCloseable {
      * Sends a JSON-RPC notification (no response expected).
      */
     public void notify(String method, Object params) throws IOException {
-<span class="fc" id="L140">        var notification = new JsonRpcRequest();</span>
-<span class="fc" id="L141">        notification.setJsonrpc(&quot;2.0&quot;);</span>
-<span class="fc" id="L142">        notification.setMethod(method);</span>
-<span class="fc" id="L143">        notification.setParams(params);</span>
-<span class="fc" id="L144">        sendMessage(notification);</span>
-<span class="fc" id="L145">    }</span>
+<span class="fc" id="L152">        var notification = new JsonRpcRequest();</span>
+<span class="fc" id="L153">        notification.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L154">        notification.setMethod(method);</span>
+<span class="fc" id="L155">        notification.setParams(params);</span>
+<span class="fc" id="L156">        sendMessage(notification);</span>
+<span class="fc" id="L157">    }</span>
 
     /**
      * Sends a JSON-RPC response to a server request.
      */
     public void sendResponse(Object id, Object result) throws IOException {
-<span class="fc" id="L151">        var response = new JsonRpcResponse();</span>
-<span class="fc" id="L152">        response.setJsonrpc(&quot;2.0&quot;);</span>
-<span class="fc" id="L153">        response.setId(id);</span>
-<span class="fc" id="L154">        response.setResult(result);</span>
-<span class="fc" id="L155">        sendMessage(response);</span>
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L163">        var response = new JsonRpcResponse();</span>
+<span class="fc" id="L164">        response.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L165">        response.setId(id);</span>
+<span class="fc" id="L166">        response.setResult(result);</span>
+<span class="fc" id="L167">        sendMessage(response);</span>
+<span class="fc" id="L168">    }</span>
 
     /**
      * Sends a JSON-RPC error response to a server request.
      */
     public void sendErrorResponse(Object id, int code, String message) throws IOException {
-<span class="fc" id="L162">        var response = new JsonRpcResponse();</span>
-<span class="fc" id="L163">        response.setJsonrpc(&quot;2.0&quot;);</span>
-<span class="fc" id="L164">        response.setId(id);</span>
-<span class="fc" id="L165">        var error = new JsonRpcError();</span>
-<span class="fc" id="L166">        error.setCode(code);</span>
-<span class="fc" id="L167">        error.setMessage(message);</span>
-<span class="fc" id="L168">        response.setError(error);</span>
-<span class="fc" id="L169">        sendMessage(response);</span>
-<span class="fc" id="L170">    }</span>
-
-    private synchronized void sendMessage(Object message) throws IOException {
-<span class="fc" id="L173">        String json = MAPPER.writeValueAsString(message);</span>
-<span class="fc" id="L174">        byte[] content = json.getBytes(StandardCharsets.UTF_8);</span>
-<span class="fc" id="L175">        String header = &quot;Content-Length: &quot; + content.length + &quot;\r\n\r\n&quot;;</span>
-
-<span class="fc" id="L177">        outputStream.write(header.getBytes(StandardCharsets.UTF_8));</span>
-<span class="fc" id="L178">        outputStream.write(content);</span>
-<span class="fc" id="L179">        outputStream.flush();</span>
-
-<span class="fc" id="L181">        LOG.fine(&quot;Sent: &quot; + json);</span>
+<span class="fc" id="L174">        var response = new JsonRpcResponse();</span>
+<span class="fc" id="L175">        response.setJsonrpc(&quot;2.0&quot;);</span>
+<span class="fc" id="L176">        response.setId(id);</span>
+<span class="fc" id="L177">        var error = new JsonRpcError();</span>
+<span class="fc" id="L178">        error.setCode(code);</span>
+<span class="fc" id="L179">        error.setMessage(message);</span>
+<span class="fc" id="L180">        response.setError(error);</span>
+<span class="fc" id="L181">        sendMessage(response);</span>
 <span class="fc" id="L182">    }</span>
 
+    private synchronized void sendMessage(Object message) throws IOException {
+<span class="fc" id="L185">        String json = MAPPER.writeValueAsString(message);</span>
+<span class="fc" id="L186">        byte[] content = json.getBytes(StandardCharsets.UTF_8);</span>
+<span class="fc" id="L187">        String header = &quot;Content-Length: &quot; + content.length + &quot;\r\n\r\n&quot;;</span>
+
+<span class="fc" id="L189">        outputStream.write(header.getBytes(StandardCharsets.UTF_8));</span>
+<span class="fc" id="L190">        outputStream.write(content);</span>
+<span class="fc" id="L191">        outputStream.flush();</span>
+
+<span class="fc" id="L193">        LOG.fine(&quot;Sent: &quot; + json);</span>
+<span class="fc" id="L194">    }</span>
+
     private void startReader() {
-<span class="fc" id="L185">        readerExecutor.submit(() -&gt; {</span>
+<span class="fc" id="L197">        readerExecutor.submit(() -&gt; {</span>
             try {
                 // We need to read bytes because Content-Length specifies bytes, not characters.
                 // Using BufferedReader would cause issues with multi-byte UTF-8 characters.
-<span class="fc" id="L189">                var bis = new BufferedInputStream(inputStream);</span>
+<span class="fc" id="L201">                var bis = new BufferedInputStream(inputStream);</span>
 
-<span class="fc bfc" id="L191" title="All 2 branches covered.">                while (running) {</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">                while (running) {</span>
                     // Read headers line by line
-<span class="fc" id="L193">                    int contentLength = -1;</span>
-<span class="fc" id="L194">                    var headerLine = new StringBuilder();</span>
-<span class="fc" id="L195">                    boolean lastWasCR = false;</span>
-<span class="fc" id="L196">                    boolean inHeaders = true;</span>
+<span class="fc" id="L205">                    int contentLength = -1;</span>
+<span class="fc" id="L206">                    var headerLine = new StringBuilder();</span>
+<span class="fc" id="L207">                    boolean lastWasCR = false;</span>
+<span class="fc" id="L208">                    boolean inHeaders = true;</span>
 
-<span class="fc bfc" id="L198" title="All 2 branches covered.">                    while (inHeaders) {</span>
-<span class="fc" id="L199">                        int b = bis.read();</span>
-<span class="fc bfc" id="L200" title="All 2 branches covered.">                        if (b == -1) {</span>
-<span class="fc" id="L201">                            return;</span>
+<span class="fc bfc" id="L210" title="All 2 branches covered.">                    while (inHeaders) {</span>
+<span class="fc" id="L211">                        int b = bis.read();</span>
+<span class="fc bfc" id="L212" title="All 2 branches covered.">                        if (b == -1) {</span>
+<span class="fc" id="L213">                            return;</span>
                         }
 
-<span class="fc bfc" id="L204" title="All 2 branches covered.">                        if (b == '\r') {</span>
-<span class="fc" id="L205">                            lastWasCR = true;</span>
-<span class="fc bfc" id="L206" title="All 2 branches covered.">                        } else if (b == '\n') {</span>
-<span class="fc" id="L207">                            String line = headerLine.toString();</span>
-<span class="fc" id="L208">                            headerLine.setLength(0);</span>
-<span class="fc" id="L209">                            lastWasCR = false;</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">                        if (b == '\r') {</span>
+<span class="fc" id="L217">                            lastWasCR = true;</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">                        } else if (b == '\n') {</span>
+<span class="fc" id="L219">                            String line = headerLine.toString();</span>
+<span class="fc" id="L220">                            headerLine.setLength(0);</span>
+<span class="fc" id="L221">                            lastWasCR = false;</span>
 
-<span class="fc bfc" id="L211" title="All 2 branches covered.">                            if (line.isEmpty()) {</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">                            if (line.isEmpty()) {</span>
                                 // End of headers (blank line)
-<span class="fc" id="L213">                                inHeaders = false;</span>
-<span class="fc bfc" id="L214" title="All 2 branches covered.">                            } else if (line.toLowerCase().startsWith(&quot;content-length:&quot;)) {</span>
-<span class="fc" id="L215">                                contentLength = Integer.parseInt(line.substring(15).trim());</span>
+<span class="fc" id="L225">                                inHeaders = false;</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">                            } else if (line.toLowerCase().startsWith(&quot;content-length:&quot;)) {</span>
+<span class="fc" id="L227">                                contentLength = Integer.parseInt(line.substring(15).trim());</span>
                             }
-<span class="fc" id="L217">                        } else {</span>
-<span class="pc bpc" id="L218" title="1 of 2 branches missed.">                            if (lastWasCR) {</span>
-<span class="nc" id="L219">                                headerLine.append('\r');</span>
-<span class="nc" id="L220">                                lastWasCR = false;</span>
+<span class="fc" id="L229">                        } else {</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">                            if (lastWasCR) {</span>
+<span class="nc" id="L231">                                headerLine.append('\r');</span>
+<span class="nc" id="L232">                                lastWasCR = false;</span>
                             }
-<span class="fc" id="L222">                            headerLine.append((char) b);</span>
+<span class="fc" id="L234">                            headerLine.append((char) b);</span>
                         }
-<span class="fc" id="L224">                    }</span>
+<span class="fc" id="L236">                    }</span>
 
-<span class="fc bfc" id="L226" title="All 2 branches covered.">                    if (contentLength &lt;= 0) {</span>
-<span class="fc" id="L227">                        continue;</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">                    if (contentLength &lt;= 0) {</span>
+<span class="fc" id="L239">                        continue;</span>
                     }
 
                     // Read content as bytes (Content-Length specifies bytes, not characters)
-<span class="fc" id="L231">                    byte[] buffer = new byte[contentLength];</span>
-<span class="fc" id="L232">                    int read = 0;</span>
-<span class="fc bfc" id="L233" title="All 2 branches covered.">                    while (read &lt; contentLength) {</span>
-<span class="fc" id="L234">                        int result = bis.read(buffer, read, contentLength - read);</span>
-<span class="pc bpc" id="L235" title="1 of 2 branches missed.">                        if (result == -1) {</span>
-<span class="nc" id="L236">                            return;</span>
+<span class="fc" id="L243">                    byte[] buffer = new byte[contentLength];</span>
+<span class="fc" id="L244">                    int read = 0;</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">                    while (read &lt; contentLength) {</span>
+<span class="fc" id="L246">                        int result = bis.read(buffer, read, contentLength - read);</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">                        if (result == -1) {</span>
+<span class="nc" id="L248">                            return;</span>
                         }
-<span class="fc" id="L238">                        read += result;</span>
-<span class="fc" id="L239">                    }</span>
+<span class="fc" id="L250">                        read += result;</span>
+<span class="fc" id="L251">                    }</span>
 
-<span class="fc" id="L241">                    String content = new String(buffer, StandardCharsets.UTF_8);</span>
-<span class="fc" id="L242">                    LOG.fine(&quot;Received: &quot; + content);</span>
+<span class="fc" id="L253">                    String content = new String(buffer, StandardCharsets.UTF_8);</span>
+<span class="fc" id="L254">                    LOG.fine(&quot;Received: &quot; + content);</span>
 
-<span class="fc" id="L244">                    handleMessage(content);</span>
-<span class="fc" id="L245">                }</span>
-<span class="fc" id="L246">            } catch (Exception e) {</span>
-<span class="fc bfc" id="L247" title="All 2 branches covered.">                if (running) {</span>
-<span class="fc" id="L248">                    LOG.log(Level.SEVERE, &quot;Error in JSON-RPC reader&quot;, e);</span>
+<span class="fc" id="L256">                    handleMessage(content);</span>
+<span class="fc" id="L257">                }</span>
+<span class="fc" id="L258">            } catch (Exception e) {</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">                if (running) {</span>
+<span class="fc" id="L260">                    LOG.log(Level.SEVERE, &quot;Error in JSON-RPC reader&quot;, e);</span>
                 }
-<span class="fc" id="L250">            }</span>
-<span class="fc" id="L251">        });</span>
-<span class="fc" id="L252">    }</span>
+<span class="fc" id="L262">            }</span>
+<span class="fc" id="L263">        });</span>
+<span class="fc" id="L264">    }</span>
 
     private void handleMessage(String content) {
         try {
-<span class="fc" id="L256">            JsonNode node = MAPPER.readTree(content);</span>
+<span class="fc" id="L268">            JsonNode node = MAPPER.readTree(content);</span>
 
             // Check if this is a response to our request
-<span class="fc bfc" id="L259" title="All 8 branches covered.">            if (node.has(&quot;id&quot;) &amp;&amp; !node.get(&quot;id&quot;).isNull() &amp;&amp; (node.has(&quot;result&quot;) || node.has(&quot;error&quot;))) {</span>
-<span class="fc" id="L260">                long id = node.get(&quot;id&quot;).asLong();</span>
-<span class="fc" id="L261">                CompletableFuture&lt;JsonNode&gt; future = pendingRequests.remove(id);</span>
-<span class="fc bfc" id="L262" title="All 2 branches covered.">                if (future != null) {</span>
-<span class="fc bfc" id="L263" title="All 2 branches covered.">                    if (node.has(&quot;error&quot;)) {</span>
-<span class="fc" id="L264">                        JsonNode errorNode = node.get(&quot;error&quot;);</span>
-<span class="fc bfc" id="L265" title="All 2 branches covered.">                        String errorMessage = errorNode.has(&quot;message&quot;)</span>
-<span class="fc" id="L266">                                ? errorNode.get(&quot;message&quot;).asText()</span>
-<span class="fc" id="L267">                                : &quot;Unknown error&quot;;</span>
-<span class="fc bfc" id="L268" title="All 2 branches covered.">                        int errorCode = errorNode.has(&quot;code&quot;) ? errorNode.get(&quot;code&quot;).asInt() : -1;</span>
-<span class="fc" id="L269">                        future.completeExceptionally(new JsonRpcException(errorCode, errorMessage));</span>
-<span class="fc" id="L270">                    } else {</span>
-<span class="fc" id="L271">                        future.complete(node.get(&quot;result&quot;));</span>
+<span class="fc bfc" id="L271" title="All 8 branches covered.">            if (node.has(&quot;id&quot;) &amp;&amp; !node.get(&quot;id&quot;).isNull() &amp;&amp; (node.has(&quot;result&quot;) || node.has(&quot;error&quot;))) {</span>
+<span class="fc" id="L272">                long id = node.get(&quot;id&quot;).asLong();</span>
+<span class="fc" id="L273">                CompletableFuture&lt;JsonNode&gt; future = pendingRequests.remove(id);</span>
+<span class="fc bfc" id="L274" title="All 2 branches covered.">                if (future != null) {</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">                    if (node.has(&quot;error&quot;)) {</span>
+<span class="fc" id="L276">                        JsonNode errorNode = node.get(&quot;error&quot;);</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">                        String errorMessage = errorNode.has(&quot;message&quot;)</span>
+<span class="fc" id="L278">                                ? errorNode.get(&quot;message&quot;).asText()</span>
+<span class="fc" id="L279">                                : &quot;Unknown error&quot;;</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">                        int errorCode = errorNode.has(&quot;code&quot;) ? errorNode.get(&quot;code&quot;).asInt() : -1;</span>
+<span class="fc" id="L281">                        future.completeExceptionally(new JsonRpcException(errorCode, errorMessage));</span>
+<span class="fc" id="L282">                    } else {</span>
+<span class="fc" id="L283">                        future.complete(node.get(&quot;result&quot;));</span>
                     }
                 }
-<span class="fc" id="L274">            }</span>
+<span class="fc" id="L286">            }</span>
             // Check if this is a request from server (has method and id)
-<span class="fc bfc" id="L276" title="All 2 branches covered.">            else if (node.has(&quot;method&quot;)) {</span>
-<span class="fc" id="L277">                String method = node.get(&quot;method&quot;).asText();</span>
-<span class="fc" id="L278">                JsonNode params = node.get(&quot;params&quot;);</span>
-<span class="fc bfc" id="L279" title="All 4 branches covered.">                Object id = node.has(&quot;id&quot;) &amp;&amp; !node.get(&quot;id&quot;).isNull() ? node.get(&quot;id&quot;) : null;</span>
+<span class="fc bfc" id="L288" title="All 2 branches covered.">            else if (node.has(&quot;method&quot;)) {</span>
+<span class="fc" id="L289">                String method = node.get(&quot;method&quot;).asText();</span>
+<span class="fc" id="L290">                JsonNode params = node.get(&quot;params&quot;);</span>
+<span class="fc bfc" id="L291" title="All 4 branches covered.">                Object id = node.has(&quot;id&quot;) &amp;&amp; !node.get(&quot;id&quot;).isNull() ? node.get(&quot;id&quot;) : null;</span>
 
-<span class="fc" id="L281">                LOG.fine(&quot;Received method: &quot; + method);</span>
+<span class="fc" id="L293">                LOG.fine(&quot;Received method: &quot; + method);</span>
 
-<span class="fc" id="L283">                BiConsumer&lt;String, JsonNode&gt; handler = notificationHandlers.get(method);</span>
-<span class="fc bfc" id="L284" title="All 2 branches covered.">                if (handler != null) {</span>
+<span class="fc" id="L295">                BiConsumer&lt;String, JsonNode&gt; handler = notificationHandlers.get(method);</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">                if (handler != null) {</span>
                     try {
                         // Create a context that includes the request ID for responses
-<span class="fc bfc" id="L287" title="All 2 branches covered.">                        handler.accept(id != null ? id.toString() : null, params);</span>
-<span class="fc" id="L288">                    } catch (Exception e) {</span>
-<span class="fc" id="L289">                        LOG.log(Level.SEVERE, &quot;Error handling method &quot; + method, e);</span>
-<span class="fc bfc" id="L290" title="All 2 branches covered.">                        if (id != null) {</span>
+<span class="fc bfc" id="L299" title="All 2 branches covered.">                        handler.accept(id != null ? id.toString() : null, params);</span>
+<span class="fc" id="L300">                    } catch (Exception e) {</span>
+<span class="fc" id="L301">                        LOG.log(Level.SEVERE, &quot;Error handling method &quot; + method, e);</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">                        if (id != null) {</span>
                             try {
-<span class="fc" id="L292">                                sendErrorResponse(id, -32603, e.getMessage());</span>
-<span class="nc" id="L293">                            } catch (IOException ioe) {</span>
-<span class="nc" id="L294">                                LOG.log(Level.SEVERE, &quot;Failed to send error response&quot;, ioe);</span>
-<span class="fc" id="L295">                            }</span>
+<span class="fc" id="L304">                                sendErrorResponse(id, -32603, e.getMessage());</span>
+<span class="nc" id="L305">                            } catch (IOException ioe) {</span>
+<span class="nc" id="L306">                                LOG.log(Level.SEVERE, &quot;Failed to send error response&quot;, ioe);</span>
+<span class="fc" id="L307">                            }</span>
                         }
-<span class="fc" id="L297">                    }</span>
+<span class="fc" id="L309">                    }</span>
                 } else {
-<span class="fc" id="L299">                    LOG.fine(&quot;No handler for method: &quot; + method);</span>
-<span class="fc bfc" id="L300" title="All 2 branches covered.">                    if (id != null) {</span>
+<span class="fc" id="L311">                    LOG.fine(&quot;No handler for method: &quot; + method);</span>
+<span class="fc bfc" id="L312" title="All 2 branches covered.">                    if (id != null) {</span>
                         try {
-<span class="fc" id="L302">                            sendErrorResponse(id, -32601, &quot;Method not found: &quot; + method);</span>
-<span class="nc" id="L303">                        } catch (IOException ioe) {</span>
-<span class="nc" id="L304">                            LOG.log(Level.SEVERE, &quot;Failed to send error response&quot;, ioe);</span>
-<span class="fc" id="L305">                        }</span>
+<span class="fc" id="L314">                            sendErrorResponse(id, -32601, &quot;Method not found: &quot; + method);</span>
+<span class="nc" id="L315">                        } catch (IOException ioe) {</span>
+<span class="nc" id="L316">                            LOG.log(Level.SEVERE, &quot;Failed to send error response&quot;, ioe);</span>
+<span class="fc" id="L317">                        }</span>
                     }
                 }
             }
-<span class="fc" id="L309">        } catch (JsonProcessingException e) {</span>
-<span class="fc" id="L310">            LOG.log(Level.SEVERE, &quot;Error parsing JSON-RPC message&quot;, e);</span>
-<span class="fc" id="L311">        }</span>
-<span class="fc" id="L312">    }</span>
+<span class="fc" id="L321">        } catch (JsonProcessingException e) {</span>
+<span class="fc" id="L322">            LOG.log(Level.SEVERE, &quot;Error parsing JSON-RPC message&quot;, e);</span>
+<span class="fc" id="L323">        }</span>
+<span class="fc" id="L324">    }</span>
 
     @Override
     public void close() {
-<span class="fc" id="L316">        running = false;</span>
-<span class="fc" id="L317">        readerExecutor.shutdownNow();</span>
+<span class="fc" id="L328">        running = false;</span>
+<span class="fc" id="L329">        readerExecutor.shutdownNow();</span>
 
         // Cancel all pending requests
-<span class="fc" id="L320">        pendingRequests.forEach((id, future) -&gt; future.completeExceptionally(new IOException(&quot;Client closed&quot;)));</span>
-<span class="fc" id="L321">        pendingRequests.clear();</span>
+<span class="fc" id="L332">        pendingRequests.forEach((id, future) -&gt; future.completeExceptionally(new IOException(&quot;Client closed&quot;)));</span>
+<span class="fc" id="L333">        pendingRequests.clear();</span>
 
         try {
-<span class="fc bfc" id="L324" title="All 2 branches covered.">            if (socket != null) {</span>
-<span class="fc" id="L325">                socket.close();</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">            if (socket != null) {</span>
+<span class="fc" id="L337">                socket.close();</span>
             }
-<span class="nc" id="L327">        } catch (IOException e) {</span>
-<span class="nc" id="L328">            LOG.log(Level.FINE, &quot;Error closing socket&quot;, e);</span>
-<span class="fc" id="L329">        }</span>
+<span class="nc" id="L339">        } catch (IOException e) {</span>
+<span class="nc" id="L340">            LOG.log(Level.FINE, &quot;Error closing socket&quot;, e);</span>
+<span class="fc" id="L341">        }</span>
 
-<span class="fc bfc" id="L331" title="All 2 branches covered.">        if (process != null) {</span>
-<span class="fc" id="L332">            process.destroy();</span>
+<span class="fc bfc" id="L343" title="All 2 branches covered.">        if (process != null) {</span>
+<span class="fc" id="L344">            process.destroy();</span>
         }
-<span class="fc" id="L334">    }</span>
+<span class="fc" id="L346">    }</span>
 
     public boolean isConnected() {
-<span class="fc bfc" id="L337" title="All 2 branches covered.">        if (socket != null) {</span>
-<span class="pc bpc" id="L338" title="1 of 4 branches missed.">            return socket.isConnected() &amp;&amp; !socket.isClosed();</span>
+<span class="fc bfc" id="L349" title="All 2 branches covered.">        if (socket != null) {</span>
+<span class="pc bpc" id="L350" title="1 of 4 branches missed.">            return socket.isConnected() &amp;&amp; !socket.isClosed();</span>
         }
-<span class="pc bpc" id="L340" title="1 of 2 branches missed.">        if (process != null) {</span>
-<span class="fc" id="L341">            return process.isAlive();</span>
+<span class="pc bpc" id="L352" title="1 of 2 branches missed.">        if (process != null) {</span>
+<span class="fc" id="L353">            return process.isAlive();</span>
         }
-<span class="nc" id="L343">        return false;</span>
+<span class="nc" id="L355">        return false;</span>
     }
 
     public Process getProcess() {
-<span class="fc" id="L347">        return process;</span>
+<span class="fc" id="L359">        return process;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

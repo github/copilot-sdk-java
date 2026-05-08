@@ -188,43 +188,53 @@ public final class CopilotClient implements AutoCloseable {
 
     private Connection startCoreBody() {
 <span class="fc" id="L190">        Process process = null;</span>
+<span class="fc" id="L191">        long startNanos = System.nanoTime();</span>
         try {
             JsonRpcClient rpc;
 
-<span class="pc bpc" id="L194" title="3 of 4 branches missed.">            if (optionsHost != null &amp;&amp; optionsPort != null) {</span>
+<span class="pc bpc" id="L195" title="3 of 4 branches missed.">            if (optionsHost != null &amp;&amp; optionsPort != null) {</span>
                 // External server (TCP)
-<span class="nc" id="L196">                rpc = serverManager.connectToServer(null, optionsHost, optionsPort);</span>
+<span class="nc" id="L197">                rpc = serverManager.connectToServer(null, optionsHost, optionsPort);</span>
             } else {
                 // Child process (stdio or TCP)
-<span class="fc" id="L199">                CliServerManager.ProcessInfo processInfo = serverManager.startCliServer();</span>
-<span class="fc" id="L200">                process = processInfo.process();</span>
-<span class="fc bfc" id="L201" title="All 2 branches covered.">                rpc = serverManager.connectToServer(process, processInfo.port() != null ? &quot;localhost&quot; : null,</span>
-<span class="fc" id="L202">                        processInfo.port());</span>
+<span class="fc" id="L200">                CliServerManager.ProcessInfo processInfo = serverManager.startCliServer();</span>
+<span class="fc" id="L201">                process = processInfo.process();</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">                rpc = serverManager.connectToServer(process, processInfo.port() != null ? &quot;localhost&quot; : null,</span>
+<span class="fc" id="L203">                        processInfo.port());</span>
             }
 
-<span class="fc" id="L205">            Connection connection = new Connection(rpc, process, new ServerRpc(rpc::invoke));</span>
+<span class="fc" id="L206">            LoggingHelpers.logTiming(LOG, Level.FINE, &quot;CopilotClient.start transport setup complete. Elapsed={Elapsed}&quot;,</span>
+                    startNanos);
+
+<span class="fc" id="L209">            Connection connection = new Connection(rpc, process, new ServerRpc(rpc::invoke));</span>
 
             // Register handlers for server-to-client calls
-<span class="fc" id="L208">            RpcHandlerDispatcher dispatcher = new RpcHandlerDispatcher(sessions, lifecycleManager::dispatch,</span>
-<span class="fc" id="L209">                    options.getExecutor());</span>
-<span class="fc" id="L210">            dispatcher.registerHandlers(rpc);</span>
+<span class="fc" id="L212">            RpcHandlerDispatcher dispatcher = new RpcHandlerDispatcher(sessions, lifecycleManager::dispatch,</span>
+<span class="fc" id="L213">                    options.getExecutor());</span>
+<span class="fc" id="L214">            dispatcher.registerHandlers(rpc);</span>
 
             // Verify protocol version
-<span class="fc" id="L213">            verifyProtocolVersion(connection);</span>
+<span class="fc" id="L217">            verifyProtocolVersion(connection);</span>
+<span class="fc" id="L218">            LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                    &quot;CopilotClient.start protocol verification complete. Elapsed={Elapsed}&quot;, startNanos);
 
-<span class="fc" id="L215">            LOG.info(&quot;Copilot client connected&quot;);</span>
-<span class="fc" id="L216">            return connection;</span>
-<span class="fc" id="L217">        } catch (Exception e) {</span>
+<span class="fc" id="L221">            LoggingHelpers.logTiming(LOG, Level.FINE, &quot;CopilotClient.start complete. Elapsed={Elapsed}&quot;, startNanos);</span>
+<span class="fc" id="L222">            return connection;</span>
+<span class="fc" id="L223">        } catch (Exception e) {</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">            if (!(e instanceof java.util.concurrent.CancellationException)) {</span>
+<span class="fc" id="L225">                LoggingHelpers.logTiming(LOG, Level.WARNING, e, &quot;CopilotClient.start failed. Elapsed={Elapsed}&quot;,</span>
+                        startNanos);
+            }
             // Clean up the spawned process if connection setup failed
-<span class="fc bfc" id="L219" title="All 2 branches covered.">            if (process != null) {</span>
-<span class="fc" id="L220">                cleanupCliProcess(process);</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">            if (process != null) {</span>
+<span class="fc" id="L230">                cleanupCliProcess(process);</span>
             }
-<span class="fc" id="L222">            String stderr = serverManager.getStderrOutput();</span>
-<span class="fc bfc" id="L223" title="All 2 branches covered.">            if (!stderr.isEmpty()) {</span>
-<span class="fc" id="L224">                throw new CompletionException(new IOException(</span>
-<span class="fc" id="L225">                        CliServerManager.formatCliExitedMessage(&quot;CLI process exited unexpectedly.&quot;, stderr), e));</span>
+<span class="fc" id="L232">            String stderr = serverManager.getStderrOutput();</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">            if (!stderr.isEmpty()) {</span>
+<span class="fc" id="L234">                throw new CompletionException(new IOException(</span>
+<span class="fc" id="L235">                        CliServerManager.formatCliExitedMessage(&quot;CLI process exited unexpectedly.&quot;, stderr), e));</span>
             }
-<span class="fc" id="L227">            throw new CompletionException(e);</span>
+<span class="fc" id="L237">            throw new CompletionException(e);</span>
         }
     }
 
@@ -232,52 +242,52 @@ public final class CopilotClient implements AutoCloseable {
     private static final int METHOD_NOT_FOUND_ERROR_CODE = -32601;
 
     private void verifyProtocolVersion(Connection connection) throws Exception {
-<span class="fc" id="L235">        int expectedVersion = SdkProtocolVersion.get();</span>
+<span class="fc" id="L245">        int expectedVersion = SdkProtocolVersion.get();</span>
         Integer serverVersion;
 
         try {
             // Try the new 'connect' RPC which supports connection tokens
-<span class="fc" id="L240">            var connectParams = new ConnectParams(effectiveConnectionToken);</span>
-<span class="fc" id="L241">            var connectResponse = connection.rpc</span>
-<span class="fc" id="L242">                    .invoke(&quot;connect&quot;, connectParams, com.github.copilot.sdk.generated.rpc.ConnectResult.class)</span>
-<span class="fc" id="L243">                    .get(30, TimeUnit.SECONDS);</span>
-<span class="pc bpc" id="L244" title="1 of 2 branches missed.">            serverVersion = connectResponse.protocolVersion() != null</span>
-<span class="fc" id="L245">                    ? connectResponse.protocolVersion().intValue()</span>
-<span class="pc" id="L246">                    : null;</span>
-<span class="fc" id="L247">        } catch (Exception e) {</span>
+<span class="fc" id="L250">            var connectParams = new ConnectParams(effectiveConnectionToken);</span>
+<span class="fc" id="L251">            var connectResponse = connection.rpc</span>
+<span class="fc" id="L252">                    .invoke(&quot;connect&quot;, connectParams, com.github.copilot.sdk.generated.rpc.ConnectResult.class)</span>
+<span class="fc" id="L253">                    .get(30, TimeUnit.SECONDS);</span>
+<span class="pc bpc" id="L254" title="1 of 2 branches missed.">            serverVersion = connectResponse.protocolVersion() != null</span>
+<span class="fc" id="L255">                    ? connectResponse.protocolVersion().intValue()</span>
+<span class="pc" id="L256">                    : null;</span>
+<span class="fc" id="L257">        } catch (Exception e) {</span>
             // Unwrap CompletionException/ExecutionException to check inner cause
-<span class="fc" id="L249">            Throwable cause = e;</span>
-<span class="pc bpc" id="L250" title="2 of 4 branches missed.">            while (cause instanceof java.util.concurrent.ExecutionException || cause instanceof CompletionException) {</span>
-<span class="nc" id="L251">                cause = cause.getCause();</span>
+<span class="fc" id="L259">            Throwable cause = e;</span>
+<span class="pc bpc" id="L260" title="2 of 4 branches missed.">            while (cause instanceof java.util.concurrent.ExecutionException || cause instanceof CompletionException) {</span>
+<span class="nc" id="L261">                cause = cause.getCause();</span>
             }
-<span class="pc bpc" id="L253" title="3 of 4 branches missed.">            if (cause instanceof JsonRpcException rpcEx &amp;&amp; isUnsupportedConnectMethod(rpcEx)) {</span>
+<span class="pc bpc" id="L263" title="3 of 4 branches missed.">            if (cause instanceof JsonRpcException rpcEx &amp;&amp; isUnsupportedConnectMethod(rpcEx)) {</span>
                 // Legacy server without 'connect'; fall back to 'ping'.
                 // A token, if any, is silently dropped — the legacy server can't enforce one.
-<span class="nc" id="L256">                var params = new HashMap&lt;String, Object&gt;();</span>
-<span class="nc" id="L257">                params.put(&quot;message&quot;, null);</span>
-<span class="nc" id="L258">                PingResponse pingResponse = connection.rpc.invoke(&quot;ping&quot;, params, PingResponse.class).get(30,</span>
+<span class="nc" id="L266">                var params = new HashMap&lt;String, Object&gt;();</span>
+<span class="nc" id="L267">                params.put(&quot;message&quot;, null);</span>
+<span class="nc" id="L268">                PingResponse pingResponse = connection.rpc.invoke(&quot;ping&quot;, params, PingResponse.class).get(30,</span>
                         TimeUnit.SECONDS);
-<span class="nc" id="L260">                serverVersion = pingResponse.protocolVersion();</span>
-<span class="nc" id="L261">            } else {</span>
-<span class="fc" id="L262">                throw e;</span>
+<span class="nc" id="L270">                serverVersion = pingResponse.protocolVersion();</span>
+<span class="nc" id="L271">            } else {</span>
+<span class="fc" id="L272">                throw e;</span>
             }
-<span class="fc" id="L264">        }</span>
+<span class="fc" id="L274">        }</span>
 
-<span class="pc bpc" id="L266" title="1 of 2 branches missed.">        if (serverVersion == null) {</span>
-<span class="nc" id="L267">            throw new RuntimeException(&quot;SDK protocol version mismatch: SDK supports versions &quot; + MIN_PROTOCOL_VERSION</span>
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        if (serverVersion == null) {</span>
+<span class="nc" id="L277">            throw new RuntimeException(&quot;SDK protocol version mismatch: SDK supports versions &quot; + MIN_PROTOCOL_VERSION</span>
                     + &quot;-&quot; + expectedVersion + &quot;, but server does not report a protocol version. &quot;
                     + &quot;Please update your server to ensure compatibility.&quot;);
         }
 
-<span class="pc bpc" id="L272" title="2 of 4 branches missed.">        if (serverVersion &lt; MIN_PROTOCOL_VERSION || serverVersion &gt; expectedVersion) {</span>
-<span class="nc" id="L273">            throw new RuntimeException(&quot;SDK protocol version mismatch: SDK supports versions &quot; + MIN_PROTOCOL_VERSION</span>
+<span class="pc bpc" id="L282" title="2 of 4 branches missed.">        if (serverVersion &lt; MIN_PROTOCOL_VERSION || serverVersion &gt; expectedVersion) {</span>
+<span class="nc" id="L283">            throw new RuntimeException(&quot;SDK protocol version mismatch: SDK supports versions &quot; + MIN_PROTOCOL_VERSION</span>
                     + &quot;-&quot; + expectedVersion + &quot;, but server reports version &quot; + serverVersion + &quot;. &quot;
                     + &quot;Please update your SDK or server to ensure compatibility.&quot;);
         }
-<span class="fc" id="L277">    }</span>
+<span class="fc" id="L287">    }</span>
 
     private static boolean isUnsupportedConnectMethod(JsonRpcException ex) {
-<span class="nc bnc" id="L280" title="All 4 branches missed.">        return ex.getCode() == METHOD_NOT_FOUND_ERROR_CODE || &quot;Unhandled method connect&quot;.equals(ex.getMessage());</span>
+<span class="nc bnc" id="L290" title="All 4 branches missed.">        return ex.getCode() == METHOD_NOT_FOUND_ERROR_CODE || &quot;Unhandled method connect&quot;.equals(ex.getMessage());</span>
     }
 
     /**
@@ -297,33 +307,33 @@ public final class CopilotClient implements AutoCloseable {
      * @return A future that completes when the client is stopped
      */
     public CompletableFuture&lt;Void&gt; stop() {
-<span class="fc" id="L300">        var closeFutures = new ArrayList&lt;CompletableFuture&lt;Void&gt;&gt;();</span>
-<span class="fc" id="L301">        Executor exec = options.getExecutor();</span>
+<span class="fc" id="L310">        var closeFutures = new ArrayList&lt;CompletableFuture&lt;Void&gt;&gt;();</span>
+<span class="fc" id="L311">        Executor exec = options.getExecutor();</span>
 
-<span class="fc bfc" id="L303" title="All 2 branches covered.">        for (CopilotSession session : new ArrayList&lt;&gt;(sessions.values())) {</span>
-<span class="fc" id="L304">            Runnable closeTask = () -&gt; {</span>
+<span class="fc bfc" id="L313" title="All 2 branches covered.">        for (CopilotSession session : new ArrayList&lt;&gt;(sessions.values())) {</span>
+<span class="fc" id="L314">            Runnable closeTask = () -&gt; {</span>
                 try {
-<span class="fc" id="L306">                    session.close();</span>
-<span class="nc" id="L307">                } catch (Exception e) {</span>
-<span class="nc" id="L308">                    LOG.log(Level.WARNING, &quot;Error closing session &quot; + session.getSessionId(), e);</span>
-<span class="fc" id="L309">                }</span>
-<span class="fc" id="L310">            };</span>
+<span class="fc" id="L316">                    session.close();</span>
+<span class="nc" id="L317">                } catch (Exception e) {</span>
+<span class="nc" id="L318">                    LOG.log(Level.WARNING, &quot;Error closing session &quot; + session.getSessionId(), e);</span>
+<span class="fc" id="L319">                }</span>
+<span class="fc" id="L320">            };</span>
             CompletableFuture&lt;Void&gt; future;
             try {
-<span class="fc bfc" id="L313" title="All 2 branches covered.">                future = exec != null</span>
-<span class="fc" id="L314">                        ? CompletableFuture.runAsync(closeTask, exec)</span>
-<span class="fc" id="L315">                        : CompletableFuture.runAsync(closeTask);</span>
-<span class="nc" id="L316">            } catch (RejectedExecutionException e) {</span>
-<span class="nc" id="L317">                LOG.log(Level.WARNING, &quot;Executor rejected session close task; closing inline&quot;, e);</span>
-<span class="nc" id="L318">                closeTask.run();</span>
-<span class="nc" id="L319">                future = CompletableFuture.completedFuture(null);</span>
-<span class="fc" id="L320">            }</span>
-<span class="fc" id="L321">            closeFutures.add(future);</span>
-<span class="fc" id="L322">        }</span>
-<span class="fc" id="L323">        sessions.clear();</span>
+<span class="fc bfc" id="L323" title="All 2 branches covered.">                future = exec != null</span>
+<span class="fc" id="L324">                        ? CompletableFuture.runAsync(closeTask, exec)</span>
+<span class="fc" id="L325">                        : CompletableFuture.runAsync(closeTask);</span>
+<span class="nc" id="L326">            } catch (RejectedExecutionException e) {</span>
+<span class="nc" id="L327">                LOG.log(Level.WARNING, &quot;Executor rejected session close task; closing inline&quot;, e);</span>
+<span class="nc" id="L328">                closeTask.run();</span>
+<span class="nc" id="L329">                future = CompletableFuture.completedFuture(null);</span>
+<span class="fc" id="L330">            }</span>
+<span class="fc" id="L331">            closeFutures.add(future);</span>
+<span class="fc" id="L332">        }</span>
+<span class="fc" id="L333">        sessions.clear();</span>
 
-<span class="fc" id="L325">        return CompletableFuture.allOf(closeFutures.toArray(new CompletableFuture[0]))</span>
-<span class="fc" id="L326">                .thenCompose(v -&gt; cleanupConnection());</span>
+<span class="fc" id="L335">        return CompletableFuture.allOf(closeFutures.toArray(new CompletableFuture[0]))</span>
+<span class="fc" id="L336">                .thenCompose(v -&gt; cleanupConnection());</span>
     }
 
     /**
@@ -332,53 +342,53 @@ public final class CopilotClient implements AutoCloseable {
      * @return A future that completes when the client is stopped
      */
     public CompletableFuture&lt;Void&gt; forceStop() {
-<span class="fc" id="L335">        disposed = true;</span>
-<span class="fc" id="L336">        sessions.clear();</span>
-<span class="fc" id="L337">        return cleanupConnection();</span>
+<span class="fc" id="L345">        disposed = true;</span>
+<span class="fc" id="L346">        sessions.clear();</span>
+<span class="fc" id="L347">        return cleanupConnection();</span>
     }
 
     private CompletableFuture&lt;Void&gt; cleanupConnection() {
-<span class="fc" id="L341">        CompletableFuture&lt;Connection&gt; future = connectionFuture;</span>
-<span class="fc" id="L342">        connectionFuture = null;</span>
+<span class="fc" id="L351">        CompletableFuture&lt;Connection&gt; future = connectionFuture;</span>
+<span class="fc" id="L352">        connectionFuture = null;</span>
 
         // Clear models cache
-<span class="fc" id="L345">        modelsCache = null;</span>
+<span class="fc" id="L355">        modelsCache = null;</span>
 
-<span class="fc bfc" id="L347" title="All 2 branches covered.">        if (future == null) {</span>
-<span class="fc" id="L348">            return CompletableFuture.completedFuture(null);</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">        if (future == null) {</span>
+<span class="fc" id="L358">            return CompletableFuture.completedFuture(null);</span>
         }
 
-<span class="fc" id="L351">        return future.thenAccept(connection -&gt; {</span>
+<span class="fc" id="L361">        return future.thenAccept(connection -&gt; {</span>
             try {
-<span class="fc" id="L353">                connection.rpc.close();</span>
-<span class="nc" id="L354">            } catch (Exception e) {</span>
-<span class="nc" id="L355">                LOG.log(Level.FINE, &quot;Error closing RPC&quot;, e);</span>
-<span class="fc" id="L356">            }</span>
+<span class="fc" id="L363">                connection.rpc.close();</span>
+<span class="nc" id="L364">            } catch (Exception e) {</span>
+<span class="nc" id="L365">                LOG.log(Level.FINE, &quot;Error closing RPC&quot;, e);</span>
+<span class="fc" id="L366">            }</span>
 
-<span class="pc bpc" id="L358" title="1 of 2 branches missed.">            if (connection.process != null) {</span>
-<span class="fc" id="L359">                cleanupCliProcess(connection.process);</span>
+<span class="pc bpc" id="L368" title="1 of 2 branches missed.">            if (connection.process != null) {</span>
+<span class="fc" id="L369">                cleanupCliProcess(connection.process);</span>
             }
-<span class="fc" id="L361">        }).exceptionally(ex -&gt; {</span>
-<span class="fc" id="L362">            LOG.log(Level.FINE, &quot;Ignoring failed Copilot client startup during cleanup&quot;, ex);</span>
-<span class="fc" id="L363">            return null;</span>
+<span class="fc" id="L371">        }).exceptionally(ex -&gt; {</span>
+<span class="fc" id="L372">            LOG.log(Level.FINE, &quot;Ignoring failed Copilot client startup during cleanup&quot;, ex);</span>
+<span class="fc" id="L373">            return null;</span>
         });
     }
 
     private static void cleanupCliProcess(Process process) {
         try {
-<span class="fc bfc" id="L369" title="All 2 branches covered.">            if (process.isAlive()) {</span>
-<span class="fc" id="L370">                Process destroyedProcess = process.destroyForcibly();</span>
-<span class="pc bpc" id="L371" title="1 of 2 branches missed.">                if (!destroyedProcess.waitFor(FORCE_KILL_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {</span>
-<span class="nc" id="L372">                    LOG.fine(&quot;Process did not terminate within force kill timeout&quot;);</span>
+<span class="fc bfc" id="L379" title="All 2 branches covered.">            if (process.isAlive()) {</span>
+<span class="fc" id="L380">                Process destroyedProcess = process.destroyForcibly();</span>
+<span class="pc bpc" id="L381" title="1 of 2 branches missed.">                if (!destroyedProcess.waitFor(FORCE_KILL_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {</span>
+<span class="nc" id="L382">                    LOG.fine(&quot;Process did not terminate within force kill timeout&quot;);</span>
                 }
             }
-<span class="nc" id="L375">        } catch (InterruptedException e) {</span>
-<span class="nc" id="L376">            Thread.currentThread().interrupt();</span>
-<span class="nc" id="L377">            LOG.log(Level.FINE, &quot;Interrupted while killing process&quot;, e);</span>
-<span class="nc" id="L378">        } catch (Exception e) {</span>
-<span class="nc" id="L379">            LOG.log(Level.FINE, &quot;Error killing process&quot;, e);</span>
-<span class="pc" id="L380">        }</span>
-<span class="fc" id="L381">    }</span>
+<span class="nc" id="L385">        } catch (InterruptedException e) {</span>
+<span class="nc" id="L386">            Thread.currentThread().interrupt();</span>
+<span class="nc" id="L387">            LOG.log(Level.FINE, &quot;Interrupted while killing process&quot;, e);</span>
+<span class="nc" id="L388">        } catch (Exception e) {</span>
+<span class="nc" id="L389">            LOG.log(Level.FINE, &quot;Error killing process&quot;, e);</span>
+<span class="pc" id="L390">        }</span>
+<span class="fc" id="L391">    }</span>
 
     /**
      * Creates a new Copilot session with the specified configuration.
@@ -410,55 +420,69 @@ public final class CopilotClient implements AutoCloseable {
      * @see com.github.copilot.sdk.json.PermissionHandler#APPROVE_ALL
      */
     public CompletableFuture&lt;CopilotSession&gt; createSession(SessionConfig config) {
-<span class="pc bpc" id="L413" title="2 of 4 branches missed.">        if (config == null || config.getOnPermissionRequest() == null) {</span>
-<span class="nc" id="L414">            return CompletableFuture.failedFuture(</span>
+<span class="pc bpc" id="L423" title="2 of 4 branches missed.">        if (config == null || config.getOnPermissionRequest() == null) {</span>
+<span class="nc" id="L424">            return CompletableFuture.failedFuture(</span>
                     new IllegalArgumentException(&quot;An onPermissionRequest handler is required when creating a session. &quot;
                             + &quot;For example, to allow all permissions, use: &quot;
                             + &quot;new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)&quot;));
         }
-<span class="fc" id="L419">        return ensureConnected().thenCompose(connection -&gt; {</span>
+<span class="fc" id="L429">        return ensureConnected().thenCompose(connection -&gt; {</span>
+<span class="fc" id="L430">            long totalNanos = System.nanoTime();</span>
             // Pre-generate session ID so the session can be registered before the RPC call,
             // ensuring no events emitted by the CLI during creation are lost.
-<span class="pc bpc" id="L422" title="1 of 2 branches missed.">            String sessionId = config.getSessionId() != null</span>
-<span class="nc" id="L423">                    ? config.getSessionId()</span>
-<span class="fc" id="L424">                    : java.util.UUID.randomUUID().toString();</span>
+<span class="pc bpc" id="L433" title="1 of 2 branches missed.">            String sessionId = config.getSessionId() != null</span>
+<span class="nc" id="L434">                    ? config.getSessionId()</span>
+<span class="fc" id="L435">                    : java.util.UUID.randomUUID().toString();</span>
 
-<span class="fc" id="L426">            var session = new CopilotSession(sessionId, connection.rpc);</span>
-<span class="fc bfc" id="L427" title="All 2 branches covered.">            if (options.getExecutor() != null) {</span>
-<span class="fc" id="L428">                session.setExecutor(options.getExecutor());</span>
+<span class="fc" id="L437">            long setupNanos = System.nanoTime();</span>
+<span class="fc" id="L438">            var session = new CopilotSession(sessionId, connection.rpc);</span>
+<span class="fc bfc" id="L439" title="All 2 branches covered.">            if (options.getExecutor() != null) {</span>
+<span class="fc" id="L440">                session.setExecutor(options.getExecutor());</span>
             }
-<span class="fc" id="L430">            SessionRequestBuilder.configureSession(session, config);</span>
-<span class="fc" id="L431">            sessions.put(sessionId, session);</span>
+<span class="fc" id="L442">            SessionRequestBuilder.configureSession(session, config);</span>
+<span class="fc" id="L443">            sessions.put(sessionId, session);</span>
+<span class="fc" id="L444">            LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                    &quot;CopilotClient.createSession local setup complete. Elapsed={Elapsed}, SessionId=&quot; + sessionId,
+                    setupNanos);
 
             // Extract transform callbacks from the system message config.
             // Callbacks are registered with the session; a wire-safe copy of the
             // system message (with transform sections replaced by action=&quot;transform&quot;)
             // is used in the RPC request.
-<span class="fc" id="L437">            var extracted = SessionRequestBuilder.extractTransformCallbacks(config.getSystemMessage());</span>
-<span class="pc bpc" id="L438" title="1 of 2 branches missed.">            if (extracted.transformCallbacks() != null) {</span>
-<span class="nc" id="L439">                session.registerTransformCallbacks(extracted.transformCallbacks());</span>
+<span class="fc" id="L452">            var extracted = SessionRequestBuilder.extractTransformCallbacks(config.getSystemMessage());</span>
+<span class="pc bpc" id="L453" title="1 of 2 branches missed.">            if (extracted.transformCallbacks() != null) {</span>
+<span class="nc" id="L454">                session.registerTransformCallbacks(extracted.transformCallbacks());</span>
             }
 
-<span class="fc" id="L442">            var request = SessionRequestBuilder.buildCreateRequest(config, sessionId);</span>
-<span class="pc bpc" id="L443" title="1 of 2 branches missed.">            if (extracted.wireSystemMessage() != config.getSystemMessage()) {</span>
-<span class="nc" id="L444">                request.setSystemMessage(extracted.wireSystemMessage());</span>
+<span class="fc" id="L457">            var request = SessionRequestBuilder.buildCreateRequest(config, sessionId);</span>
+<span class="pc bpc" id="L458" title="1 of 2 branches missed.">            if (extracted.wireSystemMessage() != config.getSystemMessage()) {</span>
+<span class="nc" id="L459">                request.setSystemMessage(extracted.wireSystemMessage());</span>
             }
 
-<span class="fc" id="L447">            return connection.rpc.invoke(&quot;session.create&quot;, request, CreateSessionResponse.class).thenApply(response -&gt; {</span>
-<span class="fc" id="L448">                session.setWorkspacePath(response.workspacePath());</span>
-<span class="fc" id="L449">                session.setCapabilities(response.capabilities());</span>
+<span class="fc" id="L462">            long rpcNanos = System.nanoTime();</span>
+<span class="fc" id="L463">            return connection.rpc.invoke(&quot;session.create&quot;, request, CreateSessionResponse.class).thenApply(response -&gt; {</span>
+<span class="fc" id="L464">                LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                        &quot;CopilotClient.createSession session creation request completed. Elapsed={Elapsed}, SessionId=&quot;
+                                + sessionId,
+                        rpcNanos);
+<span class="fc" id="L468">                session.setWorkspacePath(response.workspacePath());</span>
+<span class="fc" id="L469">                session.setCapabilities(response.capabilities());</span>
                 // If the server returned a different sessionId (e.g. a v2 CLI that ignores
                 // the client-supplied ID), re-key the sessions map.
-<span class="fc" id="L452">                String returnedId = response.sessionId();</span>
-<span class="pc bpc" id="L453" title="2 of 4 branches missed.">                if (returnedId != null &amp;&amp; !returnedId.equals(sessionId)) {</span>
-<span class="nc" id="L454">                    sessions.remove(sessionId);</span>
-<span class="nc" id="L455">                    session.setActiveSessionId(returnedId);</span>
-<span class="nc" id="L456">                    sessions.put(returnedId, session);</span>
+<span class="fc" id="L472">                String returnedId = response.sessionId();</span>
+<span class="pc bpc" id="L473" title="2 of 4 branches missed.">                if (returnedId != null &amp;&amp; !returnedId.equals(sessionId)) {</span>
+<span class="nc" id="L474">                    sessions.remove(sessionId);</span>
+<span class="nc" id="L475">                    session.setActiveSessionId(returnedId);</span>
+<span class="nc" id="L476">                    sessions.put(returnedId, session);</span>
                 }
-<span class="fc" id="L458">                return session;</span>
-<span class="fc" id="L459">            }).exceptionally(ex -&gt; {</span>
-<span class="fc" id="L460">                sessions.remove(sessionId);</span>
-<span class="pc bpc" id="L461" title="1 of 2 branches missed.">                throw ex instanceof RuntimeException re ? re : new RuntimeException(ex);</span>
+<span class="fc" id="L478">                LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                        &quot;CopilotClient.createSession complete. Elapsed={Elapsed}, SessionId=&quot; + sessionId, totalNanos);
+<span class="fc" id="L480">                return session;</span>
+<span class="fc" id="L481">            }).exceptionally(ex -&gt; {</span>
+<span class="fc" id="L482">                sessions.remove(sessionId);</span>
+<span class="fc" id="L483">                LoggingHelpers.logTiming(LOG, Level.WARNING, ex,</span>
+                        &quot;CopilotClient.createSession failed. Elapsed={Elapsed}, SessionId=&quot; + sessionId, totalNanos);
+<span class="pc bpc" id="L485" title="1 of 2 branches missed.">                throw ex instanceof RuntimeException re ? re : new RuntimeException(ex);</span>
             });
         });
     }
@@ -489,46 +513,60 @@ public final class CopilotClient implements AutoCloseable {
      * @see com.github.copilot.sdk.json.PermissionHandler#APPROVE_ALL
      */
     public CompletableFuture&lt;CopilotSession&gt; resumeSession(String sessionId, ResumeSessionConfig config) {
-<span class="pc bpc" id="L492" title="2 of 4 branches missed.">        if (config == null || config.getOnPermissionRequest() == null) {</span>
-<span class="nc" id="L493">            return CompletableFuture.failedFuture(</span>
+<span class="pc bpc" id="L516" title="2 of 4 branches missed.">        if (config == null || config.getOnPermissionRequest() == null) {</span>
+<span class="nc" id="L517">            return CompletableFuture.failedFuture(</span>
                     new IllegalArgumentException(&quot;An onPermissionRequest handler is required when resuming a session. &quot;
                             + &quot;For example, to allow all permissions, use: &quot;
                             + &quot;new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL)&quot;));
         }
-<span class="fc" id="L498">        return ensureConnected().thenCompose(connection -&gt; {</span>
+<span class="fc" id="L522">        return ensureConnected().thenCompose(connection -&gt; {</span>
+<span class="fc" id="L523">            long totalNanos = System.nanoTime();</span>
             // Register the session before the RPC call to avoid missing early events.
-<span class="fc" id="L500">            var session = new CopilotSession(sessionId, connection.rpc);</span>
-<span class="pc bpc" id="L501" title="1 of 2 branches missed.">            if (options.getExecutor() != null) {</span>
-<span class="nc" id="L502">                session.setExecutor(options.getExecutor());</span>
+<span class="fc" id="L525">            long setupNanos = System.nanoTime();</span>
+<span class="fc" id="L526">            var session = new CopilotSession(sessionId, connection.rpc);</span>
+<span class="pc bpc" id="L527" title="1 of 2 branches missed.">            if (options.getExecutor() != null) {</span>
+<span class="nc" id="L528">                session.setExecutor(options.getExecutor());</span>
             }
-<span class="fc" id="L504">            SessionRequestBuilder.configureSession(session, config);</span>
-<span class="fc" id="L505">            sessions.put(sessionId, session);</span>
+<span class="fc" id="L530">            SessionRequestBuilder.configureSession(session, config);</span>
+<span class="fc" id="L531">            sessions.put(sessionId, session);</span>
+<span class="fc" id="L532">            LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                    &quot;CopilotClient.resumeSession local setup complete. Elapsed={Elapsed}, SessionId=&quot; + sessionId,
+                    setupNanos);
 
             // Extract transform callbacks from the system message config.
-<span class="fc" id="L508">            var extracted = SessionRequestBuilder.extractTransformCallbacks(config.getSystemMessage());</span>
-<span class="pc bpc" id="L509" title="1 of 2 branches missed.">            if (extracted.transformCallbacks() != null) {</span>
-<span class="nc" id="L510">                session.registerTransformCallbacks(extracted.transformCallbacks());</span>
+<span class="fc" id="L537">            var extracted = SessionRequestBuilder.extractTransformCallbacks(config.getSystemMessage());</span>
+<span class="pc bpc" id="L538" title="1 of 2 branches missed.">            if (extracted.transformCallbacks() != null) {</span>
+<span class="nc" id="L539">                session.registerTransformCallbacks(extracted.transformCallbacks());</span>
             }
 
-<span class="fc" id="L513">            var request = SessionRequestBuilder.buildResumeRequest(sessionId, config);</span>
-<span class="pc bpc" id="L514" title="1 of 2 branches missed.">            if (extracted.wireSystemMessage() != config.getSystemMessage()) {</span>
-<span class="nc" id="L515">                request.setSystemMessage(extracted.wireSystemMessage());</span>
+<span class="fc" id="L542">            var request = SessionRequestBuilder.buildResumeRequest(sessionId, config);</span>
+<span class="pc bpc" id="L543" title="1 of 2 branches missed.">            if (extracted.wireSystemMessage() != config.getSystemMessage()) {</span>
+<span class="nc" id="L544">                request.setSystemMessage(extracted.wireSystemMessage());</span>
             }
 
-<span class="fc" id="L518">            return connection.rpc.invoke(&quot;session.resume&quot;, request, ResumeSessionResponse.class).thenApply(response -&gt; {</span>
-<span class="fc" id="L519">                session.setWorkspacePath(response.workspacePath());</span>
-<span class="fc" id="L520">                session.setCapabilities(response.capabilities());</span>
+<span class="fc" id="L547">            long rpcNanos = System.nanoTime();</span>
+<span class="fc" id="L548">            return connection.rpc.invoke(&quot;session.resume&quot;, request, ResumeSessionResponse.class).thenApply(response -&gt; {</span>
+<span class="fc" id="L549">                LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                        &quot;CopilotClient.resumeSession session resume request completed. Elapsed={Elapsed}, SessionId=&quot;
+                                + sessionId,
+                        rpcNanos);
+<span class="fc" id="L553">                session.setWorkspacePath(response.workspacePath());</span>
+<span class="fc" id="L554">                session.setCapabilities(response.capabilities());</span>
                 // If the server returned a different sessionId than what was requested, re-key.
-<span class="fc" id="L522">                String returnedId = response.sessionId();</span>
-<span class="pc bpc" id="L523" title="2 of 4 branches missed.">                if (returnedId != null &amp;&amp; !returnedId.equals(sessionId)) {</span>
-<span class="nc" id="L524">                    sessions.remove(sessionId);</span>
-<span class="nc" id="L525">                    session.setActiveSessionId(returnedId);</span>
-<span class="nc" id="L526">                    sessions.put(returnedId, session);</span>
+<span class="fc" id="L556">                String returnedId = response.sessionId();</span>
+<span class="pc bpc" id="L557" title="2 of 4 branches missed.">                if (returnedId != null &amp;&amp; !returnedId.equals(sessionId)) {</span>
+<span class="nc" id="L558">                    sessions.remove(sessionId);</span>
+<span class="nc" id="L559">                    session.setActiveSessionId(returnedId);</span>
+<span class="nc" id="L560">                    sessions.put(returnedId, session);</span>
                 }
-<span class="fc" id="L528">                return session;</span>
-<span class="fc" id="L529">            }).exceptionally(ex -&gt; {</span>
-<span class="fc" id="L530">                sessions.remove(sessionId);</span>
-<span class="pc bpc" id="L531" title="1 of 2 branches missed.">                throw ex instanceof RuntimeException re ? re : new RuntimeException(ex);</span>
+<span class="fc" id="L562">                LoggingHelpers.logTiming(LOG, Level.FINE,</span>
+                        &quot;CopilotClient.resumeSession complete. Elapsed={Elapsed}, SessionId=&quot; + sessionId, totalNanos);
+<span class="fc" id="L564">                return session;</span>
+<span class="fc" id="L565">            }).exceptionally(ex -&gt; {</span>
+<span class="fc" id="L566">                sessions.remove(sessionId);</span>
+<span class="fc" id="L567">                LoggingHelpers.logTiming(LOG, Level.WARNING, ex,</span>
+                        &quot;CopilotClient.resumeSession failed. Elapsed={Elapsed}, SessionId=&quot; + sessionId, totalNanos);
+<span class="pc bpc" id="L569" title="1 of 2 branches missed.">                throw ex instanceof RuntimeException re ? re : new RuntimeException(ex);</span>
             });
         });
     }
@@ -540,13 +578,13 @@ public final class CopilotClient implements AutoCloseable {
      * @see ConnectionState
      */
     public ConnectionState getState() {
-<span class="fc bfc" id="L543" title="All 2 branches covered.">        if (connectionFuture == null)</span>
-<span class="fc" id="L544">            return ConnectionState.DISCONNECTED;</span>
-<span class="fc bfc" id="L545" title="All 2 branches covered.">        if (connectionFuture.isCompletedExceptionally())</span>
-<span class="fc" id="L546">            return ConnectionState.ERROR;</span>
-<span class="fc bfc" id="L547" title="All 2 branches covered.">        if (!connectionFuture.isDone())</span>
-<span class="fc" id="L548">            return ConnectionState.CONNECTING;</span>
-<span class="fc" id="L549">        return ConnectionState.CONNECTED;</span>
+<span class="fc bfc" id="L581" title="All 2 branches covered.">        if (connectionFuture == null)</span>
+<span class="fc" id="L582">            return ConnectionState.DISCONNECTED;</span>
+<span class="fc bfc" id="L583" title="All 2 branches covered.">        if (connectionFuture.isCompletedExceptionally())</span>
+<span class="fc" id="L584">            return ConnectionState.ERROR;</span>
+<span class="fc bfc" id="L585" title="All 2 branches covered.">        if (!connectionFuture.isDone())</span>
+<span class="fc" id="L586">            return ConnectionState.CONNECTING;</span>
+<span class="fc" id="L587">        return ConnectionState.CONNECTED;</span>
     }
 
     /**
@@ -568,11 +606,11 @@ public final class CopilotClient implements AutoCloseable {
      * @since 1.0.0
      */
     public ServerRpc getRpc() {
-<span class="fc" id="L571">        CompletableFuture&lt;Connection&gt; future = connectionFuture;</span>
-<span class="pc bpc" id="L572" title="5 of 6 branches missed.">        if (future == null || !future.isDone() || future.isCompletedExceptionally()) {</span>
-<span class="fc" id="L573">            throw new IllegalStateException(&quot;Client not connected; call start() first&quot;);</span>
+<span class="fc" id="L609">        CompletableFuture&lt;Connection&gt; future = connectionFuture;</span>
+<span class="pc bpc" id="L610" title="5 of 6 branches missed.">        if (future == null || !future.isDone() || future.isCompletedExceptionally()) {</span>
+<span class="fc" id="L611">            throw new IllegalStateException(&quot;Client not connected; call start() first&quot;);</span>
         }
-<span class="nc" id="L575">        return future.join().serverRpc();</span>
+<span class="nc" id="L613">        return future.join().serverRpc();</span>
     }
 
     /**
@@ -587,8 +625,8 @@ public final class CopilotClient implements AutoCloseable {
      * @see PingResponse
      */
     public CompletableFuture&lt;PingResponse&gt; ping(String message) {
-<span class="fc" id="L590">        return ensureConnected().thenCompose(connection -&gt; connection.rpc.invoke(&quot;ping&quot;,</span>
-<span class="pc bpc" id="L591" title="1 of 2 branches missed.">                Map.of(&quot;message&quot;, message != null ? message : &quot;&quot;), PingResponse.class));</span>
+<span class="fc" id="L628">        return ensureConnected().thenCompose(connection -&gt; connection.rpc.invoke(&quot;ping&quot;,</span>
+<span class="pc bpc" id="L629" title="1 of 2 branches missed.">                Map.of(&quot;message&quot;, message != null ? message : &quot;&quot;), PingResponse.class));</span>
     }
 
     /**
@@ -599,8 +637,8 @@ public final class CopilotClient implements AutoCloseable {
      * @see GetStatusResponse
      */
     public CompletableFuture&lt;GetStatusResponse&gt; getStatus() {
-<span class="fc" id="L602">        return ensureConnected()</span>
-<span class="fc" id="L603">                .thenCompose(connection -&gt; connection.rpc.invoke(&quot;status.get&quot;, Map.of(), GetStatusResponse.class));</span>
+<span class="fc" id="L640">        return ensureConnected()</span>
+<span class="fc" id="L641">                .thenCompose(connection -&gt; connection.rpc.invoke(&quot;status.get&quot;, Map.of(), GetStatusResponse.class));</span>
     }
 
     /**
@@ -610,8 +648,8 @@ public final class CopilotClient implements AutoCloseable {
      * @see GetAuthStatusResponse
      */
     public CompletableFuture&lt;GetAuthStatusResponse&gt; getAuthStatus() {
-<span class="fc" id="L613">        return ensureConnected().thenCompose(</span>
-<span class="fc" id="L614">                connection -&gt; connection.rpc.invoke(&quot;auth.getStatus&quot;, Map.of(), GetAuthStatusResponse.class));</span>
+<span class="fc" id="L651">        return ensureConnected().thenCompose(</span>
+<span class="fc" id="L652">                connection -&gt; connection.rpc.invoke(&quot;auth.getStatus&quot;, Map.of(), GetAuthStatusResponse.class));</span>
     }
 
     /**
@@ -629,41 +667,41 @@ public final class CopilotClient implements AutoCloseable {
      */
     public CompletableFuture&lt;List&lt;ModelInfo&gt;&gt; listModels() {
         // Check cache first
-<span class="fc" id="L632">        List&lt;ModelInfo&gt; cached = modelsCache;</span>
-<span class="fc bfc" id="L633" title="All 2 branches covered.">        if (cached != null) {</span>
-<span class="fc" id="L634">            return CompletableFuture.completedFuture(new ArrayList&lt;&gt;(cached));</span>
+<span class="fc" id="L670">        List&lt;ModelInfo&gt; cached = modelsCache;</span>
+<span class="fc bfc" id="L671" title="All 2 branches covered.">        if (cached != null) {</span>
+<span class="fc" id="L672">            return CompletableFuture.completedFuture(new ArrayList&lt;&gt;(cached));</span>
         }
 
         // If a custom handler is configured, use it instead of querying the CLI server
-<span class="fc" id="L638">        var onListModels = options.getOnListModels();</span>
-<span class="fc bfc" id="L639" title="All 2 branches covered.">        if (onListModels != null) {</span>
-<span class="fc" id="L640">            synchronized (modelsCacheLock) {</span>
-<span class="pc bpc" id="L641" title="1 of 2 branches missed.">                if (modelsCache != null) {</span>
-<span class="nc" id="L642">                    return CompletableFuture.completedFuture(new ArrayList&lt;&gt;(modelsCache));</span>
+<span class="fc" id="L676">        var onListModels = options.getOnListModels();</span>
+<span class="fc bfc" id="L677" title="All 2 branches covered.">        if (onListModels != null) {</span>
+<span class="fc" id="L678">            synchronized (modelsCacheLock) {</span>
+<span class="pc bpc" id="L679" title="1 of 2 branches missed.">                if (modelsCache != null) {</span>
+<span class="nc" id="L680">                    return CompletableFuture.completedFuture(new ArrayList&lt;&gt;(modelsCache));</span>
                 }
-<span class="fc" id="L644">            }</span>
-<span class="fc" id="L645">            return onListModels.get().thenApply(models -&gt; {</span>
-<span class="fc" id="L646">                synchronized (modelsCacheLock) {</span>
-<span class="fc" id="L647">                    modelsCache = models;</span>
-<span class="fc" id="L648">                }</span>
-<span class="fc" id="L649">                return new ArrayList&lt;&gt;(models);</span>
+<span class="fc" id="L682">            }</span>
+<span class="fc" id="L683">            return onListModels.get().thenApply(models -&gt; {</span>
+<span class="fc" id="L684">                synchronized (modelsCacheLock) {</span>
+<span class="fc" id="L685">                    modelsCache = models;</span>
+<span class="fc" id="L686">                }</span>
+<span class="fc" id="L687">                return new ArrayList&lt;&gt;(models);</span>
             });
         }
 
-<span class="fc" id="L653">        return ensureConnected().thenCompose(connection -&gt; {</span>
+<span class="fc" id="L691">        return ensureConnected().thenCompose(connection -&gt; {</span>
             // Double-check cache inside lock
-<span class="fc" id="L655">            synchronized (modelsCacheLock) {</span>
-<span class="pc bpc" id="L656" title="1 of 2 branches missed.">                if (modelsCache != null) {</span>
-<span class="nc" id="L657">                    return CompletableFuture.completedFuture(new ArrayList&lt;&gt;(modelsCache));</span>
+<span class="fc" id="L693">            synchronized (modelsCacheLock) {</span>
+<span class="pc bpc" id="L694" title="1 of 2 branches missed.">                if (modelsCache != null) {</span>
+<span class="nc" id="L695">                    return CompletableFuture.completedFuture(new ArrayList&lt;&gt;(modelsCache));</span>
                 }
-<span class="fc" id="L659">            }</span>
+<span class="fc" id="L697">            }</span>
 
-<span class="fc" id="L661">            return connection.rpc.invoke(&quot;models.list&quot;, Map.of(), GetModelsResponse.class).thenApply(response -&gt; {</span>
-<span class="fc" id="L662">                List&lt;ModelInfo&gt; models = response.getModels();</span>
-<span class="fc" id="L663">                synchronized (modelsCacheLock) {</span>
-<span class="fc" id="L664">                    modelsCache = models;</span>
-<span class="fc" id="L665">                }</span>
-<span class="fc" id="L666">                return new ArrayList&lt;&gt;(models); // Return a copy to prevent cache mutation</span>
+<span class="fc" id="L699">            return connection.rpc.invoke(&quot;models.list&quot;, Map.of(), GetModelsResponse.class).thenApply(response -&gt; {</span>
+<span class="fc" id="L700">                List&lt;ModelInfo&gt; models = response.getModels();</span>
+<span class="fc" id="L701">                synchronized (modelsCacheLock) {</span>
+<span class="fc" id="L702">                    modelsCache = models;</span>
+<span class="fc" id="L703">                }</span>
+<span class="fc" id="L704">                return new ArrayList&lt;&gt;(models); // Return a copy to prevent cache mutation</span>
             });
         });
     }
@@ -679,9 +717,9 @@ public final class CopilotClient implements AutoCloseable {
      * @see #resumeSession(String, com.github.copilot.sdk.json.ResumeSessionConfig)
      */
     public CompletableFuture&lt;String&gt; getLastSessionId() {
-<span class="fc" id="L682">        return ensureConnected().thenCompose(</span>
-<span class="fc" id="L683">                connection -&gt; connection.rpc.invoke(&quot;session.getLastId&quot;, Map.of(), GetLastSessionIdResponse.class)</span>
-<span class="fc" id="L684">                        .thenApply(GetLastSessionIdResponse::sessionId));</span>
+<span class="fc" id="L720">        return ensureConnected().thenCompose(</span>
+<span class="fc" id="L721">                connection -&gt; connection.rpc.invoke(&quot;session.getLastId&quot;, Map.of(), GetLastSessionIdResponse.class)</span>
+<span class="fc" id="L722">                        .thenApply(GetLastSessionIdResponse::sessionId));</span>
     }
 
     /**
@@ -699,14 +737,14 @@ public final class CopilotClient implements AutoCloseable {
      *             if the deletion fails
      */
     public CompletableFuture&lt;Void&gt; deleteSession(String sessionId) {
-<span class="fc" id="L702">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
-<span class="fc" id="L703">                .invoke(&quot;session.delete&quot;, Map.of(&quot;sessionId&quot;, sessionId), DeleteSessionResponse.class)</span>
-<span class="fc" id="L704">                .thenAccept(response -&gt; {</span>
-<span class="pc bpc" id="L705" title="1 of 2 branches missed.">                    if (!response.success()) {</span>
-<span class="nc" id="L706">                        throw new RuntimeException(&quot;Failed to delete session &quot; + sessionId + &quot;: &quot; + response.error());</span>
+<span class="fc" id="L740">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
+<span class="fc" id="L741">                .invoke(&quot;session.delete&quot;, Map.of(&quot;sessionId&quot;, sessionId), DeleteSessionResponse.class)</span>
+<span class="fc" id="L742">                .thenAccept(response -&gt; {</span>
+<span class="pc bpc" id="L743" title="1 of 2 branches missed.">                    if (!response.success()) {</span>
+<span class="nc" id="L744">                        throw new RuntimeException(&quot;Failed to delete session &quot; + sessionId + &quot;: &quot; + response.error());</span>
                     }
-<span class="fc" id="L708">                    sessions.remove(sessionId);</span>
-<span class="fc" id="L709">                }));</span>
+<span class="fc" id="L746">                    sessions.remove(sessionId);</span>
+<span class="fc" id="L747">                }));</span>
     }
 
     /**
@@ -720,7 +758,7 @@ public final class CopilotClient implements AutoCloseable {
      * @see #resumeSession(String, com.github.copilot.sdk.json.ResumeSessionConfig)
      */
     public CompletableFuture&lt;List&lt;SessionMetadata&gt;&gt; listSessions() {
-<span class="fc" id="L723">        return listSessions(null);</span>
+<span class="fc" id="L761">        return listSessions(null);</span>
     }
 
     /**
@@ -750,10 +788,10 @@ public final class CopilotClient implements AutoCloseable {
      * @see #resumeSession(String, com.github.copilot.sdk.json.ResumeSessionConfig)
      */
     public CompletableFuture&lt;List&lt;SessionMetadata&gt;&gt; listSessions(SessionListFilter filter) {
-<span class="fc" id="L753">        return ensureConnected().thenCompose(connection -&gt; {</span>
-<span class="fc bfc" id="L754" title="All 2 branches covered.">            Map&lt;String, Object&gt; params = filter != null ? Map.of(&quot;filter&quot;, filter) : Map.of();</span>
-<span class="fc" id="L755">            return connection.rpc.invoke(&quot;session.list&quot;, params, ListSessionsResponse.class)</span>
-<span class="fc" id="L756">                    .thenApply(ListSessionsResponse::sessions);</span>
+<span class="fc" id="L791">        return ensureConnected().thenCompose(connection -&gt; {</span>
+<span class="fc bfc" id="L792" title="All 2 branches covered.">            Map&lt;String, Object&gt; params = filter != null ? Map.of(&quot;filter&quot;, filter) : Map.of();</span>
+<span class="fc" id="L793">            return connection.rpc.invoke(&quot;session.list&quot;, params, ListSessionsResponse.class)</span>
+<span class="fc" id="L794">                    .thenApply(ListSessionsResponse::sessions);</span>
         });
     }
 
@@ -780,9 +818,9 @@ public final class CopilotClient implements AutoCloseable {
      * @since 1.0.0
      */
     public CompletableFuture&lt;SessionMetadata&gt; getSessionMetadata(String sessionId) {
-<span class="fc" id="L783">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
-<span class="fc" id="L784">                .invoke(&quot;session.getMetadata&quot;, Map.of(&quot;sessionId&quot;, sessionId), GetSessionMetadataResponse.class)</span>
-<span class="fc" id="L785">                .thenApply(GetSessionMetadataResponse::session));</span>
+<span class="fc" id="L821">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
+<span class="fc" id="L822">                .invoke(&quot;session.getMetadata&quot;, Map.of(&quot;sessionId&quot;, sessionId), GetSessionMetadataResponse.class)</span>
+<span class="fc" id="L823">                .thenApply(GetSessionMetadataResponse::session));</span>
     }
 
     /**
@@ -795,10 +833,10 @@ public final class CopilotClient implements AutoCloseable {
      *         session is set
      */
     public CompletableFuture&lt;String&gt; getForegroundSessionId() {
-<span class="nc" id="L798">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
-<span class="nc" id="L799">                .invoke(&quot;session.getForeground&quot;, Map.of(),</span>
+<span class="nc" id="L836">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
+<span class="nc" id="L837">                .invoke(&quot;session.getForeground&quot;, Map.of(),</span>
                         com.github.copilot.sdk.json.GetForegroundSessionResponse.class)
-<span class="nc" id="L801">                .thenApply(com.github.copilot.sdk.json.GetForegroundSessionResponse::sessionId));</span>
+<span class="nc" id="L839">                .thenApply(com.github.copilot.sdk.json.GetForegroundSessionResponse::sessionId));</span>
     }
 
     /**
@@ -814,15 +852,15 @@ public final class CopilotClient implements AutoCloseable {
      *             if the operation fails
      */
     public CompletableFuture&lt;Void&gt; setForegroundSessionId(String sessionId) {
-<span class="nc" id="L817">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
-<span class="nc" id="L818">                .invoke(&quot;session.setForeground&quot;, new com.github.copilot.sdk.json.SetForegroundSessionRequest(sessionId),</span>
+<span class="nc" id="L855">        return ensureConnected().thenCompose(connection -&gt; connection.rpc</span>
+<span class="nc" id="L856">                .invoke(&quot;session.setForeground&quot;, new com.github.copilot.sdk.json.SetForegroundSessionRequest(sessionId),</span>
                         com.github.copilot.sdk.json.SetForegroundSessionResponse.class)
-<span class="nc" id="L820">                .thenAccept(response -&gt; {</span>
-<span class="nc bnc" id="L821" title="All 2 branches missed.">                    if (!response.success()) {</span>
-<span class="nc" id="L822">                        throw new RuntimeException(</span>
-<span class="nc bnc" id="L823" title="All 2 branches missed.">                                response.error() != null ? response.error() : &quot;Failed to set foreground session&quot;);</span>
+<span class="nc" id="L858">                .thenAccept(response -&gt; {</span>
+<span class="nc bnc" id="L859" title="All 2 branches missed.">                    if (!response.success()) {</span>
+<span class="nc" id="L860">                        throw new RuntimeException(</span>
+<span class="nc bnc" id="L861" title="All 2 branches missed.">                                response.error() != null ? response.error() : &quot;Failed to set foreground session&quot;);</span>
                     }
-<span class="nc" id="L825">                }));</span>
+<span class="nc" id="L863">                }));</span>
     }
 
     /**
@@ -836,7 +874,7 @@ public final class CopilotClient implements AutoCloseable {
      * @return an AutoCloseable that, when closed, unsubscribes the handler
      */
     public AutoCloseable onLifecycle(SessionLifecycleHandler handler) {
-<span class="fc" id="L839">        return lifecycleManager.subscribe(handler);</span>
+<span class="fc" id="L877">        return lifecycleManager.subscribe(handler);</span>
     }
 
     /**
@@ -851,16 +889,16 @@ public final class CopilotClient implements AutoCloseable {
      * @return an AutoCloseable that, when closed, unsubscribes the handler
      */
     public AutoCloseable onLifecycle(String eventType, SessionLifecycleHandler handler) {
-<span class="fc" id="L854">        return lifecycleManager.subscribe(eventType, handler);</span>
+<span class="fc" id="L892">        return lifecycleManager.subscribe(eventType, handler);</span>
     }
 
     private CompletableFuture&lt;Connection&gt; ensureConnected() {
-<span class="fc bfc" id="L858" title="All 4 branches covered.">        if (connectionFuture == null &amp;&amp; !options.isAutoStart()) {</span>
-<span class="fc" id="L859">            throw new IllegalStateException(&quot;Client not connected. Call start() first.&quot;);</span>
+<span class="fc bfc" id="L896" title="All 4 branches covered.">        if (connectionFuture == null &amp;&amp; !options.isAutoStart()) {</span>
+<span class="fc" id="L897">            throw new IllegalStateException(&quot;Client not connected. Call start() first.&quot;);</span>
         }
 
-<span class="fc" id="L862">        start();</span>
-<span class="fc" id="L863">        return connectionFuture;</span>
+<span class="fc" id="L900">        start();</span>
+<span class="fc" id="L901">        return connectionFuture;</span>
     }
 
     /**
@@ -879,17 +917,17 @@ public final class CopilotClient implements AutoCloseable {
      */
     @Override
     public void close() {
-<span class="fc bfc" id="L882" title="All 2 branches covered.">        if (disposed)</span>
-<span class="fc" id="L883">            return;</span>
-<span class="fc" id="L884">        disposed = true;</span>
+<span class="fc bfc" id="L920" title="All 2 branches covered.">        if (disposed)</span>
+<span class="fc" id="L921">            return;</span>
+<span class="fc" id="L922">        disposed = true;</span>
         try {
-<span class="fc" id="L886">            stop().get(AUTOCLOSEABLE_TIMEOUT_SECONDS, TimeUnit.SECONDS);</span>
-<span class="nc" id="L887">        } catch (Exception e) {</span>
-<span class="nc" id="L888">            LOG.log(Level.FINE, &quot;Error during close&quot;, e);</span>
-<span class="fc" id="L889">        }</span>
-<span class="fc" id="L890">    }</span>
+<span class="fc" id="L924">            stop().get(AUTOCLOSEABLE_TIMEOUT_SECONDS, TimeUnit.SECONDS);</span>
+<span class="nc" id="L925">        } catch (Exception e) {</span>
+<span class="nc" id="L926">            LOG.log(Level.FINE, &quot;Error during close&quot;, e);</span>
+<span class="fc" id="L927">        }</span>
+<span class="fc" id="L928">    }</span>
 
-<span class="fc" id="L892">    private static record Connection(JsonRpcClient rpc, Process process, ServerRpc serverRpc) {</span>
+<span class="fc" id="L930">    private static record Connection(JsonRpcClient rpc, Process process, ServerRpc serverRpc) {</span>
     };
 
 }
