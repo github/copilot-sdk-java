@@ -79,6 +79,10 @@ final class RpcHandlerDispatcher {
                 (requestId, params) -> handlePermissionRequest(rpc, requestId, params));
         rpc.registerMethodHandler("userInput.request",
                 (requestId, params) -> handleUserInputRequest(rpc, requestId, params));
+        rpc.registerMethodHandler("exitPlanMode.request",
+                (requestId, params) -> handleExitPlanModeRequest(rpc, requestId, params));
+        rpc.registerMethodHandler("autoModeSwitch.request",
+                (requestId, params) -> handleAutoModeSwitchRequest(rpc, requestId, params));
         rpc.registerMethodHandler("hooks.invoke", (requestId, params) -> handleHooksInvoke(rpc, requestId, params));
         rpc.registerMethodHandler("systemMessage.transform",
                 (requestId, params) -> handleSystemMessageTransform(rpc, requestId, params));
@@ -279,6 +283,110 @@ final class RpcHandlerDispatcher {
                 });
             } catch (Exception e) {
                 LOG.log(Level.SEVERE, "Error handling user input request", e);
+            }
+        });
+    }
+
+    private void handleExitPlanModeRequest(JsonRpcClient rpc, String requestId, JsonNode params) {
+        LOG.fine("Received exitPlanMode.request: " + params);
+        runAsync(() -> {
+            try {
+                String sessionId = params.get("sessionId").asText();
+                String summary = params.has("summary") ? params.get("summary").asText() : "";
+
+                CopilotSession session = sessions.get(sessionId);
+                if (session == null) {
+                    rpc.sendErrorResponse(Long.parseLong(requestId), -32602, "Unknown session " + sessionId);
+                    return;
+                }
+
+                var request = new com.github.copilot.sdk.json.ExitPlanModeRequest().setSummary(summary);
+                JsonNode planContentNode = params.get("planContent");
+                if (planContentNode != null && !planContentNode.isNull()) {
+                    request.setPlanContent(planContentNode.asText());
+                }
+                JsonNode actionsNode = params.get("actions");
+                if (actionsNode != null && actionsNode.isArray()) {
+                    var actions = new ArrayList<String>();
+                    for (JsonNode action : actionsNode) {
+                        actions.add(action.asText());
+                    }
+                    request.setActions(actions);
+                }
+                JsonNode recommendedActionNode = params.get("recommendedAction");
+                if (recommendedActionNode != null && !recommendedActionNode.isNull()) {
+                    request.setRecommendedAction(recommendedActionNode.asText());
+                }
+
+                session.handleExitPlanModeRequest(request).thenAccept(response -> {
+                    try {
+                        var result = new java.util.HashMap<String, Object>();
+                        result.put("approved", response.isApproved());
+                        if (response.getSelectedAction() != null) {
+                            result.put("selectedAction", response.getSelectedAction());
+                        }
+                        if (response.getFeedback() != null) {
+                            result.put("feedback", response.getFeedback());
+                        }
+                        rpc.sendResponse(Long.parseLong(requestId), result);
+                    } catch (IOException e) {
+                        LOG.log(Level.SEVERE, "Error sending exit plan mode response", e);
+                    }
+                }).exceptionally(ex -> {
+                    LOG.log(Level.WARNING, "Exit plan mode handler exception", ex);
+                    try {
+                        rpc.sendResponse(Long.parseLong(requestId), Map.of("approved", true));
+                    } catch (IOException e) {
+                        LOG.log(Level.SEVERE, "Error sending exit plan mode fallback response", e);
+                    }
+                    return null;
+                });
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Error handling exit plan mode request", e);
+            }
+        });
+    }
+
+    private void handleAutoModeSwitchRequest(JsonRpcClient rpc, String requestId, JsonNode params) {
+        LOG.fine("Received autoModeSwitch.request: " + params);
+        runAsync(() -> {
+            try {
+                String sessionId = params.get("sessionId").asText();
+
+                CopilotSession session = sessions.get(sessionId);
+                if (session == null) {
+                    rpc.sendErrorResponse(Long.parseLong(requestId), -32602, "Unknown session " + sessionId);
+                    return;
+                }
+
+                var request = new com.github.copilot.sdk.json.AutoModeSwitchRequest();
+                JsonNode errorCodeNode = params.get("errorCode");
+                if (errorCodeNode != null && !errorCodeNode.isNull()) {
+                    request.setErrorCode(errorCodeNode.asText());
+                }
+                JsonNode retryAfterNode = params.get("retryAfterSeconds");
+                if (retryAfterNode != null && !retryAfterNode.isNull()) {
+                    request.setRetryAfterSeconds(retryAfterNode.asDouble());
+                }
+
+                session.handleAutoModeSwitchRequest(request).thenAccept(response -> {
+                    try {
+                        rpc.sendResponse(Long.parseLong(requestId), Map.of("response", response.getValue()));
+                    } catch (IOException e) {
+                        LOG.log(Level.SEVERE, "Error sending auto mode switch response", e);
+                    }
+                }).exceptionally(ex -> {
+                    LOG.log(Level.WARNING, "Auto mode switch handler exception", ex);
+                    try {
+                        rpc.sendResponse(Long.parseLong(requestId),
+                                Map.of("response", com.github.copilot.sdk.json.AutoModeSwitchResponse.NO.getValue()));
+                    } catch (IOException e) {
+                        LOG.log(Level.SEVERE, "Error sending auto mode switch fallback response", e);
+                    }
+                    return null;
+                });
+            } catch (Exception e) {
+                LOG.log(Level.SEVERE, "Error handling auto mode switch request", e);
             }
         });
     }
