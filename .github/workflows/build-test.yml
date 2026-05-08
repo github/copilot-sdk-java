@@ -130,6 +130,7 @@ jobs:
           path: |
             target/jacoco-test-results/sdk-tests.exec
             target/surefire-reports/
+            target/surefire-reports-isolated/
           retention-days: 1
 
       - name: Generate JaCoCo badge
