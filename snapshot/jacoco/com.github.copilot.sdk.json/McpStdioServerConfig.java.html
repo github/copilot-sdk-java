@@ -105,7 +105,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the environment variables map, or {@code null}
      */
     public Map&lt;String, String&gt; getEnv() {
-<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        return env == null ? null : Collections.unmodifiableMap(env);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        return env == null ? null : Collections.unmodifiableMap(env);</span>
     }
 
     /**
@@ -116,8 +116,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public McpStdioServerConfig setEnv(Map&lt;String, String&gt; env) {
-<span class="nc" id="L119">        this.env = env;</span>
-<span class="nc" id="L120">        return this;</span>
+<span class="fc" id="L119">        this.env = env;</span>
+<span class="fc" id="L120">        return this;</span>
     }
 
     /**
@@ -137,8 +137,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public McpStdioServerConfig setWorkingDirectory(String workingDirectory) {
-<span class="nc" id="L140">        this.workingDirectory = workingDirectory;</span>
-<span class="nc" id="L141">        return this;</span>
+<span class="fc" id="L140">        this.workingDirectory = workingDirectory;</span>
+<span class="fc" id="L141">        return this;</span>
     }
 
     @Override
@@ -149,8 +149,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
     @Override
     public McpStdioServerConfig setTimeout(Integer timeout) {
-<span class="nc" id="L152">        super.setTimeout(timeout);</span>
-<span class="nc" id="L153">        return this;</span>
+<span class="fc" id="L152">        super.setTimeout(timeout);</span>
+<span class="fc" id="L153">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
