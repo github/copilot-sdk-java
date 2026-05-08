@@ -535,4 +535,85 @@ public class SessionRequestBuilderTest {
         var json = mapper.writeValueAsString(request);
         assertFalse(json.contains("enableSessionTelemetry"), "enableSessionTelemetry should be omitted when null");
     }
+
+    @Test
+    void testBuildCreateRequestSetsExitPlanModeFlag() {
+        var config = new SessionConfig().setOnExitPlanMode(
+                (req, inv) -> CompletableFuture.completedFuture(new com.github.copilot.sdk.json.ExitPlanModeResult()));
+        CreateSessionRequest request = SessionRequestBuilder.buildCreateRequest(config);
+        assertTrue(request.getRequestExitPlanMode());
+    }
+
+    @Test
+    void testBuildCreateRequestOmitsExitPlanModeFlagWhenNull() {
+        var config = new SessionConfig();
+        CreateSessionRequest request = SessionRequestBuilder.buildCreateRequest(config);
+        assertNull(request.getRequestExitPlanMode());
+    }
+
+    @Test
+    void testBuildCreateRequestSetsAutoModeSwitchFlag() {
+        var config = new SessionConfig().setOnAutoModeSwitch(
+                (req, inv) -> CompletableFuture.completedFuture(com.github.copilot.sdk.json.AutoModeSwitchResponse.NO));
+        CreateSessionRequest request = SessionRequestBuilder.buildCreateRequest(config);
+        assertTrue(request.getRequestAutoModeSwitch());
+    }
+
+    @Test
+    void testBuildCreateRequestOmitsAutoModeSwitchFlagWhenNull() {
+        var config = new SessionConfig();
+        CreateSessionRequest request = SessionRequestBuilder.buildCreateRequest(config);
+        assertNull(request.getRequestAutoModeSwitch());
+    }
+
+    @Test
+    void testBuildResumeRequestSetsExitPlanModeFlag() {
+        var config = new ResumeSessionConfig().setOnExitPlanMode(
+                (req, inv) -> CompletableFuture.completedFuture(new com.github.copilot.sdk.json.ExitPlanModeResult()));
+        ResumeSessionRequest request = SessionRequestBuilder.buildResumeRequest("sid-1", config);
+        assertTrue(request.getRequestExitPlanMode());
+    }
+
+    @Test
+    void testBuildResumeRequestSetsAutoModeSwitchFlag() {
+        var config = new ResumeSessionConfig().setOnAutoModeSwitch((req, inv) -> CompletableFuture
+                .completedFuture(com.github.copilot.sdk.json.AutoModeSwitchResponse.YES));
+        ResumeSessionRequest request = SessionRequestBuilder.buildResumeRequest("sid-1", config);
+        assertTrue(request.getRequestAutoModeSwitch());
+    }
+
+    @Test
+    void testCreateRequestSerializesModeRequestFlags() throws Exception {
+        var config = new SessionConfig().setOnExitPlanMode(
+                (req, inv) -> CompletableFuture.completedFuture(new com.github.copilot.sdk.json.ExitPlanModeResult()))
+                .setOnAutoModeSwitch((req, inv) -> CompletableFuture
+                        .completedFuture(com.github.copilot.sdk.json.AutoModeSwitchResponse.NO));
+        CreateSessionRequest request = SessionRequestBuilder.buildCreateRequest(config);
+        var mapper = JsonRpcClient.getObjectMapper();
+        var json = mapper.writeValueAsString(request);
+        assertTrue(json.contains("\"requestExitPlanMode\":true"));
+        assertTrue(json.contains("\"requestAutoModeSwitch\":true"));
+    }
+
+    @Test
+    void testResumeRequestSerializesModeRequestFlags() throws Exception {
+        var config = new ResumeSessionConfig().setOnExitPlanMode(
+                (req, inv) -> CompletableFuture.completedFuture(new com.github.copilot.sdk.json.ExitPlanModeResult()))
+                .setOnAutoModeSwitch((req, inv) -> CompletableFuture
+                        .completedFuture(com.github.copilot.sdk.json.AutoModeSwitchResponse.YES));
+        ResumeSessionRequest request = SessionRequestBuilder.buildResumeRequest("sid-1", config);
+        var mapper = JsonRpcClient.getObjectMapper();
+        var json = mapper.writeValueAsString(request);
+        assertTrue(json.contains("\"requestExitPlanMode\":true"));
+        assertTrue(json.contains("\"requestAutoModeSwitch\":true"));
+    }
+
+    @Test
+    void testAutoModeSwitchResponseSerialization() throws Exception {
+        var mapper = JsonRpcClient.getObjectMapper();
+        assertEquals("\"yes_always\"",
+                mapper.writeValueAsString(com.github.copilot.sdk.json.AutoModeSwitchResponse.YES_ALWAYS));
+        assertEquals("\"yes\"", mapper.writeValueAsString(com.github.copilot.sdk.json.AutoModeSwitchResponse.YES));
+        assertEquals("\"no\"", mapper.writeValueAsString(com.github.copilot.sdk.json.AutoModeSwitchResponse.NO));
+    }
 }
