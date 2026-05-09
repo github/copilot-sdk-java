@@ -53,6 +53,9 @@ This guide covers advanced scenarios for extending and customizing your Copilot 
   - [Incoming Elicitation Handler](#Incoming_Elicitation_Handler)
   - [Session Capabilities](#Session_Capabilities)
   - [Outgoing Elicitation via session.getUi()](#Outgoing_Elicitation_via_session.getUi)
+- [Mode Handlers](#Mode_Handlers)
+  - [Exit Plan Mode Handler](#Exit_Plan_Mode_Handler)
+  - [Auto Mode Switch Handler](#Auto_Mode_Switch_Handler)
 - [Getting Session Metadata by ID](#Getting_Session_Metadata_by_ID)
 
 ---
@@ -1264,6 +1267,59 @@ var result = ui.elicitation(new ElicitationParams()
 ```
 
 All `getUi()` methods throw `IllegalStateException` if the host does not support elicitation. Always check capabilities first.
+
+---
+
+## Mode Handlers
+
+Mode handlers let the host respond to runtime requests for switching between agent modes (plan, interactive, autopilot).
+
+### Exit Plan Mode Handler
+
+Register an `ExitPlanModeHandler` to handle requests from the agent to exit plan mode. The handler receives a summary of the plan, available actions, and a recommended action. If no handler is registered, exit-plan-mode requests are auto-approved.
+
+```java
+var session = client.createSession(
+    new SessionConfig()
+        .setOnExitPlanMode((request, invocation) -> {
+            System.out.println("Plan summary: " + request.getSummary());
+            System.out.println("Available actions: " + request.getActions());
+            // Approve and select an action
+            return CompletableFuture.completedFuture(
+                new ExitPlanModeResult()
+                    .setApproved(true)
+                    .setSelectedAction("autopilot"));
+        })
+).get();
+```
+
+See [ExitPlanModeHandler](apidocs/com/github/copilot/sdk/json/ExitPlanModeHandler.html) Javadoc for more details.
+
+### Auto Mode Switch Handler
+
+Register an `AutoModeSwitchHandler` to handle requests to switch to an alternative model when a rate limit is encountered. If no handler is registered, auto-mode-switch requests are declined by default.
+
+```java
+var session = client.createSession(
+    new SessionConfig()
+        .setOnAutoModeSwitch((request, invocation) -> {
+            System.out.println("Rate limited: " + request.getErrorCode());
+            System.out.println("Retry after: " + request.getRetryAfterSeconds() + "s");
+            // Approve the switch for this rate-limit cycle
+            return CompletableFuture.completedFuture(AutoModeSwitchResponse.YES);
+        })
+).get();
+```
+
+Available responses:
+
+| Response | Description |
+|---|---|
+| `AutoModeSwitchResponse.YES` | Approve the switch for this rate-limit cycle |
+| `AutoModeSwitchResponse.YES_ALWAYS` | Approve and remember the choice for this session |
+| `AutoModeSwitchResponse.NO` | Decline the switch |
+
+See [AutoModeSwitchHandler](apidocs/com/github/copilot/sdk/json/AutoModeSwitchHandler.html) Javadoc for more details.
 
 ---
 
