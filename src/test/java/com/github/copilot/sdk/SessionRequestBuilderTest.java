@@ -12,11 +12,15 @@ import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.Test;
 
+import com.github.copilot.sdk.json.AutoModeSwitchHandler;
+import com.github.copilot.sdk.json.AutoModeSwitchResponse;
 import com.github.copilot.sdk.json.CreateSessionRequest;
 import com.github.copilot.sdk.json.DefaultAgentConfig;
 import com.github.copilot.sdk.json.ElicitationHandler;
 import com.github.copilot.sdk.json.ElicitationResult;
 import com.github.copilot.sdk.json.ElicitationResultAction;
+import com.github.copilot.sdk.json.ExitPlanModeHandler;
+import com.github.copilot.sdk.json.ExitPlanModeResult;
 import com.github.copilot.sdk.json.ResumeSessionConfig;
 import com.github.copilot.sdk.json.ResumeSessionRequest;
 import com.github.copilot.sdk.json.SessionConfig;
@@ -534,5 +538,137 @@ public class SessionRequestBuilderTest {
         var mapper = JsonRpcClient.getObjectMapper();
         var json = mapper.writeValueAsString(request);
         assertFalse(json.contains("enableSessionTelemetry"), "enableSessionTelemetry should be omitted when null");
+    }
+
+    @Test
+    void buildCreateRequest_setsRequestExitPlanModeWhenHandlerPresent() {
+        var config = new SessionConfig().setOnExitPlanMode(
+                (request, invocation) -> CompletableFuture.completedFuture(new ExitPlanModeResult()));
+
+        CreateSessionRequest result = SessionRequestBuilder.buildCreateRequest(config, "sess-epm");
+
+        assertEquals(true, result.getRequestExitPlanMode());
+    }
+
+    @Test
+    void buildCreateRequest_omitsRequestExitPlanModeWhenNoHandler() {
+        var config = new SessionConfig();
+
+        CreateSessionRequest result = SessionRequestBuilder.buildCreateRequest(config, "sess-epm-none");
+
+        assertNull(result.getRequestExitPlanMode());
+    }
+
+    @Test
+    void buildCreateRequest_setsRequestAutoModeSwitchWhenHandlerPresent() {
+        var config = new SessionConfig().setOnAutoModeSwitch(
+                (request, invocation) -> CompletableFuture.completedFuture(AutoModeSwitchResponse.NO));
+
+        CreateSessionRequest result = SessionRequestBuilder.buildCreateRequest(config, "sess-ams");
+
+        assertEquals(true, result.getRequestAutoModeSwitch());
+    }
+
+    @Test
+    void buildCreateRequest_omitsRequestAutoModeSwitchWhenNoHandler() {
+        var config = new SessionConfig();
+
+        CreateSessionRequest result = SessionRequestBuilder.buildCreateRequest(config, "sess-ams-none");
+
+        assertNull(result.getRequestAutoModeSwitch());
+    }
+
+    @Test
+    void buildResumeRequest_setsRequestExitPlanModeWhenHandlerPresent() {
+        var config = new ResumeSessionConfig().setOnExitPlanMode(
+                (request, invocation) -> CompletableFuture.completedFuture(new ExitPlanModeResult()));
+
+        ResumeSessionRequest result = SessionRequestBuilder.buildResumeRequest("sess-epm", config);
+
+        assertEquals(true, result.getRequestExitPlanMode());
+    }
+
+    @Test
+    void buildResumeRequest_setsRequestAutoModeSwitchWhenHandlerPresent() {
+        var config = new ResumeSessionConfig().setOnAutoModeSwitch(
+                (request, invocation) -> CompletableFuture.completedFuture(AutoModeSwitchResponse.YES));
+
+        ResumeSessionRequest result = SessionRequestBuilder.buildResumeRequest("sess-ams", config);
+
+        assertEquals(true, result.getRequestAutoModeSwitch());
+    }
+
+    @Test
+    void configureSessionWithExitPlanModeHandler_registersHandler() {
+        CopilotSession session = new CopilotSession("session-1", null);
+
+        ExitPlanModeHandler handler = (request, invocation) -> CompletableFuture
+                .completedFuture(new ExitPlanModeResult());
+        var config = new SessionConfig().setOnExitPlanMode(handler);
+
+        SessionRequestBuilder.configureSession(session, config);
+    }
+
+    @Test
+    void configureSessionWithAutoModeSwitchHandler_registersHandler() {
+        CopilotSession session = new CopilotSession("session-1", null);
+
+        AutoModeSwitchHandler handler = (request, invocation) -> CompletableFuture
+                .completedFuture(AutoModeSwitchResponse.NO);
+        var config = new SessionConfig().setOnAutoModeSwitch(handler);
+
+        SessionRequestBuilder.configureSession(session, config);
+    }
+
+    @Test
+    void configureResumedSessionWithExitPlanModeHandler_registersHandler() {
+        CopilotSession session = new CopilotSession("session-1", null);
+
+        ExitPlanModeHandler handler = (request, invocation) -> CompletableFuture
+                .completedFuture(new ExitPlanModeResult());
+        var config = new ResumeSessionConfig().setOnExitPlanMode(handler);
+
+        SessionRequestBuilder.configureSession(session, config);
+    }
+
+    @Test
+    void configureResumedSessionWithAutoModeSwitchHandler_registersHandler() {
+        CopilotSession session = new CopilotSession("session-1", null);
+
+        AutoModeSwitchHandler handler = (request, invocation) -> CompletableFuture
+                .completedFuture(AutoModeSwitchResponse.YES);
+        var config = new ResumeSessionConfig().setOnAutoModeSwitch(handler);
+
+        SessionRequestBuilder.configureSession(session, config);
+    }
+
+    @Test
+    void buildCreateRequest_serializesExitPlanModeAndAutoModeSwitchFlags() throws Exception {
+        var config = new SessionConfig()
+                .setOnExitPlanMode((request, invocation) -> CompletableFuture.completedFuture(new ExitPlanModeResult()))
+                .setOnAutoModeSwitch(
+                        (request, invocation) -> CompletableFuture.completedFuture(AutoModeSwitchResponse.NO));
+
+        CreateSessionRequest result = SessionRequestBuilder.buildCreateRequest(config, "sess-flags");
+
+        var mapper = JsonRpcClient.getObjectMapper();
+        var json = mapper.writeValueAsString(result);
+        assertTrue(json.contains("\"requestExitPlanMode\":true"));
+        assertTrue(json.contains("\"requestAutoModeSwitch\":true"));
+    }
+
+    @Test
+    void buildResumeRequest_serializesExitPlanModeAndAutoModeSwitchFlags() throws Exception {
+        var config = new ResumeSessionConfig()
+                .setOnExitPlanMode((request, invocation) -> CompletableFuture.completedFuture(new ExitPlanModeResult()))
+                .setOnAutoModeSwitch(
+                        (request, invocation) -> CompletableFuture.completedFuture(AutoModeSwitchResponse.YES));
+
+        ResumeSessionRequest result = SessionRequestBuilder.buildResumeRequest("sess-flags", config);
+
+        var mapper = JsonRpcClient.getObjectMapper();
+        var json = mapper.writeValueAsString(result);
+        assertTrue(json.contains("\"requestExitPlanMode\":true"));
+        assertTrue(json.contains("\"requestAutoModeSwitch\":true"));
     }
 }

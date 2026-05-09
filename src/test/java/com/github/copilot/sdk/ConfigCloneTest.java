@@ -26,6 +26,9 @@ import com.github.copilot.sdk.json.SessionConfig;
 import com.github.copilot.sdk.json.SystemMessageConfig;
 import com.github.copilot.sdk.json.TelemetryConfig;
 
+import com.github.copilot.sdk.json.AutoModeSwitchResponse;
+import com.github.copilot.sdk.json.ExitPlanModeResult;
+
 class ConfigCloneTest {
 
     @Test
@@ -374,5 +377,33 @@ class ConfigCloneTest {
         CopilotClientOptions cloned = original.clone();
 
         assertEquals(600, cloned.getSessionIdleTimeoutSeconds());
+    }
+
+    @Test
+    void sessionConfigModeSwitchHandlersCloned() {
+        SessionConfig original = new SessionConfig();
+        original.setOnExitPlanMode(
+                (request, invocation) -> CompletableFuture.completedFuture(new ExitPlanModeResult()));
+        original.setOnAutoModeSwitch(
+                (request, invocation) -> CompletableFuture.completedFuture(AutoModeSwitchResponse.NO));
+
+        SessionConfig cloned = original.clone();
+
+        assertSame(original.getOnExitPlanMode(), cloned.getOnExitPlanMode());
+        assertSame(original.getOnAutoModeSwitch(), cloned.getOnAutoModeSwitch());
+    }
+
+    @Test
+    void resumeSessionConfigModeSwitchHandlersCloned() {
+        ResumeSessionConfig original = new ResumeSessionConfig();
+        original.setOnExitPlanMode(
+                (request, invocation) -> CompletableFuture.completedFuture(new ExitPlanModeResult()));
+        original.setOnAutoModeSwitch(
+                (request, invocation) -> CompletableFuture.completedFuture(AutoModeSwitchResponse.NO));
+
+        ResumeSessionConfig cloned = original.clone();
+
+        assertSame(original.getOnExitPlanMode(), cloned.getOnExitPlanMode());
+        assertSame(original.getOnAutoModeSwitch(), cloned.getOnAutoModeSwitch());
     }
 }
