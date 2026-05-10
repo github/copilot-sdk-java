@@ -341,4 +341,80 @@ public class SessionHandlerTest {
         session.registerTools(List.of());
         assertNull(session.getTool("my_tool"));
     }
+
+    // ===== Exit Plan Mode handler =====
+
+    @Test
+    void testHandleExitPlanModeRequestNoHandler() throws Exception {
+        var request = new com.github.copilot.sdk.json.ExitPlanModeRequest().setSummary("Test plan");
+
+        var result = session.handleExitPlanModeRequest(request).get();
+
+        assertTrue(result.isApproved());
+    }
+
+    @Test
+    void testHandleExitPlanModeRequestWithHandler() throws Exception {
+        session.registerExitPlanModeHandler((req, inv) -> {
+            assertEquals("handler-test-session", inv.getSessionId());
+            return CompletableFuture.completedFuture(new com.github.copilot.sdk.json.ExitPlanModeResult()
+                    .setApproved(false).setSelectedAction("autopilot").setFeedback("Not yet"));
+        });
+        var request = new com.github.copilot.sdk.json.ExitPlanModeRequest().setSummary("Test plan")
+                .setActions(List.of("interactive", "autopilot")).setRecommendedAction("interactive");
+
+        var result = session.handleExitPlanModeRequest(request).get();
+
+        assertFalse(result.isApproved());
+        assertEquals("autopilot", result.getSelectedAction());
+        assertEquals("Not yet", result.getFeedback());
+    }
+
+    @Test
+    void testHandleExitPlanModeRequestHandlerException() throws Exception {
+        session.registerExitPlanModeHandler((req, inv) -> CompletableFuture.failedFuture(new RuntimeException("fail")));
+        var request = new com.github.copilot.sdk.json.ExitPlanModeRequest().setSummary("Plan");
+
+        var result = session.handleExitPlanModeRequest(request).get();
+
+        assertTrue(result.isApproved());
+    }
+
+    // ===== Auto Mode Switch handler =====
+
+    @Test
+    void testHandleAutoModeSwitchRequestNoHandler() throws Exception {
+        var request = new com.github.copilot.sdk.json.AutoModeSwitchRequest().setErrorCode("rate_limited");
+
+        var result = session.handleAutoModeSwitchRequest(request).get();
+
+        assertEquals(com.github.copilot.sdk.json.AutoModeSwitchResponse.NO, result);
+    }
+
+    @Test
+    void testHandleAutoModeSwitchRequestWithHandler() throws Exception {
+        session.registerAutoModeSwitchHandler((req, inv) -> {
+            assertEquals("handler-test-session", inv.getSessionId());
+            assertEquals("user_weekly_rate_limited", req.getErrorCode());
+            assertEquals(1.0, req.getRetryAfterSeconds());
+            return CompletableFuture.completedFuture(com.github.copilot.sdk.json.AutoModeSwitchResponse.YES);
+        });
+        var request = new com.github.copilot.sdk.json.AutoModeSwitchRequest().setErrorCode("user_weekly_rate_limited")
+                .setRetryAfterSeconds(1.0);
+
+        var result = session.handleAutoModeSwitchRequest(request).get();
+
+        assertEquals(com.github.copilot.sdk.json.AutoModeSwitchResponse.YES, result);
+    }
+
+    @Test
+    void testHandleAutoModeSwitchRequestHandlerException() throws Exception {
+        session.registerAutoModeSwitchHandler(
+                (req, inv) -> CompletableFuture.failedFuture(new RuntimeException("fail")));
+        var request = new com.github.copilot.sdk.json.AutoModeSwitchRequest().setErrorCode("rate_limited");
+
+        var result = session.handleAutoModeSwitchRequest(request).get();
+
+        assertEquals(com.github.copilot.sdk.json.AutoModeSwitchResponse.NO, result);
+    }
 }
