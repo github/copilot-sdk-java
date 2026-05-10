@@ -16,13 +16,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ModelBilling {
 
     @JsonProperty("multiplier")
-    private double multiplier;
+    private Double multiplier;
 
-    public double getMultiplier() {
+    public Double getMultiplier() {
         return multiplier;
     }
 
-    public ModelBilling setMultiplier(double multiplier) {
+    public ModelBilling setMultiplier(Double multiplier) {
         this.multiplier = multiplier;
         return this;
     }
