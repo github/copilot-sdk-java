@@ -157,6 +157,7 @@ jobs:
           - Re-ran Java code generator (\`scripts/codegen\`)
 
           > Created by the **Update @github/copilot Dependency** workflow." \
+              --label dependencies \
               --base main \
               --head "$BRANCH" \
             | grep -oE '[0-9]+$' || gh pr view "$BRANCH" --json number --jq .number)
