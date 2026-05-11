@@ -1,0 +1,4 @@
+com.github.copilot.sdk
+com.github.copilot.sdk.generated
+com.github.copilot.sdk.generated.rpc
+com.github.copilot.sdk.json
