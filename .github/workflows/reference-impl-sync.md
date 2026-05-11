@@ -11,6 +11,7 @@ permissions:
   contents: read
   actions: read
   issues: read
+  pull-requests: read
 
 network:
   allowed:
@@ -19,7 +20,7 @@ network:
 
 tools:
   github:
-    toolsets: [context, repos, issues]
+    toolsets: [context, repos, issues, pull_requests]
 
 safe-outputs:
   create-issue:
@@ -37,6 +38,9 @@ safe-outputs:
     name: "copilot"
     model: "claude-opus-4.6"
     target: "*"
+  close-pull-request:
+    target: "*"
+    max: 10
   noop:
     report-as-issue: false
 ---
@@ -78,14 +82,16 @@ Go to Step 3b.
 
 1. Search for any open issues with the `reference-impl-sync` label using the GitHub MCP tools.
 2. If there are open `reference-impl-sync` labeled issues, close each one using the `close_issue` safe-output tool with a comment: "No new reference implementation changes detected. The Java SDK is up to date. Closing."
-3. Call the `noop` safe-output tool with message: "No new reference implementation changes since last merge (<LAST_MERGE>)."
-4. **Stop here.** Do not proceed further.
+3. Search for any open pull requests whose head branch starts with `copilot/reference-impl`. Close each one using the `close_pull_request` safe-output tool with a comment: "Superseded — the Java SDK is up to date with the reference implementation. Closing stale sync PR."
+4. Call the `noop` safe-output tool with message: "No new reference implementation changes since last merge (<LAST_MERGE>)."
+5. **Stop here.** Do not proceed further.
 
 ### Step 3b: Changes detected
 
 1. Search for any open issues with the `reference-impl-sync` label using the GitHub MCP tools.
 2. Close each existing open `reference-impl-sync` issue using the `close_issue` safe-output tool with a comment: "Superseded by a newer reference implementation sync check."
-3. Create a new issue using the `create_issue` safe-output tool with:
+3. Search for any open pull requests whose head branch starts with `copilot/reference-impl`. Close each one using the `close_pull_request` safe-output tool with a comment: "Superseded by a newer reference implementation sync issue. Closing stale sync PR."
+4. Create a new issue using the `create_issue` safe-output tool with:
    - **Title:** `Reference Implementation sync: <COMMIT_COUNT> new commits (<YYYY-MM-DD>)`
    - **Body:** Include the following information:
      ```
@@ -112,7 +118,7 @@ Go to Step 3b.
      ❌❌Do NOT update .lastmerge manually — the finish script does this.❌❌
      ❌❌Do NOT skip the finish script — it syncs codegen versions and updates .lastmerge.❌❌
      ```
-4. After creating the issue, use the `assign_to_agent` safe-output tool to assign Copilot to the newly created issue.
+5. After creating the issue, use the `assign_to_agent` safe-output tool to assign Copilot to the newly created issue.
 
 ## Important constraints
 
