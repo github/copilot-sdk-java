@@ -4,7 +4,7 @@ inputs:
   report-path:
     description: "Path to the test report XML files (glob pattern)"
     required: false
-    default: "target/surefire-reports/TEST-*.xml"
+    default: "target/surefire-reports*/TEST-*.xml"
   jacoco-path:
     description: "Path to the JaCoCo XML report"
     required: false
@@ -22,10 +22,7 @@ runs:
         echo "## 🧪 Copilot Java SDK :: Test Results" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
 
-        REPORT_DIR=$(dirname "${{ inputs.report-path }}")
-        REPORT_PATTERN=$(basename "${{ inputs.report-path }}")
-
-        if [ -d "$REPORT_DIR" ]; then
+        if ls ${{ inputs.report-path }} 1>/dev/null 2>&1; then
           TESTS_RUN=$(grep -h "tests=" ${{ inputs.report-path }} 2>/dev/null | sed 's/.*tests="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
           FAILURES=$(grep -h "failures=" ${{ inputs.report-path }} 2>/dev/null | sed 's/.*failures="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')
           ERRORS=$(grep -h "errors=" ${{ inputs.report-path }} 2>/dev/null | sed 's/.*errors="\([0-9]*\)".*/\1/' | awk '{s+=$1} END {print s}')

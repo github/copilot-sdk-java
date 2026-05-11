@@ -7,7 +7,7 @@
 
     <groupId>com.github</groupId>
     <artifactId>copilot-sdk-java</artifactId>
-    <version>1.0.0-java.1-SNAPSHOT</version>
+    <version>1.0.0-beta-java.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>GitHub Copilot SDK :: Java</name>
@@ -359,6 +359,11 @@
                         </goals>
                         <configuration>
                             <groups>isolated-resume</groups>
+                            <!-- Use a separate report directory so these results
+                                 don't overwrite the default-test XML reports for
+                                 the same test classes (CopilotSessionTest,
+                                 StreamingFidelityTest). -->
+                            <reportsDirectory>${project.build.directory}/surefire-reports-isolated</reportsDirectory>
                         </configuration>
                     </execution>
                     <!-- Exclude the isolated resume tests from the main run -->

@@ -53,14 +53,14 @@ Snapshot builds of the next development version are published to Maven Central S
 <dependency>
     <groupId>com.github</groupId>
     <artifactId>copilot-sdk-java</artifactId>
-    <version>1.0.0-java.1-SNAPSHOT</version>
+    <version>1.0.0-beta-java.3-SNAPSHOT</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-implementation 'com.github:copilot-sdk-java:1.0.0-beta-java.1'
+implementation 'com.github:copilot-sdk-java:1.0.0-beta-java.2-beta-java.1'
 ```
 
 ## Quick Start
