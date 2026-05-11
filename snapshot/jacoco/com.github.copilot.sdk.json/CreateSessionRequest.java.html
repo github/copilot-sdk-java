@@ -112,6 +112,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JsonProperty(&quot;requestElicitation&quot;)
     private Boolean requestElicitation;
 
+    @JsonProperty(&quot;requestExitPlanMode&quot;)
+    private Boolean requestExitPlanMode;
+
+    @JsonProperty(&quot;requestAutoModeSwitch&quot;)
+    private Boolean requestAutoModeSwitch;
+
     @JsonProperty(&quot;modelCapabilities&quot;)
     private ModelCapabilitiesOverride modelCapabilities;
 
@@ -120,275 +126,275 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
     /** Gets the model name. @return the model */
     public String getModel() {
-<span class="fc" id="L123">        return model;</span>
+<span class="fc" id="L129">        return model;</span>
     }
 
     /** Sets the model name. @param model the model */
     public void setModel(String model) {
-<span class="fc" id="L128">        this.model = model;</span>
-<span class="fc" id="L129">    }</span>
+<span class="fc" id="L134">        this.model = model;</span>
+<span class="fc" id="L135">    }</span>
 
     /** Gets the session ID. @return the session ID */
     public String getSessionId() {
-<span class="fc" id="L133">        return sessionId;</span>
+<span class="fc" id="L139">        return sessionId;</span>
     }
 
     /** Sets the session ID. @param sessionId the session ID */
     public void setSessionId(String sessionId) {
-<span class="fc" id="L138">        this.sessionId = sessionId;</span>
-<span class="fc" id="L139">    }</span>
+<span class="fc" id="L144">        this.sessionId = sessionId;</span>
+<span class="fc" id="L145">    }</span>
 
     /** Gets the client name. @return the client name */
     public String getClientName() {
-<span class="fc" id="L143">        return clientName;</span>
+<span class="fc" id="L149">        return clientName;</span>
     }
 
     /** Sets the client name. @param clientName the client name */
     public void setClientName(String clientName) {
-<span class="fc" id="L148">        this.clientName = clientName;</span>
-<span class="fc" id="L149">    }</span>
+<span class="fc" id="L154">        this.clientName = clientName;</span>
+<span class="fc" id="L155">    }</span>
 
     /** Gets the reasoning effort. @return the reasoning effort level */
     public String getReasoningEffort() {
-<span class="fc" id="L153">        return reasoningEffort;</span>
+<span class="fc" id="L159">        return reasoningEffort;</span>
     }
 
     /**
      * Sets the reasoning effort. @param reasoningEffort the reasoning effort level
      */
     public void setReasoningEffort(String reasoningEffort) {
-<span class="fc" id="L160">        this.reasoningEffort = reasoningEffort;</span>
-<span class="fc" id="L161">    }</span>
+<span class="fc" id="L166">        this.reasoningEffort = reasoningEffort;</span>
+<span class="fc" id="L167">    }</span>
 
     /** Gets the tools. @return the tool definitions */
     public List&lt;ToolDefinition&gt; getTools() {
-<span class="fc bfc" id="L165" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
     }
 
     /** Sets the tools. @param tools the tool definitions */
     public void setTools(List&lt;ToolDefinition&gt; tools) {
-<span class="fc" id="L170">        this.tools = tools;</span>
-<span class="fc" id="L171">    }</span>
+<span class="fc" id="L176">        this.tools = tools;</span>
+<span class="fc" id="L177">    }</span>
 
     /** Gets the system message config. @return the config */
     public SystemMessageConfig getSystemMessage() {
-<span class="fc" id="L175">        return systemMessage;</span>
+<span class="fc" id="L181">        return systemMessage;</span>
     }
 
     /** Sets the system message config. @param systemMessage the config */
     public void setSystemMessage(SystemMessageConfig systemMessage) {
-<span class="fc" id="L180">        this.systemMessage = systemMessage;</span>
-<span class="fc" id="L181">    }</span>
+<span class="fc" id="L186">        this.systemMessage = systemMessage;</span>
+<span class="fc" id="L187">    }</span>
 
     /** Gets available tools. @return the tool names */
     public List&lt;String&gt; getAvailableTools() {
-<span class="fc bfc" id="L185" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
     }
 
     /** Sets available tools. @param availableTools the tool names */
     public void setAvailableTools(List&lt;String&gt; availableTools) {
-<span class="fc" id="L190">        this.availableTools = availableTools;</span>
-<span class="fc" id="L191">    }</span>
+<span class="fc" id="L196">        this.availableTools = availableTools;</span>
+<span class="fc" id="L197">    }</span>
 
     /** Gets excluded tools. @return the tool names */
     public List&lt;String&gt; getExcludedTools() {
-<span class="fc bfc" id="L195" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
     }
 
     /** Sets excluded tools. @param excludedTools the tool names */
     public void setExcludedTools(List&lt;String&gt; excludedTools) {
-<span class="fc" id="L200">        this.excludedTools = excludedTools;</span>
-<span class="fc" id="L201">    }</span>
+<span class="fc" id="L206">        this.excludedTools = excludedTools;</span>
+<span class="fc" id="L207">    }</span>
 
     /** Gets the provider config. @return the provider */
     public ProviderConfig getProvider() {
-<span class="fc" id="L205">        return provider;</span>
+<span class="fc" id="L211">        return provider;</span>
     }
 
     /** Sets the provider config. @param provider the provider */
     public void setProvider(ProviderConfig provider) {
-<span class="fc" id="L210">        this.provider = provider;</span>
-<span class="fc" id="L211">    }</span>
+<span class="fc" id="L216">        this.provider = provider;</span>
+<span class="fc" id="L217">    }</span>
 
     /** Gets enable session telemetry flag. @return the flag */
     public Boolean getEnableSessionTelemetry() {
-<span class="fc" id="L215">        return enableSessionTelemetry;</span>
+<span class="fc" id="L221">        return enableSessionTelemetry;</span>
     }
 
     /**
      * Sets enable session telemetry flag. @param enableSessionTelemetry the flag
      */
     public void setEnableSessionTelemetry(Boolean enableSessionTelemetry) {
-<span class="fc" id="L222">        this.enableSessionTelemetry = enableSessionTelemetry;</span>
-<span class="fc" id="L223">    }</span>
+<span class="fc" id="L228">        this.enableSessionTelemetry = enableSessionTelemetry;</span>
+<span class="fc" id="L229">    }</span>
 
     /** Gets request permission flag. @return the flag */
     public Boolean getRequestPermission() {
-<span class="fc" id="L227">        return requestPermission;</span>
+<span class="fc" id="L233">        return requestPermission;</span>
     }
 
     /** Sets request permission flag. @param requestPermission the flag */
     public void setRequestPermission(Boolean requestPermission) {
-<span class="fc" id="L232">        this.requestPermission = requestPermission;</span>
-<span class="fc" id="L233">    }</span>
+<span class="fc" id="L238">        this.requestPermission = requestPermission;</span>
+<span class="fc" id="L239">    }</span>
 
     /** Gets request user input flag. @return the flag */
     public Boolean getRequestUserInput() {
-<span class="fc" id="L237">        return requestUserInput;</span>
+<span class="fc" id="L243">        return requestUserInput;</span>
     }
 
     /** Sets request user input flag. @param requestUserInput the flag */
     public void setRequestUserInput(Boolean requestUserInput) {
-<span class="fc" id="L242">        this.requestUserInput = requestUserInput;</span>
-<span class="fc" id="L243">    }</span>
+<span class="fc" id="L248">        this.requestUserInput = requestUserInput;</span>
+<span class="fc" id="L249">    }</span>
 
     /** Gets hooks flag. @return the flag */
     public Boolean getHooks() {
-<span class="fc" id="L247">        return hooks;</span>
+<span class="fc" id="L253">        return hooks;</span>
     }
 
     /** Sets hooks flag. @param hooks the flag */
     public void setHooks(Boolean hooks) {
-<span class="fc" id="L252">        this.hooks = hooks;</span>
-<span class="fc" id="L253">    }</span>
+<span class="fc" id="L258">        this.hooks = hooks;</span>
+<span class="fc" id="L259">    }</span>
 
     /** Gets working directory. @return the working directory */
     public String getWorkingDirectory() {
-<span class="fc" id="L257">        return workingDirectory;</span>
+<span class="fc" id="L263">        return workingDirectory;</span>
     }
 
     /** Sets working directory. @param workingDirectory the working directory */
     public void setWorkingDirectory(String workingDirectory) {
-<span class="fc" id="L262">        this.workingDirectory = workingDirectory;</span>
-<span class="fc" id="L263">    }</span>
+<span class="fc" id="L268">        this.workingDirectory = workingDirectory;</span>
+<span class="fc" id="L269">    }</span>
 
     /** Gets streaming flag. @return the flag */
     public Boolean getStreaming() {
-<span class="fc" id="L267">        return streaming;</span>
+<span class="fc" id="L273">        return streaming;</span>
     }
 
     /** Sets streaming flag. @param streaming the flag */
     public void setStreaming(Boolean streaming) {
-<span class="fc" id="L272">        this.streaming = streaming;</span>
-<span class="fc" id="L273">    }</span>
+<span class="fc" id="L278">        this.streaming = streaming;</span>
+<span class="fc" id="L279">    }</span>
 
     /** Gets MCP servers. @return the servers map */
     public Map&lt;String, McpServerConfig&gt; getMcpServers() {
-<span class="fc bfc" id="L277" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
     }
 
     /** Sets MCP servers. @param mcpServers the servers map */
     public void setMcpServers(Map&lt;String, McpServerConfig&gt; mcpServers) {
-<span class="fc" id="L282">        this.mcpServers = mcpServers;</span>
-<span class="fc" id="L283">    }</span>
+<span class="fc" id="L288">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L289">    }</span>
 
     /** Gets MCP environment variable value mode. @return the mode */
     public String getEnvValueMode() {
-<span class="fc" id="L287">        return envValueMode;</span>
+<span class="fc" id="L293">        return envValueMode;</span>
     }
 
     /** Sets MCP environment variable value mode. @param envValueMode the mode */
     public void setEnvValueMode(String envValueMode) {
-<span class="fc" id="L292">        this.envValueMode = envValueMode;</span>
-<span class="fc" id="L293">    }</span>
+<span class="fc" id="L298">        this.envValueMode = envValueMode;</span>
+<span class="fc" id="L299">    }</span>
 
     /** Gets custom agents. @return the agents */
     public List&lt;CustomAgentConfig&gt; getCustomAgents() {
-<span class="fc bfc" id="L297" title="All 2 branches covered.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
     }
 
     /** Sets custom agents. @param customAgents the agents */
     public void setCustomAgents(List&lt;CustomAgentConfig&gt; customAgents) {
-<span class="fc" id="L302">        this.customAgents = customAgents;</span>
-<span class="fc" id="L303">    }</span>
+<span class="fc" id="L308">        this.customAgents = customAgents;</span>
+<span class="fc" id="L309">    }</span>
 
     /** Gets the default agent config. @return the default agent config */
     public DefaultAgentConfig getDefaultAgent() {
-<span class="fc" id="L307">        return defaultAgent;</span>
+<span class="fc" id="L313">        return defaultAgent;</span>
     }
 
     /**
      * Sets the default agent config. @param defaultAgent the default agent config
      */
     public void setDefaultAgent(DefaultAgentConfig defaultAgent) {
-<span class="fc" id="L314">        this.defaultAgent = defaultAgent;</span>
-<span class="fc" id="L315">    }</span>
+<span class="fc" id="L320">        this.defaultAgent = defaultAgent;</span>
+<span class="fc" id="L321">    }</span>
 
     /** Gets the pre-selected agent name. @return the agent name */
     public String getAgent() {
-<span class="fc" id="L319">        return agent;</span>
+<span class="fc" id="L325">        return agent;</span>
     }
 
     /** Sets the pre-selected agent name. @param agent the agent name */
     public void setAgent(String agent) {
-<span class="fc" id="L324">        this.agent = agent;</span>
-<span class="fc" id="L325">    }</span>
+<span class="fc" id="L330">        this.agent = agent;</span>
+<span class="fc" id="L331">    }</span>
 
     /** Gets infinite sessions config. @return the config */
     public InfiniteSessionConfig getInfiniteSessions() {
-<span class="fc" id="L329">        return infiniteSessions;</span>
+<span class="fc" id="L335">        return infiniteSessions;</span>
     }
 
     /** Sets infinite sessions config. @param infiniteSessions the config */
     public void setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
-<span class="fc" id="L334">        this.infiniteSessions = infiniteSessions;</span>
-<span class="fc" id="L335">    }</span>
+<span class="fc" id="L340">        this.infiniteSessions = infiniteSessions;</span>
+<span class="fc" id="L341">    }</span>
 
     /** Gets skill directories. @return the skill directories */
     public List&lt;String&gt; getSkillDirectories() {
-<span class="fc bfc" id="L339" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
+<span class="fc bfc" id="L345" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
     }
 
     /** Sets skill directories. @param skillDirectories the directories */
     public void setSkillDirectories(List&lt;String&gt; skillDirectories) {
-<span class="fc" id="L344">        this.skillDirectories = skillDirectories;</span>
-<span class="fc" id="L345">    }</span>
+<span class="fc" id="L350">        this.skillDirectories = skillDirectories;</span>
+<span class="fc" id="L351">    }</span>
 
     /** Gets instruction directories. @return the instruction directories */
     public List&lt;String&gt; getInstructionDirectories() {
-<span class="fc bfc" id="L349" title="All 2 branches covered.">        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);</span>
+<span class="fc bfc" id="L355" title="All 2 branches covered.">        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);</span>
     }
 
     /**
      * Sets instruction directories. @param instructionDirectories the directories
      */
     public void setInstructionDirectories(List&lt;String&gt; instructionDirectories) {
-<span class="fc" id="L356">        this.instructionDirectories = instructionDirectories;</span>
-<span class="fc" id="L357">    }</span>
+<span class="fc" id="L362">        this.instructionDirectories = instructionDirectories;</span>
+<span class="fc" id="L363">    }</span>
 
     /** Gets disabled skills. @return the disabled skill names */
     public List&lt;String&gt; getDisabledSkills() {
-<span class="fc bfc" id="L361" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
+<span class="fc bfc" id="L367" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
     }
 
     /** Sets disabled skills. @param disabledSkills the skill names to disable */
     public void setDisabledSkills(List&lt;String&gt; disabledSkills) {
-<span class="fc" id="L366">        this.disabledSkills = disabledSkills;</span>
-<span class="fc" id="L367">    }</span>
+<span class="fc" id="L372">        this.disabledSkills = disabledSkills;</span>
+<span class="fc" id="L373">    }</span>
 
     /** Gets config directory. @return the config directory path */
     public String getConfigDir() {
-<span class="fc" id="L371">        return configDir;</span>
+<span class="fc" id="L377">        return configDir;</span>
     }
 
     /** Sets config directory. @param configDir the config directory path */
     public void setConfigDir(String configDir) {
-<span class="fc" id="L376">        this.configDir = configDir;</span>
-<span class="fc" id="L377">    }</span>
+<span class="fc" id="L382">        this.configDir = configDir;</span>
+<span class="fc" id="L383">    }</span>
 
     /** Gets enable config discovery flag. @return the flag */
     public Boolean getEnableConfigDiscovery() {
-<span class="fc" id="L381">        return enableConfigDiscovery;</span>
+<span class="fc" id="L387">        return enableConfigDiscovery;</span>
     }
 
     /** Sets enable config discovery flag. @param enableConfigDiscovery the flag */
     public void setEnableConfigDiscovery(Boolean enableConfigDiscovery) {
-<span class="fc" id="L386">        this.enableConfigDiscovery = enableConfigDiscovery;</span>
-<span class="fc" id="L387">    }</span>
+<span class="fc" id="L392">        this.enableConfigDiscovery = enableConfigDiscovery;</span>
+<span class="fc" id="L393">    }</span>
 
     /** Gets include sub-agent streaming events flag. @return the flag */
     public Boolean getIncludeSubAgentStreamingEvents() {
-<span class="fc" id="L391">        return includeSubAgentStreamingEvents;</span>
+<span class="fc" id="L397">        return includeSubAgentStreamingEvents;</span>
     }
 
     /**
@@ -396,44 +402,66 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * includeSubAgentStreamingEvents the flag
      */
     public void setIncludeSubAgentStreamingEvents(Boolean includeSubAgentStreamingEvents) {
-<span class="fc" id="L399">        this.includeSubAgentStreamingEvents = includeSubAgentStreamingEvents;</span>
-<span class="fc" id="L400">    }</span>
+<span class="fc" id="L405">        this.includeSubAgentStreamingEvents = includeSubAgentStreamingEvents;</span>
+<span class="fc" id="L406">    }</span>
 
     /** Gets the commands wire definitions. @return the commands */
     public List&lt;CommandWireDefinition&gt; getCommands() {
-<span class="fc bfc" id="L404" title="All 2 branches covered.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
+<span class="fc bfc" id="L410" title="All 2 branches covered.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
     }
 
     /** Sets the commands wire definitions. @param commands the commands */
     public void setCommands(List&lt;CommandWireDefinition&gt; commands) {
-<span class="fc" id="L409">        this.commands = commands;</span>
-<span class="fc" id="L410">    }</span>
+<span class="fc" id="L415">        this.commands = commands;</span>
+<span class="fc" id="L416">    }</span>
 
     /** Gets the requestElicitation flag. @return the flag */
     public Boolean getRequestElicitation() {
-<span class="fc" id="L414">        return requestElicitation;</span>
+<span class="fc" id="L420">        return requestElicitation;</span>
     }
 
     /** Sets the requestElicitation flag. @param requestElicitation the flag */
     public void setRequestElicitation(Boolean requestElicitation) {
-<span class="fc" id="L419">        this.requestElicitation = requestElicitation;</span>
-<span class="fc" id="L420">    }</span>
+<span class="fc" id="L425">        this.requestElicitation = requestElicitation;</span>
+<span class="fc" id="L426">    }</span>
+
+    /** Gets the requestExitPlanMode flag. @return the flag */
+    public Boolean getRequestExitPlanMode() {
+<span class="fc" id="L430">        return requestExitPlanMode;</span>
+    }
+
+    /** Sets the requestExitPlanMode flag. @param requestExitPlanMode the flag */
+    public void setRequestExitPlanMode(Boolean requestExitPlanMode) {
+<span class="fc" id="L435">        this.requestExitPlanMode = requestExitPlanMode;</span>
+<span class="fc" id="L436">    }</span>
+
+    /** Gets the requestAutoModeSwitch flag. @return the flag */
+    public Boolean getRequestAutoModeSwitch() {
+<span class="fc" id="L440">        return requestAutoModeSwitch;</span>
+    }
+
+    /**
+     * Sets the requestAutoModeSwitch flag. @param requestAutoModeSwitch the flag
+     */
+    public void setRequestAutoModeSwitch(Boolean requestAutoModeSwitch) {
+<span class="fc" id="L447">        this.requestAutoModeSwitch = requestAutoModeSwitch;</span>
+<span class="fc" id="L448">    }</span>
 
     /** Gets the model capabilities override. @return the override */
     public ModelCapabilitiesOverride getModelCapabilities() {
-<span class="fc" id="L424">        return modelCapabilities;</span>
+<span class="fc" id="L452">        return modelCapabilities;</span>
     }
 
     /**
      * Sets the model capabilities override. @param modelCapabilities the override
      */
     public void setModelCapabilities(ModelCapabilitiesOverride modelCapabilities) {
-<span class="fc" id="L431">        this.modelCapabilities = modelCapabilities;</span>
-<span class="fc" id="L432">    }</span>
+<span class="fc" id="L459">        this.modelCapabilities = modelCapabilities;</span>
+<span class="fc" id="L460">    }</span>
 
     /** Gets the GitHub token for per-session authentication. @return the token */
     public String getGitHubToken() {
-<span class="fc" id="L436">        return gitHubToken;</span>
+<span class="fc" id="L464">        return gitHubToken;</span>
     }
 
     /**
@@ -441,7 +469,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * token
      */
     public void setGitHubToken(String gitHubToken) {
-<span class="fc" id="L444">        this.gitHubToken = gitHubToken;</span>
-<span class="fc" id="L445">    }</span>
+<span class="fc" id="L472">        this.gitHubToken = gitHubToken;</span>
+<span class="fc" id="L473">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -274,6 +274,12 @@
 <li><a href="#Session_Capabilities">Session Capabilities</a></li>
 <li><a href="#Outgoing_Elicitation_via_session.getUi">Outgoing Elicitation via session.getUi()</a></li>
 </ul></li>
+<li><a href="#Mode_Handlers">Mode Handlers</a>
+<ul>
+
+<li><a href="#Exit_Plan_Mode">Exit Plan Mode</a></li>
+<li><a href="#Auto_Mode_Switch">Auto Mode Switch</a></li>
+</ul></li>
 <li><a href="#Getting_Session_Metadata_by_ID">Getting Session Metadata by ID</a></li>
 </ul><hr /></section><section><a id="Custom_Tools"></a>
 <h2>Custom Tools</h2>
@@ -1373,7 +1379,76 @@ var result = ui.elicitation(new ElicitationParams()
         .setRequired(List.of(&quot;branch&quot;, &quot;environment&quot;))
     )).get();
 </code></pre>
-<p>All <code>getUi()</code> methods throw <code>IllegalStateException</code> if the host does not support elicitation. Always check capabilities first.</p><hr /></section></section><section><a id="Getting_Session_Metadata_by_ID"></a>
+<p>All <code>getUi()</code> methods throw <code>IllegalStateException</code> if the host does not support elicitation. Always check capabilities first.</p><hr /></section></section><section><a id="Mode_Handlers"></a>
+<h2>Mode Handlers</h2>
+<p>Mode handlers let your application respond to mode transitions requested by the Copilot CLI.</p><section><a id="Exit_Plan_Mode"></a>
+<h3>Exit Plan Mode</h3>
+<p>When the model finishes creating a plan and wants to transition out of plan mode, it invokes the <code>exitPlanMode</code> handler. Register the handler via <code>SessionConfig.setOnExitPlanMode()</code>:</p>
+
+<pre class="prettyprint"><code class="language-java">var session = client.createSession(new SessionConfig()
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    .setOnExitPlanMode((request, invocation) -&gt; {
+        System.out.println(&quot;Plan summary: &quot; + request.getSummary());
+        System.out.println(&quot;Available actions: &quot; + request.getActions());
+        System.out.println(&quot;Recommended: &quot; + request.getRecommendedAction());
+
+        return CompletableFuture.completedFuture(
+            new ExitPlanModeResult()
+                .setApproved(true)
+                .setSelectedAction(&quot;interactive&quot;)
+                .setFeedback(&quot;Looks good, proceed!&quot;));
+    })).get();
+</code></pre>
+<p>When no handler is registered, the SDK automatically approves the plan (<code>approved=true</code>). The handler receives an <code>ExitPlanModeRequest</code> with:</p>
+<table class="table table-striped">
+<thead>
+<tr class="a">
+<th>Field</th>
+<th>Description</th></tr></thead><tbody>
+<tr class="b">
+<td><code>summary</code></td>
+<td>Summary of the plan that was created</td></tr>
+<tr class="a">
+<td><code>planContent</code></td>
+<td>Full content of the plan file</td></tr>
+<tr class="b">
+<td><code>actions</code></td>
+<td>Available actions (e.g., interactive, autopilot)</td></tr>
+<tr class="a">
+<td><code>recommendedAction</code></td>
+<td>The recommended action for the user</td></tr></tbody>
+</table>
+</section><section><a id="Auto_Mode_Switch"></a>
+<h3>Auto Mode Switch</h3>
+<p>When the model encounters a rate limit or similar constraint, it may request to switch modes automatically. Register the handler via <code>SessionConfig.setOnAutoModeSwitch()</code>:</p>
+
+<pre class="prettyprint"><code class="language-java">var session = client.createSession(new SessionConfig()
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    .setOnAutoModeSwitch((request, invocation) -&gt; {
+        System.out.println(&quot;Error: &quot; + request.getErrorCode());
+        System.out.println(&quot;Retry after: &quot; + request.getRetryAfterSeconds() + &quot;s&quot;);
+
+        return CompletableFuture.completedFuture(AutoModeSwitchResponse.YES);
+    })).get();
+</code></pre>
+<p>When no handler is registered, the SDK returns <code>NO</code> (declining the mode switch). The response options are:</p>
+<table class="table table-striped">
+<thead>
+<tr class="a">
+<th>Response</th>
+<th>Description</th></tr></thead><tbody>
+<tr class="b">
+<td><code>AutoModeSwitchResponse.YES</code></td>
+<td>Allow the mode switch this time</td></tr>
+<tr class="a">
+<td><code>AutoModeSwitchResponse.YES_ALWAYS</code></td>
+<td>Always allow automatic mode switches</td></tr>
+<tr class="b">
+<td><code>AutoModeSwitchResponse.NO</code></td>
+<td>Decline the mode switch</td></tr></tbody>
+</table>
+
+<p>Both handlers are also available on <code>ResumeSessionConfig</code> for resumed sessions.</p><hr /></section></section><section><a id="Getting_Session_Metadata_by_ID"></a>
 <h2>Getting Session Metadata by ID</h2>
 <p>Retrieve metadata for a specific session without listing all sessions:</p>
 
