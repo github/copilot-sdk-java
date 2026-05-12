@@ -33,7 +33,7 @@ Java SDK for programmatic control of GitHub Copilot CLI, enabling you to build A
 <dependency>
     <groupId>com.github</groupId>
     <artifactId>copilot-sdk-java</artifactId>
-    <version>1.0.0-beta-java.1</version>
+    <version>1.0.0-beta-java.3</version>
 </dependency>
 ```
 
@@ -60,7 +60,7 @@ Snapshot builds of the next development version are published to Maven Central S
 ### Gradle
 
 ```groovy
-implementation 'com.github:copilot-sdk-java:1.0.0-beta-java.3-beta-java.2-beta-java.1'
+implementation 'com.github:copilot-sdk-java:1.0.0-beta-java.3'
 ```
 
 ## Quick Start

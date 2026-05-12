@@ -33,10 +33,10 @@ run_test() {
     
     if $test_func; then
         echo -e "${GREEN}PASSED${NC}"
-        ((passed++))
+        passed=$((passed + 1))
     else
         echo -e "${RED}FAILED${NC}"
-        ((failed++))
+        failed=$((failed + 1))
     fi
 }
 
@@ -180,6 +180,71 @@ EOF
     fi
 }
 
+# Test 6: Beta-java version format (e.g., 1.0.0-beta-java.N)
+test_beta_java_version() {
+    local test_file="${TEST_DIR}/test6.md"
+    cat > "$test_file" << 'EOF'
+# Changelog
+
+## [Unreleased]
+
+### Added
+- New feature
+
+## [1.0.0-beta-java.1] - 2026-05-01
+
+[Unreleased]: https://github.com/test/repo/compare/v1.0.0-beta-java.1...HEAD
+[1.0.0-beta-java.1]: https://github.com/test/repo/compare/v0.3.0-java.2...v1.0.0-beta-java.1
+[0.3.0-java.2]: https://github.com/test/repo/releases/tag/0.3.0-java.2
+EOF
+
+    CHANGELOG_FILE="$test_file" bash "$UPDATE_SCRIPT" 1.0.0-beta-java.2 > /dev/null 2>&1
+
+    # The [Unreleased] link should now point to v1.0.0-beta-java.2
+    # [1.0.0-beta-java.2] should compare from v1.0.0-beta-java.1
+    if grep -q "\[Unreleased\]: https://github.com/test/repo/compare/v1.0.0-beta-java.2...HEAD" "$test_file" && \
+       grep -q "\[1.0.0-beta-java.2\]: https://github.com/test/repo/compare/v1.0.0-beta-java.1...v1.0.0-beta-java.2" "$test_file"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Test 7: No duplicate [Unreleased] links when existing [Unreleased] link is present
+test_no_duplicate_unreleased_links() {
+    local test_file="${TEST_DIR}/test7.md"
+    cat > "$test_file" << 'EOF'
+# Changelog
+
+## [Unreleased]
+
+### Added
+- New feature
+
+## [1.0.0-beta-java.2] - 2026-05-08
+
+## [1.0.0-beta-java.1] - 2026-05-05
+
+[Unreleased]: https://github.com/test/repo/compare/v1.0.0-beta-java.2...HEAD
+[1.0.0-beta-java.2]: https://github.com/test/repo/compare/v1.0.0-beta-java.1...v1.0.0-beta-java.2
+[1.0.0-beta-java.1]: https://github.com/test/repo/compare/v0.3.0-java.2...v1.0.0-beta-java.1
+[0.3.0-java.2]: https://github.com/test/repo/releases/tag/0.3.0-java.2
+EOF
+
+    CHANGELOG_FILE="$test_file" bash "$UPDATE_SCRIPT" 1.0.0-beta-java.3 > /dev/null 2>&1
+
+    # Count [Unreleased] link definitions - there should be exactly one
+    local unreleased_count
+    unreleased_count=$(grep -c "^\[Unreleased\]:" "$test_file")
+    if [ "$unreleased_count" -eq 1 ] && \
+       grep -q "\[Unreleased\]: https://github.com/test/repo/compare/v1.0.0-beta-java.3...HEAD" "$test_file" && \
+       grep -q "\[1.0.0-beta-java.3\]: https://github.com/test/repo/compare/v1.0.0-beta-java.2...v1.0.0-beta-java.3" "$test_file"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Run all tests
 echo "Running CHANGELOG update script tests..."
 echo ""
@@ -189,6 +254,8 @@ run_test "Handle CHANGELOG without Unreleased link" test_no_unreleased_link
 run_test "Preserve content structure" test_preserve_content
 run_test "Error handling - no Unreleased section" test_no_unreleased_section
 run_test "Multiple version handling" test_multiple_versions
+run_test "Beta-java version format (e.g., 1.0.0-beta-java.N)" test_beta_java_version
+run_test "No duplicate [Unreleased] links when existing link is present" test_no_duplicate_unreleased_links
 
 echo ""
 echo "=========================================="

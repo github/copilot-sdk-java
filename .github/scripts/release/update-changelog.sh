@@ -45,6 +45,7 @@ BEGIN {
     links_section = 0
     first_version_link = ""
     repo_url = ""
+    unreleased_link_handled = 0
 }
 
 # Track if we are in the links section at the bottom
@@ -53,7 +54,7 @@ BEGIN {
 }
 
 # Capture the repository URL from the first version link
-links_section && repo_url == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?\]:/ {
+links_section && repo_url == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+(-(beta-)?java(-preview)?\.[0-9]+)?\]:/ {
     match($0, /(https:\/\/github\.com\/[^\/]+\/[^\/]+)\//, arr)
     if (arr[1] != "") {
         repo_url = arr[1]
@@ -86,25 +87,27 @@ skip_old_reference_impl && /^[[:space:]]*$/ { next }
 skip_old_reference_impl && /^> \*\*Reference implementation sync:\*\*/ { next }
 skip_old_reference_impl && !/^[[:space:]]*$/ && !/^> \*\*Reference implementation sync:\*\*/ { skip_old_reference_impl = 0 }
 
+# Update existing [Unreleased] link if present (must be checked before the first-version-link block)
+links_section && /^\[Unreleased\]:/ {
+    # Get the previous version and repo URL from the existing link
+    match($0, /(https:\/\/github\.com\/[^\/]+\/[^\/]+)\/compare\/v([0-9]+\.[0-9]+\.[0-9]+(-(beta-)?java(-preview)?\.[0-9]+)?)\.\.\.HEAD/, arr)
+    if (arr[1] != "" && arr[2] != "") {
+        print "[Unreleased]: " arr[1] "/compare/v" version "...HEAD"
+        print "[" version "]: " arr[1] "/compare/v" arr[2] "...v" version
+        unreleased_link_handled = 1
+        next
+    }
+}
+
 # Capture the first version link to get the previous version
-links_section && first_version_link == "" && /^\[[0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?\]:/ {
-    match($0, /\[([0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?)\]:/, arr)
+# Only fires if the [Unreleased] link was not already handled above
+links_section && first_version_link == "" && !unreleased_link_handled && /^\[[0-9]+\.[0-9]+\.[0-9]+(-(beta-)?java(-preview)?\.[0-9]+)?\]:/ {
+    match($0, /\[([0-9]+\.[0-9]+\.[0-9]+(-(beta-)?java(-preview)?\.[0-9]+)?)\]:/, arr)
     if (arr[1] != "" && repo_url != "") {
         first_version_link = arr[1]
         # Insert Unreleased and new version links before first version link
         print "[Unreleased]: " repo_url "/compare/v" version "...HEAD"
         print "[" version "]: " repo_url "/compare/v" arr[1] "...v" version
-    }
-}
-
-# Update existing [Unreleased] link if present
-links_section && /^\[Unreleased\]:/ {
-    # Get the previous version and repo URL from the existing link
-    match($0, /(https:\/\/github\.com\/[^\/]+\/[^\/]+)\/compare\/v([0-9]+\.[0-9]+\.[0-9]+(-java\.[0-9]+)?)\.\.\.HEAD/, arr)
-    if (arr[1] != "" && arr[2] != "") {
-        print "[Unreleased]: " arr[1] "/compare/v" version "...HEAD"
-        print "[" version "]: " arr[1] "/compare/v" arr[2] "...v" version
-        next
     }
 }
 
