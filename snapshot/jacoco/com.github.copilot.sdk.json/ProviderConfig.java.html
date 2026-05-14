@@ -9,6 +9,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.OptionalInt;
 
 /**
  * Configuration for a custom API provider (BYOK - Bring Your Own Key).
@@ -34,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L37">public class ProviderConfig {</span>
+<span class="fc" id="L39">public class ProviderConfig {</span>
 
     @JsonProperty(&quot;type&quot;)
     private String type;
@@ -75,7 +77,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the provider type (e.g., &quot;openai&quot;, &quot;azure&quot;)
      */
     public String getType() {
-<span class="fc" id="L78">        return type;</span>
+<span class="fc" id="L80">        return type;</span>
     }
 
     /**
@@ -92,8 +94,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setType(String type) {
-<span class="fc" id="L95">        this.type = type;</span>
-<span class="fc" id="L96">        return this;</span>
+<span class="fc" id="L97">        this.type = type;</span>
+<span class="fc" id="L98">        return this;</span>
     }
 
     /**
@@ -102,7 +104,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the wire API format
      */
     public String getWireApi() {
-<span class="fc" id="L105">        return wireApi;</span>
+<span class="fc" id="L107">        return wireApi;</span>
     }
 
     /**
@@ -116,8 +118,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setWireApi(String wireApi) {
-<span class="fc" id="L119">        this.wireApi = wireApi;</span>
-<span class="fc" id="L120">        return this;</span>
+<span class="fc" id="L121">        this.wireApi = wireApi;</span>
+<span class="fc" id="L122">        return this;</span>
     }
 
     /**
@@ -126,7 +128,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the API base URL
      */
     public String getBaseUrl() {
-<span class="fc" id="L129">        return baseUrl;</span>
+<span class="fc" id="L131">        return baseUrl;</span>
     }
 
     /**
@@ -139,8 +141,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setBaseUrl(String baseUrl) {
-<span class="fc" id="L142">        this.baseUrl = baseUrl;</span>
-<span class="fc" id="L143">        return this;</span>
+<span class="fc" id="L144">        this.baseUrl = baseUrl;</span>
+<span class="fc" id="L145">        return this;</span>
     }
 
     /**
@@ -149,7 +151,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the API key
      */
     public String getApiKey() {
-<span class="fc" id="L152">        return apiKey;</span>
+<span class="fc" id="L154">        return apiKey;</span>
     }
 
     /**
@@ -160,8 +162,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setApiKey(String apiKey) {
-<span class="fc" id="L163">        this.apiKey = apiKey;</span>
-<span class="fc" id="L164">        return this;</span>
+<span class="fc" id="L165">        this.apiKey = apiKey;</span>
+<span class="fc" id="L166">        return this;</span>
     }
 
     /**
@@ -170,7 +172,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the bearer token
      */
     public String getBearerToken() {
-<span class="fc" id="L173">        return bearerToken;</span>
+<span class="fc" id="L175">        return bearerToken;</span>
     }
 
     /**
@@ -188,8 +190,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setBearerToken(String bearerToken) {
-<span class="fc" id="L191">        this.bearerToken = bearerToken;</span>
-<span class="fc" id="L192">        return this;</span>
+<span class="fc" id="L193">        this.bearerToken = bearerToken;</span>
+<span class="fc" id="L194">        return this;</span>
     }
 
     /**
@@ -198,7 +200,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the Azure options
      */
     public AzureOptions getAzure() {
-<span class="fc" id="L201">        return azure;</span>
+<span class="fc" id="L203">        return azure;</span>
     }
 
     /**
@@ -210,8 +212,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @see AzureOptions
      */
     public ProviderConfig setAzure(AzureOptions azure) {
-<span class="fc" id="L213">        this.azure = azure;</span>
-<span class="fc" id="L214">        return this;</span>
+<span class="fc" id="L215">        this.azure = azure;</span>
+<span class="fc" id="L216">        return this;</span>
     }
 
     /**
@@ -220,7 +222,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the headers map, or {@code null} if not set
      */
     public Map&lt;String, String&gt; getHeaders() {
-<span class="fc bfc" id="L223" title="All 2 branches covered.">        return headers == null ? null : Collections.unmodifiableMap(headers);</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        return headers == null ? null : Collections.unmodifiableMap(headers);</span>
     }
 
     /**
@@ -234,8 +236,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setHeaders(Map&lt;String, String&gt; headers) {
-<span class="fc" id="L237">        this.headers = headers;</span>
-<span class="fc" id="L238">        return this;</span>
+<span class="fc" id="L239">        this.headers = headers;</span>
+<span class="fc" id="L240">        return this;</span>
     }
 
     /**
@@ -248,7 +250,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the model ID, or {@code null} if not set
      */
     public String getModelId() {
-<span class="fc" id="L251">        return modelId;</span>
+<span class="fc" id="L253">        return modelId;</span>
     }
 
     /**
@@ -264,8 +266,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setModelId(String modelId) {
-<span class="fc" id="L267">        this.modelId = modelId;</span>
-<span class="fc" id="L268">        return this;</span>
+<span class="fc" id="L269">        this.modelId = modelId;</span>
+<span class="fc" id="L270">        return this;</span>
     }
 
     /**
@@ -274,7 +276,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the wire model name, or {@code null} if not set
      */
     public String getWireModel() {
-<span class="fc" id="L277">        return wireModel;</span>
+<span class="fc" id="L279">        return wireModel;</span>
     }
 
     /**
@@ -289,17 +291,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this config for method chaining
      */
     public ProviderConfig setWireModel(String wireModel) {
-<span class="fc" id="L292">        this.wireModel = wireModel;</span>
-<span class="fc" id="L293">        return this;</span>
+<span class="fc" id="L294">        this.wireModel = wireModel;</span>
+<span class="fc" id="L295">        return this;</span>
     }
 
     /**
      * Gets the maximum prompt token override.
      *
-     * @return the max prompt tokens, or {@code null} if not set
+     * @return an {@link java.util.OptionalInt} containing the max prompt tokens, or
+     *         {@link java.util.OptionalInt#empty()} if not set
      */
-    public Integer getMaxPromptTokens() {
-<span class="fc" id="L302">        return maxPromptTokens;</span>
+    @JsonIgnore
+    public OptionalInt getMaxPromptTokens() {
+<span class="fc bfc" id="L306" title="All 2 branches covered.">        return maxPromptTokens == null ? OptionalInt.empty() : OptionalInt.of(maxPromptTokens);</span>
     }
 
     /**
@@ -314,18 +318,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      *            the max prompt tokens
      * @return this config for method chaining
      */
-    public ProviderConfig setMaxPromptTokens(Integer maxPromptTokens) {
-<span class="fc" id="L318">        this.maxPromptTokens = maxPromptTokens;</span>
-<span class="fc" id="L319">        return this;</span>
+    public ProviderConfig setMaxPromptTokens(int maxPromptTokens) {
+<span class="fc" id="L322">        this.maxPromptTokens = maxPromptTokens;</span>
+<span class="fc" id="L323">        return this;</span>
+    }
+
+    /**
+     * Clears the maxPromptTokens setting, reverting to the default behavior.
+     *
+     * @return this instance for method chaining
+     */
+    public ProviderConfig clearMaxPromptTokens() {
+<span class="fc" id="L332">        this.maxPromptTokens = null;</span>
+<span class="fc" id="L333">        return this;</span>
     }
 
     /**
      * Gets the maximum output token override.
      *
-     * @return the max output tokens, or {@code null} if not set
+     * @return an {@link java.util.OptionalInt} containing the max output tokens, or
+     *         {@link java.util.OptionalInt#empty()} if not set
      */
-    public Integer getMaxOutputTokens() {
-<span class="fc" id="L328">        return maxOutputTokens;</span>
+    @JsonIgnore
+    public OptionalInt getMaxOutputTokens() {
+<span class="fc bfc" id="L344" title="All 2 branches covered.">        return maxOutputTokens == null ? OptionalInt.empty() : OptionalInt.of(maxOutputTokens);</span>
     }
 
     /**
@@ -338,9 +354,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      *            the max output tokens
      * @return this config for method chaining
      */
-    public ProviderConfig setMaxOutputTokens(Integer maxOutputTokens) {
-<span class="fc" id="L342">        this.maxOutputTokens = maxOutputTokens;</span>
-<span class="fc" id="L343">        return this;</span>
+    public ProviderConfig setMaxOutputTokens(int maxOutputTokens) {
+<span class="fc" id="L358">        this.maxOutputTokens = maxOutputTokens;</span>
+<span class="fc" id="L359">        return this;</span>
     }
+
+    /**
+     * Clears the maxOutputTokens setting, reverting to the default behavior.
+     *
+     * @return this instance for method chaining
+     */
+    public ProviderConfig clearMaxOutputTokens() {
+<span class="fc" id="L368">        this.maxOutputTokens = null;</span>
+<span class="fc" id="L369">        return this;</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

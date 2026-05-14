@@ -4,7 +4,11 @@
 
 package com.github.copilot.sdk.json;
 
+import java.util.Optional;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * UI-specific capability flags for a session.
@@ -12,18 +16,19 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L15">public class SessionUiCapabilities {</span>
+<span class="fc" id="L19">public class SessionUiCapabilities {</span>
 
+    @JsonProperty(&quot;elicitation&quot;)
     private Boolean elicitation;
 
     /**
      * Returns whether the host supports interactive elicitation dialogs.
      *
-     * @return {@code true} if elicitation is supported, {@code false} or
-     *         {@code null} otherwise
+     * @return an {@link Optional} containing the boolean value, or empty if not set
      */
-    public Boolean getElicitation() {
-<span class="fc" id="L26">        return elicitation;</span>
+    @JsonIgnore
+    public Optional&lt;Boolean&gt; getElicitation() {
+<span class="fc" id="L31">        return Optional.ofNullable(elicitation);</span>
     }
 
     /**
@@ -33,9 +38,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      *            {@code true} if elicitation is supported
      * @return this instance for method chaining
      */
-    public SessionUiCapabilities setElicitation(Boolean elicitation) {
-<span class="fc" id="L37">        this.elicitation = elicitation;</span>
-<span class="fc" id="L38">        return this;</span>
+    public SessionUiCapabilities setElicitation(boolean elicitation) {
+<span class="fc" id="L42">        this.elicitation = elicitation;</span>
+<span class="fc" id="L43">        return this;</span>
     }
+
+    /**
+     * Clears the elicitation setting, reverting to the default behavior.
+     *
+     * @return this instance for method chaining
+     */
+    public SessionUiCapabilities clearElicitation() {
+<span class="fc" id="L52">        this.elicitation = null;</span>
+<span class="fc" id="L53">        return this;</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

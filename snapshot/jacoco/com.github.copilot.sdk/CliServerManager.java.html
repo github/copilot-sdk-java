@@ -90,16 +90,16 @@ final class CliServerManager {
         }
 
         // Default UseLoggedInUser to false when GitHubToken is provided
-<span class="fc bfc" id="L93" title="All 2 branches covered.">        boolean useLoggedInUser = options.getUseLoggedInUser() != null</span>
-<span class="fc" id="L94">                ? options.getUseLoggedInUser()</span>
-<span class="pc bpc" id="L95" title="1 of 4 branches missed.">                : (options.getGitHubToken() == null || options.getGitHubToken().isEmpty());</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (!useLoggedInUser) {</span>
-<span class="fc" id="L97">            args.add(&quot;--no-auto-login&quot;);</span>
+<span class="fc" id="L93">        boolean useLoggedInUser = options.getUseLoggedInUser()</span>
+<span class="pc bpc" id="L94" title="1 of 4 branches missed.">                .orElse(options.getGitHubToken() == null || options.getGitHubToken().isEmpty());</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (!useLoggedInUser) {</span>
+<span class="fc" id="L96">            args.add(&quot;--no-auto-login&quot;);</span>
         }
 
-<span class="fc bfc" id="L100" title="All 4 branches covered.">        if (options.getSessionIdleTimeoutSeconds() != null &amp;&amp; options.getSessionIdleTimeoutSeconds() &gt; 0) {</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (options.getSessionIdleTimeoutSeconds().isPresent()</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">                &amp;&amp; options.getSessionIdleTimeoutSeconds().getAsInt() &gt; 0) {</span>
 <span class="fc" id="L101">            args.add(&quot;--session-idle-timeout&quot;);</span>
-<span class="fc" id="L102">            args.add(String.valueOf(options.getSessionIdleTimeoutSeconds()));</span>
+<span class="fc" id="L102">            args.add(String.valueOf(options.getSessionIdleTimeoutSeconds().getAsInt()));</span>
         }
 
 <span class="pc bpc" id="L105" title="1 of 2 branches missed.">        if (options.isRemote()) {</span>
@@ -159,9 +159,9 @@ final class CliServerManager {
 <span class="fc bfc" id="L159" title="All 2 branches covered.">            if (telemetry.getSourceName() != null) {</span>
 <span class="fc" id="L160">                pb.environment().put(&quot;COPILOT_OTEL_SOURCE_NAME&quot;, telemetry.getSourceName());</span>
             }
-<span class="pc bpc" id="L162" title="1 of 2 branches missed.">            if (telemetry.getCaptureContent() != null) {</span>
+<span class="pc bpc" id="L162" title="1 of 2 branches missed.">            if (telemetry.getCaptureContent().isPresent()) {</span>
 <span class="fc" id="L163">                pb.environment().put(&quot;OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT&quot;,</span>
-<span class="fc bfc" id="L164" title="All 2 branches covered.">                        telemetry.getCaptureContent() ? &quot;true&quot; : &quot;false&quot;);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">                        telemetry.getCaptureContent().get() ? &quot;true&quot; : &quot;false&quot;);</span>
             }
         }
 

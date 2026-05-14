@@ -4,7 +4,10 @@
 
 package com.github.copilot.sdk.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.OptionalInt;
 
 /**
  * Options for the {@link SessionUiApi#input(String, InputOptions)} convenience
@@ -13,31 +16,33 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L16">public class InputOptions {</span>
+<span class="fc" id="L19">public class InputOptions {</span>
 
     private String title;
     private String description;
+    @JsonProperty(&quot;minLength&quot;)
     private Integer minLength;
+    @JsonProperty(&quot;maxLength&quot;)
     private Integer maxLength;
     private String format;
     private String defaultValue;
 
     /** Gets the title label for the input field. @return the title */
     public String getTitle() {
-<span class="fc" id="L27">        return title;</span>
+<span class="fc" id="L32">        return title;</span>
     }
 
     /**
      * Sets the title label for the input field. @param title the title @return this
      */
     public InputOptions setTitle(String title) {
-<span class="fc" id="L34">        this.title = title;</span>
-<span class="fc" id="L35">        return this;</span>
+<span class="fc" id="L39">        this.title = title;</span>
+<span class="fc" id="L40">        return this;</span>
     }
 
     /** Gets the descriptive text shown below the field. @return the description */
     public String getDescription() {
-<span class="fc" id="L40">        return description;</span>
+<span class="fc" id="L45">        return description;</span>
     }
 
     /**
@@ -45,36 +50,68 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * description @return this
      */
     public InputOptions setDescription(String description) {
-<span class="fc" id="L48">        this.description = description;</span>
-<span class="fc" id="L49">        return this;</span>
+<span class="fc" id="L53">        this.description = description;</span>
+<span class="fc" id="L54">        return this;</span>
     }
 
-    /** Gets the minimum character length. @return the min length */
-    public Integer getMinLength() {
-<span class="fc" id="L54">        return minLength;</span>
+    /**
+     * Gets the minimum character length.
+     *
+     * @return an {@link java.util.OptionalInt} containing the min length, or
+     *         {@link java.util.OptionalInt#empty()} if not set
+     */
+    @JsonIgnore
+    public OptionalInt getMinLength() {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        return minLength == null ? OptionalInt.empty() : OptionalInt.of(minLength);</span>
     }
 
     /**
      * Sets the minimum character length. @param minLength the min length @return
      * this
      */
-    public InputOptions setMinLength(Integer minLength) {
-<span class="fc" id="L62">        this.minLength = minLength;</span>
-<span class="fc" id="L63">        return this;</span>
+    public InputOptions setMinLength(int minLength) {
+<span class="fc" id="L73">        this.minLength = minLength;</span>
+<span class="fc" id="L74">        return this;</span>
     }
 
-    /** Gets the maximum character length. @return the max length */
-    public Integer getMaxLength() {
-<span class="fc" id="L68">        return maxLength;</span>
+    /**
+     * Clears the minLength setting, reverting to the default behavior.
+     *
+     * @return this instance for method chaining
+     */
+    public InputOptions clearMinLength() {
+<span class="fc" id="L83">        this.minLength = null;</span>
+<span class="fc" id="L84">        return this;</span>
+    }
+
+    /**
+     * Gets the maximum character length.
+     *
+     * @return an {@link java.util.OptionalInt} containing the max length, or
+     *         {@link java.util.OptionalInt#empty()} if not set
+     */
+    @JsonIgnore
+    public OptionalInt getMaxLength() {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        return maxLength == null ? OptionalInt.empty() : OptionalInt.of(maxLength);</span>
     }
 
     /**
      * Sets the maximum character length. @param maxLength the max length @return
      * this
      */
-    public InputOptions setMaxLength(Integer maxLength) {
-<span class="fc" id="L76">        this.maxLength = maxLength;</span>
-<span class="fc" id="L77">        return this;</span>
+    public InputOptions setMaxLength(int maxLength) {
+<span class="fc" id="L103">        this.maxLength = maxLength;</span>
+<span class="fc" id="L104">        return this;</span>
+    }
+
+    /**
+     * Clears the maxLength setting, reverting to the default behavior.
+     *
+     * @return this instance for method chaining
+     */
+    public InputOptions clearMaxLength() {
+<span class="fc" id="L113">        this.maxLength = null;</span>
+<span class="fc" id="L114">        return this;</span>
     }
 
     /**
@@ -84,20 +121,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the format hint
      */
     public String getFormat() {
-<span class="fc" id="L87">        return format;</span>
+<span class="fc" id="L124">        return format;</span>
     }
 
     /** Sets the semantic format hint. @param format the format @return this */
     public InputOptions setFormat(String format) {
-<span class="fc" id="L92">        this.format = format;</span>
-<span class="fc" id="L93">        return this;</span>
+<span class="fc" id="L129">        this.format = format;</span>
+<span class="fc" id="L130">        return this;</span>
     }
 
     /**
      * Gets the default value pre-populated in the field. @return the default value
      */
     public String getDefaultValue() {
-<span class="fc" id="L100">        return defaultValue;</span>
+<span class="fc" id="L137">        return defaultValue;</span>
     }
 
     /**
@@ -105,8 +142,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * default value @return this
      */
     public InputOptions setDefaultValue(String defaultValue) {
-<span class="fc" id="L108">        this.defaultValue = defaultValue;</span>
-<span class="fc" id="L109">        return this;</span>
+<span class="fc" id="L145">        this.defaultValue = defaultValue;</span>
+<span class="fc" id="L146">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

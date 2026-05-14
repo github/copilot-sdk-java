@@ -7,6 +7,9 @@ package com.github.copilot.sdk.json;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * Per-property overrides for model capabilities, deep-merged over runtime
@@ -37,7 +40,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="fc" id="L40">public class ModelCapabilitiesOverride {</span>
+<span class="fc" id="L43">public class ModelCapabilitiesOverride {</span>
 
     @JsonProperty(&quot;supports&quot;)
     private Supports supports;
@@ -51,7 +54,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the supports overrides, or {@code null} if not set
      */
     public Supports getSupports() {
-<span class="fc" id="L54">        return supports;</span>
+<span class="fc" id="L57">        return supports;</span>
     }
 
     /**
@@ -62,8 +65,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this instance for method chaining
      */
     public ModelCapabilitiesOverride setSupports(Supports supports) {
-<span class="fc" id="L65">        this.supports = supports;</span>
-<span class="fc" id="L66">        return this;</span>
+<span class="fc" id="L68">        this.supports = supports;</span>
+<span class="fc" id="L69">        return this;</span>
     }
 
     /**
@@ -72,7 +75,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the limits overrides, or {@code null} if not set
      */
     public Limits getLimits() {
-<span class="fc" id="L75">        return limits;</span>
+<span class="fc" id="L78">        return limits;</span>
     }
 
     /**
@@ -83,8 +86,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this instance for method chaining
      */
     public ModelCapabilitiesOverride setLimits(Limits limits) {
-<span class="fc" id="L86">        this.limits = limits;</span>
-<span class="fc" id="L87">        return this;</span>
+<span class="fc" id="L89">        this.limits = limits;</span>
+<span class="fc" id="L90">        return this;</span>
     }
 
     /**
@@ -95,7 +98,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="fc" id="L98">    public static class Supports {</span>
+<span class="fc" id="L101">    public static class Supports {</span>
 
         @JsonProperty(&quot;vision&quot;)
         private Boolean vision;
@@ -106,48 +109,73 @@ import com.fasterxml.jackson.annotation.JsonProperty;
         /**
          * Gets the vision override.
          *
-         * @return {@code true} to enable vision, {@code false} to disable, or
-         *         {@code null} to use the runtime default
+         * @return an {@link java.util.Optional} containing {@code true} to enable
+         *         vision or {@code false} to disable, or
+         *         {@link java.util.Optional#empty()} to use the runtime default
          */
-        public Boolean getVision() {
-<span class="fc" id="L113">            return vision;</span>
+        @JsonIgnore
+        public Optional&lt;Boolean&gt; getVision() {
+<span class="fc" id="L118">            return Optional.ofNullable(vision);</span>
         }
 
         /**
-         * Sets whether vision (image input) is enabled.
+         * Sets whether vision (image input) is enabled. Use {@link #clearVision()} to
+         * revert to the runtime default.
          *
          * @param vision
-         *            {@code true} to enable, {@code false} to disable, or {@code null}
-         *            to use the runtime default
+         *            {@code true} to enable, {@code false} to disable
          * @return this instance for method chaining
          */
-        public Supports setVision(Boolean vision) {
-<span class="fc" id="L125">            this.vision = vision;</span>
-<span class="fc" id="L126">            return this;</span>
+        public Supports setVision(boolean vision) {
+<span class="fc" id="L130">            this.vision = vision;</span>
+<span class="fc" id="L131">            return this;</span>
+        }
+
+        /**
+         * Clears the vision setting, reverting to the default behavior.
+         *
+         * @return this instance for method chaining
+         */
+        public Supports clearVision() {
+<span class="fc" id="L140">            this.vision = null;</span>
+<span class="fc" id="L141">            return this;</span>
         }
 
         /**
          * Gets the reasoning effort override.
          *
-         * @return {@code true} to enable reasoning effort, {@code false} to disable, or
-         *         {@code null} to use the runtime default
+         * @return an {@link java.util.Optional} containing {@code true} to enable
+         *         reasoning effort or {@code false} to disable, or
+         *         {@link java.util.Optional#empty()} to use the runtime default
          */
-        public Boolean getReasoningEffort() {
-<span class="fc" id="L136">            return reasoningEffort;</span>
+        @JsonIgnore
+        public Optional&lt;Boolean&gt; getReasoningEffort() {
+<span class="fc" id="L153">            return Optional.ofNullable(reasoningEffort);</span>
         }
 
         /**
-         * Sets whether reasoning effort configuration is enabled.
+         * Sets whether reasoning effort configuration is enabled. Use
+         * {@link #clearReasoningEffort()} to revert to the runtime default.
          *
          * @param reasoningEffort
-         *            {@code true} to enable, {@code false} to disable, or {@code null}
-         *            to use the runtime default
+         *            {@code true} to enable, {@code false} to disable
          * @return this instance for method chaining
          */
-        public Supports setReasoningEffort(Boolean reasoningEffort) {
-<span class="fc" id="L148">            this.reasoningEffort = reasoningEffort;</span>
-<span class="fc" id="L149">            return this;</span>
+        public Supports setReasoningEffort(boolean reasoningEffort) {
+<span class="fc" id="L165">            this.reasoningEffort = reasoningEffort;</span>
+<span class="fc" id="L166">            return this;</span>
         }
+
+        /**
+         * Clears the reasoningEffort setting, reverting to the default behavior.
+         *
+         * @return this instance for method chaining
+         */
+        public Supports clearReasoningEffort() {
+<span class="fc" id="L175">            this.reasoningEffort = null;</span>
+<span class="fc" id="L176">            return this;</span>
+        }
+
     }
 
     /**
@@ -158,7 +186,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="fc" id="L161">    public static class Limits {</span>
+<span class="fc" id="L189">    public static class Limits {</span>
 
         @JsonProperty(&quot;max_prompt_tokens&quot;)
         private Integer maxPromptTokens;
@@ -174,8 +202,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
          *
          * @return the override value, or {@code null} to use the runtime default
          */
-        public Integer getMaxPromptTokens() {
-<span class="fc" id="L178">            return maxPromptTokens;</span>
+        @JsonIgnore
+        public OptionalInt getMaxPromptTokens() {
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            return maxPromptTokens == null ? OptionalInt.empty() : OptionalInt.of(maxPromptTokens);</span>
         }
 
         /**
@@ -185,9 +214,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
          *            the override value, or {@code null} to use the runtime default
          * @return this instance for method chaining
          */
-        public Limits setMaxPromptTokens(Integer maxPromptTokens) {
-<span class="fc" id="L189">            this.maxPromptTokens = maxPromptTokens;</span>
-<span class="fc" id="L190">            return this;</span>
+        public Limits setMaxPromptTokens(int maxPromptTokens) {
+<span class="fc" id="L218">            this.maxPromptTokens = maxPromptTokens;</span>
+<span class="fc" id="L219">            return this;</span>
+        }
+
+        /**
+         * Clears the maxPromptTokens setting, reverting to the default behavior.
+         *
+         * @return this instance for method chaining
+         */
+        public Limits clearMaxPromptTokens() {
+<span class="fc" id="L228">            this.maxPromptTokens = null;</span>
+<span class="fc" id="L229">            return this;</span>
         }
 
         /**
@@ -195,8 +234,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
          *
          * @return the override value, or {@code null} to use the runtime default
          */
-        public Integer getMaxOutputTokens() {
-<span class="fc" id="L199">            return maxOutputTokens;</span>
+        @JsonIgnore
+        public OptionalInt getMaxOutputTokens() {
+<span class="fc bfc" id="L239" title="All 2 branches covered.">            return maxOutputTokens == null ? OptionalInt.empty() : OptionalInt.of(maxOutputTokens);</span>
         }
 
         /**
@@ -206,9 +246,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
          *            the override value, or {@code null} to use the runtime default
          * @return this instance for method chaining
          */
-        public Limits setMaxOutputTokens(Integer maxOutputTokens) {
-<span class="fc" id="L210">            this.maxOutputTokens = maxOutputTokens;</span>
-<span class="fc" id="L211">            return this;</span>
+        public Limits setMaxOutputTokens(int maxOutputTokens) {
+<span class="fc" id="L250">            this.maxOutputTokens = maxOutputTokens;</span>
+<span class="fc" id="L251">            return this;</span>
+        }
+
+        /**
+         * Clears the maxOutputTokens setting, reverting to the default behavior.
+         *
+         * @return this instance for method chaining
+         */
+        public Limits clearMaxOutputTokens() {
+<span class="fc" id="L260">            this.maxOutputTokens = null;</span>
+<span class="fc" id="L261">            return this;</span>
         }
 
         /**
@@ -216,8 +266,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
          *
          * @return the override value, or {@code null} to use the runtime default
          */
-        public Integer getMaxContextWindowTokens() {
-<span class="fc" id="L220">            return maxContextWindowTokens;</span>
+        @JsonIgnore
+        public OptionalInt getMaxContextWindowTokens() {
+<span class="fc bfc" id="L271" title="All 2 branches covered.">            return maxContextWindowTokens == null ? OptionalInt.empty() : OptionalInt.of(maxContextWindowTokens);</span>
         }
 
         /**
@@ -227,10 +278,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
          *            the override value, or {@code null} to use the runtime default
          * @return this instance for method chaining
          */
-        public Limits setMaxContextWindowTokens(Integer maxContextWindowTokens) {
-<span class="fc" id="L231">            this.maxContextWindowTokens = maxContextWindowTokens;</span>
-<span class="fc" id="L232">            return this;</span>
+        public Limits setMaxContextWindowTokens(int maxContextWindowTokens) {
+<span class="fc" id="L282">            this.maxContextWindowTokens = maxContextWindowTokens;</span>
+<span class="fc" id="L283">            return this;</span>
         }
+
+        /**
+         * Clears the maxContextWindowTokens setting, reverting to the default behavior.
+         *
+         * @return this instance for method chaining
+         */
+        public Limits clearMaxContextWindowTokens() {
+<span class="fc" id="L292">            this.maxContextWindowTokens = null;</span>
+<span class="fc" id="L293">            return this;</span>
+        }
+
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
