@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -19,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.6
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="fc" id="L22">public class UserInputRequest {</span>
+@JsonInclude(JsonInclude.Include.NON_NULL)
+<span class="fc" id="L24">public class UserInputRequest {</span>
 
     @JsonProperty(&quot;question&quot;)
     private String question;
@@ -36,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the question text
      */
     public String getQuestion() {
-<span class="fc" id="L39">        return question;</span>
+<span class="fc" id="L41">        return question;</span>
     }
 
     /**
@@ -47,8 +49,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this instance for method chaining
      */
     public UserInputRequest setQuestion(String question) {
-<span class="fc" id="L50">        this.question = question;</span>
-<span class="fc" id="L51">        return this;</span>
+<span class="fc" id="L52">        this.question = question;</span>
+<span class="fc" id="L53">        return this;</span>
     }
 
     /**
@@ -57,7 +59,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return the list of choices, or {@code null} for freeform input
      */
     public List&lt;String&gt; getChoices() {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        return choices == null ? null : Collections.unmodifiableList(choices);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        return choices == null ? null : Collections.unmodifiableList(choices);</span>
     }
 
     /**
@@ -68,8 +70,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this instance for method chaining
      */
     public UserInputRequest setChoices(List&lt;String&gt; choices) {
-<span class="fc" id="L71">        this.choices = choices;</span>
-<span class="fc" id="L72">        return this;</span>
+<span class="fc" id="L73">        this.choices = choices;</span>
+<span class="fc" id="L74">        return this;</span>
     }
 
     /**
@@ -79,7 +81,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      *         specified
      */
     public Boolean getAllowFreeform() {
-<span class="nc" id="L82">        return allowFreeform;</span>
+<span class="fc" id="L84">        return allowFreeform;</span>
     }
 
     /**
@@ -90,8 +92,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this instance for method chaining
      */
     public UserInputRequest setAllowFreeform(Boolean allowFreeform) {
-<span class="fc" id="L93">        this.allowFreeform = allowFreeform;</span>
-<span class="fc" id="L94">        return this;</span>
+<span class="fc" id="L95">        this.allowFreeform = allowFreeform;</span>
+<span class="fc" id="L96">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -4,12 +4,15 @@
 
 package com.github.copilot.sdk.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * UI-specific capability flags for a session.
  *
  * @since 1.0.0
  */
-<span class="fc" id="L12">public class SessionUiCapabilities {</span>
+@JsonInclude(JsonInclude.Include.NON_NULL)
+<span class="fc" id="L15">public class SessionUiCapabilities {</span>
 
     private Boolean elicitation;
 
@@ -20,7 +23,7 @@ package com.github.copilot.sdk.json;
      *         {@code null} otherwise
      */
     public Boolean getElicitation() {
-<span class="fc" id="L23">        return elicitation;</span>
+<span class="fc" id="L26">        return elicitation;</span>
     }
 
     /**
@@ -31,8 +34,8 @@ package com.github.copilot.sdk.json;
      * @return this instance for method chaining
      */
     public SessionUiCapabilities setElicitation(Boolean elicitation) {
-<span class="fc" id="L34">        this.elicitation = elicitation;</span>
-<span class="fc" id="L35">        return this;</span>
+<span class="fc" id="L37">        this.elicitation = elicitation;</span>
+<span class="fc" id="L38">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
