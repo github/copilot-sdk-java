@@ -43,7 +43,7 @@ function toCamelCase(name: string): string {
 }
 
 function toEnumConstant(value: string): string {
-    return value.toUpperCase().replace(/[-. ]/g, "_");
+    return value.toUpperCase().replace(/[-. /:]/g, "_").replace(/^_+/, "").replace(/_+/g, "_");
 }
 
 // ── Schema path resolution ───────────────────────────────────────────────────
