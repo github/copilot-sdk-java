@@ -1,1 +1,1 @@
-moduleSearchIndex = [];updateSearchResults();
+moduleSearchIndex = [{"l":"com.github.copilot.sdk.java"}];updateSearchResults();
