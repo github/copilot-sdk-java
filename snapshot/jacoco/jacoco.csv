@@ -572,7 +572,7 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk,JsonRpcException,0,10,0,0,0,4,
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,EventErrorPolicy,0,15,0,0,0,3,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,ExtractedTransforms,0,9,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,ConnectionState,0,27,0,0,0,5,0,1,0,1
-GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession,980,1471,94,110,222,360,98,105,33,66
+GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession,980,1471,93,111,222,360,97,106,33,66
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession.AgentSelectResponse,6,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotClient.Connection,0,12,0,0,0,1,0,1,0,1
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,SdkProtocolVersion,0,24,0,0,0,7,0,4,0,4
