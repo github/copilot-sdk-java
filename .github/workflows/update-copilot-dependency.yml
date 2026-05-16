@@ -147,6 +147,7 @@ jobs:
           if gh pr view "$BRANCH" >/dev/null 2>&1; then
             echo "Pull request for branch '$BRANCH' already exists; updated branch only."
             PR_NUMBER=$(gh pr view "$BRANCH" --json number --jq .number)
+            gh pr edit "$PR_NUMBER" --add-label dependencies
           else
             PR_NUMBER=$(gh pr create \
               --title "Update @github/copilot to $VERSION" \

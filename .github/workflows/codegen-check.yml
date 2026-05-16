@@ -128,6 +128,9 @@ jobs:
         run: |
           ERROR_SUMMARY=$(cat /tmp/error-summary.txt)
 
+          # Ensure PR has dependencies label (required by codegen-agentic-fix safe-output)
+          gh pr edit "$PR_NUMBER" --add-label dependencies
+
           gh workflow run codegen-agentic-fix.lock.yml \
             -f branch="$BRANCH" \
             -f pr_number="$PR_NUMBER" \
