@@ -321,7 +321,7 @@ public final class CopilotSession implements AutoCloseable {
 <span class="fc bfc" id="L321" title="All 2 branches covered.">        if (current == null) {</span>
 <span class="fc" id="L322">            synchronized (this) {</span>
 <span class="fc" id="L323">                current = sessionRpc;</span>
-<span class="fc bfc" id="L324" title="All 2 branches covered.">                if (current == null) {</span>
+<span class="pc bpc" id="L324" title="1 of 2 branches missed.">                if (current == null) {</span>
 <span class="fc" id="L325">                    sessionRpc = current = new SessionRpc(rpc::invoke, sessionId);</span>
                 }
 <span class="fc" id="L327">            }</span>
