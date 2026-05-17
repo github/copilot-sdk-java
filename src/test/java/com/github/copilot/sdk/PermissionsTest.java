@@ -112,6 +112,17 @@ public class PermissionsTest {
         try (CopilotClient client = ctx.createClient()) {
             CopilotSession session = client.createSession(config).get();
 
+            // Regression check for https://github.com/github/copilot-sdk/issues/1194:
+            // the reject decision must round-trip through the CLI with its discriminator
+            // intact so the agent surfaces the user-rejected error to the model.
+            final boolean[] userRejectedToolCall = {false};
+            session.on(ToolExecutionCompleteEvent.class, evt -> {
+                if (!evt.getData().success() && evt.getData().error() != null && evt.getData().error().message() != null
+                        && evt.getData().error().message().toLowerCase().contains("user rejected")) {
+                    userRejectedToolCall[0] = true;
+                }
+            });
+
             String originalContent = "protected content";
             Path testFile = ctx.getWorkDir().resolve("protected.txt");
             Files.writeString(testFile, originalContent);
@@ -119,6 +130,9 @@ public class PermissionsTest {
             session.sendAndWait(
                     new MessageOptions().setPrompt("Edit protected.txt and replace 'protected' with 'hacked'."))
                     .get(60, TimeUnit.SECONDS);
+
+            assertTrue(userRejectedToolCall[0],
+                    "Expected a tool.execution_complete event whose error indicates the user rejected the call.");
 
             // Verify the file was NOT modified
             String content = Files.readString(testFile);
