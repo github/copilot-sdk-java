@@ -580,4 +580,4 @@ GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession.SessionUiApiImp
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,LoggingHelpers,14,51,3,3,4,10,3,3,0,3
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession.AgentGetCurrentResponse,6,0,0,0,1,0,1,0,1,0
 GitHub Copilot SDK :: Java,com.github.copilot.sdk,CopilotSession.AgentListResponse,6,0,0,0,1,0,1,0,1,0
-GitHub Copilot SDK :: Java,com.github.copilot.sdk,CliServerManager,87,557,20,66,24,124,18,39,1,13
+GitHub Copilot SDK :: Java,com.github.copilot.sdk,CliServerManager,81,563,20,66,22,126,18,39,1,13
