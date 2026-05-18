@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.processing.Generated;
 
 /**
- * Request parameters for the {@code session.mode.set} RPC method.
+ * Agent interaction mode to apply to the session.
  *
  * @since 1.0.0
  */

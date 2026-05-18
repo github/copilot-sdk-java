@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.processing.Generated;
 
 /**
- * The {@code session.mcp_server_status_changed} session event.
+ * Session event "session.mcp_server_status_changed".
  *
  * @since 1.0.0
  */
