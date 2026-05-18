@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.processing.Generated;
 
 /**
- * The {@code exit_plan_mode.completed} session event.
+ * Session event "exit_plan_mode.completed". Plan mode exit completion with the user's approval decision and optional feedback
  *
  * @since 1.0.0
  */

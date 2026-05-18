@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.processing.Generated;
 
 /**
- * The {@code auto_mode_switch.completed} session event.
+ * Session event "auto_mode_switch.completed". Auto mode switch completion notification
  *
  * @since 1.0.0
  */

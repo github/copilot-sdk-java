@@ -14,7 +14,7 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 
 /**
- * The {@code exit_plan_mode.requested} session event.
+ * Session event "exit_plan_mode.requested". Plan approval request with plan content and available user actions
  *
  * @since 1.0.0
  */

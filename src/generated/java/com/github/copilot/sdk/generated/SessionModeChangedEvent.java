@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.processing.Generated;
 
 /**
- * The {@code session.mode_changed} session event.
+ * Session event "session.mode_changed". Agent mode change details including previous and new modes
  *
  * @since 1.0.0
  */
