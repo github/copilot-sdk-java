@@ -53,6 +53,7 @@ Called **before** a tool executes. Use this to:
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `getSessionId()` | `String` | Runtime session ID of the session that triggered the hook |
 | `getToolName()` | `String` | Name of the tool being called |
 | `getToolArgs()` | `JsonNode` | Arguments passed to the tool |
 | `getCwd()` | `String` | Current working directory |
@@ -130,6 +131,7 @@ Called **after** a tool executes. Use this to:
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `getSessionId()` | `String` | Runtime session ID of the session that triggered the hook |
 | `getToolName()` | `String` | Name of the tool that was called |
 | `getToolArgs()` | `JsonNode` | Arguments that were passed |
 | `getToolResult()` | `JsonNode` | Result from the tool |
@@ -187,8 +189,9 @@ Called when the user submits a prompt, before the LLM processes it. This is an o
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `sessionId()` | `String` | Runtime session ID of the session that triggered the hook |
 | `prompt()` | `String` | The user's prompt text |
-| `getTimestamp()` | `long` | Timestamp in milliseconds |
+| `timestamp()` | `long` | Timestamp in milliseconds |
 
 ### Output
 
@@ -221,8 +224,9 @@ Called when a session starts (either new or resumed).
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `sessionId()` | `String` | Runtime session ID of the session that triggered the hook |
 | `source()` | `String` | `"startup"`, `"resume"`, or `"new"` |
-| `getTimestamp()` | `long` | Timestamp in milliseconds |
+| `timestamp()` | `long` | Timestamp in milliseconds |
 
 ### Output
 
@@ -253,8 +257,9 @@ Called when a session ends.
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `sessionId()` | `String` | Runtime session ID of the session that triggered the hook |
 | `reason()` | `String` | Why the session ended |
-| `getTimestamp()` | `long` | Timestamp in milliseconds |
+| `timestamp()` | `long` | Timestamp in milliseconds |
 
 ### Output
 
