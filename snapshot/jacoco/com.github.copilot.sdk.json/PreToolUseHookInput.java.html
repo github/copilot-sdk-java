@@ -16,6 +16,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 <span class="fc" id="L17">public class PreToolUseHookInput {</span>
 
+    @JsonProperty(&quot;sessionId&quot;)
+    private String sessionId;
+
     @JsonProperty(&quot;timestamp&quot;)
     private long timestamp;
 
@@ -29,12 +32,33 @@ import com.fasterxml.jackson.databind.JsonNode;
     private JsonNode toolArgs;
 
     /**
+     * Gets the runtime session ID of the session that triggered the hook.
+     *
+     * @return the session ID
+     */
+    public String getSessionId() {
+<span class="fc" id="L40">        return sessionId;</span>
+    }
+
+    /**
+     * Sets the runtime session ID of the session that triggered the hook.
+     *
+     * @param sessionId
+     *            the session ID
+     * @return this instance for method chaining
+     */
+    public PreToolUseHookInput setSessionId(String sessionId) {
+<span class="fc" id="L51">        this.sessionId = sessionId;</span>
+<span class="fc" id="L52">        return this;</span>
+    }
+
+    /**
      * Gets the timestamp of the hook invocation.
      *
      * @return the timestamp in milliseconds
      */
     public long getTimestamp() {
-<span class="fc" id="L37">        return timestamp;</span>
+<span class="fc" id="L61">        return timestamp;</span>
     }
 
     /**
@@ -45,8 +69,8 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return this instance for method chaining
      */
     public PreToolUseHookInput setTimestamp(long timestamp) {
-<span class="fc" id="L48">        this.timestamp = timestamp;</span>
-<span class="fc" id="L49">        return this;</span>
+<span class="fc" id="L72">        this.timestamp = timestamp;</span>
+<span class="fc" id="L73">        return this;</span>
     }
 
     /**
@@ -55,7 +79,7 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return the working directory path
      */
     public String getCwd() {
-<span class="fc" id="L58">        return cwd;</span>
+<span class="fc" id="L82">        return cwd;</span>
     }
 
     /**
@@ -66,8 +90,8 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return this instance for method chaining
      */
     public PreToolUseHookInput setCwd(String cwd) {
-<span class="fc" id="L69">        this.cwd = cwd;</span>
-<span class="fc" id="L70">        return this;</span>
+<span class="fc" id="L93">        this.cwd = cwd;</span>
+<span class="fc" id="L94">        return this;</span>
     }
 
     /**
@@ -76,7 +100,7 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return the tool name
      */
     public String getToolName() {
-<span class="fc" id="L79">        return toolName;</span>
+<span class="fc" id="L103">        return toolName;</span>
     }
 
     /**
@@ -87,8 +111,8 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return this instance for method chaining
      */
     public PreToolUseHookInput setToolName(String toolName) {
-<span class="fc" id="L90">        this.toolName = toolName;</span>
-<span class="fc" id="L91">        return this;</span>
+<span class="fc" id="L114">        this.toolName = toolName;</span>
+<span class="fc" id="L115">        return this;</span>
     }
 
     /**
@@ -97,7 +121,7 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return the tool arguments as a JSON node
      */
     public JsonNode getToolArgs() {
-<span class="fc" id="L100">        return toolArgs;</span>
+<span class="fc" id="L124">        return toolArgs;</span>
     }
 
     /**
@@ -108,8 +132,8 @@ import com.fasterxml.jackson.databind.JsonNode;
      * @return this instance for method chaining
      */
     public PreToolUseHookInput setToolArgs(JsonNode toolArgs) {
-<span class="fc" id="L111">        this.toolArgs = toolArgs;</span>
-<span class="fc" id="L112">        return this;</span>
+<span class="fc" id="L135">        this.toolArgs = toolArgs;</span>
+<span class="fc" id="L136">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

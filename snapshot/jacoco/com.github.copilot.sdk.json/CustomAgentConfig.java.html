@@ -60,13 +60,16 @@ import java.util.Optional;
     @JsonProperty(&quot;skills&quot;)
     private List&lt;String&gt; skills;
 
+    @JsonProperty(&quot;model&quot;)
+    private String model;
+
     /**
      * Gets the unique identifier name for this agent.
      *
      * @return the agent name used for {@code @mentions}
      */
     public String getName() {
-<span class="fc" id="L69">        return name;</span>
+<span class="fc" id="L72">        return name;</span>
     }
 
     /**
@@ -80,8 +83,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setName(String name) {
-<span class="fc" id="L83">        this.name = name;</span>
-<span class="fc" id="L84">        return this;</span>
+<span class="fc" id="L86">        this.name = name;</span>
+<span class="fc" id="L87">        return this;</span>
     }
 
     /**
@@ -90,7 +93,7 @@ import java.util.Optional;
      * @return the display name shown to users
      */
     public String getDisplayName() {
-<span class="fc" id="L93">        return displayName;</span>
+<span class="fc" id="L96">        return displayName;</span>
     }
 
     /**
@@ -101,8 +104,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setDisplayName(String displayName) {
-<span class="fc" id="L104">        this.displayName = displayName;</span>
-<span class="fc" id="L105">        return this;</span>
+<span class="fc" id="L107">        this.displayName = displayName;</span>
+<span class="fc" id="L108">        return this;</span>
     }
 
     /**
@@ -111,7 +114,7 @@ import java.util.Optional;
      * @return the description of what this agent does
      */
     public String getDescription() {
-<span class="fc" id="L114">        return description;</span>
+<span class="fc" id="L117">        return description;</span>
     }
 
     /**
@@ -124,8 +127,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setDescription(String description) {
-<span class="fc" id="L127">        this.description = description;</span>
-<span class="fc" id="L128">        return this;</span>
+<span class="fc" id="L130">        this.description = description;</span>
+<span class="fc" id="L131">        return this;</span>
     }
 
     /**
@@ -134,7 +137,7 @@ import java.util.Optional;
      * @return the list of tool identifiers
      */
     public List&lt;String&gt; getTools() {
-<span class="fc bfc" id="L137" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
     }
 
     /**
@@ -148,8 +151,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setTools(List&lt;String&gt; tools) {
-<span class="fc" id="L151">        this.tools = tools;</span>
-<span class="fc" id="L152">        return this;</span>
+<span class="fc" id="L154">        this.tools = tools;</span>
+<span class="fc" id="L155">        return this;</span>
     }
 
     /**
@@ -158,7 +161,7 @@ import java.util.Optional;
      * @return the agent's system prompt
      */
     public String getPrompt() {
-<span class="fc" id="L161">        return prompt;</span>
+<span class="fc" id="L164">        return prompt;</span>
     }
 
     /**
@@ -171,8 +174,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setPrompt(String prompt) {
-<span class="fc" id="L174">        this.prompt = prompt;</span>
-<span class="fc" id="L175">        return this;</span>
+<span class="fc" id="L177">        this.prompt = prompt;</span>
+<span class="fc" id="L178">        return this;</span>
     }
 
     /**
@@ -181,7 +184,7 @@ import java.util.Optional;
      * @return the MCP servers map
      */
     public Map&lt;String, McpServerConfig&gt; getMcpServers() {
-<span class="fc bfc" id="L184" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
     }
 
     /**
@@ -192,8 +195,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setMcpServers(Map&lt;String, McpServerConfig&gt; mcpServers) {
-<span class="fc" id="L195">        this.mcpServers = mcpServers;</span>
-<span class="fc" id="L196">        return this;</span>
+<span class="fc" id="L198">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L199">        return this;</span>
     }
 
     /**
@@ -204,7 +207,7 @@ import java.util.Optional;
      */
     @JsonIgnore
     public Optional&lt;Boolean&gt; getInfer() {
-<span class="fc" id="L207">        return Optional.ofNullable(infer);</span>
+<span class="fc" id="L210">        return Optional.ofNullable(infer);</span>
     }
 
     /**
@@ -215,8 +218,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setInfer(boolean infer) {
-<span class="fc" id="L218">        this.infer = infer;</span>
-<span class="fc" id="L219">        return this;</span>
+<span class="fc" id="L221">        this.infer = infer;</span>
+<span class="fc" id="L222">        return this;</span>
     }
 
     /**
@@ -225,8 +228,8 @@ import java.util.Optional;
      * @return this instance for method chaining
      */
     public CustomAgentConfig clearInfer() {
-<span class="fc" id="L228">        this.infer = null;</span>
-<span class="fc" id="L229">        return this;</span>
+<span class="fc" id="L231">        this.infer = null;</span>
+<span class="fc" id="L232">        return this;</span>
     }
 
     /**
@@ -235,7 +238,7 @@ import java.util.Optional;
      * @return the list of skill names, or {@code null} if not set
      */
     public List&lt;String&gt; getSkills() {
-<span class="fc bfc" id="L238" title="All 2 branches covered.">        return skills == null ? null : Collections.unmodifiableList(skills);</span>
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        return skills == null ? null : Collections.unmodifiableList(skills);</span>
     }
 
     /**
@@ -252,8 +255,32 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public CustomAgentConfig setSkills(List&lt;String&gt; skills) {
-<span class="fc" id="L255">        this.skills = skills;</span>
-<span class="fc" id="L256">        return this;</span>
+<span class="fc" id="L258">        this.skills = skills;</span>
+<span class="fc" id="L259">        return this;</span>
+    }
+
+    /**
+     * Gets the model identifier for this agent.
+     *
+     * @return the model identifier, or {@code null} if not set
+     */
+    public String getModel() {
+<span class="fc" id="L268">        return model;</span>
+    }
+
+    /**
+     * Sets the model identifier for this agent.
+     * &lt;p&gt;
+     * When set, the runtime will attempt to use this model for the agent, falling
+     * back to the parent session model if unavailable.
+     *
+     * @param model
+     *            the model identifier (e.g., &quot;claude-haiku-4.5&quot;)
+     * @return this config for method chaining
+     */
+    public CustomAgentConfig setModel(String model) {
+<span class="fc" id="L282">        this.model = model;</span>
+<span class="fc" id="L283">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

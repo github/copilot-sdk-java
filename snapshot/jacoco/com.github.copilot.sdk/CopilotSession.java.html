@@ -1657,7 +1657,7 @@ public final class CopilotSession implements AutoCloseable {
      */
     public CompletableFuture&lt;Void&gt; setModel(String model, String reasoningEffort) {
 <span class="nc" id="L1659">        ensureNotTerminated();</span>
-<span class="nc" id="L1660">        return getRpc().model.switchTo(new SessionModelSwitchToParams(sessionId, model, reasoningEffort, null))</span>
+<span class="nc" id="L1660">        return getRpc().model.switchTo(new SessionModelSwitchToParams(sessionId, model, reasoningEffort, null, null))</span>
 <span class="nc" id="L1661">                .thenApply(r -&gt; null);</span>
     }
 
@@ -1706,8 +1706,9 @@ public final class CopilotSession implements AutoCloseable {
 <span class="nc" id="L1706">            generatedCapabilities = new ModelCapabilitiesOverride(supports, limits);</span>
         }
 <span class="nc" id="L1708">        return getRpc().model</span>
-<span class="nc" id="L1709">                .switchTo(new SessionModelSwitchToParams(sessionId, model, reasoningEffort, generatedCapabilities))</span>
-<span class="nc" id="L1710">                .thenApply(r -&gt; null);</span>
+<span class="nc" id="L1709">                .switchTo(</span>
+                        new SessionModelSwitchToParams(sessionId, model, reasoningEffort, null, generatedCapabilities))
+<span class="nc" id="L1711">                .thenApply(r -&gt; null);</span>
     }
 
     /**
@@ -1728,7 +1729,7 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture&lt;Void&gt; setModel(String model) {
-<span class="nc" id="L1731">        return setModel(model, null);</span>
+<span class="nc" id="L1732">        return setModel(model, null);</span>
     }
 
     /**
@@ -1764,16 +1765,16 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.2.0
      */
     public CompletableFuture&lt;Void&gt; log(String message, String level, Boolean ephemeral, String url) {
-<span class="nc" id="L1767">        ensureNotTerminated();</span>
-<span class="nc" id="L1768">        SessionLogLevel rpcLevel = null;</span>
-<span class="nc bnc" id="L1769" title="All 2 branches missed.">        if (level != null) {</span>
+<span class="nc" id="L1768">        ensureNotTerminated();</span>
+<span class="nc" id="L1769">        SessionLogLevel rpcLevel = null;</span>
+<span class="nc bnc" id="L1770" title="All 2 branches missed.">        if (level != null) {</span>
             try {
-<span class="nc" id="L1771">                rpcLevel = SessionLogLevel.fromValue(level);</span>
-<span class="nc" id="L1772">            } catch (IllegalArgumentException e) {</span>
-<span class="nc" id="L1773">                rpcLevel = SessionLogLevel.INFO;</span>
-<span class="nc" id="L1774">            }</span>
+<span class="nc" id="L1772">                rpcLevel = SessionLogLevel.fromValue(level);</span>
+<span class="nc" id="L1773">            } catch (IllegalArgumentException e) {</span>
+<span class="nc" id="L1774">                rpcLevel = SessionLogLevel.INFO;</span>
+<span class="nc" id="L1775">            }</span>
         }
-<span class="nc" id="L1776">        return getRpc().log(new SessionLogParams(sessionId, message, rpcLevel, ephemeral, url)).thenApply(r -&gt; null);</span>
+<span class="nc" id="L1777">        return getRpc().log(new SessionLogParams(sessionId, message, rpcLevel, ephemeral, url)).thenApply(r -&gt; null);</span>
     }
 
     /**
@@ -1805,7 +1806,7 @@ public final class CopilotSession implements AutoCloseable {
      *             if this session has been terminated
      */
     public CompletableFuture&lt;Void&gt; log(String message, String level, Boolean ephemeral) {
-<span class="nc" id="L1808">        return log(message, level, ephemeral, null);</span>
+<span class="nc" id="L1809">        return log(message, level, ephemeral, null);</span>
     }
 
     /**
@@ -1818,7 +1819,7 @@ public final class CopilotSession implements AutoCloseable {
      *             if this session has been terminated
      */
     public CompletableFuture&lt;Void&gt; log(String message) {
-<span class="nc" id="L1821">        return log(message, null, null);</span>
+<span class="nc" id="L1822">        return log(message, null, null);</span>
     }
 
     /**
@@ -1830,11 +1831,11 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture&lt;List&lt;AgentInfo&gt;&gt; listAgents() {
-<span class="nc" id="L1833">        ensureNotTerminated();</span>
-<span class="nc" id="L1834">        return rpc.invoke(&quot;session.agent.list&quot;, Map.of(&quot;sessionId&quot;, sessionId), AgentListResponse.class)</span>
-<span class="nc bnc" id="L1835" title="All 2 branches missed.">                .thenApply(response -&gt; response.agents() != null</span>
-<span class="nc" id="L1836">                        ? Collections.unmodifiableList(response.agents())</span>
-<span class="nc" id="L1837">                        : Collections.emptyList());</span>
+<span class="nc" id="L1834">        ensureNotTerminated();</span>
+<span class="nc" id="L1835">        return rpc.invoke(&quot;session.agent.list&quot;, Map.of(&quot;sessionId&quot;, sessionId), AgentListResponse.class)</span>
+<span class="nc bnc" id="L1836" title="All 2 branches missed.">                .thenApply(response -&gt; response.agents() != null</span>
+<span class="nc" id="L1837">                        ? Collections.unmodifiableList(response.agents())</span>
+<span class="nc" id="L1838">                        : Collections.emptyList());</span>
     }
 
     /**
@@ -1848,9 +1849,9 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture&lt;AgentInfo&gt; getCurrentAgent() {
-<span class="nc" id="L1851">        ensureNotTerminated();</span>
-<span class="nc" id="L1852">        return rpc.invoke(&quot;session.agent.getCurrent&quot;, Map.of(&quot;sessionId&quot;, sessionId), AgentGetCurrentResponse.class)</span>
-<span class="nc" id="L1853">                .thenApply(AgentGetCurrentResponse::agent);</span>
+<span class="nc" id="L1852">        ensureNotTerminated();</span>
+<span class="nc" id="L1853">        return rpc.invoke(&quot;session.agent.getCurrent&quot;, Map.of(&quot;sessionId&quot;, sessionId), AgentGetCurrentResponse.class)</span>
+<span class="nc" id="L1854">                .thenApply(AgentGetCurrentResponse::agent);</span>
     }
 
     /**
@@ -1864,9 +1865,9 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture&lt;AgentInfo&gt; selectAgent(String agentName) {
-<span class="nc" id="L1867">        ensureNotTerminated();</span>
-<span class="nc" id="L1868">        return rpc.invoke(&quot;session.agent.select&quot;, Map.of(&quot;sessionId&quot;, sessionId, &quot;name&quot;, agentName),</span>
-<span class="nc" id="L1869">                AgentSelectResponse.class).thenApply(AgentSelectResponse::agent);</span>
+<span class="nc" id="L1868">        ensureNotTerminated();</span>
+<span class="nc" id="L1869">        return rpc.invoke(&quot;session.agent.select&quot;, Map.of(&quot;sessionId&quot;, sessionId, &quot;name&quot;, agentName),</span>
+<span class="nc" id="L1870">                AgentSelectResponse.class).thenApply(AgentSelectResponse::agent);</span>
     }
 
     /**
@@ -1879,8 +1880,8 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture&lt;Void&gt; deselectAgent() {
-<span class="nc" id="L1882">        ensureNotTerminated();</span>
-<span class="nc" id="L1883">        return rpc.invoke(&quot;session.agent.deselect&quot;, Map.of(&quot;sessionId&quot;, sessionId), Void.class);</span>
+<span class="nc" id="L1883">        ensureNotTerminated();</span>
+<span class="nc" id="L1884">        return rpc.invoke(&quot;session.agent.deselect&quot;, Map.of(&quot;sessionId&quot;, sessionId), Void.class);</span>
     }
 
     /**
@@ -1895,8 +1896,8 @@ public final class CopilotSession implements AutoCloseable {
      * @since 1.0.11
      */
     public CompletableFuture&lt;Void&gt; compact() {
-<span class="nc" id="L1898">        ensureNotTerminated();</span>
-<span class="nc" id="L1899">        return rpc.invoke(&quot;session.compaction.compact&quot;, Map.of(&quot;sessionId&quot;, sessionId), Void.class);</span>
+<span class="nc" id="L1899">        ensureNotTerminated();</span>
+<span class="nc" id="L1900">        return rpc.invoke(&quot;session.compaction.compact&quot;, Map.of(&quot;sessionId&quot;, sessionId), Void.class);</span>
     }
 
     /**
@@ -1906,10 +1907,10 @@ public final class CopilotSession implements AutoCloseable {
      *             if close() has already been invoked
      */
     private void ensureNotTerminated() {
-<span class="fc bfc" id="L1909" title="All 2 branches covered.">        if (isTerminated) {</span>
-<span class="fc" id="L1910">            throw new IllegalStateException(&quot;Session is closed&quot;);</span>
+<span class="fc bfc" id="L1910" title="All 2 branches covered.">        if (isTerminated) {</span>
+<span class="fc" id="L1911">            throw new IllegalStateException(&quot;Session is closed&quot;);</span>
         }
-<span class="fc" id="L1912">    }</span>
+<span class="fc" id="L1913">    }</span>
 
     /**
      * Disposes the session and releases all associated resources.
@@ -1920,44 +1921,44 @@ public final class CopilotSession implements AutoCloseable {
      */
     @Override
     public void close() {
-<span class="fc" id="L1923">        synchronized (this) {</span>
-<span class="fc bfc" id="L1924" title="All 2 branches covered.">            if (isTerminated) {</span>
-<span class="fc" id="L1925">                return; // Already terminated - no-op</span>
+<span class="fc" id="L1924">        synchronized (this) {</span>
+<span class="fc bfc" id="L1925" title="All 2 branches covered.">            if (isTerminated) {</span>
+<span class="fc" id="L1926">                return; // Already terminated - no-op</span>
             }
-<span class="fc" id="L1927">            isTerminated = true;</span>
-<span class="fc" id="L1928">        }</span>
+<span class="fc" id="L1928">            isTerminated = true;</span>
+<span class="fc" id="L1929">        }</span>
 
-<span class="fc" id="L1930">        timeoutScheduler.shutdownNow();</span>
+<span class="fc" id="L1931">        timeoutScheduler.shutdownNow();</span>
 
         try {
-<span class="fc" id="L1933">            rpc.invoke(&quot;session.destroy&quot;, Map.of(&quot;sessionId&quot;, sessionId), Void.class).get(5, TimeUnit.SECONDS);</span>
-<span class="fc" id="L1934">        } catch (Exception e) {</span>
-<span class="fc" id="L1935">            LOG.log(Level.FINE, &quot;Error destroying session&quot;, e);</span>
-<span class="fc" id="L1936">        }</span>
+<span class="fc" id="L1934">            rpc.invoke(&quot;session.destroy&quot;, Map.of(&quot;sessionId&quot;, sessionId), Void.class).get(5, TimeUnit.SECONDS);</span>
+<span class="fc" id="L1935">        } catch (Exception e) {</span>
+<span class="fc" id="L1936">            LOG.log(Level.FINE, &quot;Error destroying session&quot;, e);</span>
+<span class="fc" id="L1937">        }</span>
 
-<span class="fc" id="L1938">        eventHandlers.clear();</span>
-<span class="fc" id="L1939">        toolHandlers.clear();</span>
-<span class="fc" id="L1940">        commandHandlers.clear();</span>
-<span class="fc" id="L1941">        permissionHandler.set(null);</span>
-<span class="fc" id="L1942">        userInputHandler.set(null);</span>
-<span class="fc" id="L1943">        elicitationHandler.set(null);</span>
-<span class="fc" id="L1944">        exitPlanModeHandler.set(null);</span>
-<span class="fc" id="L1945">        autoModeSwitchHandler.set(null);</span>
-<span class="fc" id="L1946">        hooksHandler.set(null);</span>
-<span class="fc" id="L1947">    }</span>
+<span class="fc" id="L1939">        eventHandlers.clear();</span>
+<span class="fc" id="L1940">        toolHandlers.clear();</span>
+<span class="fc" id="L1941">        commandHandlers.clear();</span>
+<span class="fc" id="L1942">        permissionHandler.set(null);</span>
+<span class="fc" id="L1943">        userInputHandler.set(null);</span>
+<span class="fc" id="L1944">        elicitationHandler.set(null);</span>
+<span class="fc" id="L1945">        exitPlanModeHandler.set(null);</span>
+<span class="fc" id="L1946">        autoModeSwitchHandler.set(null);</span>
+<span class="fc" id="L1947">        hooksHandler.set(null);</span>
+<span class="fc" id="L1948">    }</span>
 
     // ===== Internal response types for agent API =====
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L1952">    private record AgentListResponse(@JsonProperty(&quot;agents&quot;) List&lt;AgentInfo&gt; agents) {</span>
+<span class="nc" id="L1953">    private record AgentListResponse(@JsonProperty(&quot;agents&quot;) List&lt;AgentInfo&gt; agents) {</span>
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L1956">    private record AgentGetCurrentResponse(@JsonProperty(&quot;agent&quot;) AgentInfo agent) {</span>
+<span class="nc" id="L1957">    private record AgentGetCurrentResponse(@JsonProperty(&quot;agent&quot;) AgentInfo agent) {</span>
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="nc" id="L1960">    private record AgentSelectResponse(@JsonProperty(&quot;agent&quot;) AgentInfo agent) {</span>
+<span class="nc" id="L1961">    private record AgentSelectResponse(@JsonProperty(&quot;agent&quot;) AgentInfo agent) {</span>
     }
 
 }
