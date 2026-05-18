@@ -565,6 +565,8 @@ session.send("@code-reviewer Review src/Main.java").get();
 | `tools` | List&lt;String&gt; | Tool names available to this agent |
 | `mcpServers` | Map | MCP servers available to this agent |
 | `infer` | Boolean | Whether the agent can be auto-selected based on context |
+| `skills` | List&lt;String&gt; | Skill names to preload into the agent's context |
+| `model` | String | Model identifier for this agent (e.g., "claude-haiku-4.5"); falls back to the parent session model if unavailable |
 
 ### Multiple Agents
 
@@ -1378,6 +1380,26 @@ try (var client = new CopilotClient(options)) {
 - The user must be authenticated (GitHub token or logged-in user)
 - The session's working directory must be a GitHub repository
 - This option is only used when the SDK spawns the CLI process; it is ignored when connecting to an external server via `setCliUrl()`
+
+### Cloud Sessions
+
+Cloud sessions create a remote session in the cloud instead of a local session. Optionally associate repository metadata with the cloud session:
+
+```java
+var cloudOptions = new CloudSessionOptions()
+    .setRepository(new CloudSessionRepository()
+        .setOwner("my-org")
+        .setName("my-repo")
+        .setBranch("main"));
+
+var session = client.createSession(
+    new SessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setCloud(cloudOptions)
+).get();
+```
+
+See [CloudSessionOptions](apidocs/com/github/copilot/sdk/json/CloudSessionOptions.html) and [CloudSessionRepository](apidocs/com/github/copilot/sdk/json/CloudSessionRepository.html) Javadoc for details.
 
 ---
 
