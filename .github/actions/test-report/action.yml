@@ -9,6 +9,10 @@ inputs:
     description: "Path to the JaCoCo XML report"
     required: false
     default: "target/site/jacoco-coverage/jacoco.xml"
+  jacoco-csv-path:
+    description: "Path to the JaCoCo CSV report"
+    required: false
+    default: "target/site/jacoco-coverage/jacoco.csv"
   check-name:
     description: "Name for the check run"
     required: false
@@ -80,6 +84,7 @@ runs:
       shell: bash
       run: |
         JACOCO_XML="${{ inputs.jacoco-path }}"
+        JACOCO_CSV="${{ inputs.jacoco-csv-path }}"
         
         if [ -f "$JACOCO_XML" ]; then
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -139,6 +144,36 @@ runs:
           echo "| 📏 Lines | ${LINE_COVERED:-0} | ${LINE_MISSED:-0} | ${LINE_PCT}% |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔧 Methods | ${METHOD_COVERED:-0} | ${METHOD_MISSED:-0} | ${METHOD_PCT}% |" >> $GITHUB_STEP_SUMMARY
           echo "| 📦 Classes | ${CLASS_COVERED:-0} | ${CLASS_MISSED:-0} | ${CLASS_PCT}% |" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "$JACOCO_CSV" ]; then
+            extract_instruction_scope() {
+              local scope=$1
+              awk -F',' -v scope="$scope" -v generated_prefix="com.github.copilot.sdk.generated" '
+                NR > 1 {
+                  is_generated = index($2, generated_prefix) == 1
+                  if ((scope == "generated" && is_generated) ||
+                      (scope == "handwritten" && !is_generated)) {
+                    missed += $4
+                    covered += $5
+                  }
+                }
+                END { print covered + 0 "," missed + 0 }
+              ' "$JACOCO_CSV"
+            }
+
+            IFS=, read -r HANDWRITTEN_COVERED HANDWRITTEN_MISSED <<< "$(extract_instruction_scope handwritten)"
+            IFS=, read -r GENERATED_COVERED GENERATED_MISSED <<< "$(extract_instruction_scope generated)"
+            HANDWRITTEN_PCT=$(calc_pct "${HANDWRITTEN_COVERED:-0}" "${HANDWRITTEN_MISSED:-0}")
+            GENERATED_PCT=$(calc_pct "${GENERATED_COVERED:-0}" "${GENERATED_MISSED:-0}")
+
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Coverage by Code Origin (Instructions)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Origin | Covered | Missed | Coverage |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|---------|--------|----------|" >> $GITHUB_STEP_SUMMARY
+            echo "| ✍️ Handwritten | ${HANDWRITTEN_COVERED:-0} | ${HANDWRITTEN_MISSED:-0} | ${HANDWRITTEN_PCT}% |" >> $GITHUB_STEP_SUMMARY
+            echo "| 🤖 Generated | ${GENERATED_COVERED:-0} | ${GENERATED_MISSED:-0} | ${GENERATED_PCT}% |" >> $GITHUB_STEP_SUMMARY
+          fi
         else
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## 📊 Code Coverage" >> $GITHUB_STEP_SUMMARY

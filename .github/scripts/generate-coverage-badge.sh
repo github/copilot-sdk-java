@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Generates an SVG coverage badge from a JaCoCo CSV report.
+# Generates SVG coverage badges from a JaCoCo CSV report.
 #
 # Usage: generate-coverage-badge.sh [jacoco.csv] [output-dir]
 #   jacoco.csv  - Path to JaCoCo CSV report (default: target/site/jacoco-coverage/jacoco.csv)
@@ -8,39 +8,64 @@ set -euo pipefail
 
 CSV="${1:-target/site/jacoco-coverage/jacoco.csv}"
 BADGES_DIR="${2:-.github/badges}"
+GENERATED_PREFIX="com.github.copilot.sdk.generated"
 
 if [ ! -f "$CSV" ]; then
   echo "⚠️ No JaCoCo CSV report found at $CSV"
   exit 0
 fi
 
-# Sum INSTRUCTION_MISSED and INSTRUCTION_COVERED across all rows (skip header)
-read -r missed covered <<< "$(awk -F',' 'NR>1 { m+=$4; c+=$5 } END { print m, c }' "$CSV")"
-total=$((missed + covered))
-if [ "$total" -eq 0 ]; then
-  pct="0"
-else
-  pct=$(awk "BEGIN { printf \"%.1f\", ($covered / $total) * 100 }")
-  # Drop trailing .0
-  pct=$(echo "$pct" | sed 's/\.0$//')
-fi
-echo "Coverage: ${pct}%"
+calc_totals() {
+  local scope=$1
+  awk -F',' -v scope="$scope" -v generated_prefix="$GENERATED_PREFIX" '
+    NR > 1 {
+      is_generated = index($2, generated_prefix) == 1
+      if (scope == "overall" ||
+          (scope == "generated" && is_generated) ||
+          (scope == "handwritten" && !is_generated)) {
+        missed += $4
+        covered += $5
+      }
+    }
+    END { print missed + 0, covered + 0 }
+  ' "$CSV"
+}
 
-# Choose badge color based on coverage
-color="#e05d44"  # red <60
-if   awk "BEGIN{exit!($pct>=100)}"; then color="#4c1"     # bright green
-elif awk "BEGIN{exit!($pct>=90)}";  then color="#97ca00"  # green
-elif awk "BEGIN{exit!($pct>=80)}";  then color="#a4a61d"  # yellow-green
-elif awk "BEGIN{exit!($pct>=70)}";  then color="#dfb317"  # yellow
-elif awk "BEGIN{exit!($pct>=60)}";  then color="#fe7d37"  # orange
-fi
+format_pct() {
+  local missed=$1
+  local covered=$2
+  local total=$((missed + covered))
+  if [ "$total" -eq 0 ]; then
+    echo "0"
+  else
+    awk "BEGIN { printf \"%.1f\", ($covered / $total) * 100 }" | sed 's/\.0$//'
+  fi
+}
 
-# Generate SVG badge
-mkdir -p "$BADGES_DIR"
-label="coverage"
-value="${pct}%"
-lw=62; vw=46; tw=$((lw + vw))
-cat > "${BADGES_DIR}/jacoco.svg" <<EOF
+pick_color() {
+  local pct=$1
+  local color="#e05d44"  # red <60
+  if   awk "BEGIN{exit!($pct>=100)}"; then color="#4c1"     # bright green
+  elif awk "BEGIN{exit!($pct>=90)}";  then color="#97ca00"  # green
+  elif awk "BEGIN{exit!($pct>=80)}";  then color="#a4a61d"  # yellow-green
+  elif awk "BEGIN{exit!($pct>=70)}";  then color="#dfb317"  # yellow
+  elif awk "BEGIN{exit!($pct>=60)}";  then color="#fe7d37"  # orange
+  fi
+  echo "$color"
+}
+
+generate_badge() {
+  local label=$1
+  local value=$2
+  local output=$3
+  local pct=${value%\%}
+  local color
+  color=$(pick_color "$pct")
+  local lw=$(( ${#label} * 7 + 12 ))
+  local vw=$(( ${#value} * 7 + 16 ))
+  local tw=$((lw + vw))
+
+  cat > "$output" <<EOF
 <svg xmlns="http://www.w3.org/2000/svg" width="${tw}" height="20">
   <linearGradient id="b" x2="0" y2="100%">
     <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
@@ -60,5 +85,24 @@ cat > "${BADGES_DIR}/jacoco.svg" <<EOF
   </g>
 </svg>
 EOF
+}
 
-echo "Badge generated at ${BADGES_DIR}/jacoco.svg"
+mkdir -p "$BADGES_DIR"
+
+read -r overall_missed overall_covered <<< "$(calc_totals overall)"
+read -r handwritten_missed handwritten_covered <<< "$(calc_totals handwritten)"
+read -r generated_missed generated_covered <<< "$(calc_totals generated)"
+
+overall_pct=$(format_pct "$overall_missed" "$overall_covered")
+handwritten_pct=$(format_pct "$handwritten_missed" "$handwritten_covered")
+generated_pct=$(format_pct "$generated_missed" "$generated_covered")
+
+echo "Overall coverage: ${overall_pct}%"
+echo "Handwritten coverage: ${handwritten_pct}%"
+echo "Generated coverage: ${generated_pct}%"
+
+generate_badge "coverage" "${overall_pct}%" "${BADGES_DIR}/jacoco.svg"
+generate_badge "coverage handwritten" "${handwritten_pct}%" "${BADGES_DIR}/jacoco-handwritten.svg"
+generate_badge "coverage generated" "${generated_pct}%" "${BADGES_DIR}/jacoco-generated.svg"
+
+echo "Badges generated in ${BADGES_DIR}"
