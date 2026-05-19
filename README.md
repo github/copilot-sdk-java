@@ -2,7 +2,8 @@
 
 [![Build](https://github.com/github/copilot-sdk-java/actions/workflows/build-test.yml/badge.svg)](https://github.com/github/copilot-sdk-java/actions/workflows/build-test.yml)
 [![Site](https://github.com/github/copilot-sdk-java/actions/workflows/deploy-site.yml/badge.svg)](https://github.com/github/copilot-sdk-java/actions/workflows/deploy-site.yml)
-[![Coverage](.github/badges/jacoco.svg)](https://github.github.io/copilot-sdk-java/snapshot/jacoco/index.html)
+[![Handwritten Coverage](.github/badges/jacoco-handwritten.svg)](https://github.github.io/copilot-sdk-java/snapshot/jacoco/index.html)
+[![Generated Coverage](.github/badges/jacoco-generated.svg)](https://github.github.io/copilot-sdk-java/snapshot/jacoco/index.html)
 [![Documentation](https://img.shields.io/badge/docs-online-brightgreen)](https://github.github.io/copilot-sdk-java/)
 [![Java 17+](https://img.shields.io/badge/Java-17%2B-blue?logo=openjdk&logoColor=white)](https://openjdk.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -212,4 +213,3 @@ MIT — see [LICENSE](LICENSE) for details.
 [![Star History Chart](https://api.star-history.com/svg?repos=github/copilot-sdk-java&type=Date)](https://www.star-history.com/#github/copilot-sdk-java&Date)
 
 ⭐ Drop a star if you find this useful!
-
