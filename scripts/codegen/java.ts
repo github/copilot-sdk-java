@@ -37,9 +37,25 @@ function toJavaClassName(typeName: string): string {
     return typeName.split(/[._]/).map((p) => p.charAt(0).toUpperCase() + p.slice(1)).join("");
 }
 
+/** Java reserved keywords and Object method names that cannot be used as record component names. */
+const JAVA_RESERVED_IDENTIFIERS = new Set([
+    "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
+    "continue", "default", "do", "double", "else", "enum", "extends", "final", "finally", "float",
+    "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long", "native",
+    "new", "package", "private", "protected", "public", "return", "short", "static", "strictfp",
+    "super", "switch", "synchronized", "this", "throw", "throws", "transient", "try", "void",
+    "volatile", "while",
+    // Object methods that conflict with record component accessor names
+    "wait", "notify", "notifyAll", "getClass", "clone", "finalize", "toString", "hashCode", "equals",
+]);
+
 function toCamelCase(name: string): string {
     const pascal = toPascalCase(name);
-    return pascal.charAt(0).toLowerCase() + pascal.slice(1);
+    let result = pascal.charAt(0).toLowerCase() + pascal.slice(1);
+    if (JAVA_RESERVED_IDENTIFIERS.has(result)) {
+        result = result + "_";
+    }
+    return result;
 }
 
 function toEnumConstant(value: string): string {
