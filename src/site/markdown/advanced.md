@@ -827,6 +827,12 @@ var hooks = new SessionHooks()
         System.out.println("Tool: " + input.getToolName());
         return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
     })
+    .setOnPreMcpToolCall((input, invocation) -> {
+        System.out.println("MCP Tool: " + input.getServerName() + "/" + input.getToolName());
+        // Set metadata on the MCP request
+        JsonNode meta = mapper.valueToTree(Map.of("source", "my-app"));
+        return CompletableFuture.completedFuture(PreMcpToolCallHookOutput.withMeta(meta));
+    })
     .setOnPostToolUse((input, invocation) -> {
         System.out.println("Result: " + input.getToolResult());
         return CompletableFuture.completedFuture(null);
@@ -837,7 +843,7 @@ var session = client.createSession(
 ).get();
 ```
 
-📖 **[Full Session Hooks documentation →](hooks.html)** for all 5 hook types, inputs/outputs, and examples.
+📖 **[Full Session Hooks documentation →](hooks.html)** for all 6 hook types, inputs/outputs, and examples.
 
 ---
 
@@ -1406,7 +1412,7 @@ See [CloudSessionOptions](apidocs/com/github/copilot/sdk/json/CloudSessionOption
 ## Next Steps
 
 - 📖 **[Documentation](documentation.html)** - Core concepts, events, streaming, models, tool filtering, reasoning effort
-- 📖 **[Session Hooks](hooks.html)** - All 5 hook types with inputs, outputs, and examples
+- 📖 **[Session Hooks](hooks.html)** - All 6 hook types with inputs, outputs, and examples
 - 📖 **[MCP Servers](mcp.html)** - Local and remote MCP server integration
 - 📖 **[Setup & Deployment](setup.html)** - OAuth, backend services, scaling, configuration reference
 - 📖 **[API Javadoc](apidocs/index.html)** - Complete API reference

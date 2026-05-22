@@ -9,6 +9,7 @@ Session hooks allow you to intercept and modify tool execution, user prompts, an
 | Hook | When It's Called | Can Modify |
 |------|------------------|------------|
 | [Pre-Tool Use](#Pre-Tool_Use_Hook) | Before a tool executes | Tool arguments, permission decision |
+| [Pre-MCP-Tool-Call](#Pre-MCP-Tool-Call_Hook) | Before an MCP tool call is dispatched | MCP request metadata (`_meta`) |
 | [Post-Tool Use](#Post-Tool_Use_Hook) | After a tool executes | Tool result, additional context |
 | [User Prompt Submitted](#User_Prompt_Submitted_Hook) | When user sends a message | Nothing (observation only) |
 | [Session Start](#Session_Start_Hook) | When session begins | Nothing (observation only) |
@@ -114,6 +115,53 @@ var hooks = new SessionHooks()
             );
         }
         return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
+    });
+```
+
+---
+
+## Pre-MCP-Tool-Call Hook
+
+Called **before** an MCP tool call is dispatched to an MCP server. Use this to:
+- Inspect or log MCP tool calls
+- Set, replace, or remove MCP request metadata (`_meta`)
+
+### Input
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `getSessionId()` | `String` | Runtime session ID of the session that triggered the hook |
+| `getTimestamp()` | `long` | Unix timestamp in milliseconds |
+| `getCwd()` | `String` | Current working directory |
+| `getServerName()` | `String` | Name of the MCP server being called |
+| `getToolName()` | `String` | Name of the MCP tool being called |
+| `getArguments()` | `JsonNode` | Arguments for the MCP tool call |
+| `getToolCallId()` | `String` | Tool call ID (may be null) |
+| `getMeta()` | `Map<String, JsonNode>` | Existing MCP request metadata (may be null) |
+
+### Output
+
+Return `null` from the handler to preserve existing `_meta` (no-op). Otherwise, return a `PreMcpToolCallHookOutput`:
+
+| Factory Method | Effect |
+|----------------|--------|
+| `PreMcpToolCallHookOutput.withMeta(jsonNode)` | Replace `_meta` with the given JSON object |
+| `PreMcpToolCallHookOutput.removeMeta()` | Remove `_meta` from the request |
+
+### Example: Inject metadata into MCP requests
+
+```java
+var hooks = new SessionHooks()
+    .setOnPreMcpToolCall((input, invocation) -> {
+        System.out.println("MCP call: " + input.getServerName() + "/" + input.getToolName());
+        
+        // Inject custom metadata into the MCP request
+        var mapper = new ObjectMapper();
+        JsonNode meta = mapper.valueToTree(Map.of(
+            "source", "my-application",
+            "requestId", UUID.randomUUID().toString()
+        ));
+        return CompletableFuture.completedFuture(PreMcpToolCallHookOutput.withMeta(meta));
     });
 ```
 
