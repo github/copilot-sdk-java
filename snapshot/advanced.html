@@ -999,6 +999,12 @@ requests without writing a handler.</p><hr /></section><section><a id="Session_H
         System.out.println(&quot;Tool: &quot; + input.getToolName());
         return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
     })
+    .setOnPreMcpToolCall((input, invocation) -&gt; {
+        System.out.println(&quot;MCP Tool: &quot; + input.getServerName() + &quot;/&quot; + input.getToolName());
+        // Set metadata on the MCP request
+        JsonNode meta = mapper.valueToTree(Map.of(&quot;source&quot;, &quot;my-app&quot;));
+        return CompletableFuture.completedFuture(PreMcpToolCallHookOutput.withMeta(meta));
+    })
     .setOnPostToolUse((input, invocation) -&gt; {
         System.out.println(&quot;Result: &quot; + input.getToolResult());
         return CompletableFuture.completedFuture(null);
@@ -1008,7 +1014,7 @@ var session = client.createSession(
     new SessionConfig().setOnPermissionRequest(PermissionHandler.APPROVE_ALL).setHooks(hooks)
 ).get();
 </code></pre>
-<p>&#x1f4d6; <strong><a href="hooks.html">Full Session Hooks documentation &#x2192;</a></strong> for all 5 hook types, inputs/outputs, and examples.</p><hr /></section><section><a id="Manual_Server_Control"></a>
+<p>&#x1f4d6; <strong><a href="hooks.html">Full Session Hooks documentation &#x2192;</a></strong> for all 6 hook types, inputs/outputs, and examples.</p><hr /></section><section><a id="Manual_Server_Control"></a>
 <h2>Manual Server Control</h2>
 <p>Control the CLI lifecycle yourself instead of auto-start.</p>
 
@@ -1516,7 +1522,7 @@ var session = client.createSession(
 <ul>
 
 <li>&#x1f4d6; <strong><a href="documentation.html">Documentation</a></strong> - Core concepts, events, streaming, models, tool filtering, reasoning effort</li>
-<li>&#x1f4d6; <strong><a href="hooks.html">Session Hooks</a></strong> - All 5 hook types with inputs, outputs, and examples</li>
+<li>&#x1f4d6; <strong><a href="hooks.html">Session Hooks</a></strong> - All 6 hook types with inputs, outputs, and examples</li>
 <li>&#x1f4d6; <strong><a href="mcp.html">MCP Servers</a></strong> - Local and remote MCP server integration</li>
 <li>&#x1f4d6; <strong><a href="setup.html">Setup &amp; Deployment</a></strong> - OAuth, backend services, scaling, configuration reference</li>
 <li>&#x1f4d6; <strong><a href="apidocs/index.html">API Javadoc</a></strong> - Complete API reference</li>

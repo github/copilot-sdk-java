@@ -198,22 +198,26 @@
 <td>Before a tool executes</td>
 <td>Tool arguments, permission decision</td></tr>
 <tr class="a">
+<td><a href="#Pre-MCP-Tool-Call_Hook">Pre-MCP-Tool-Call</a></td>
+<td>Before an MCP tool call is dispatched</td>
+<td>MCP request metadata (<code>_meta</code>)</td></tr>
+<tr class="b">
 <td><a href="#Post-Tool_Use_Hook">Post-Tool Use</a></td>
 <td>After a tool executes</td>
 <td>Tool result, additional context</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#User_Prompt_Submitted_Hook">User Prompt Submitted</a></td>
 <td>When user sends a message</td>
 <td>Nothing (observation only)</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#Session_Start_Hook">Session Start</a></td>
 <td>When session begins</td>
 <td>Nothing (observation only)</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#Session_End_Hook">Session End</a></td>
 <td>When session ends</td>
 <td>Nothing (observation only)</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#Checking_Whether_Hooks_Are_Registered">Checking Whether Hooks Are Registered</a></td>
 <td>Before session creation</td>
 <td>Whether any handlers are configured</td></tr></tbody>
@@ -346,6 +350,84 @@ var session = client.createSession(
         }
         return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
     });
+</code></pre><hr /></section></section><section><a id="Pre-MCP-Tool-Call_Hook"></a>
+<h2>Pre-MCP-Tool-Call Hook</h2>
+<p>Called <strong>before</strong> an MCP tool call is dispatched to an MCP server. Use this to:</p>
+<ul>
+
+<li>Inspect or log MCP tool calls</li>
+<li>Set, replace, or remove MCP request metadata (<code>_meta</code>)</li>
+</ul><section><a id="Input_1"></a>
+<h3>Input</h3>
+<table class="table table-striped">
+<thead>
+<tr class="a">
+<th>Field</th>
+<th>Type</th>
+<th>Description</th></tr></thead><tbody>
+<tr class="b">
+<td><code>getSessionId()</code></td>
+<td><code>String</code></td>
+<td>Runtime session ID of the session that triggered the hook</td></tr>
+<tr class="a">
+<td><code>getTimestamp()</code></td>
+<td><code>long</code></td>
+<td>Unix timestamp in milliseconds</td></tr>
+<tr class="b">
+<td><code>getCwd()</code></td>
+<td><code>String</code></td>
+<td>Current working directory</td></tr>
+<tr class="a">
+<td><code>getServerName()</code></td>
+<td><code>String</code></td>
+<td>Name of the MCP server being called</td></tr>
+<tr class="b">
+<td><code>getToolName()</code></td>
+<td><code>String</code></td>
+<td>Name of the MCP tool being called</td></tr>
+<tr class="a">
+<td><code>getArguments()</code></td>
+<td><code>JsonNode</code></td>
+<td>Arguments for the MCP tool call</td></tr>
+<tr class="b">
+<td><code>getToolCallId()</code></td>
+<td><code>String</code></td>
+<td>Tool call ID (may be null)</td></tr>
+<tr class="a">
+<td><code>getMeta()</code></td>
+<td><code>Map&lt;String, JsonNode&gt;</code></td>
+<td>Existing MCP request metadata (may be null)</td></tr></tbody>
+</table>
+</section><section><a id="Output_1"></a>
+<h3>Output</h3>
+<p>Return <code>null</code> from the handler to preserve existing <code>_meta</code> (no-op). Otherwise, return a <code>PreMcpToolCallHookOutput</code>:</p>
+<table class="table table-striped">
+<thead>
+<tr class="a">
+<th>Factory Method</th>
+<th>Effect</th></tr></thead><tbody>
+<tr class="b">
+<td><code>PreMcpToolCallHookOutput.withMeta(jsonNode)</code></td>
+<td>Replace <code>_meta</code> with the given JSON object</td></tr>
+<tr class="a">
+<td><code>PreMcpToolCallHookOutput.removeMeta()</code></td>
+<td>Remove <code>_meta</code> from the request</td></tr></tbody>
+</table>
+</section><section><a id="Example.3A_Inject_metadata_into_MCP_requests"></a>
+<h3>Example: Inject metadata into MCP requests</h3>
+
+<pre class="prettyprint"><code class="language-java">var hooks = new SessionHooks()
+    .setOnPreMcpToolCall((input, invocation) -&gt; {
+        System.out.println(&quot;MCP call: &quot; + input.getServerName() + &quot;/&quot; + input.getToolName());
+        
+        // Inject custom metadata into the MCP request
+        var mapper = new ObjectMapper();
+        JsonNode meta = mapper.valueToTree(Map.of(
+            &quot;source&quot;, &quot;my-application&quot;,
+            &quot;requestId&quot;, UUID.randomUUID().toString()
+        ));
+        return CompletableFuture.completedFuture(PreMcpToolCallHookOutput.withMeta(meta));
+    });
 </code></pre><hr /></section></section><section><a id="Post-Tool_Use_Hook"></a>
 <h2>Post-Tool Use Hook</h2>
 <p>Called <strong>after</strong> a tool executes. Use this to:</p>
@@ -355,7 +437,7 @@ var session = client.createSession(
 <li>Modify the result shown to the LLM</li>
 <li>Add additional context based on results</li>
 <li>Suppress output from display</li>
-</ul><section><a id="Input_1"></a>
+</ul><section><a id="Input_2"></a>
 <h3>Input</h3>
 <table class="table table-striped">
 <thead>
@@ -388,7 +470,7 @@ var session = client.createSession(
 <td><code>long</code></td>
 <td>Timestamp in milliseconds</td></tr></tbody>
 </table>
-</section><section><a id="Output_1"></a>
+</section><section><a id="Output_2"></a>
 <h3>Output</h3>
 <table class="table table-striped">
 <thead>
@@ -438,7 +520,7 @@ var session = client.createSession(
     });
 </code></pre><hr /></section></section><section><a id="User_Prompt_Submitted_Hook"></a>
 <h2>User Prompt Submitted Hook</h2>
-<p>Called when the user submits a prompt, before the LLM processes it. This is an observation hook - you cannot modify the prompt.</p><section><a id="Input_2"></a>
+<p>Called when the user submits a prompt, before the LLM processes it. This is an observation hook - you cannot modify the prompt.</p><section><a id="Input_3"></a>
 <h3>Input</h3>
 <table class="table table-striped">
 <thead>
@@ -459,7 +541,7 @@ var session = client.createSession(
 <td><code>long</code></td>
 <td>Timestamp in milliseconds</td></tr></tbody>
 </table>
-</section><section><a id="Output_2"></a>
+</section><section><a id="Output_3"></a>
 <h3>Output</h3>
 <p>Return <code>null</code> - this hook is observation-only.</p></section><section><a id="Example.3A_Prompt_Logging"></a>
 <h3>Example: Prompt Logging</h3>
@@ -478,7 +560,7 @@ var session = client.createSession(
     });
 </code></pre><hr /></section></section><section><a id="Session_Start_Hook"></a>
 <h2>Session Start Hook</h2>
-<p>Called when a session starts (either new or resumed).</p><section><a id="Input_3"></a>
+<p>Called when a session starts (either new or resumed).</p><section><a id="Input_4"></a>
 <h3>Input</h3>
 <table class="table table-striped">
 <thead>
@@ -499,7 +581,7 @@ var session = client.createSession(
 <td><code>long</code></td>
 <td>Timestamp in milliseconds</td></tr></tbody>
 </table>
-</section><section><a id="Output_3"></a>
+</section><section><a id="Output_4"></a>
 <h3>Output</h3>
 <p>Return <code>null</code> - this hook is observation-only.</p></section><section><a id="Example.3A_Session_Initialization"></a>
 <h3>Example: Session Initialization</h3>
@@ -516,7 +598,7 @@ var session = client.createSession(
     });
 </code></pre><hr /></section></section><section><a id="Session_End_Hook"></a>
 <h2>Session End Hook</h2>
-<p>Called when a session ends.</p><section><a id="Input_4"></a>
+<p>Called when a session ends.</p><section><a id="Input_5"></a>
 <h3>Input</h3>
 <table class="table table-striped">
 <thead>
@@ -537,7 +619,7 @@ var session = client.createSession(
 <td><code>long</code></td>
 <td>Timestamp in milliseconds</td></tr></tbody>
 </table>
-</section><section><a id="Output_4"></a>
+</section><section><a id="Output_5"></a>
 <h3>Output</h3>
 <p>Return <code>null</code> - this hook is observation-only.</p></section><section><a id="Example.3A_Session_Cleanup"></a>
 <h3>Example: Session Cleanup</h3>
