@@ -459,11 +459,11 @@ To handle errors gracefully in your hooks:
 
 ## See Also
 
-- [SessionHooks Javadoc](apidocs/com/github/copilot/sdk/json/SessionHooks.html)
-- [PreToolUseHookInput Javadoc](apidocs/com/github/copilot/sdk/json/PreToolUseHookInput.html)
-- [PreToolUseHookOutput Javadoc](apidocs/com/github/copilot/sdk/json/PreToolUseHookOutput.html)
-- [PostToolUseHookInput Javadoc](apidocs/com/github/copilot/sdk/json/PostToolUseHookInput.html)
-- [PostToolUseHookOutput Javadoc](apidocs/com/github/copilot/sdk/json/PostToolUseHookOutput.html)
+- [SessionHooks Javadoc](apidocs/com/github/copilot/rpc/SessionHooks.html)
+- [PreToolUseHookInput Javadoc](apidocs/com/github/copilot/rpc/PreToolUseHookInput.html)
+- [PreToolUseHookOutput Javadoc](apidocs/com/github/copilot/rpc/PreToolUseHookOutput.html)
+- [PostToolUseHookInput Javadoc](apidocs/com/github/copilot/rpc/PostToolUseHookInput.html)
+- [PostToolUseHookOutput Javadoc](apidocs/com/github/copilot/rpc/PostToolUseHookOutput.html)
 
 ---
 

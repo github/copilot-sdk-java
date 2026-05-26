@@ -61,7 +61,7 @@ jobs:
           cat > /tmp/verify-codegen-prompt.txt << 'PROMPT_EOF'
           You are running inside the copilot-sdk-java repository.
           The code generator has just run and produced Java source files under
-          src/generated/java/com/github/copilot/sdk/generated/rpc/.
+          src/generated/java/com/github/copilot/generated/rpc/.
 
           Your task is to spot-check the generated API classes against the source
           JSON schema to verify the generator produced correct output.
@@ -74,9 +74,9 @@ jobs:
              scripts/codegen/node_modules/@github/copilot/schemas/api.schema.json
 
           2. Pick these 3 generated API classes to verify:
-             - src/generated/java/com/github/copilot/sdk/generated/rpc/SessionToolsApi.java
-             - src/generated/java/com/github/copilot/sdk/generated/rpc/SessionUiApi.java
-             - src/generated/java/com/github/copilot/sdk/generated/rpc/SessionPermissionsApi.java
+             - src/generated/java/com/github/copilot/generated/rpc/SessionToolsApi.java
+             - src/generated/java/com/github/copilot/generated/rpc/SessionUiApi.java
+             - src/generated/java/com/github/copilot/generated/rpc/SessionPermissionsApi.java
 
           3. For each class, verify:
              - Every RPC method in the schema's corresponding namespace has a

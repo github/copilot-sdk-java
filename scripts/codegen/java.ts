@@ -359,7 +359,7 @@ async function generateSessionEvents(schemaPath: string): Promise<void> {
 
     const variants = extractEventVariants(schema);
     const packageName = "com.github.copilot.generated";
-    const packageDir = `src/generated/java/com/github/copilot/sdk/generated`;
+    const packageDir = `src/generated/java/com/github/copilot/generated`;
 
     // Generate base SessionEvent class
     await generateSessionEventBaseClass(variants, packageName, packageDir);
@@ -941,7 +941,7 @@ async function generateRpcTypes(schemaPath: string): Promise<void> {
     }
 
     const packageName = "com.github.copilot.generated.rpc";
-    const packageDir = `src/generated/java/com/github/copilot/sdk/generated/rpc`;
+    const packageDir = `src/generated/java/com/github/copilot/generated/rpc`;
 
     // Collect all RPC methods from all sections
     const sections: [string, Record<string, unknown>][] = [];
@@ -1563,7 +1563,7 @@ async function generateRpcWrappers(schemaPath: string): Promise<void> {
     currentDefinitions = (schema.definitions ?? {}) as Record<string, JSONSchema7>;
 
     const packageName = "com.github.copilot.generated.rpc";
-    const packageDir = `src/generated/java/com/github/copilot/sdk/generated/rpc`;
+    const packageDir = `src/generated/java/com/github/copilot/generated/rpc`;
 
     // RpcCaller interface and shared ObjectMapper holder
     await generateRpcCallerInterface(packageName, packageDir);

@@ -17,10 +17,10 @@ First, examine the source code to identify all components that should be tested:
 
 ```bash
 # List all event classes
-ls src/main/java/com/github/copilot/sdk/events/
+ls src/main/java/com/github/copilot/events/
 
 # Check the event type mapping in SessionEventParser
-grep -n "TYPE_MAP.put" src/main/java/com/github/copilot/sdk/events/SessionEventParser.java
+grep -n "TYPE_MAP.put" src/main/java/com/github/copilot/events/SessionEventParser.java
 ```
 
 Extract the list of all registered event types from `SessionEventParser.java`.
@@ -30,7 +30,7 @@ Extract the list of all registered event types from `SessionEventParser.java`.
 Check `SessionHooks.java` for all available hook handlers:
 
 ```bash
-grep -E "private.*Handler" src/main/java/com/github/copilot/sdk/json/SessionHooks.java
+grep -E "private.*Handler" src/main/java/com/github/copilot/rpc/SessionHooks.java
 ```
 
 ### Step 3: Analyze Existing Tests
@@ -39,13 +39,13 @@ Examine the test files to understand current coverage:
 
 ```bash
 # List all test files
-ls src/test/java/com/github/copilot/sdk/
+ls src/test/java/com/github/copilot/
 
 # Check for event-related tests
-grep -r "import.*events\." src/test/java/com/github/copilot/sdk/ | grep -v "\.class"
+grep -r "import.*events\." src/test/java/com/github/copilot/ | grep -v "\.class"
 
 # Check for hook tests
-grep -l "SessionHooks\|Hook" src/test/java/com/github/copilot/sdk/*.java
+grep -l "SessionHooks\|Hook" src/test/java/com/github/copilot/*.java
 ```
 
 ### Step 4: Categorize Test Coverage
@@ -95,13 +95,13 @@ Prioritized list of tests to add:
 
 ## Key Files to Examine
 
-- `src/main/java/com/github/copilot/sdk/events/SessionEventParser.java` - Event type registry
-- `src/main/java/com/github/copilot/sdk/json/SessionHooks.java` - Hook definitions
-- `src/main/java/com/github/copilot/sdk/CopilotSession.java` - Hook handling logic
-- `src/test/java/com/github/copilot/sdk/SessionEventParserTest.java` - Event parsing tests
-- `src/test/java/com/github/copilot/sdk/SessionEventsE2ETest.java` - Event E2E tests
-- `src/test/java/com/github/copilot/sdk/HooksTest.java` - Hook tests
-- `src/test/java/com/github/copilot/sdk/SessionEventHandlingTest.java` - Event handling tests
+- `src/main/java/com/github/copilot/events/SessionEventParser.java` - Event type registry
+- `src/main/java/com/github/copilot/rpc/SessionHooks.java` - Hook definitions
+- `src/main/java/com/github/copilot/CopilotSession.java` - Hook handling logic
+- `src/test/java/com/github/copilot/SessionEventParserTest.java` - Event parsing tests
+- `src/test/java/com/github/copilot/SessionEventsE2ETest.java` - Event E2E tests
+- `src/test/java/com/github/copilot/HooksTest.java` - Hook tests
+- `src/test/java/com/github/copilot/SessionEventHandlingTest.java` - Event handling tests
 
 ## Verification
 
