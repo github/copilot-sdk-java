@@ -27,9 +27,9 @@ This guide covers common use cases for the GitHub Copilot SDK for Java. For comp
 Create a client, start a session, and send a message:
 
 ```java
-import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.json.PermissionHandler;
-import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.SessionConfig;
 
 try (var client = new CopilotClient()) {
     client.start().get();

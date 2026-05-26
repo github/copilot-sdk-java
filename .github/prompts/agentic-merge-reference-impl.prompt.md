@@ -209,7 +209,7 @@ This creates a clear history of changes that can be reviewed in the Pull Request
 Follow the existing Java SDK patterns:
 - Use Jackson for JSON serialization (`ObjectMapper`)
 - Use Java records for DTOs where appropriate
-- Follow the existing package structure under `com.github.copilot.sdk`
+- Follow the existing package structure under `com.github.copilot`
 - Maintain backward compatibility when possible
 - **Match the style of surrounding code** - Consistency with existing code is more important than reference implementation patterns
 - **Prefer existing abstractions** - If the Java SDK already solves a problem differently than .NET, keep the Java approach

@@ -970,7 +970,7 @@ subscription.close();
 ### Subscribing to Specific Event Types
 
 ```java
-import com.github.copilot.sdk.json.SessionLifecycleEventTypes;
+import com.github.copilot.rpc.SessionLifecycleEventTypes;
 
 // Listen only for session creation
 var subscription = client.onLifecycle(

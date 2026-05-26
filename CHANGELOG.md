@@ -405,7 +405,7 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 
 - Advanced usage documentation with comprehensive examples
 - Getting started guide with Maven and JBang instructions
-- Package-info.java files for `com.github.copilot.sdk`, `events`, and `json` packages
+- Package-info.java files for `com.github.copilot`, `events`, and `json` packages
 - `@since` annotations on all public classes
 - Versioned documentation with version selector on GitHub Pages
 - Maven resources plugin for site markdown filtering
