@@ -1,5 +1,5 @@
-module:com.github.copilot.sdk.java
-com.github.copilot.sdk
-com.github.copilot.sdk.generated
-com.github.copilot.sdk.generated.rpc
-com.github.copilot.sdk.json
+module:com.github.copilot.java
+com.github.copilot
+com.github.copilot.generated
+com.github.copilot.generated.rpc
+com.github.copilot.rpc
