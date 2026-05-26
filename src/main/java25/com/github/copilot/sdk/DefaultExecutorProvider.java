@@ -7,12 +7,12 @@ package com.github.copilot.sdk;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-final class DefaultExecutorProvider {
+enum DefaultExecutorProvider {
+    INSTANCE;
 
-    private DefaultExecutorProvider() {
-    }
+    private final Executor executor = Executors.newVirtualThreadPerTaskExecutor();
 
-    static Executor create() {
-        return Executors.newVirtualThreadPerTaskExecutor();
+    Executor get() {
+        return executor;
     }
 }

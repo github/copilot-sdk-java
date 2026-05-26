@@ -4,11 +4,12 @@
 
 package com.github.copilot.sdk;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -28,12 +30,10 @@ import org.junit.jupiter.api.Test;
 class DefaultExecutorProviderTest {
 
     @Test
-    void baseProviderUsesCompletableFutureDefaultExecutor() {
-        if (Runtime.version().feature() >= 25) {
-            return;
-        }
-
-        assertNull(DefaultExecutorProvider.create());
+    void testBaseImplementationReturnsForkJoinPool() {
+        Executor executor = DefaultExecutorProvider.INSTANCE.get();
+        assertNotNull(executor);
+        assertEquals(ForkJoinPool.commonPool(), executor);
     }
 
     @Test
@@ -54,10 +54,14 @@ class DefaultExecutorProviderTest {
 
             try (var loader = new URLClassLoader(new URL[]{jar.toUri().toURL()}, null)) {
                 Class<?> provider = Class.forName("com.github.copilot.sdk.DefaultExecutorProvider", true, loader);
-                Method create = provider.getDeclaredMethod("create");
-                create.setAccessible(true);
-
-                Object result = create.invoke(null);
+                Field instanceField = provider.getDeclaredField("INSTANCE");
+                instanceField.setAccessible(true);
+                Object instance = instanceField.get(null);
+                
+                Method getMethod = provider.getDeclaredMethod("get");
+                getMethod.setAccessible(true);
+                Object result = getMethod.invoke(instance);
+                
                 assertNotNull(result, "JDK 25 multi-release provider must create a default executor");
                 assertTrue(result instanceof Executor, "Default provider must return an Executor");
 
