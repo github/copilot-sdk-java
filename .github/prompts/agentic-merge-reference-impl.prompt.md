@@ -135,11 +135,11 @@ For each change in the reference implementation diff, determine:
 
 | reference implementation (.NET)                    | Java SDK Equivalent                                    |
 |------------------------------------|--------------------------------------------------------|
-| `dotnet/src/Client.cs`             | `src/main/java/com/github/copilot/sdk/CopilotClient.java` |
-| `dotnet/src/Session.cs`            | `src/main/java/com/github/copilot/sdk/CopilotSession.java` |
-| `dotnet/src/Types.cs`              | `src/main/java/com/github/copilot/sdk/types/*.java`    |
+| `dotnet/src/Client.cs`             | `src/main/java/com/github/copilot/CopilotClient.java` |
+| `dotnet/src/Session.cs`            | `src/main/java/com/github/copilot/CopilotSession.java` |
+| `dotnet/src/Types.cs`              | `src/main/java/com/github/copilot/types/*.java`    |
 | `dotnet/src/Generated/*.cs`        | ❌ **DO NOT TOUCH** `src/generated/java/**` — see top of this file |
-| `dotnet/test/*.cs`                 | `src/test/java/com/github/copilot/sdk/*Test.java`      |
+| `dotnet/test/*.cs`                 | `src/test/java/com/github/copilot/*Test.java`      |
 | `docs/getting-started.md`          | `README.md` and `src/site/markdown/*.md`               |
 | `docs/*.md` (new files)            | `src/site/markdown/*.md` + update `src/site/site.xml`  |
 | `sdk-protocol-version.json`        | (embedded in Java code or resource file)               |
@@ -209,7 +209,7 @@ This creates a clear history of changes that can be reviewed in the Pull Request
 Follow the existing Java SDK patterns:
 - Use Jackson for JSON serialization (`ObjectMapper`)
 - Use Java records for DTOs where appropriate
-- Follow the existing package structure under `com.github.copilot.sdk`
+- Follow the existing package structure under `com.github.copilot`
 - Maintain backward compatibility when possible
 - **Match the style of surrounding code** - Consistency with existing code is more important than reference implementation patterns
 - **Prefer existing abstractions** - If the Java SDK already solves a problem differently than .NET, keep the Java approach
@@ -230,7 +230,7 @@ git diff "$LAST_REFERENCE_IMPL_COMMIT"..origin/main --stat -- test/snapshots/
 
 For each new or modified test file in `dotnet/test/`:
 
-1. **Create corresponding Java test class** in `src/test/java/com/github/copilot/sdk/`
+1. **Create corresponding Java test class** in `src/test/java/com/github/copilot/`
 2. **Follow existing test patterns** - Look at existing tests like `PermissionsTest.java` for structure
 3. **Use the E2ETestContext** infrastructure for tests that need the test harness
 4. **Match snapshot directory names** - Test snapshots in `test/snapshots/` must match the directory name used in `ctx.configureForTest()`
@@ -239,10 +239,10 @@ For each new or modified test file in `dotnet/test/`:
 
 | reference implementation Test (.NET)        | Java SDK Test                                          |
 |-----------------------------|--------------------------------------------------------|
-| `dotnet/test/AskUserTests.cs`  | `src/test/java/com/github/copilot/sdk/AskUserTest.java`  |
-| `dotnet/test/HooksTests.cs`    | `src/test/java/com/github/copilot/sdk/HooksTest.java`    |
-| `dotnet/test/ClientTests.cs`   | `src/test/java/com/github/copilot/sdk/CopilotClientTest.java` |
-| `dotnet/test/*Tests.cs`        | `src/test/java/com/github/copilot/sdk/*Test.java`        |
+| `dotnet/test/AskUserTests.cs`  | `src/test/java/com/github/copilot/AskUserTest.java`  |
+| `dotnet/test/HooksTests.cs`    | `src/test/java/com/github/copilot/HooksTest.java`    |
+| `dotnet/test/ClientTests.cs`   | `src/test/java/com/github/copilot/CopilotClientTest.java` |
+| `dotnet/test/*Tests.cs`        | `src/test/java/com/github/copilot/*Test.java`        |
 
 ### Test Snapshot Compatibility
 
@@ -353,7 +353,7 @@ var session = client.createSession(
 
 Explain the request/response objects and their properties.
 
-See [FeatureHandler](apidocs/com/github/copilot/sdk/json/FeatureHandler.html) Javadoc for more details.
+See [FeatureHandler](apidocs/com/github/copilot/rpc/FeatureHandler.html) Javadoc for more details.
 ```
 
 ### Verify Documentation Consistency

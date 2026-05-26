@@ -337,11 +337,11 @@ var hooks = new SessionHooks()
 Combining multiple hooks for comprehensive session control:
 
 ```java
-import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.json.PermissionHandler;
-import com.github.copilot.sdk.json.PreToolUseHookOutput;
-import com.github.copilot.sdk.json.SessionConfig;
-import com.github.copilot.sdk.json.SessionHooks;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.PreToolUseHookOutput;
+import com.github.copilot.rpc.SessionConfig;
+import com.github.copilot.rpc.SessionHooks;
 import java.util.concurrent.CompletableFuture;
 
 public class HooksExample {
@@ -459,11 +459,11 @@ To handle errors gracefully in your hooks:
 
 ## See Also
 
-- [SessionHooks Javadoc](apidocs/com/github/copilot/sdk/json/SessionHooks.html)
-- [PreToolUseHookInput Javadoc](apidocs/com/github/copilot/sdk/json/PreToolUseHookInput.html)
-- [PreToolUseHookOutput Javadoc](apidocs/com/github/copilot/sdk/json/PreToolUseHookOutput.html)
-- [PostToolUseHookInput Javadoc](apidocs/com/github/copilot/sdk/json/PostToolUseHookInput.html)
-- [PostToolUseHookOutput Javadoc](apidocs/com/github/copilot/sdk/json/PostToolUseHookOutput.html)
+- [SessionHooks Javadoc](apidocs/com/github/copilot/rpc/SessionHooks.html)
+- [PreToolUseHookInput Javadoc](apidocs/com/github/copilot/rpc/PreToolUseHookInput.html)
+- [PreToolUseHookOutput Javadoc](apidocs/com/github/copilot/rpc/PreToolUseHookOutput.html)
+- [PostToolUseHookInput Javadoc](apidocs/com/github/copilot/rpc/PostToolUseHookInput.html)
+- [PostToolUseHookOutput Javadoc](apidocs/com/github/copilot/rpc/PostToolUseHookOutput.html)
 
 ---
 

@@ -36,12 +36,12 @@ implementation 'com.github:copilot-sdk-java:${project.version}'
 ### Quick Example
 
 ```java
-import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.generated.AssistantMessageEvent;
-import com.github.copilot.sdk.generated.SessionIdleEvent;
-import com.github.copilot.sdk.json.MessageOptions;
-import com.github.copilot.sdk.json.PermissionHandler;
-import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.generated.AssistantMessageEvent;
+import com.github.copilot.generated.SessionIdleEvent;
+import com.github.copilot.rpc.MessageOptions;
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.SessionConfig;
 import java.util.concurrent.CompletableFuture;
 
 public class Example {
@@ -87,12 +87,12 @@ You can quickly try the SDK without setting up a full project using [JBang](http
 # Create a simple script
 cat > hello-copilot.java << 'EOF'
 //DEPS com.github:copilot-sdk-java:${project.version}
-import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.generated.AssistantMessageEvent;
-import com.github.copilot.sdk.generated.SessionIdleEvent;
-import com.github.copilot.sdk.json.MessageOptions;
-import com.github.copilot.sdk.json.PermissionHandler;
-import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.generated.AssistantMessageEvent;
+import com.github.copilot.generated.SessionIdleEvent;
+import com.github.copilot.rpc.MessageOptions;
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.SessionConfig;
 import java.util.concurrent.CompletableFuture;
 
 class hello {

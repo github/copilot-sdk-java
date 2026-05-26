@@ -17,13 +17,13 @@ Extract all public classes, methods, and features from the SDK:
 
 ```bash
 # List all public classes in core package
-grep -l "public class\|public interface\|public enum" src/main/java/com/github/copilot/sdk/*.java
+grep -l "public class\|public interface\|public enum" src/main/java/com/github/copilot/*.java
 
 # List all public classes in json package (DTOs)
-grep -l "public class" src/main/java/com/github/copilot/sdk/json/*.java
+grep -l "public class" src/main/java/com/github/copilot/rpc/*.java
 
 # List all event types
-ls src/main/java/com/github/copilot/sdk/events/
+ls src/main/java/com/github/copilot/events/
 ```
 
 ### Step 2: Inventory Documentation
@@ -45,7 +45,7 @@ For each major feature area, determine if it's documented:
 Examine `CopilotClient.java` for public methods:
 
 ```bash
-grep "public.*(" src/main/java/com/github/copilot/sdk/CopilotClient.java | grep -v "@"
+grep "public.*(" src/main/java/com/github/copilot/CopilotClient.java | grep -v "@"
 ```
 
 | Method | Purpose | Documented In | Status |
@@ -66,7 +66,7 @@ grep "public.*(" src/main/java/com/github/copilot/sdk/CopilotClient.java | grep 
 Examine `CopilotSession.java` for public methods:
 
 ```bash
-grep "public.*(" src/main/java/com/github/copilot/sdk/CopilotSession.java | grep -v "@"
+grep "public.*(" src/main/java/com/github/copilot/CopilotSession.java | grep -v "@"
 ```
 
 | Method | Purpose | Documented In | Status |
@@ -83,7 +83,7 @@ grep "public.*(" src/main/java/com/github/copilot/sdk/CopilotSession.java | grep
 Examine `SessionConfig.java` for configurable options:
 
 ```bash
-grep "public.*set\|private.*;" src/main/java/com/github/copilot/sdk/json/SessionConfig.java
+grep "public.*set\|private.*;" src/main/java/com/github/copilot/rpc/SessionConfig.java
 ```
 
 | Option | Purpose | Documented | Example Provided |
@@ -103,7 +103,7 @@ grep "public.*set\|private.*;" src/main/java/com/github/copilot/sdk/json/Session
 Check which events are documented:
 
 ```bash
-grep "TYPE_MAP.put" src/main/java/com/github/copilot/sdk/events/SessionEventParser.java
+grep "TYPE_MAP.put" src/main/java/com/github/copilot/events/SessionEventParser.java
 ```
 
 | Event Type | Event Class | Documented | Example |
@@ -118,7 +118,7 @@ grep "TYPE_MAP.put" src/main/java/com/github/copilot/sdk/events/SessionEventPars
 Check `SessionHooks.java` for hook types:
 
 ```bash
-grep "private.*Handler" src/main/java/com/github/copilot/sdk/json/SessionHooks.java
+grep "private.*Handler" src/main/java/com/github/copilot/rpc/SessionHooks.java
 ```
 
 | Hook | Handler Interface | Documented | Example |
@@ -193,11 +193,11 @@ Topics that warrant dedicated documentation:
 ## Key Files
 
 ### Source Code
-- `src/main/java/com/github/copilot/sdk/CopilotClient.java`
-- `src/main/java/com/github/copilot/sdk/CopilotSession.java`
-- `src/main/java/com/github/copilot/sdk/json/SessionConfig.java`
-- `src/main/java/com/github/copilot/sdk/json/SessionHooks.java`
-- `src/main/java/com/github/copilot/sdk/events/SessionEventParser.java`
+- `src/main/java/com/github/copilot/CopilotClient.java`
+- `src/main/java/com/github/copilot/CopilotSession.java`
+- `src/main/java/com/github/copilot/rpc/SessionConfig.java`
+- `src/main/java/com/github/copilot/rpc/SessionHooks.java`
+- `src/main/java/com/github/copilot/events/SessionEventParser.java`
 
 ### Documentation
 - `src/site/markdown/index.md` - Landing page

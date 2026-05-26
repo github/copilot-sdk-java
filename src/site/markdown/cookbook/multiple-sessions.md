@@ -31,11 +31,11 @@ jbang MultipleSessions.java
 **Code:**
 ```java
 //DEPS com.github:copilot-sdk-java:1.0.0-beta-java.4
-import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.generated.AssistantMessageEvent;
-import com.github.copilot.sdk.json.MessageOptions;
-import com.github.copilot.sdk.json.PermissionHandler;
-import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.generated.AssistantMessageEvent;
+import com.github.copilot.rpc.MessageOptions;
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.SessionConfig;
 
 public class MultipleSessions {
     public static void main(String[] args) throws Exception {
@@ -177,11 +177,11 @@ common-pool threads:
 
 ```java
 //DEPS com.github:copilot-sdk-java:${project.version}
-import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.json.CopilotClientOptions;
-import com.github.copilot.sdk.json.SessionConfig;
-import com.github.copilot.sdk.json.MessageOptions;
-import com.github.copilot.sdk.json.PermissionHandler;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.CopilotClientOptions;
+import com.github.copilot.rpc.SessionConfig;
+import com.github.copilot.rpc.MessageOptions;
+import com.github.copilot.rpc.PermissionHandler;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;

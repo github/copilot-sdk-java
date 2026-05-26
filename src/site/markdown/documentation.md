@@ -27,9 +27,9 @@ This guide covers common use cases for the GitHub Copilot SDK for Java. For comp
 Create a client, start a session, and send a message:
 
 ```java
-import com.github.copilot.sdk.CopilotClient;
-import com.github.copilot.sdk.json.PermissionHandler;
-import com.github.copilot.sdk.json.SessionConfig;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.SessionConfig;
 
 try (var client = new CopilotClient()) {
     client.start().get();
@@ -266,7 +266,7 @@ The SDK supports event types organized by category. All events extend `SessionEv
 | `ExitPlanModeRequestedEvent` | `exit_plan_mode.requested` | Exit from plan mode was requested |
 | `ExitPlanModeCompletedEvent` | `exit_plan_mode.completed` | Exit from plan mode completed |
 
-See the [generated package Javadoc](apidocs/com/github/copilot/sdk/generated/package-summary.html) for detailed event data structures.
+See the [generated package Javadoc](apidocs/com/github/copilot/generated/package-summary.html) for detailed event data structures.
 
 ---
 
@@ -563,7 +563,7 @@ var pong = client.ping("hello").get();
 System.out.println("Server responded, protocol version: " + pong.protocolVersion());
 ```
 
-See [ConnectionState](apidocs/com/github/copilot/sdk/ConnectionState.html), [GetStatusResponse](apidocs/com/github/copilot/sdk/json/GetStatusResponse.html), and [GetAuthStatusResponse](apidocs/com/github/copilot/sdk/json/GetAuthStatusResponse.html) Javadoc for details.
+See [ConnectionState](apidocs/com/github/copilot/ConnectionState.html), [GetStatusResponse](apidocs/com/github/copilot/rpc/GetStatusResponse.html), and [GetAuthStatusResponse](apidocs/com/github/copilot/rpc/GetAuthStatusResponse.html) Javadoc for details.
 
 ---
 
@@ -662,7 +662,7 @@ var config = new ResumeSessionConfig().setOnPermissionRequest(PermissionHandler.
 var session = client.resumeSession("user-123-task-456", config).get();
 ```
 
-See [ResumeSessionConfig](apidocs/com/github/copilot/sdk/json/ResumeSessionConfig.html) Javadoc for complete options.
+See [ResumeSessionConfig](apidocs/com/github/copilot/rpc/ResumeSessionConfig.html) Javadoc for complete options.
 
 ### Clean Up Sessions
 
@@ -725,7 +725,7 @@ var derived = base.clone()
 
 `clone()` creates a shallow copy. Collection fields are copied into new collection instances, while nested objects/handlers are shared references.
 
-See [SessionConfig](apidocs/com/github/copilot/sdk/json/SessionConfig.html) Javadoc for full details.
+See [SessionConfig](apidocs/com/github/copilot/rpc/SessionConfig.html) Javadoc for full details.
 
 ---
 
