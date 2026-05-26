@@ -439,9 +439,7 @@ public final class CopilotClient implements AutoCloseable {
 
             long setupNanos = System.nanoTime();
             var session = new CopilotSession(sessionId, connection.rpc);
-            if (executor != null) {
-                session.setExecutor(executor);
-            }
+            session.setExecutor(executor);
             SessionRequestBuilder.configureSession(session, config);
             sessions.put(sessionId, session);
             LoggingHelpers.logTiming(LOG, Level.FINE,
@@ -527,9 +525,7 @@ public final class CopilotClient implements AutoCloseable {
             // Register the session before the RPC call to avoid missing early events.
             long setupNanos = System.nanoTime();
             var session = new CopilotSession(sessionId, connection.rpc);
-            if (executor != null) {
-                session.setExecutor(executor);
-            }
+            session.setExecutor(executor);
             SessionRequestBuilder.configureSession(session, config);
             sessions.put(sessionId, session);
             LoggingHelpers.logTiming(LOG, Level.FINE,
