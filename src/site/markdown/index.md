@@ -8,7 +8,7 @@ Welcome to the documentation for the **GitHub Copilot SDK for Java** — a Java 
 
 ### Requirements
 
-- Java 17 or later
+- Java 17 or later. On JDK 25 and later, the SDK automatically uses virtual threads for its default internal executor.
 - GitHub Copilot CLI 1.0.17 or later installed and in PATH (or provide custom `cliPath`)
 
 ### Installation
