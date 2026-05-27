@@ -45,6 +45,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
     private String prompt;
     private List&lt;MessageAttachment&gt; attachments;
     private String mode;
+    private AgentMode agentMode;
     private Map&lt;String, String&gt; requestHeaders;
 
     /**
@@ -53,7 +54,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the prompt text
      */
     public String getPrompt() {
-<span class="fc" id="L56">        return prompt;</span>
+<span class="fc" id="L57">        return prompt;</span>
     }
 
     /**
@@ -64,8 +65,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setPrompt(String prompt) {
-<span class="fc" id="L67">        this.prompt = prompt;</span>
-<span class="fc" id="L68">        return this;</span>
+<span class="fc" id="L68">        this.prompt = prompt;</span>
+<span class="fc" id="L69">        return this;</span>
     }
 
     /**
@@ -74,7 +75,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the list of attachments
      */
     public List&lt;MessageAttachment&gt; getAttachments() {
-<span class="fc bfc" id="L77" title="All 2 branches covered.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        return attachments == null ? null : Collections.unmodifiableList(attachments);</span>
     }
 
     /**
@@ -95,8 +96,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @see BlobAttachment
      */
     public MessageOptions setAttachments(List&lt;? extends MessageAttachment&gt; attachments) {
-<span class="fc bfc" id="L98" title="All 2 branches covered.">        this.attachments = attachments != null ? new ArrayList&lt;&gt;(attachments) : null;</span>
-<span class="fc" id="L99">        return this;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        this.attachments = attachments != null ? new ArrayList&lt;&gt;(attachments) : null;</span>
+<span class="fc" id="L100">        return this;</span>
     }
 
     /**
@@ -113,8 +114,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setMode(String mode) {
-<span class="fc" id="L116">        this.mode = mode;</span>
-<span class="fc" id="L117">        return this;</span>
+<span class="fc" id="L117">        this.mode = mode;</span>
+<span class="fc" id="L118">        return this;</span>
     }
 
     /**
@@ -123,7 +124,31 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the delivery mode
      */
     public String getMode() {
-<span class="fc" id="L126">        return mode;</span>
+<span class="fc" id="L127">        return mode;</span>
+    }
+
+    /**
+     * Sets the per-message agent UI mode.
+     * &lt;p&gt;
+     * Defaults to the session's current mode when unset.
+     *
+     * @param agentMode
+     *            the agent mode (for example {@link AgentMode#PLAN} or
+     *            {@link AgentMode#AUTOPILOT})
+     * @return this options instance for method chaining
+     */
+    public MessageOptions setAgentMode(AgentMode agentMode) {
+<span class="nc" id="L141">        this.agentMode = agentMode;</span>
+<span class="nc" id="L142">        return this;</span>
+    }
+
+    /**
+     * Gets the per-message agent UI mode.
+     *
+     * @return the agent mode, or {@code null} if not set
+     */
+    public AgentMode getAgentMode() {
+<span class="fc" id="L151">        return agentMode;</span>
     }
 
     /**
@@ -132,7 +157,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return the headers map, or {@code null} if not set
      */
     public Map&lt;String, String&gt; getRequestHeaders() {
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        return requestHeaders == null ? null : Collections.unmodifiableMap(requestHeaders);</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">        return requestHeaders == null ? null : Collections.unmodifiableMap(requestHeaders);</span>
     }
 
     /**
@@ -147,8 +172,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      * @return this options instance for method chaining
      */
     public MessageOptions setRequestHeaders(Map&lt;String, String&gt; requestHeaders) {
-<span class="nc" id="L150">        this.requestHeaders = requestHeaders;</span>
-<span class="nc" id="L151">        return this;</span>
+<span class="nc" id="L175">        this.requestHeaders = requestHeaders;</span>
+<span class="nc" id="L176">        return this;</span>
     }
 
     /**
@@ -163,12 +188,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
      */
     @Override
     public MessageOptions clone() {
-<span class="fc" id="L166">        MessageOptions copy = new MessageOptions();</span>
-<span class="fc" id="L167">        copy.prompt = this.prompt;</span>
-<span class="fc bfc" id="L168" title="All 2 branches covered.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
-<span class="fc" id="L169">        copy.mode = this.mode;</span>
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        copy.requestHeaders = this.requestHeaders != null ? new HashMap&lt;&gt;(this.requestHeaders) : null;</span>
-<span class="fc" id="L171">        return copy;</span>
+<span class="fc" id="L191">        MessageOptions copy = new MessageOptions();</span>
+<span class="fc" id="L192">        copy.prompt = this.prompt;</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">        copy.attachments = this.attachments != null ? new ArrayList&lt;&gt;(this.attachments) : null;</span>
+<span class="fc" id="L194">        copy.mode = this.mode;</span>
+<span class="fc" id="L195">        copy.agentMode = this.agentMode;</span>
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">        copy.requestHeaders = this.requestHeaders != null ? new HashMap&lt;&gt;(this.requestHeaders) : null;</span>
+<span class="fc" id="L197">        return copy;</span>
     }
 
 }
