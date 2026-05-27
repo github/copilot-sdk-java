@@ -46,6 +46,10 @@ import java.util.Optional;
     private List&lt;String&gt; excludedTools;
     private ProviderConfig provider;
     private Boolean enableSessionTelemetry;
+    private Boolean skipCustomInstructions;
+    private Boolean customAgentsLocalOnly;
+    private Boolean coauthorEnabled;
+    private Boolean manageScheduleEnabled;
     private String reasoningEffort;
     private ModelCapabilitiesOverride modelCapabilities;
     private PermissionHandler onPermissionRequest;
@@ -79,7 +83,7 @@ import java.util.Optional;
      * @return the model name
      */
     public String getModel() {
-<span class="fc" id="L82">        return model;</span>
+<span class="fc" id="L86">        return model;</span>
     }
 
     /**
@@ -92,8 +96,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setModel(String model) {
-<span class="fc" id="L95">        this.model = model;</span>
-<span class="fc" id="L96">        return this;</span>
+<span class="fc" id="L99">        this.model = model;</span>
+<span class="fc" id="L100">        return this;</span>
     }
 
     /**
@@ -102,7 +106,7 @@ import java.util.Optional;
      * @return the client name, or {@code null} if not set
      */
     public String getClientName() {
-<span class="fc" id="L105">        return clientName;</span>
+<span class="fc" id="L109">        return clientName;</span>
     }
 
     /**
@@ -115,8 +119,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setClientName(String clientName) {
-<span class="fc" id="L118">        this.clientName = clientName;</span>
-<span class="fc" id="L119">        return this;</span>
+<span class="fc" id="L122">        this.clientName = clientName;</span>
+<span class="fc" id="L123">        return this;</span>
     }
 
     /**
@@ -125,7 +129,7 @@ import java.util.Optional;
      * @return the list of tool definitions
      */
     public List&lt;ToolDefinition&gt; getTools() {
-<span class="fc bfc" id="L128" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        return tools == null ? null : Collections.unmodifiableList(tools);</span>
     }
 
     /**
@@ -137,8 +141,8 @@ import java.util.Optional;
      * @see ToolDefinition
      */
     public ResumeSessionConfig setTools(List&lt;ToolDefinition&gt; tools) {
-<span class="fc" id="L140">        this.tools = tools;</span>
-<span class="fc" id="L141">        return this;</span>
+<span class="fc" id="L144">        this.tools = tools;</span>
+<span class="fc" id="L145">        return this;</span>
     }
 
     /**
@@ -147,7 +151,7 @@ import java.util.Optional;
      * @return the system message config
      */
     public SystemMessageConfig getSystemMessage() {
-<span class="fc" id="L150">        return systemMessage;</span>
+<span class="fc" id="L154">        return systemMessage;</span>
     }
 
     /**
@@ -161,8 +165,8 @@ import java.util.Optional;
      * @see SystemMessageConfig
      */
     public ResumeSessionConfig setSystemMessage(SystemMessageConfig systemMessage) {
-<span class="fc" id="L164">        this.systemMessage = systemMessage;</span>
-<span class="fc" id="L165">        return this;</span>
+<span class="fc" id="L168">        this.systemMessage = systemMessage;</span>
+<span class="fc" id="L169">        return this;</span>
     }
 
     /**
@@ -171,7 +175,7 @@ import java.util.Optional;
      * @return the list of available tool names
      */
     public List&lt;String&gt; getAvailableTools() {
-<span class="fc bfc" id="L174" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        return availableTools == null ? null : Collections.unmodifiableList(availableTools);</span>
     }
 
     /**
@@ -185,8 +189,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setAvailableTools(List&lt;String&gt; availableTools) {
-<span class="fc" id="L188">        this.availableTools = availableTools;</span>
-<span class="fc" id="L189">        return this;</span>
+<span class="fc" id="L192">        this.availableTools = availableTools;</span>
+<span class="fc" id="L193">        return this;</span>
     }
 
     /**
@@ -195,7 +199,7 @@ import java.util.Optional;
      * @return the list of excluded tool names
      */
     public List&lt;String&gt; getExcludedTools() {
-<span class="fc bfc" id="L198" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        return excludedTools == null ? null : Collections.unmodifiableList(excludedTools);</span>
     }
 
     /**
@@ -209,8 +213,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setExcludedTools(List&lt;String&gt; excludedTools) {
-<span class="fc" id="L212">        this.excludedTools = excludedTools;</span>
-<span class="fc" id="L213">        return this;</span>
+<span class="fc" id="L216">        this.excludedTools = excludedTools;</span>
+<span class="fc" id="L217">        return this;</span>
     }
 
     /**
@@ -219,7 +223,7 @@ import java.util.Optional;
      * @return the provider configuration
      */
     public ProviderConfig getProvider() {
-<span class="fc" id="L222">        return provider;</span>
+<span class="fc" id="L226">        return provider;</span>
     }
 
     /**
@@ -231,8 +235,8 @@ import java.util.Optional;
      * @see ProviderConfig
      */
     public ResumeSessionConfig setProvider(ProviderConfig provider) {
-<span class="fc" id="L234">        this.provider = provider;</span>
-<span class="fc" id="L235">        return this;</span>
+<span class="fc" id="L238">        this.provider = provider;</span>
+<span class="fc" id="L239">        return this;</span>
     }
 
     /**
@@ -250,7 +254,7 @@ import java.util.Optional;
      */
     @JsonIgnore
     public Optional&lt;Boolean&gt; getEnableSessionTelemetry() {
-<span class="fc" id="L253">        return Optional.ofNullable(enableSessionTelemetry);</span>
+<span class="fc" id="L257">        return Optional.ofNullable(enableSessionTelemetry);</span>
     }
 
     /**
@@ -265,8 +269,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setEnableSessionTelemetry(boolean enableSessionTelemetry) {
-<span class="fc" id="L268">        this.enableSessionTelemetry = enableSessionTelemetry;</span>
-<span class="fc" id="L269">        return this;</span>
+<span class="fc" id="L272">        this.enableSessionTelemetry = enableSessionTelemetry;</span>
+<span class="fc" id="L273">        return this;</span>
     }
 
     /**
@@ -275,8 +279,170 @@ import java.util.Optional;
      * @return this instance for method chaining
      */
     public ResumeSessionConfig clearEnableSessionTelemetry() {
-<span class="fc" id="L278">        this.enableSessionTelemetry = null;</span>
-<span class="fc" id="L279">        return this;</span>
+<span class="fc" id="L282">        this.enableSessionTelemetry = null;</span>
+<span class="fc" id="L283">        return this;</span>
+    }
+
+    /**
+     * Gets whether custom instruction file loading is suppressed.
+     *
+     * @return {@code true} to suppress, or empty if not explicitly set
+     * @since 1.3.0
+     */
+    @JsonIgnore
+    public Optional&lt;Boolean&gt; getSkipCustomInstructions() {
+<span class="fc" id="L294">        return Optional.ofNullable(skipCustomInstructions);</span>
+    }
+
+    /**
+     * Sets whether to suppress loading of custom instruction files.
+     * &lt;p&gt;
+     * This option is sent to the server via a {@code session.options.update}
+     * JSON-RPC call immediately after session resume. In
+     * {@link CopilotClientMode#EMPTY EMPTY} mode the default is {@code true}
+     * (skip); in {@link CopilotClientMode#COPILOT_CLI COPILOT_CLI} mode the value
+     * is forwarded only when explicitly set.
+     *
+     * @param skipCustomInstructions
+     *            whether to skip custom instructions
+     * @return this config instance for method chaining
+     * @since 1.3.0
+     */
+    public ResumeSessionConfig setSkipCustomInstructions(boolean skipCustomInstructions) {
+<span class="nc" id="L312">        this.skipCustomInstructions = skipCustomInstructions;</span>
+<span class="nc" id="L313">        return this;</span>
+    }
+
+    /**
+     * Clears the skipCustomInstructions setting.
+     *
+     * @return this instance for method chaining
+     */
+    public ResumeSessionConfig clearSkipCustomInstructions() {
+<span class="nc" id="L322">        this.skipCustomInstructions = null;</span>
+<span class="nc" id="L323">        return this;</span>
+    }
+
+    /**
+     * Gets whether custom-agent discovery is restricted to local only.
+     *
+     * @return {@code true} for local only, or empty if not explicitly set
+     * @since 1.3.0
+     */
+    @JsonIgnore
+    public Optional&lt;Boolean&gt; getCustomAgentsLocalOnly() {
+<span class="fc" id="L334">        return Optional.ofNullable(customAgentsLocalOnly);</span>
+    }
+
+    /**
+     * Sets whether custom-agent discovery is restricted to the session's local
+     * working directory.
+     * &lt;p&gt;
+     * This option is sent to the server via a {@code session.options.update}
+     * JSON-RPC call immediately after session resume. In
+     * {@link CopilotClientMode#EMPTY EMPTY} mode the default is {@code true} (local
+     * only); in {@link CopilotClientMode#COPILOT_CLI COPILOT_CLI} mode the value is
+     * forwarded only when explicitly set.
+     *
+     * @param customAgentsLocalOnly
+     *            whether to restrict to local agents
+     * @return this config instance for method chaining
+     * @since 1.3.0
+     */
+    public ResumeSessionConfig setCustomAgentsLocalOnly(boolean customAgentsLocalOnly) {
+<span class="nc" id="L353">        this.customAgentsLocalOnly = customAgentsLocalOnly;</span>
+<span class="nc" id="L354">        return this;</span>
+    }
+
+    /**
+     * Clears the customAgentsLocalOnly setting.
+     *
+     * @return this instance for method chaining
+     */
+    public ResumeSessionConfig clearCustomAgentsLocalOnly() {
+<span class="nc" id="L363">        this.customAgentsLocalOnly = null;</span>
+<span class="nc" id="L364">        return this;</span>
+    }
+
+    /**
+     * Gets whether the runtime may append a Co-authored-by trailer.
+     *
+     * @return the coauthor enabled flag, or empty if not explicitly set
+     * @since 1.3.0
+     */
+    @JsonIgnore
+    public Optional&lt;Boolean&gt; getCoauthorEnabled() {
+<span class="fc" id="L375">        return Optional.ofNullable(coauthorEnabled);</span>
+    }
+
+    /**
+     * Sets whether the runtime is allowed to append a {@code Co-authored-by}
+     * trailer.
+     * &lt;p&gt;
+     * This option is sent to the server via a {@code session.options.update}
+     * JSON-RPC call immediately after session resume. In
+     * {@link CopilotClientMode#EMPTY EMPTY} mode the default is {@code false}
+     * (disabled); in {@link CopilotClientMode#COPILOT_CLI COPILOT_CLI} mode the
+     * value is forwarded only when explicitly set.
+     *
+     * @param coauthorEnabled
+     *            whether coauthor is enabled
+     * @return this config instance for method chaining
+     * @since 1.3.0
+     */
+    public ResumeSessionConfig setCoauthorEnabled(boolean coauthorEnabled) {
+<span class="nc" id="L394">        this.coauthorEnabled = coauthorEnabled;</span>
+<span class="nc" id="L395">        return this;</span>
+    }
+
+    /**
+     * Clears the coauthorEnabled setting.
+     *
+     * @return this instance for method chaining
+     */
+    public ResumeSessionConfig clearCoauthorEnabled() {
+<span class="nc" id="L404">        this.coauthorEnabled = null;</span>
+<span class="nc" id="L405">        return this;</span>
+    }
+
+    /**
+     * Gets whether the manage_schedule tool is enabled.
+     *
+     * @return the manage schedule flag, or empty if not explicitly set
+     * @since 1.3.0
+     */
+    @JsonIgnore
+    public Optional&lt;Boolean&gt; getManageScheduleEnabled() {
+<span class="fc" id="L416">        return Optional.ofNullable(manageScheduleEnabled);</span>
+    }
+
+    /**
+     * Sets whether to enable the {@code manage_schedule} tool.
+     * &lt;p&gt;
+     * This option is sent to the server via a {@code session.options.update}
+     * JSON-RPC call immediately after session resume. In
+     * {@link CopilotClientMode#EMPTY EMPTY} mode the default is {@code false}
+     * (disabled); in {@link CopilotClientMode#COPILOT_CLI COPILOT_CLI} mode the
+     * value is forwarded only when explicitly set.
+     *
+     * @param manageScheduleEnabled
+     *            whether manage schedule is enabled
+     * @return this config instance for method chaining
+     * @since 1.3.0
+     */
+    public ResumeSessionConfig setManageScheduleEnabled(boolean manageScheduleEnabled) {
+<span class="nc" id="L434">        this.manageScheduleEnabled = manageScheduleEnabled;</span>
+<span class="nc" id="L435">        return this;</span>
+    }
+
+    /**
+     * Clears the manageScheduleEnabled setting.
+     *
+     * @return this instance for method chaining
+     */
+    public ResumeSessionConfig clearManageScheduleEnabled() {
+<span class="nc" id="L444">        this.manageScheduleEnabled = null;</span>
+<span class="nc" id="L445">        return this;</span>
     }
 
     /**
@@ -285,7 +451,7 @@ import java.util.Optional;
      * @return the reasoning effort level (&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;, or &quot;xhigh&quot;)
      */
     public String getReasoningEffort() {
-<span class="fc" id="L288">        return reasoningEffort;</span>
+<span class="fc" id="L454">        return reasoningEffort;</span>
     }
 
     /**
@@ -298,8 +464,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setReasoningEffort(String reasoningEffort) {
-<span class="fc" id="L301">        this.reasoningEffort = reasoningEffort;</span>
-<span class="fc" id="L302">        return this;</span>
+<span class="fc" id="L467">        this.reasoningEffort = reasoningEffort;</span>
+<span class="fc" id="L468">        return this;</span>
     }
 
     /**
@@ -308,7 +474,7 @@ import java.util.Optional;
      * @return the permission handler
      */
     public PermissionHandler getOnPermissionRequest() {
-<span class="fc" id="L311">        return onPermissionRequest;</span>
+<span class="fc" id="L477">        return onPermissionRequest;</span>
     }
 
     /**
@@ -320,8 +486,8 @@ import java.util.Optional;
      * @see PermissionHandler
      */
     public ResumeSessionConfig setOnPermissionRequest(PermissionHandler onPermissionRequest) {
-<span class="fc" id="L323">        this.onPermissionRequest = onPermissionRequest;</span>
-<span class="fc" id="L324">        return this;</span>
+<span class="fc" id="L489">        this.onPermissionRequest = onPermissionRequest;</span>
+<span class="fc" id="L490">        return this;</span>
     }
 
     /**
@@ -330,7 +496,7 @@ import java.util.Optional;
      * @return the user input handler
      */
     public UserInputHandler getOnUserInputRequest() {
-<span class="fc" id="L333">        return onUserInputRequest;</span>
+<span class="fc" id="L499">        return onUserInputRequest;</span>
     }
 
     /**
@@ -342,8 +508,8 @@ import java.util.Optional;
      * @see UserInputHandler
      */
     public ResumeSessionConfig setOnUserInputRequest(UserInputHandler onUserInputRequest) {
-<span class="fc" id="L345">        this.onUserInputRequest = onUserInputRequest;</span>
-<span class="fc" id="L346">        return this;</span>
+<span class="fc" id="L511">        this.onUserInputRequest = onUserInputRequest;</span>
+<span class="fc" id="L512">        return this;</span>
     }
 
     /**
@@ -352,7 +518,7 @@ import java.util.Optional;
      * @return the session hooks
      */
     public SessionHooks getHooks() {
-<span class="fc" id="L355">        return hooks;</span>
+<span class="fc" id="L521">        return hooks;</span>
     }
 
     /**
@@ -364,8 +530,8 @@ import java.util.Optional;
      * @see SessionHooks
      */
     public ResumeSessionConfig setHooks(SessionHooks hooks) {
-<span class="fc" id="L367">        this.hooks = hooks;</span>
-<span class="fc" id="L368">        return this;</span>
+<span class="fc" id="L533">        this.hooks = hooks;</span>
+<span class="fc" id="L534">        return this;</span>
     }
 
     /**
@@ -374,7 +540,7 @@ import java.util.Optional;
      * @return the working directory path
      */
     public String getWorkingDirectory() {
-<span class="fc" id="L377">        return workingDirectory;</span>
+<span class="fc" id="L543">        return workingDirectory;</span>
     }
 
     /**
@@ -385,8 +551,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setWorkingDirectory(String workingDirectory) {
-<span class="fc" id="L388">        this.workingDirectory = workingDirectory;</span>
-<span class="fc" id="L389">        return this;</span>
+<span class="fc" id="L554">        this.workingDirectory = workingDirectory;</span>
+<span class="fc" id="L555">        return this;</span>
     }
 
     /**
@@ -395,7 +561,7 @@ import java.util.Optional;
      * @return the configuration directory path
      */
     public String getConfigDir() {
-<span class="fc" id="L398">        return configDir;</span>
+<span class="fc" id="L564">        return configDir;</span>
     }
 
     /**
@@ -408,8 +574,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setConfigDir(String configDir) {
-<span class="fc" id="L411">        this.configDir = configDir;</span>
-<span class="fc" id="L412">        return this;</span>
+<span class="fc" id="L577">        this.configDir = configDir;</span>
+<span class="fc" id="L578">        return this;</span>
     }
 
     /**
@@ -420,7 +586,7 @@ import java.util.Optional;
      */
     @JsonIgnore
     public Optional&lt;Boolean&gt; getEnableConfigDiscovery() {
-<span class="fc" id="L423">        return Optional.ofNullable(enableConfigDiscovery);</span>
+<span class="fc" id="L589">        return Optional.ofNullable(enableConfigDiscovery);</span>
     }
 
     /**
@@ -437,8 +603,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setEnableConfigDiscovery(boolean enableConfigDiscovery) {
-<span class="fc" id="L440">        this.enableConfigDiscovery = enableConfigDiscovery;</span>
-<span class="fc" id="L441">        return this;</span>
+<span class="fc" id="L606">        this.enableConfigDiscovery = enableConfigDiscovery;</span>
+<span class="fc" id="L607">        return this;</span>
     }
 
     /**
@@ -447,8 +613,8 @@ import java.util.Optional;
      * @return this instance for method chaining
      */
     public ResumeSessionConfig clearEnableConfigDiscovery() {
-<span class="fc" id="L450">        this.enableConfigDiscovery = null;</span>
-<span class="fc" id="L451">        return this;</span>
+<span class="fc" id="L616">        this.enableConfigDiscovery = null;</span>
+<span class="fc" id="L617">        return this;</span>
     }
 
     /**
@@ -459,7 +625,7 @@ import java.util.Optional;
      */
     @JsonIgnore
     public Optional&lt;Boolean&gt; getIncludeSubAgentStreamingEvents() {
-<span class="fc" id="L462">        return Optional.ofNullable(includeSubAgentStreamingEvents);</span>
+<span class="fc" id="L628">        return Optional.ofNullable(includeSubAgentStreamingEvents);</span>
     }
 
     /**
@@ -471,8 +637,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setIncludeSubAgentStreamingEvents(boolean includeSubAgentStreamingEvents) {
-<span class="fc" id="L474">        this.includeSubAgentStreamingEvents = includeSubAgentStreamingEvents;</span>
-<span class="fc" id="L475">        return this;</span>
+<span class="fc" id="L640">        this.includeSubAgentStreamingEvents = includeSubAgentStreamingEvents;</span>
+<span class="fc" id="L641">        return this;</span>
     }
 
     /**
@@ -482,8 +648,8 @@ import java.util.Optional;
      * @return this instance for method chaining
      */
     public ResumeSessionConfig clearIncludeSubAgentStreamingEvents() {
-<span class="fc" id="L485">        this.includeSubAgentStreamingEvents = null;</span>
-<span class="fc" id="L486">        return this;</span>
+<span class="fc" id="L651">        this.includeSubAgentStreamingEvents = null;</span>
+<span class="fc" id="L652">        return this;</span>
     }
 
     /**
@@ -492,7 +658,7 @@ import java.util.Optional;
      * @return the model capabilities override, or {@code null} if not set
      */
     public ModelCapabilitiesOverride getModelCapabilities() {
-<span class="fc" id="L495">        return modelCapabilities;</span>
+<span class="fc" id="L661">        return modelCapabilities;</span>
     }
 
     /**
@@ -505,8 +671,8 @@ import java.util.Optional;
      * @see ModelCapabilitiesOverride
      */
     public ResumeSessionConfig setModelCapabilities(ModelCapabilitiesOverride modelCapabilities) {
-<span class="nc" id="L508">        this.modelCapabilities = modelCapabilities;</span>
-<span class="nc" id="L509">        return this;</span>
+<span class="nc" id="L674">        this.modelCapabilities = modelCapabilities;</span>
+<span class="nc" id="L675">        return this;</span>
     }
 
     /**
@@ -515,7 +681,7 @@ import java.util.Optional;
      * @return {@code true} if the session.resume event is suppressed
      */
     public boolean isDisableResume() {
-<span class="fc" id="L518">        return disableResume;</span>
+<span class="fc" id="L684">        return disableResume;</span>
     }
 
     /**
@@ -528,8 +694,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setDisableResume(boolean disableResume) {
-<span class="fc" id="L531">        this.disableResume = disableResume;</span>
-<span class="fc" id="L532">        return this;</span>
+<span class="fc" id="L697">        this.disableResume = disableResume;</span>
+<span class="fc" id="L698">        return this;</span>
     }
 
     /**
@@ -538,7 +704,7 @@ import java.util.Optional;
      * @return {@code true} if streaming is enabled
      */
     public boolean isStreaming() {
-<span class="fc" id="L541">        return streaming;</span>
+<span class="fc" id="L707">        return streaming;</span>
     }
 
     /**
@@ -549,8 +715,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setStreaming(boolean streaming) {
-<span class="fc" id="L552">        this.streaming = streaming;</span>
-<span class="fc" id="L553">        return this;</span>
+<span class="fc" id="L718">        this.streaming = streaming;</span>
+<span class="fc" id="L719">        return this;</span>
     }
 
     /**
@@ -559,7 +725,7 @@ import java.util.Optional;
      * @return the MCP servers map
      */
     public Map&lt;String, McpServerConfig&gt; getMcpServers() {
-<span class="fc bfc" id="L562" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
+<span class="fc bfc" id="L728" title="All 2 branches covered.">        return mcpServers == null ? null : Collections.unmodifiableMap(mcpServers);</span>
     }
 
     /**
@@ -570,8 +736,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setMcpServers(Map&lt;String, McpServerConfig&gt; mcpServers) {
-<span class="fc" id="L573">        this.mcpServers = mcpServers;</span>
-<span class="fc" id="L574">        return this;</span>
+<span class="fc" id="L739">        this.mcpServers = mcpServers;</span>
+<span class="fc" id="L740">        return this;</span>
     }
 
     /**
@@ -580,7 +746,7 @@ import java.util.Optional;
      * @return the list of custom agent configurations
      */
     public List&lt;CustomAgentConfig&gt; getCustomAgents() {
-<span class="fc bfc" id="L583" title="All 2 branches covered.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
+<span class="fc bfc" id="L749" title="All 2 branches covered.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
     }
 
     /**
@@ -592,8 +758,8 @@ import java.util.Optional;
      * @see CustomAgentConfig
      */
     public ResumeSessionConfig setCustomAgents(List&lt;CustomAgentConfig&gt; customAgents) {
-<span class="fc" id="L595">        this.customAgents = customAgents;</span>
-<span class="fc" id="L596">        return this;</span>
+<span class="fc" id="L761">        this.customAgents = customAgents;</span>
+<span class="fc" id="L762">        return this;</span>
     }
 
     /**
@@ -602,7 +768,7 @@ import java.util.Optional;
      * @return the default agent configuration, or {@code null} if not set
      */
     public DefaultAgentConfig getDefaultAgent() {
-<span class="fc" id="L605">        return defaultAgent;</span>
+<span class="fc" id="L771">        return defaultAgent;</span>
     }
 
     /**
@@ -617,8 +783,8 @@ import java.util.Optional;
      * @see DefaultAgentConfig
      */
     public ResumeSessionConfig setDefaultAgent(DefaultAgentConfig defaultAgent) {
-<span class="fc" id="L620">        this.defaultAgent = defaultAgent;</span>
-<span class="fc" id="L621">        return this;</span>
+<span class="fc" id="L786">        this.defaultAgent = defaultAgent;</span>
+<span class="fc" id="L787">        return this;</span>
     }
 
     /**
@@ -627,7 +793,7 @@ import java.util.Optional;
      * @return the agent name, or {@code null} if not set
      */
     public String getAgent() {
-<span class="fc" id="L630">        return agent;</span>
+<span class="fc" id="L796">        return agent;</span>
     }
 
     /**
@@ -640,8 +806,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setAgent(String agent) {
-<span class="fc" id="L643">        this.agent = agent;</span>
-<span class="fc" id="L644">        return this;</span>
+<span class="fc" id="L809">        this.agent = agent;</span>
+<span class="fc" id="L810">        return this;</span>
     }
 
     /**
@@ -650,7 +816,7 @@ import java.util.Optional;
      * @return the list of skill directory paths
      */
     public List&lt;String&gt; getSkillDirectories() {
-<span class="fc bfc" id="L653" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
+<span class="fc bfc" id="L819" title="All 2 branches covered.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
     }
 
     /**
@@ -661,8 +827,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setSkillDirectories(List&lt;String&gt; skillDirectories) {
-<span class="fc" id="L664">        this.skillDirectories = skillDirectories;</span>
-<span class="fc" id="L665">        return this;</span>
+<span class="fc" id="L830">        this.skillDirectories = skillDirectories;</span>
+<span class="fc" id="L831">        return this;</span>
     }
 
     /**
@@ -671,7 +837,7 @@ import java.util.Optional;
      * @return the list of instruction directory paths
      */
     public List&lt;String&gt; getInstructionDirectories() {
-<span class="fc bfc" id="L674" title="All 2 branches covered.">        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);</span>
+<span class="fc bfc" id="L840" title="All 2 branches covered.">        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);</span>
     }
 
     /**
@@ -682,8 +848,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setInstructionDirectories(List&lt;String&gt; instructionDirectories) {
-<span class="fc" id="L685">        this.instructionDirectories = instructionDirectories;</span>
-<span class="fc" id="L686">        return this;</span>
+<span class="fc" id="L851">        this.instructionDirectories = instructionDirectories;</span>
+<span class="fc" id="L852">        return this;</span>
     }
 
     /**
@@ -692,7 +858,7 @@ import java.util.Optional;
      * @return the list of disabled skill names
      */
     public List&lt;String&gt; getDisabledSkills() {
-<span class="fc bfc" id="L695" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
+<span class="fc bfc" id="L861" title="All 2 branches covered.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
     }
 
     /**
@@ -703,8 +869,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setDisabledSkills(List&lt;String&gt; disabledSkills) {
-<span class="fc" id="L706">        this.disabledSkills = disabledSkills;</span>
-<span class="fc" id="L707">        return this;</span>
+<span class="fc" id="L872">        this.disabledSkills = disabledSkills;</span>
+<span class="fc" id="L873">        return this;</span>
     }
 
     /**
@@ -713,7 +879,7 @@ import java.util.Optional;
      * @return the infinite session config
      */
     public InfiniteSessionConfig getInfiniteSessions() {
-<span class="fc" id="L716">        return infiniteSessions;</span>
+<span class="fc" id="L882">        return infiniteSessions;</span>
     }
 
     /**
@@ -726,8 +892,8 @@ import java.util.Optional;
      * @see InfiniteSessionConfig
      */
     public ResumeSessionConfig setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
-<span class="fc" id="L729">        this.infiniteSessions = infiniteSessions;</span>
-<span class="fc" id="L730">        return this;</span>
+<span class="fc" id="L895">        this.infiniteSessions = infiniteSessions;</span>
+<span class="fc" id="L896">        return this;</span>
     }
 
     /**
@@ -736,7 +902,7 @@ import java.util.Optional;
      * @return the event handler, or {@code null} if not set
      */
     public Consumer&lt;SessionEvent&gt; getOnEvent() {
-<span class="fc" id="L739">        return onEvent;</span>
+<span class="fc" id="L905">        return onEvent;</span>
     }
 
     /**
@@ -752,8 +918,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setOnEvent(Consumer&lt;SessionEvent&gt; onEvent) {
-<span class="fc" id="L755">        this.onEvent = onEvent;</span>
-<span class="fc" id="L756">        return this;</span>
+<span class="fc" id="L921">        this.onEvent = onEvent;</span>
+<span class="fc" id="L922">        return this;</span>
     }
 
     /**
@@ -762,7 +928,7 @@ import java.util.Optional;
      * @return the list of command definitions, or {@code null}
      */
     public List&lt;CommandDefinition&gt; getCommands() {
-<span class="fc bfc" id="L765" title="All 2 branches covered.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
+<span class="fc bfc" id="L931" title="All 2 branches covered.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
     }
 
     /**
@@ -777,8 +943,8 @@ import java.util.Optional;
      * @see CommandDefinition
      */
     public ResumeSessionConfig setCommands(List&lt;CommandDefinition&gt; commands) {
-<span class="fc" id="L780">        this.commands = commands;</span>
-<span class="fc" id="L781">        return this;</span>
+<span class="fc" id="L946">        this.commands = commands;</span>
+<span class="fc" id="L947">        return this;</span>
     }
 
     /**
@@ -787,7 +953,7 @@ import java.util.Optional;
      * @return the elicitation handler, or {@code null}
      */
     public ElicitationHandler getOnElicitationRequest() {
-<span class="fc" id="L790">        return onElicitationRequest;</span>
+<span class="fc" id="L956">        return onElicitationRequest;</span>
     }
 
     /**
@@ -802,8 +968,8 @@ import java.util.Optional;
      * @see ElicitationHandler
      */
     public ResumeSessionConfig setOnElicitationRequest(ElicitationHandler onElicitationRequest) {
-<span class="fc" id="L805">        this.onElicitationRequest = onElicitationRequest;</span>
-<span class="fc" id="L806">        return this;</span>
+<span class="fc" id="L971">        this.onElicitationRequest = onElicitationRequest;</span>
+<span class="fc" id="L972">        return this;</span>
     }
 
     /**
@@ -813,7 +979,7 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public ExitPlanModeHandler getOnExitPlanMode() {
-<span class="fc" id="L816">        return onExitPlanMode;</span>
+<span class="fc" id="L982">        return onExitPlanMode;</span>
     }
 
     /**
@@ -829,8 +995,8 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public ResumeSessionConfig setOnExitPlanMode(ExitPlanModeHandler onExitPlanMode) {
-<span class="fc" id="L832">        this.onExitPlanMode = onExitPlanMode;</span>
-<span class="fc" id="L833">        return this;</span>
+<span class="fc" id="L998">        this.onExitPlanMode = onExitPlanMode;</span>
+<span class="fc" id="L999">        return this;</span>
     }
 
     /**
@@ -840,7 +1006,7 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public AutoModeSwitchHandler getOnAutoModeSwitch() {
-<span class="fc" id="L843">        return onAutoModeSwitch;</span>
+<span class="fc" id="L1009">        return onAutoModeSwitch;</span>
     }
 
     /**
@@ -856,8 +1022,8 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public ResumeSessionConfig setOnAutoModeSwitch(AutoModeSwitchHandler onAutoModeSwitch) {
-<span class="fc" id="L859">        this.onAutoModeSwitch = onAutoModeSwitch;</span>
-<span class="fc" id="L860">        return this;</span>
+<span class="fc" id="L1025">        this.onAutoModeSwitch = onAutoModeSwitch;</span>
+<span class="fc" id="L1026">        return this;</span>
     }
 
     /**
@@ -867,7 +1033,7 @@ import java.util.Optional;
      * @since 1.3.0
      */
     public String getGitHubToken() {
-<span class="fc" id="L870">        return gitHubToken;</span>
+<span class="fc" id="L1036">        return gitHubToken;</span>
     }
 
     /**
@@ -883,8 +1049,8 @@ import java.util.Optional;
      * @since 1.3.0
      */
     public ResumeSessionConfig setGitHubToken(String gitHubToken) {
-<span class="fc" id="L886">        this.gitHubToken = gitHubToken;</span>
-<span class="fc" id="L887">        return this;</span>
+<span class="fc" id="L1052">        this.gitHubToken = gitHubToken;</span>
+<span class="fc" id="L1053">        return this;</span>
     }
 
     /**
@@ -896,7 +1062,7 @@ import java.util.Optional;
      * @since 1.4.0
      */
     public String getRemoteSession() {
-<span class="fc" id="L899">        return remoteSession;</span>
+<span class="fc" id="L1065">        return remoteSession;</span>
     }
 
     /**
@@ -911,8 +1077,8 @@ import java.util.Optional;
      * @since 1.4.0
      */
     public ResumeSessionConfig setRemoteSession(String remoteSession) {
-<span class="fc" id="L914">        this.remoteSession = remoteSession;</span>
-<span class="fc" id="L915">        return this;</span>
+<span class="fc" id="L1080">        this.remoteSession = remoteSession;</span>
+<span class="fc" id="L1081">        return this;</span>
     }
 
     /**
@@ -928,44 +1094,44 @@ import java.util.Optional;
      */
     @Override
     public ResumeSessionConfig clone() {
-<span class="fc" id="L931">        ResumeSessionConfig copy = new ResumeSessionConfig();</span>
-<span class="fc" id="L932">        copy.clientName = this.clientName;</span>
-<span class="fc" id="L933">        copy.model = this.model;</span>
-<span class="pc bpc" id="L934" title="1 of 2 branches missed.">        copy.tools = this.tools != null ? new ArrayList&lt;&gt;(this.tools) : null;</span>
-<span class="fc" id="L935">        copy.systemMessage = this.systemMessage;</span>
-<span class="pc bpc" id="L936" title="1 of 2 branches missed.">        copy.availableTools = this.availableTools != null ? new ArrayList&lt;&gt;(this.availableTools) : null;</span>
-<span class="pc bpc" id="L937" title="1 of 2 branches missed.">        copy.excludedTools = this.excludedTools != null ? new ArrayList&lt;&gt;(this.excludedTools) : null;</span>
-<span class="fc" id="L938">        copy.provider = this.provider;</span>
-<span class="fc" id="L939">        copy.enableSessionTelemetry = this.enableSessionTelemetry;</span>
-<span class="fc" id="L940">        copy.reasoningEffort = this.reasoningEffort;</span>
-<span class="fc" id="L941">        copy.modelCapabilities = this.modelCapabilities;</span>
-<span class="fc" id="L942">        copy.onPermissionRequest = this.onPermissionRequest;</span>
-<span class="fc" id="L943">        copy.onUserInputRequest = this.onUserInputRequest;</span>
-<span class="fc" id="L944">        copy.hooks = this.hooks;</span>
-<span class="fc" id="L945">        copy.workingDirectory = this.workingDirectory;</span>
-<span class="fc" id="L946">        copy.configDir = this.configDir;</span>
-<span class="fc" id="L947">        copy.enableConfigDiscovery = this.enableConfigDiscovery;</span>
-<span class="fc" id="L948">        copy.disableResume = this.disableResume;</span>
-<span class="fc" id="L949">        copy.streaming = this.streaming;</span>
-<span class="fc" id="L950">        copy.includeSubAgentStreamingEvents = this.includeSubAgentStreamingEvents;</span>
-<span class="pc bpc" id="L951" title="1 of 2 branches missed.">        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap&lt;&gt;(this.mcpServers) : null;</span>
-<span class="pc bpc" id="L952" title="1 of 2 branches missed.">        copy.customAgents = this.customAgents != null ? new ArrayList&lt;&gt;(this.customAgents) : null;</span>
-<span class="fc" id="L953">        copy.defaultAgent = this.defaultAgent;</span>
-<span class="fc" id="L954">        copy.agent = this.agent;</span>
-<span class="pc bpc" id="L955" title="1 of 2 branches missed.">        copy.skillDirectories = this.skillDirectories != null ? new ArrayList&lt;&gt;(this.skillDirectories) : null;</span>
-<span class="pc bpc" id="L956" title="1 of 2 branches missed.">        copy.instructionDirectories = this.instructionDirectories != null</span>
-<span class="nc" id="L957">                ? new ArrayList&lt;&gt;(this.instructionDirectories)</span>
-<span class="fc" id="L958">                : null;</span>
-<span class="pc bpc" id="L959" title="1 of 2 branches missed.">        copy.disabledSkills = this.disabledSkills != null ? new ArrayList&lt;&gt;(this.disabledSkills) : null;</span>
-<span class="fc" id="L960">        copy.infiniteSessions = this.infiniteSessions;</span>
-<span class="fc" id="L961">        copy.onEvent = this.onEvent;</span>
-<span class="fc bfc" id="L962" title="All 2 branches covered.">        copy.commands = this.commands != null ? new ArrayList&lt;&gt;(this.commands) : null;</span>
-<span class="fc" id="L963">        copy.onElicitationRequest = this.onElicitationRequest;</span>
-<span class="fc" id="L964">        copy.onExitPlanMode = this.onExitPlanMode;</span>
-<span class="fc" id="L965">        copy.onAutoModeSwitch = this.onAutoModeSwitch;</span>
-<span class="fc" id="L966">        copy.gitHubToken = this.gitHubToken;</span>
-<span class="fc" id="L967">        copy.remoteSession = this.remoteSession;</span>
-<span class="fc" id="L968">        return copy;</span>
+<span class="fc" id="L1097">        ResumeSessionConfig copy = new ResumeSessionConfig();</span>
+<span class="fc" id="L1098">        copy.clientName = this.clientName;</span>
+<span class="fc" id="L1099">        copy.model = this.model;</span>
+<span class="pc bpc" id="L1100" title="1 of 2 branches missed.">        copy.tools = this.tools != null ? new ArrayList&lt;&gt;(this.tools) : null;</span>
+<span class="fc" id="L1101">        copy.systemMessage = this.systemMessage;</span>
+<span class="pc bpc" id="L1102" title="1 of 2 branches missed.">        copy.availableTools = this.availableTools != null ? new ArrayList&lt;&gt;(this.availableTools) : null;</span>
+<span class="pc bpc" id="L1103" title="1 of 2 branches missed.">        copy.excludedTools = this.excludedTools != null ? new ArrayList&lt;&gt;(this.excludedTools) : null;</span>
+<span class="fc" id="L1104">        copy.provider = this.provider;</span>
+<span class="fc" id="L1105">        copy.enableSessionTelemetry = this.enableSessionTelemetry;</span>
+<span class="fc" id="L1106">        copy.reasoningEffort = this.reasoningEffort;</span>
+<span class="fc" id="L1107">        copy.modelCapabilities = this.modelCapabilities;</span>
+<span class="fc" id="L1108">        copy.onPermissionRequest = this.onPermissionRequest;</span>
+<span class="fc" id="L1109">        copy.onUserInputRequest = this.onUserInputRequest;</span>
+<span class="fc" id="L1110">        copy.hooks = this.hooks;</span>
+<span class="fc" id="L1111">        copy.workingDirectory = this.workingDirectory;</span>
+<span class="fc" id="L1112">        copy.configDir = this.configDir;</span>
+<span class="fc" id="L1113">        copy.enableConfigDiscovery = this.enableConfigDiscovery;</span>
+<span class="fc" id="L1114">        copy.disableResume = this.disableResume;</span>
+<span class="fc" id="L1115">        copy.streaming = this.streaming;</span>
+<span class="fc" id="L1116">        copy.includeSubAgentStreamingEvents = this.includeSubAgentStreamingEvents;</span>
+<span class="pc bpc" id="L1117" title="1 of 2 branches missed.">        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap&lt;&gt;(this.mcpServers) : null;</span>
+<span class="pc bpc" id="L1118" title="1 of 2 branches missed.">        copy.customAgents = this.customAgents != null ? new ArrayList&lt;&gt;(this.customAgents) : null;</span>
+<span class="fc" id="L1119">        copy.defaultAgent = this.defaultAgent;</span>
+<span class="fc" id="L1120">        copy.agent = this.agent;</span>
+<span class="pc bpc" id="L1121" title="1 of 2 branches missed.">        copy.skillDirectories = this.skillDirectories != null ? new ArrayList&lt;&gt;(this.skillDirectories) : null;</span>
+<span class="pc bpc" id="L1122" title="1 of 2 branches missed.">        copy.instructionDirectories = this.instructionDirectories != null</span>
+<span class="nc" id="L1123">                ? new ArrayList&lt;&gt;(this.instructionDirectories)</span>
+<span class="fc" id="L1124">                : null;</span>
+<span class="pc bpc" id="L1125" title="1 of 2 branches missed.">        copy.disabledSkills = this.disabledSkills != null ? new ArrayList&lt;&gt;(this.disabledSkills) : null;</span>
+<span class="fc" id="L1126">        copy.infiniteSessions = this.infiniteSessions;</span>
+<span class="fc" id="L1127">        copy.onEvent = this.onEvent;</span>
+<span class="fc bfc" id="L1128" title="All 2 branches covered.">        copy.commands = this.commands != null ? new ArrayList&lt;&gt;(this.commands) : null;</span>
+<span class="fc" id="L1129">        copy.onElicitationRequest = this.onElicitationRequest;</span>
+<span class="fc" id="L1130">        copy.onExitPlanMode = this.onExitPlanMode;</span>
+<span class="fc" id="L1131">        copy.onAutoModeSwitch = this.onAutoModeSwitch;</span>
+<span class="fc" id="L1132">        copy.gitHubToken = this.gitHubToken;</span>
+<span class="fc" id="L1133">        copy.remoteSession = this.remoteSession;</span>
+<span class="fc" id="L1134">        return copy;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
