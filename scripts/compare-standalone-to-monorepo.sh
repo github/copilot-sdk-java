@@ -1,7 +1,7 @@
 #!/bin/sh
 # compare-standalone-to-monorepo.sh
 #
-# Compare POM, Java source, and Java properties files between the
+# Compare POM, Java source, Java properties files, and .lastmerge between the
 # standalone copilot-sdk-java repo and the monorepo's java/ directory.
 #
 # Usage:
@@ -118,6 +118,35 @@ while IFS= read -r relpath; do
     fi
 done < "$TMPFILE_MONO"
 
+# ── Compare .lastmerge ────────────────────────────────────────────────
+LASTMERGE_STATUS=""
+STANDALONE_LASTMERGE="${STANDALONE}/.lastmerge"
+MONO_LASTMERGE="${MONO_JAVA}/.lastmerge"
+
+if [ -f "$STANDALONE_LASTMERGE" ] && [ -f "$MONO_LASTMERGE" ]; then
+    if diff -q "$STANDALONE_LASTMERGE" "$MONO_LASTMERGE" >/dev/null 2>&1; then
+        LASTMERGE_STATUS="identical"
+        SAME_COUNT=$((SAME_COUNT + 1))
+    else
+        LASTMERGE_STATUS="differ"
+        DIFFER_COUNT=$((DIFFER_COUNT + 1))
+        DIFFER_LIST="${DIFFER_LIST}.lastmerge
+"
+    fi
+elif [ -f "$STANDALONE_LASTMERGE" ] && [ ! -f "$MONO_LASTMERGE" ]; then
+    LASTMERGE_STATUS="only-standalone"
+    MISSING_FROM_MONO_COUNT=$((MISSING_FROM_MONO_COUNT + 1))
+    MISSING_FROM_MONO_LIST="${MISSING_FROM_MONO_LIST}.lastmerge
+"
+elif [ ! -f "$STANDALONE_LASTMERGE" ] && [ -f "$MONO_LASTMERGE" ]; then
+    LASTMERGE_STATUS="only-monorepo"
+    MISSING_FROM_STANDALONE_COUNT=$((MISSING_FROM_STANDALONE_COUNT + 1))
+    MISSING_FROM_STANDALONE_LIST="${MISSING_FROM_STANDALONE_LIST}.lastmerge
+"
+else
+    LASTMERGE_STATUS="missing-both"
+fi
+
 STANDALONE_TOTAL=$(wc -l < "$TMPFILE_STANDALONE" | tr -d ' ')
 MONO_TOTAL=$(wc -l < "$TMPFILE_MONO" | tr -d ' ')
 
@@ -127,6 +156,22 @@ echo "  Identical: ${SAME_COUNT}"
 echo "  Differ:    ${DIFFER_COUNT}"
 echo "  Only in standalone (missing from monorepo): ${MISSING_FROM_MONO_COUNT}"
 echo "  Only in monorepo (missing from standalone): ${MISSING_FROM_STANDALONE_COUNT}"
+echo ""
+
+# .lastmerge status
+if [ "$LASTMERGE_STATUS" = "identical" ]; then
+    echo ".lastmerge: identical"
+elif [ "$LASTMERGE_STATUS" = "differ" ]; then
+    echo ".lastmerge: DIFFERS"
+    echo "  standalone: $(cat "$STANDALONE_LASTMERGE")"
+    echo "  monorepo:   $(cat "$MONO_LASTMERGE")"
+elif [ "$LASTMERGE_STATUS" = "only-standalone" ]; then
+    echo ".lastmerge: only in standalone"
+elif [ "$LASTMERGE_STATUS" = "only-monorepo" ]; then
+    echo ".lastmerge: only in monorepo"
+else
+    echo ".lastmerge: not found in either location"
+fi
 echo ""
 
 if [ "$DIFFER_COUNT" -gt 0 ]; then
@@ -166,13 +211,32 @@ if [ "$SHOW_DIFF" = true ] && [ "$DIFFER_COUNT" -gt 0 ]; then
     echo "Unified diffs for differing files:"
     echo "================================================================================"
     printf '%s' "$DIFFER_LIST" | while IFS= read -r f; do
-        if [ -n "$f" ]; then
+        if [ -n "$f" ] && [ "$f" != ".lastmerge" ]; then
             echo ""
             echo "--- standalone/$f"
             echo "+++ monorepo/java/$f"
             diff -u "${STANDALONE}/${f}" "${MONO_JAVA}/${f}" || true
         fi
     done
+fi
+
+# ── Optional .lastmerge commit log comparison ────────────────────────
+if [ "$SHOW_DIFF" = true ] && [ "$LASTMERGE_STATUS" = "differ" ]; then
+    STANDALONE_HASH=$(cat "$STANDALONE_LASTMERGE" | tr -d '[:space:]')
+    MONO_HASH=$(cat "$MONO_LASTMERGE" | tr -d '[:space:]')
+    echo ""
+    echo "================================================================================"
+    echo ".lastmerge differs — commit log comparison in monorepo:"
+    echo "================================================================================"
+    echo ""
+    echo "--- standalone .lastmerge: ${STANDALONE_HASH}"
+    (cd "$MONOREPO" && git log --oneline -1 "$STANDALONE_HASH" 2>/dev/null) || echo "  (commit not found in monorepo)"
+    echo ""
+    echo "+++ monorepo .lastmerge: ${MONO_HASH}"
+    (cd "$MONOREPO" && git log --oneline -1 "$MONO_HASH" 2>/dev/null) || echo "  (commit not found in monorepo)"
+    echo ""
+    echo "Commits between standalone and monorepo .lastmerge:"
+    (cd "$MONOREPO" && git log --oneline "${STANDALONE_HASH}..${MONO_HASH}" 2>/dev/null) || echo "  (unable to compute log range)"
 fi
 
 if [ "$SHOW_DIFF" = true ] && [ "$MISSING_FROM_STANDALONE_COUNT" -gt 0 ]; then
