@@ -118,6 +118,35 @@ while IFS= read -r relpath; do
     fi
 done < "$TMPFILE_MONO"
 
+# ── Compare scripts/codegen/java.ts ───────────────────────────────────
+JAVATS_STATUS=""
+STANDALONE_JAVATS="${STANDALONE}/scripts/codegen/java.ts"
+MONO_JAVATS="${MONO_JAVA}/scripts/codegen/java.ts"
+
+if [ -f "$STANDALONE_JAVATS" ] && [ -f "$MONO_JAVATS" ]; then
+    if diff -q "$STANDALONE_JAVATS" "$MONO_JAVATS" >/dev/null 2>&1; then
+        JAVATS_STATUS="identical"
+        SAME_COUNT=$((SAME_COUNT + 1))
+    else
+        JAVATS_STATUS="differ"
+        DIFFER_COUNT=$((DIFFER_COUNT + 1))
+        DIFFER_LIST="${DIFFER_LIST}scripts/codegen/java.ts
+"
+    fi
+elif [ -f "$STANDALONE_JAVATS" ] && [ ! -f "$MONO_JAVATS" ]; then
+    JAVATS_STATUS="only-standalone"
+    MISSING_FROM_MONO_COUNT=$((MISSING_FROM_MONO_COUNT + 1))
+    MISSING_FROM_MONO_LIST="${MISSING_FROM_MONO_LIST}scripts/codegen/java.ts
+"
+elif [ ! -f "$STANDALONE_JAVATS" ] && [ -f "$MONO_JAVATS" ]; then
+    JAVATS_STATUS="only-monorepo"
+    MISSING_FROM_STANDALONE_COUNT=$((MISSING_FROM_STANDALONE_COUNT + 1))
+    MISSING_FROM_STANDALONE_LIST="${MISSING_FROM_STANDALONE_LIST}scripts/codegen/java.ts
+"
+else
+    JAVATS_STATUS="missing-both"
+fi
+
 # ── Compare .lastmerge ────────────────────────────────────────────────
 LASTMERGE_STATUS=""
 STANDALONE_LASTMERGE="${STANDALONE}/.lastmerge"
@@ -171,6 +200,19 @@ elif [ "$LASTMERGE_STATUS" = "only-monorepo" ]; then
     echo ".lastmerge: only in monorepo"
 else
     echo ".lastmerge: not found in either location"
+fi
+
+# scripts/codegen/java.ts status
+if [ "$JAVATS_STATUS" = "identical" ]; then
+    echo "scripts/codegen/java.ts: identical"
+elif [ "$JAVATS_STATUS" = "differ" ]; then
+    echo "scripts/codegen/java.ts: DIFFERS"
+elif [ "$JAVATS_STATUS" = "only-standalone" ]; then
+    echo "scripts/codegen/java.ts: only in standalone"
+elif [ "$JAVATS_STATUS" = "only-monorepo" ]; then
+    echo "scripts/codegen/java.ts: only in monorepo"
+else
+    echo "scripts/codegen/java.ts: not found in either location"
 fi
 echo ""
 
