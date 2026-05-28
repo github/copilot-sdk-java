@@ -176,4 +176,5 @@ jobs:
           path: |
             target/surefire-reports/
             target/surefire-reports-isolated/
+            target/failsafe-reports/
           retention-days: 7
