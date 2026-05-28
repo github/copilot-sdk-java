@@ -1,9 +1,6 @@
 name: "Build & Test"
 
 on:
-  schedule:
-    # Run once a week on Sundays at 00:00 UTC
-    - cron: '0 0 * * 0'
   push:
     branches: [main]
     paths-ignore:
