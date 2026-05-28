@@ -8,8 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-> **Reference implementation sync:** [`github/copilot-sdk@e20f5be`](https://github.com/github/copilot-sdk/commit/e20f5bef125860accb30c60d1b35109371a77f16)
+> **Reference implementation sync:** [`github/copilot-sdk@6010405`](https://github.com/github/copilot-sdk/commit/60104052cd914949ddf8c7a31e1856cd6db0a57c)
 
+## [1.0.0-beta-8-java.0] - 2026-05-28
+
+> **Reference implementation sync:** [`github/copilot-sdk@6010405`](https://github.com/github/copilot-sdk/commit/60104052cd914949ddf8c7a31e1856cd6db0a57c)
 ## [1.0.0-beta-java.4] - 2026-05-16
 
 > **Reference implementation sync:** [`github/copilot-sdk@e20f5be`](https://github.com/github/copilot-sdk/commit/e20f5bef125860accb30c60d1b35109371a77f16)
@@ -509,7 +512,8 @@ New types: `GetForegroundSessionResponse`, `SetForegroundSessionResponse`
 - Pre-commit hook for Spotless code formatting
 - Comprehensive API documentation
 
-[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v1.0.0-beta-java.4...HEAD
+[Unreleased]: https://github.com/github/copilot-sdk-java/compare/v1.0.0-beta-8-java.0...HEAD
+[1.0.0-beta-8-java.0]: https://github.com/github/copilot-sdk-java/compare/v1.0.0-beta-java.4...v1.0.0-beta-8-java.0
 [1.0.0-beta-java.4]: https://github.com/github/copilot-sdk-java/compare/v1.0.0-beta-java.3...v1.0.0-beta-java.4
 [1.0.0-beta-java.3]: https://github.com/github/copilot-sdk-java/compare/v1.0.0-beta-java.2...v1.0.0-beta-java.3
 [1.0.0-beta-java.2]: https://github.com/github/copilot-sdk-java/compare/v1.0.0-beta-java.1...v1.0.0-beta-java.2
