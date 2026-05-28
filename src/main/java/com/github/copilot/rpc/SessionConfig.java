@@ -42,6 +42,7 @@ public class SessionConfig {
     private String clientName;
     private String model;
     private String reasoningEffort;
+    private String reasoningSummary;
     private List<ToolDefinition> tools;
     private SystemMessageConfig systemMessage;
     private List<String> availableTools;
@@ -59,14 +60,17 @@ public class SessionConfig {
     private boolean streaming;
     private Boolean includeSubAgentStreamingEvents;
     private Map<String, McpServerConfig> mcpServers;
+    private String mcpOAuthTokenStorage;
     private List<CustomAgentConfig> customAgents;
     private DefaultAgentConfig defaultAgent;
     private String agent;
     private InfiniteSessionConfig infiniteSessions;
     private List<String> skillDirectories;
     private List<String> instructionDirectories;
+    private List<String> pluginDirectories;
+    private LargeToolOutputConfig largeOutput;
     private List<String> disabledSkills;
-    private String configDir;
+    private String configDirectory;
     private Boolean enableConfigDiscovery;
     private ModelCapabilitiesOverride modelCapabilities;
     private Consumer<SessionEvent> onEvent;
@@ -74,6 +78,7 @@ public class SessionConfig {
     private ElicitationHandler onElicitationRequest;
     private ExitPlanModeHandler onExitPlanMode;
     private AutoModeSwitchHandler onAutoModeSwitch;
+    private boolean enableMcpApps;
     private String gitHubToken;
     private String remoteSession;
     private CloudSessionOptions cloud;
@@ -168,6 +173,29 @@ public class SessionConfig {
      */
     public SessionConfig setReasoningEffort(String reasoningEffort) {
         this.reasoningEffort = reasoningEffort;
+        return this;
+    }
+
+    /**
+     * Gets the reasoning summary mode.
+     *
+     * @return the reasoning summary mode ("none", "concise", or "detailed")
+     */
+    public String getReasoningSummary() {
+        return reasoningSummary;
+    }
+
+    /**
+     * Sets the reasoning summary mode for models that support configurable
+     * reasoning summaries. Use {@code "none"} to suppress summary output regardless
+     * of whether reasoning is enabled.
+     *
+     * @param reasoningSummary
+     *            the reasoning summary mode
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setReasoningSummary(String reasoningSummary) {
+        this.reasoningSummary = reasoningSummary;
         return this;
     }
 
@@ -651,6 +679,39 @@ public class SessionConfig {
     }
 
     /**
+     * Gets the MCP OAuth token storage mode.
+     *
+     * @return the storage mode, or {@code null} if not set
+     */
+    public String getMcpOAuthTokenStorage() {
+        return mcpOAuthTokenStorage;
+    }
+
+    /**
+     * Sets the MCP OAuth token storage mode.
+     * <p>
+     * Controls how MCP OAuth tokens are stored for this session:
+     * <ul>
+     * <li>{@code "persistent"} — tokens are stored in the OS keychain (shared
+     * across sessions)</li>
+     * <li>{@code "in-memory"} — tokens are stored in memory and discarded when the
+     * session ends</li>
+     * </ul>
+     * If not set and the client is in
+     * {@link com.github.copilot.CopilotClientMode#EMPTY EMPTY} mode, the SDK
+     * defaults to {@code "in-memory"} for safe multitenant behavior. In other modes
+     * this field is left unset.
+     *
+     * @param mcpOAuthTokenStorage
+     *            the storage mode
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setMcpOAuthTokenStorage(String mcpOAuthTokenStorage) {
+        this.mcpOAuthTokenStorage = mcpOAuthTokenStorage;
+        return this;
+    }
+
+    /**
      * Gets the custom agent configurations.
      *
      * @return the list of custom agent configurations
@@ -797,6 +858,48 @@ public class SessionConfig {
     }
 
     /**
+     * Gets the plugin directories to load Open Plugin definitions from.
+     *
+     * @return the list of plugin directory paths
+     */
+    public List<String> getPluginDirectories() {
+        return pluginDirectories == null ? null : Collections.unmodifiableList(pluginDirectories);
+    }
+
+    /**
+     * Sets the plugin directories to load Open Plugin definitions from.
+     *
+     * @param pluginDirectories
+     *            the list of plugin directory paths
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setPluginDirectories(List<String> pluginDirectories) {
+        this.pluginDirectories = pluginDirectories;
+        return this;
+    }
+
+    /**
+     * Gets the configuration for large tool output handling.
+     *
+     * @return the large output config, or {@code null} for default
+     */
+    public LargeToolOutputConfig getLargeOutput() {
+        return largeOutput;
+    }
+
+    /**
+     * Sets the configuration for large tool output handling.
+     *
+     * @param largeOutput
+     *            the large output config
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setLargeOutput(LargeToolOutputConfig largeOutput) {
+        this.largeOutput = largeOutput;
+        return this;
+    }
+
+    /**
      * Gets the disabled skill names.
      *
      * @return the list of disabled skill names
@@ -825,8 +928,8 @@ public class SessionConfig {
      *
      * @return the config directory path
      */
-    public String getConfigDir() {
-        return configDir;
+    public String getConfigDirectory() {
+        return configDirectory;
     }
 
     /**
@@ -835,12 +938,12 @@ public class SessionConfig {
      * This allows using a specific directory for session configuration instead of
      * the default location.
      *
-     * @param configDir
+     * @param configDirectory
      *            the configuration directory path
      * @return this config instance for method chaining
      */
-    public SessionConfig setConfigDir(String configDir) {
-        this.configDir = configDir;
+    public SessionConfig setConfigDirectory(String configDirectory) {
+        this.configDirectory = configDirectory;
         return this;
     }
 
@@ -1034,6 +1137,49 @@ public class SessionConfig {
     }
 
     /**
+     * Returns whether MCP Apps (SEP-1865) UI passthrough is enabled on this
+     * session.
+     *
+     * @return {@code true} if the consumer has opted into MCP Apps, otherwise
+     *         {@code false}
+     * @see #setEnableMcpApps(boolean)
+     */
+    public boolean isEnableMcpApps() {
+        return enableMcpApps;
+    }
+
+    /**
+     * Enables MCP Apps (SEP-1865) UI passthrough on this session.
+     * <p>
+     * When {@code true} <b>and</b> the runtime has MCP Apps enabled (via the
+     * {@code MCP_APPS} feature flag or {@code COPILOT_MCP_APPS=true} environment
+     * override), the runtime adds the {@code mcp-apps} capability to the session,
+     * which causes it to advertise the
+     * {@code extensions.io.modelcontextprotocol/ui} extension to MCP servers (so
+     * they expose {@code _meta.ui.resourceUri} on tools) and to expose the
+     * {@code session.rpc.mcp.apps.{listTools,callTool,readResource,
+     * setHostContext,getHostContext,diagnose}} JSON-RPC methods.
+     * <p>
+     * If the runtime gate is off, the opt-in is silently dropped server-side (the
+     * runtime logs a warning); the session is created normally but the MCP Apps
+     * surface is unavailable. Inspect {@link SessionUiCapabilities#getMcpApps()} on
+     * {@link com.github.copilot.CopilotSession#getCapabilities()} to detect this.
+     * <p>
+     * SDK consumers MUST set this to {@code true} only when they have an iframe
+     * renderer that can display {@code ui://} MCP App bundles. Setting it without a
+     * renderer will cause MCP servers to register UI-enabled tool variants the
+     * consumer cannot display.
+     *
+     * @param enableMcpApps
+     *            {@code true} to opt into MCP Apps support
+     * @return this config instance for method chaining
+     */
+    public SessionConfig setEnableMcpApps(boolean enableMcpApps) {
+        this.enableMcpApps = enableMcpApps;
+        return this;
+    }
+
+    /**
      * Gets the exit-plan-mode request handler.
      *
      * @return the exit-plan-mode handler, or {@code null}
@@ -1200,6 +1346,7 @@ public class SessionConfig {
         copy.clientName = this.clientName;
         copy.model = this.model;
         copy.reasoningEffort = this.reasoningEffort;
+        copy.reasoningSummary = this.reasoningSummary;
         copy.tools = this.tools != null ? new ArrayList<>(this.tools) : null;
         copy.systemMessage = this.systemMessage;
         copy.availableTools = this.availableTools != null ? new ArrayList<>(this.availableTools) : null;
@@ -1225,8 +1372,10 @@ public class SessionConfig {
         copy.instructionDirectories = this.instructionDirectories != null
                 ? new ArrayList<>(this.instructionDirectories)
                 : null;
+        copy.pluginDirectories = this.pluginDirectories != null ? new ArrayList<>(this.pluginDirectories) : null;
+        copy.largeOutput = this.largeOutput;
         copy.disabledSkills = this.disabledSkills != null ? new ArrayList<>(this.disabledSkills) : null;
-        copy.configDir = this.configDir;
+        copy.configDirectory = this.configDirectory;
         copy.enableConfigDiscovery = this.enableConfigDiscovery;
         copy.modelCapabilities = this.modelCapabilities;
         copy.onEvent = this.onEvent;
@@ -1234,6 +1383,7 @@ public class SessionConfig {
         copy.onElicitationRequest = this.onElicitationRequest;
         copy.onExitPlanMode = this.onExitPlanMode;
         copy.onAutoModeSwitch = this.onAutoModeSwitch;
+        copy.enableMcpApps = this.enableMcpApps;
         copy.gitHubToken = this.gitHubToken;
         copy.remoteSession = this.remoteSession;
         copy.cloud = this.cloud;
