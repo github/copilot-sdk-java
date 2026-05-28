@@ -24,7 +24,7 @@ jobs:
 
       # Install GitHub CLI and gh-aw extension for Copilot Agent interaction
       - name: Install gh-aw extension
-        uses: github/gh-aw/actions/setup-cli@0feed75a980b06f247abbbf80127f8eb2c19e2c5 # v0.74.8
+        uses: github/gh-aw/actions/setup-cli@58d1bedbb7200f59c2d224151339e38fd8687d05 # v0.76.1
         with:
           version: v0.68.3
 
