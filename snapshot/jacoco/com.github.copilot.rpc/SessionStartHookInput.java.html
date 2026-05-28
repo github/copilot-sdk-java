@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.7
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="fc" id="L29">public record SessionStartHookInput(@JsonProperty(&quot;sessionId&quot;) String sessionId,</span>
+<span class="nc" id="L29">public record SessionStartHookInput(@JsonProperty(&quot;sessionId&quot;) String sessionId,</span>
         @JsonProperty(&quot;timestamp&quot;) long timestamp, @JsonProperty(&quot;cwd&quot;) String cwd,
         @JsonProperty(&quot;source&quot;) String source, @JsonProperty(&quot;initialPrompt&quot;) String initialPrompt) {
 }

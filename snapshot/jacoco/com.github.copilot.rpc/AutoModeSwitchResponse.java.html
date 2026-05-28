@@ -11,22 +11,22 @@ import com.fasterxml.jackson.annotation.JsonValue;
  *
  * @since 1.0.8
  */
-<span class="fc" id="L14">public enum AutoModeSwitchResponse {</span>
+<span class="nc" id="L14">public enum AutoModeSwitchResponse {</span>
 
     /** Approve the switch for this rate-limit cycle. */
-<span class="fc" id="L17">    YES(&quot;yes&quot;),</span>
+<span class="nc" id="L17">    YES(&quot;yes&quot;),</span>
 
     /** Approve and remember the choice for this session. */
-<span class="fc" id="L20">    YES_ALWAYS(&quot;yes_always&quot;),</span>
+<span class="nc" id="L20">    YES_ALWAYS(&quot;yes_always&quot;),</span>
 
     /** Decline the switch. */
-<span class="fc" id="L23">    NO(&quot;no&quot;);</span>
+<span class="nc" id="L23">    NO(&quot;no&quot;);</span>
 
     private final String value;
 
-<span class="fc" id="L27">    AutoModeSwitchResponse(String value) {</span>
-<span class="fc" id="L28">        this.value = value;</span>
-<span class="fc" id="L29">    }</span>
+<span class="nc" id="L27">    AutoModeSwitchResponse(String value) {</span>
+<span class="nc" id="L28">        this.value = value;</span>
+<span class="nc" id="L29">    }</span>
 
     /**
      * Gets the wire value of this response.
@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
      */
     @JsonValue
     public String getValue() {
-<span class="fc" id="L38">        return value;</span>
+<span class="nc" id="L38">        return value;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

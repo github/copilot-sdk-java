@@ -24,10 +24,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L27">public final class ToolInvocation {</span>
+<span class="nc" id="L27">public final class ToolInvocation {</span>
 
-<span class="fc" id="L29">    private static final ObjectMapper MAPPER = new ObjectMapper();</span>
-<span class="fc" id="L30">    private static final TypeReference&lt;Map&lt;String, Object&gt;&gt; MAP_TYPE = new TypeReference&lt;&gt;() {</span>
+<span class="nc" id="L29">    private static final ObjectMapper MAPPER = new ObjectMapper();</span>
+<span class="pc" id="L30">    private static final TypeReference&lt;Map&lt;String, Object&gt;&gt; MAP_TYPE = new TypeReference&lt;&gt;() {</span>
     };
 
     private String sessionId;
@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      * @return the session ID
      */
     public String getSessionId() {
-<span class="fc" id="L44">        return sessionId;</span>
+<span class="nc" id="L44">        return sessionId;</span>
     }
 
     /**
@@ -52,8 +52,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      * @return this invocation for method chaining
      */
     public ToolInvocation setSessionId(String sessionId) {
-<span class="fc" id="L55">        this.sessionId = sessionId;</span>
-<span class="fc" id="L56">        return this;</span>
+<span class="nc" id="L55">        this.sessionId = sessionId;</span>
+<span class="nc" id="L56">        return this;</span>
     }
 
     /**
@@ -64,7 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      * @return the tool call ID
      */
     public String getToolCallId() {
-<span class="fc" id="L67">        return toolCallId;</span>
+<span class="nc" id="L67">        return toolCallId;</span>
     }
 
     /**
@@ -75,8 +75,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      * @return this invocation for method chaining
      */
     public ToolInvocation setToolCallId(String toolCallId) {
-<span class="fc" id="L78">        this.toolCallId = toolCallId;</span>
-<span class="fc" id="L79">        return this;</span>
+<span class="nc" id="L78">        this.toolCallId = toolCallId;</span>
+<span class="nc" id="L79">        return this;</span>
     }
 
     /**
@@ -85,7 +85,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      * @return the tool name
      */
     public String getToolName() {
-<span class="fc" id="L88">        return toolName;</span>
+<span class="nc" id="L88">        return toolName;</span>
     }
 
     /**
@@ -96,8 +96,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      * @return this invocation for method chaining
      */
     public ToolInvocation setToolName(String toolName) {
-<span class="fc" id="L99">        this.toolName = toolName;</span>
-<span class="fc" id="L100">        return this;</span>
+<span class="nc" id="L99">        this.toolName = toolName;</span>
+<span class="nc" id="L100">        return this;</span>
     }
 
     /**
@@ -114,10 +114,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      * @see #getArgumentsAs(Class)
      */
     public Map&lt;String, Object&gt; getArguments() {
-<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (argumentsNode == null) {</span>
-<span class="fc" id="L118">            return null;</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (argumentsNode == null) {</span>
+<span class="nc" id="L118">            return null;</span>
         }
-<span class="fc" id="L120">        return MAPPER.convertValue(argumentsNode, MAP_TYPE);</span>
+<span class="nc" id="L120">        return MAPPER.convertValue(argumentsNode, MAP_TYPE);</span>
     }
 
     /**
@@ -147,9 +147,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      */
     public &lt;T&gt; T getArgumentsAs(Class&lt;T&gt; type) {
         try {
-<span class="fc" id="L150">            return MAPPER.treeToValue(argumentsNode, type);</span>
-<span class="fc" id="L151">        } catch (Exception e) {</span>
-<span class="fc" id="L152">            throw new IllegalArgumentException(&quot;Failed to deserialize arguments to &quot; + type.getName(), e);</span>
+<span class="nc" id="L150">            return MAPPER.treeToValue(argumentsNode, type);</span>
+<span class="nc" id="L151">        } catch (Exception e) {</span>
+<span class="nc" id="L152">            throw new IllegalArgumentException(&quot;Failed to deserialize arguments to &quot; + type.getName(), e);</span>
         }
     }
 
@@ -165,8 +165,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
      */
     @JsonSetter(&quot;arguments&quot;)
     public ToolInvocation setArguments(JsonNode arguments) {
-<span class="fc" id="L168">        this.argumentsNode = arguments;</span>
-<span class="fc" id="L169">        return this;</span>
+<span class="nc" id="L168">        this.argumentsNode = arguments;</span>
+<span class="nc" id="L169">        return this;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

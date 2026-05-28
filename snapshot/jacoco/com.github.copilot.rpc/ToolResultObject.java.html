@@ -51,7 +51,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.0
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-<span class="fc" id="L54">public record ToolResultObject(@JsonProperty(&quot;resultType&quot;) String resultType,</span>
+<span class="nc" id="L54">public record ToolResultObject(@JsonProperty(&quot;resultType&quot;) String resultType,</span>
         @JsonProperty(&quot;textResultForLlm&quot;) String textResultForLlm,
         @JsonProperty(&quot;binaryResultsForLlm&quot;) List&lt;ToolBinaryResult&gt; binaryResultsForLlm,
         @JsonProperty(&quot;error&quot;) String error, @JsonProperty(&quot;sessionLog&quot;) String sessionLog,
@@ -65,7 +65,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return a success result
      */
     public static ToolResultObject success(String textResultForLlm) {
-<span class="fc" id="L68">        return new ToolResultObject(&quot;success&quot;, textResultForLlm, null, null, null, null);</span>
+<span class="nc" id="L68">        return new ToolResultObject(&quot;success&quot;, textResultForLlm, null, null, null, null);</span>
     }
 
     /**
@@ -89,7 +89,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return an error result
      */
     public static ToolResultObject error(String textResultForLlm, String error) {
-<span class="fc" id="L92">        return new ToolResultObject(&quot;error&quot;, textResultForLlm, null, error, null, null);</span>
+<span class="nc" id="L92">        return new ToolResultObject(&quot;error&quot;, textResultForLlm, null, error, null, null);</span>
     }
 
     /**
@@ -106,7 +106,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return a failure result
      */
     public static ToolResultObject failure(String textResultForLlm, String error) {
-<span class="fc" id="L109">        return new ToolResultObject(&quot;failure&quot;, textResultForLlm, null, error, null, null);</span>
+<span class="nc" id="L109">        return new ToolResultObject(&quot;failure&quot;, textResultForLlm, null, error, null, null);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

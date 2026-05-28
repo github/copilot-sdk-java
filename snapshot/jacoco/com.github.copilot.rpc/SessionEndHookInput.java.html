@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @since 1.0.7
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-<span class="fc" id="L32">public record SessionEndHookInput(@JsonProperty(&quot;sessionId&quot;) String sessionId,</span>
+<span class="nc" id="L32">public record SessionEndHookInput(@JsonProperty(&quot;sessionId&quot;) String sessionId,</span>
         @JsonProperty(&quot;timestamp&quot;) long timestamp, @JsonProperty(&quot;cwd&quot;) String cwd,
         @JsonProperty(&quot;reason&quot;) String reason, @JsonProperty(&quot;finalMessage&quot;) String finalMessage,
         @JsonProperty(&quot;error&quot;) String error) {

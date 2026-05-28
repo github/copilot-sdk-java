@@ -14,19 +14,19 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * @see SystemMessageConfig
  * @since 1.2.0
  */
-<span class="fc" id="L17">public enum SectionOverrideAction {</span>
+<span class="nc" id="L17">public enum SectionOverrideAction {</span>
 
     /** Replace the section content entirely. */
-<span class="fc" id="L20">    REPLACE(&quot;replace&quot;),</span>
+<span class="nc" id="L20">    REPLACE(&quot;replace&quot;),</span>
 
     /** Remove the section from the prompt. */
-<span class="fc" id="L23">    REMOVE(&quot;remove&quot;),</span>
+<span class="nc" id="L23">    REMOVE(&quot;remove&quot;),</span>
 
     /** Append content after the existing section. */
-<span class="fc" id="L26">    APPEND(&quot;append&quot;),</span>
+<span class="nc" id="L26">    APPEND(&quot;append&quot;),</span>
 
     /** Prepend content before the existing section. */
-<span class="fc" id="L29">    PREPEND(&quot;prepend&quot;),</span>
+<span class="nc" id="L29">    PREPEND(&quot;prepend&quot;),</span>
 
     /**
      * Transform the section content via a callback.
@@ -35,13 +35,13 @@ import com.fasterxml.jackson.annotation.JsonValue;
      * must be set. The SDK will not serialize this action over the wire directly;
      * instead it registers a {@code systemMessage.transform} RPC handler.
      */
-<span class="fc" id="L38">    TRANSFORM(&quot;transform&quot;);</span>
+<span class="nc" id="L38">    TRANSFORM(&quot;transform&quot;);</span>
 
     private final String value;
 
-<span class="fc" id="L42">    SectionOverrideAction(String value) {</span>
-<span class="fc" id="L43">        this.value = value;</span>
-<span class="fc" id="L44">    }</span>
+<span class="nc" id="L42">    SectionOverrideAction(String value) {</span>
+<span class="nc" id="L43">        this.value = value;</span>
+<span class="nc" id="L44">    }</span>
 
     /**
      * Returns the JSON value for this action.
@@ -50,7 +50,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
      */
     @JsonValue
     public String getValue() {
-<span class="fc" id="L53">        return value;</span>
+<span class="nc" id="L53">        return value;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

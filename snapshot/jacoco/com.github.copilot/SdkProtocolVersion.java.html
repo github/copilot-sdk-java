@@ -12,18 +12,18 @@ package com.github.copilot;
  *
  * @since 1.0.0
  */
-<span class="fc" id="L15">public enum SdkProtocolVersion {</span>
+<span class="nc" id="L15">public enum SdkProtocolVersion {</span>
 
-<span class="fc" id="L17">    LATEST(3);</span>
+<span class="nc" id="L17">    LATEST(3);</span>
 
     private int versionNumber;
 
-<span class="fc" id="L21">    private SdkProtocolVersion(int versionNumber) {</span>
-<span class="fc" id="L22">        this.versionNumber = versionNumber;</span>
-<span class="fc" id="L23">    }</span>
+<span class="nc" id="L21">    private SdkProtocolVersion(int versionNumber) {</span>
+<span class="nc" id="L22">        this.versionNumber = versionNumber;</span>
+<span class="nc" id="L23">    }</span>
 
     public int getVersionNumber() {
-<span class="fc" id="L26">        return this.versionNumber;</span>
+<span class="nc" id="L26">        return this.versionNumber;</span>
     }
 
     /**
@@ -32,7 +32,7 @@ package com.github.copilot;
      * @return the protocol version
      */
     public static int get() {
-<span class="fc" id="L35">        return LATEST.getVersionNumber();</span>
+<span class="nc" id="L35">        return LATEST.getVersionNumber();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

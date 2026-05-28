@@ -21,6 +21,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JsonProperty(&quot;elicitation&quot;)
     private Boolean elicitation;
 
+    @JsonProperty(&quot;mcpApps&quot;)
+    private Boolean mcpApps;
+
     /**
      * Returns whether the host supports interactive elicitation dialogs.
      *
@@ -28,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      */
     @JsonIgnore
     public Optional&lt;Boolean&gt; getElicitation() {
-<span class="fc" id="L31">        return Optional.ofNullable(elicitation);</span>
+<span class="fc" id="L34">        return Optional.ofNullable(elicitation);</span>
     }
 
     /**
@@ -39,8 +42,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this instance for method chaining
      */
     public SessionUiCapabilities setElicitation(boolean elicitation) {
-<span class="fc" id="L42">        this.elicitation = elicitation;</span>
-<span class="fc" id="L43">        return this;</span>
+<span class="fc" id="L45">        this.elicitation = elicitation;</span>
+<span class="fc" id="L46">        return this;</span>
     }
 
     /**
@@ -49,8 +52,45 @@ import com.fasterxml.jackson.annotation.JsonProperty;
      * @return this instance for method chaining
      */
     public SessionUiCapabilities clearElicitation() {
-<span class="fc" id="L52">        this.elicitation = null;</span>
-<span class="fc" id="L53">        return this;</span>
+<span class="fc" id="L55">        this.elicitation = null;</span>
+<span class="fc" id="L56">        return this;</span>
+    }
+
+    /**
+     * Returns whether the runtime has accepted the session's MCP Apps (SEP-1865)
+     * opt-in. Present and {@code true} when the consumer set
+     * {@code enableMcpApps=true} on create/resume &lt;b&gt;and&lt;/b&gt; the runtime's
+     * {@code MCP_APPS} feature flag (or {@code COPILOT_MCP_APPS=true} env override)
+     * is on. Otherwise empty or {@code false}, indicating the runtime silently
+     * dropped the opt-in.
+     *
+     * @return an {@link Optional} containing the boolean value, or empty if not set
+     */
+    @JsonIgnore
+    public Optional&lt;Boolean&gt; getMcpApps() {
+<span class="nc" id="L71">        return Optional.ofNullable(mcpApps);</span>
+    }
+
+    /**
+     * Sets whether the runtime has accepted the MCP Apps opt-in.
+     *
+     * @param mcpApps
+     *            {@code true} if MCP Apps is enabled for this session
+     * @return this instance for method chaining
+     */
+    public SessionUiCapabilities setMcpApps(boolean mcpApps) {
+<span class="fc" id="L82">        this.mcpApps = mcpApps;</span>
+<span class="fc" id="L83">        return this;</span>
+    }
+
+    /**
+     * Clears the mcpApps setting.
+     *
+     * @return this instance for method chaining
+     */
+    public SessionUiCapabilities clearMcpApps() {
+<span class="nc" id="L92">        this.mcpApps = null;</span>
+<span class="nc" id="L93">        return this;</span>
     }
 
 }

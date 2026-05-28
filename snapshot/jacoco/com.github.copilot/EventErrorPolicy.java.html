@@ -40,7 +40,7 @@ package com.github.copilot;
  * @see EventErrorHandler
  * @since 1.0.8
  */
-<span class="fc" id="L43">public enum EventErrorPolicy {</span>
+<span class="nc" id="L43">public enum EventErrorPolicy {</span>
 
     /**
      * Suppress errors: log the error and continue dispatching to remaining
@@ -51,7 +51,7 @@ package com.github.copilot;
      * The configured {@link EventErrorHandler} is called for each error. This is
      * analogous to Spring's {@code LOG_AND_SUPPRESS_ERROR_HANDLER} behavior.
      */
-<span class="fc" id="L54">    SUPPRESS_AND_LOG_ERRORS,</span>
+<span class="nc" id="L54">    SUPPRESS_AND_LOG_ERRORS,</span>
 
     /**
      * Propagate errors: log the error and stop dispatch on first listener error
@@ -63,6 +63,6 @@ package com.github.copilot;
      * stops. This is analogous to Spring's {@code LOG_AND_PROPAGATE_ERROR_HANDLER}
      * behavior.
      */
-<span class="fc" id="L66">    PROPAGATE_AND_LOG_ERRORS</span>
+<span class="nc" id="L66">    PROPAGATE_AND_LOG_ERRORS</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

@@ -35,9 +35,9 @@ import java.util.regex.Pattern;
  *
  * @since 1.3.0
  */
-<span class="fc" id="L38">public class ToolSet extends ArrayList&lt;String&gt; {</span>
+<span class="nc" id="L38">public class ToolSet extends ArrayList&lt;String&gt; {</span>
 
-<span class="fc" id="L40">    private static final Pattern VALID_TOOL_NAME = Pattern.compile(&quot;^[a-zA-Z0-9_-]+$&quot;);</span>
+<span class="nc" id="L40">    private static final Pattern VALID_TOOL_NAME = Pattern.compile(&quot;^[a-zA-Z0-9_-]+$&quot;);</span>
 
     /**
      * Adds a built-in tool pattern.
@@ -50,9 +50,9 @@ import java.util.regex.Pattern;
      *             if name is null, empty, or contains invalid characters
      */
     public ToolSet addBuiltIn(String name) {
-<span class="fc" id="L53">        validateName(&quot;builtin&quot;, name);</span>
-<span class="fc" id="L54">        add(&quot;builtin:&quot; + name);</span>
-<span class="fc" id="L55">        return this;</span>
+<span class="nc" id="L53">        validateName(&quot;builtin&quot;, name);</span>
+<span class="nc" id="L54">        add(&quot;builtin:&quot; + name);</span>
+<span class="nc" id="L55">        return this;</span>
     }
 
     /**
@@ -65,11 +65,11 @@ import java.util.regex.Pattern;
      *             if names is null
      */
     public ToolSet addBuiltIn(Collection&lt;String&gt; names) {
-<span class="fc" id="L68">        Objects.requireNonNull(names, &quot;names must not be null&quot;);</span>
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        for (String name : names) {</span>
-<span class="fc" id="L70">            addBuiltIn(name);</span>
-<span class="fc" id="L71">        }</span>
-<span class="fc" id="L72">        return this;</span>
+<span class="nc" id="L68">        Objects.requireNonNull(names, &quot;names must not be null&quot;);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        for (String name : names) {</span>
+<span class="nc" id="L70">            addBuiltIn(name);</span>
+<span class="nc" id="L71">        }</span>
+<span class="nc" id="L72">        return this;</span>
     }
 
     /**
@@ -84,9 +84,9 @@ import java.util.regex.Pattern;
      *             if name is null, empty, or contains invalid characters
      */
     public ToolSet addCustom(String name) {
-<span class="fc" id="L87">        validateName(&quot;custom&quot;, name);</span>
-<span class="fc" id="L88">        add(&quot;custom:&quot; + name);</span>
-<span class="fc" id="L89">        return this;</span>
+<span class="nc" id="L87">        validateName(&quot;custom&quot;, name);</span>
+<span class="nc" id="L88">        add(&quot;custom:&quot; + name);</span>
+<span class="nc" id="L89">        return this;</span>
     }
 
     /**
@@ -102,22 +102,22 @@ import java.util.regex.Pattern;
      *             if toolName is null, empty, or contains invalid characters
      */
     public ToolSet addMcp(String toolName) {
-<span class="fc" id="L105">        validateName(&quot;mcp&quot;, toolName);</span>
-<span class="fc" id="L106">        add(&quot;mcp:&quot; + toolName);</span>
-<span class="fc" id="L107">        return this;</span>
+<span class="nc" id="L105">        validateName(&quot;mcp&quot;, toolName);</span>
+<span class="nc" id="L106">        add(&quot;mcp:&quot; + toolName);</span>
+<span class="nc" id="L107">        return this;</span>
     }
 
     private static void validateName(String kind, String name) {
-<span class="fc bfc" id="L111" title="All 4 branches covered.">        if (name == null || name.isEmpty()) {</span>
-<span class="fc" id="L112">            throw new IllegalArgumentException(&quot;Invalid &quot; + kind + &quot; tool name: must not be null or empty.&quot;);</span>
+<span class="nc bnc" id="L111" title="All 4 branches missed.">        if (name == null || name.isEmpty()) {</span>
+<span class="nc" id="L112">            throw new IllegalArgumentException(&quot;Invalid &quot; + kind + &quot; tool name: must not be null or empty.&quot;);</span>
         }
-<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (&quot;*&quot;.equals(name)) {</span>
-<span class="fc" id="L115">            return;</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (&quot;*&quot;.equals(name)) {</span>
+<span class="nc" id="L115">            return;</span>
         }
-<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (!VALID_TOOL_NAME.matcher(name).matches()) {</span>
-<span class="fc" id="L118">            throw new IllegalArgumentException(&quot;Invalid &quot; + kind + &quot; tool name '&quot; + name</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (!VALID_TOOL_NAME.matcher(name).matches()) {</span>
+<span class="nc" id="L118">            throw new IllegalArgumentException(&quot;Invalid &quot; + kind + &quot; tool name '&quot; + name</span>
                     + &quot;': tool names must match /^[a-zA-Z0-9_-]+$/ or be the wildcard '*'.&quot;);
         }
-<span class="fc" id="L121">    }</span>
+<span class="nc" id="L121">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
