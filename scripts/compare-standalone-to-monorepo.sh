@@ -176,6 +176,35 @@ else
     LASTMERGE_STATUS="missing-both"
 fi
 
+# ── Compare README.md (standalone README.md ↔ monorepo java/README.md) ────────
+README_STATUS=""
+STANDALONE_README="${STANDALONE}/README.md"
+MONO_README="${MONO_JAVA}/README.md"
+
+if [ -f "$STANDALONE_README" ] && [ -f "$MONO_README" ]; then
+    if diff -q "$STANDALONE_README" "$MONO_README" >/dev/null 2>&1; then
+        README_STATUS="identical"
+        SAME_COUNT=$((SAME_COUNT + 1))
+    else
+        README_STATUS="differ"
+        DIFFER_COUNT=$((DIFFER_COUNT + 1))
+        DIFFER_LIST="${DIFFER_LIST}README.md
+"
+    fi
+elif [ -f "$STANDALONE_README" ] && [ ! -f "$MONO_README" ]; then
+    README_STATUS="only-standalone"
+    MISSING_FROM_MONO_COUNT=$((MISSING_FROM_MONO_COUNT + 1))
+    MISSING_FROM_MONO_LIST="${MISSING_FROM_MONO_LIST}README.md
+"
+elif [ ! -f "$STANDALONE_README" ] && [ -f "$MONO_README" ]; then
+    README_STATUS="only-monorepo"
+    MISSING_FROM_STANDALONE_COUNT=$((MISSING_FROM_STANDALONE_COUNT + 1))
+    MISSING_FROM_STANDALONE_LIST="${MISSING_FROM_STANDALONE_LIST}README.md
+"
+else
+    README_STATUS="missing-both"
+fi
+
 STANDALONE_TOTAL=$(wc -l < "$TMPFILE_STANDALONE" | tr -d ' ')
 MONO_TOTAL=$(wc -l < "$TMPFILE_MONO" | tr -d ' ')
 
@@ -200,6 +229,19 @@ elif [ "$LASTMERGE_STATUS" = "only-monorepo" ]; then
     echo ".lastmerge: only in monorepo"
 else
     echo ".lastmerge: not found in either location"
+fi
+
+# README.md status
+if [ "$README_STATUS" = "identical" ]; then
+    echo "README.md: identical"
+elif [ "$README_STATUS" = "differ" ]; then
+    echo "README.md: DIFFERS"
+elif [ "$README_STATUS" = "only-standalone" ]; then
+    echo "README.md: only in standalone"
+elif [ "$README_STATUS" = "only-monorepo" ]; then
+    echo "README.md: only in monorepo"
+else
+    echo "README.md: not found in either location"
 fi
 
 # scripts/codegen/java.ts status
@@ -253,13 +295,21 @@ if [ "$SHOW_DIFF" = true ] && [ "$DIFFER_COUNT" -gt 0 ]; then
     echo "Unified diffs for differing files:"
     echo "================================================================================"
     printf '%s' "$DIFFER_LIST" | while IFS= read -r f; do
-        if [ -n "$f" ] && [ "$f" != ".lastmerge" ]; then
+        if [ -n "$f" ] && [ "$f" != ".lastmerge" ] && [ "$f" != "README.md" ]; then
             echo ""
             echo "--- standalone/$f"
             echo "+++ monorepo/java/$f"
             diff -u "${STANDALONE}/${f}" "${MONO_JAVA}/${f}" || true
         fi
     done
+fi
+
+# ── Optional README.md diff (paths differ between repos) ─────────────
+if [ "$SHOW_DIFF" = true ] && [ "$README_STATUS" = "differ" ]; then
+    echo ""
+    echo "--- standalone/README.md"
+    echo "+++ monorepo/java/README.md"
+    diff -u "${STANDALONE}/README.md" "${MONO_JAVA}/README.md" || true
 fi
 
 # ── Optional .lastmerge commit log comparison ────────────────────────
