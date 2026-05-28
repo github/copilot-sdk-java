@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.github.copilot.java","l":"com.github.copilot"},{"m":"com.github.copilot.java","l":"com.github.copilot.generated"},{"m":"com.github.copilot.java","l":"com.github.copilot.generated.rpc"},{"m":"com.github.copilot.java","l":"com.github.copilot.rpc"}];updateSearchResults();
