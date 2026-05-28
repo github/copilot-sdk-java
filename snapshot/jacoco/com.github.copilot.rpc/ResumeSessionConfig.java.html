@@ -787,18 +787,17 @@ import java.util.Optional;
      * &lt;li&gt;{@code &quot;in-memory&quot;} — tokens are stored in memory and discarded when the
      * session ends&lt;/li&gt;
      * &lt;/ul&gt;
-     * If not set and the client is in
-     * {@link com.github.copilot.CopilotClientMode#EMPTY EMPTY} mode, the SDK
-     * defaults to {@code &quot;in-memory&quot;} for safe multitenant behavior. In other modes
-     * this field is left unset.
+     * If not set and the client is in {@link CopilotClientMode#EMPTY EMPTY} mode,
+     * the SDK defaults to {@code &quot;in-memory&quot;} for safe multitenant behavior. In
+     * other modes this field is left unset.
      *
      * @param mcpOAuthTokenStorage
      *            the storage mode
      * @return this config for method chaining
      */
     public ResumeSessionConfig setMcpOAuthTokenStorage(String mcpOAuthTokenStorage) {
-<span class="nc" id="L800">        this.mcpOAuthTokenStorage = mcpOAuthTokenStorage;</span>
-<span class="nc" id="L801">        return this;</span>
+<span class="nc" id="L799">        this.mcpOAuthTokenStorage = mcpOAuthTokenStorage;</span>
+<span class="nc" id="L800">        return this;</span>
     }
 
     /**
@@ -807,7 +806,7 @@ import java.util.Optional;
      * @return the list of custom agent configurations
      */
     public List&lt;CustomAgentConfig&gt; getCustomAgents() {
-<span class="nc bnc" id="L810" title="All 2 branches missed.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
+<span class="nc bnc" id="L809" title="All 2 branches missed.">        return customAgents == null ? null : Collections.unmodifiableList(customAgents);</span>
     }
 
     /**
@@ -819,8 +818,8 @@ import java.util.Optional;
      * @see CustomAgentConfig
      */
     public ResumeSessionConfig setCustomAgents(List&lt;CustomAgentConfig&gt; customAgents) {
-<span class="nc" id="L822">        this.customAgents = customAgents;</span>
-<span class="nc" id="L823">        return this;</span>
+<span class="nc" id="L821">        this.customAgents = customAgents;</span>
+<span class="nc" id="L822">        return this;</span>
     }
 
     /**
@@ -829,7 +828,7 @@ import java.util.Optional;
      * @return the default agent configuration, or {@code null} if not set
      */
     public DefaultAgentConfig getDefaultAgent() {
-<span class="nc" id="L832">        return defaultAgent;</span>
+<span class="nc" id="L831">        return defaultAgent;</span>
     }
 
     /**
@@ -844,8 +843,8 @@ import java.util.Optional;
      * @see DefaultAgentConfig
      */
     public ResumeSessionConfig setDefaultAgent(DefaultAgentConfig defaultAgent) {
-<span class="nc" id="L847">        this.defaultAgent = defaultAgent;</span>
-<span class="nc" id="L848">        return this;</span>
+<span class="nc" id="L846">        this.defaultAgent = defaultAgent;</span>
+<span class="nc" id="L847">        return this;</span>
     }
 
     /**
@@ -854,7 +853,7 @@ import java.util.Optional;
      * @return the agent name, or {@code null} if not set
      */
     public String getAgent() {
-<span class="nc" id="L857">        return agent;</span>
+<span class="nc" id="L856">        return agent;</span>
     }
 
     /**
@@ -867,8 +866,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setAgent(String agent) {
-<span class="nc" id="L870">        this.agent = agent;</span>
-<span class="nc" id="L871">        return this;</span>
+<span class="nc" id="L869">        this.agent = agent;</span>
+<span class="nc" id="L870">        return this;</span>
     }
 
     /**
@@ -877,7 +876,7 @@ import java.util.Optional;
      * @return the list of skill directory paths
      */
     public List&lt;String&gt; getSkillDirectories() {
-<span class="nc bnc" id="L880" title="All 2 branches missed.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
+<span class="nc bnc" id="L879" title="All 2 branches missed.">        return skillDirectories == null ? null : Collections.unmodifiableList(skillDirectories);</span>
     }
 
     /**
@@ -888,8 +887,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setSkillDirectories(List&lt;String&gt; skillDirectories) {
-<span class="nc" id="L891">        this.skillDirectories = skillDirectories;</span>
-<span class="nc" id="L892">        return this;</span>
+<span class="nc" id="L890">        this.skillDirectories = skillDirectories;</span>
+<span class="nc" id="L891">        return this;</span>
     }
 
     /**
@@ -898,7 +897,7 @@ import java.util.Optional;
      * @return the list of instruction directory paths
      */
     public List&lt;String&gt; getInstructionDirectories() {
-<span class="nc bnc" id="L901" title="All 2 branches missed.">        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);</span>
+<span class="nc bnc" id="L900" title="All 2 branches missed.">        return instructionDirectories == null ? null : Collections.unmodifiableList(instructionDirectories);</span>
     }
 
     /**
@@ -909,8 +908,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setInstructionDirectories(List&lt;String&gt; instructionDirectories) {
-<span class="nc" id="L912">        this.instructionDirectories = instructionDirectories;</span>
-<span class="nc" id="L913">        return this;</span>
+<span class="nc" id="L911">        this.instructionDirectories = instructionDirectories;</span>
+<span class="nc" id="L912">        return this;</span>
     }
 
     /**
@@ -919,7 +918,7 @@ import java.util.Optional;
      * @return the list of plugin directory paths
      */
     public List&lt;String&gt; getPluginDirectories() {
-<span class="nc bnc" id="L922" title="All 2 branches missed.">        return pluginDirectories == null ? null : Collections.unmodifiableList(pluginDirectories);</span>
+<span class="nc bnc" id="L921" title="All 2 branches missed.">        return pluginDirectories == null ? null : Collections.unmodifiableList(pluginDirectories);</span>
     }
 
     /**
@@ -930,8 +929,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setPluginDirectories(List&lt;String&gt; pluginDirectories) {
-<span class="nc" id="L933">        this.pluginDirectories = pluginDirectories;</span>
-<span class="nc" id="L934">        return this;</span>
+<span class="nc" id="L932">        this.pluginDirectories = pluginDirectories;</span>
+<span class="nc" id="L933">        return this;</span>
     }
 
     /**
@@ -940,7 +939,7 @@ import java.util.Optional;
      * @return the large output config, or {@code null} for default
      */
     public LargeToolOutputConfig getLargeOutput() {
-<span class="nc" id="L943">        return largeOutput;</span>
+<span class="nc" id="L942">        return largeOutput;</span>
     }
 
     /**
@@ -951,8 +950,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setLargeOutput(LargeToolOutputConfig largeOutput) {
-<span class="nc" id="L954">        this.largeOutput = largeOutput;</span>
-<span class="nc" id="L955">        return this;</span>
+<span class="nc" id="L953">        this.largeOutput = largeOutput;</span>
+<span class="nc" id="L954">        return this;</span>
     }
 
     /**
@@ -961,7 +960,7 @@ import java.util.Optional;
      * @return the list of disabled skill names
      */
     public List&lt;String&gt; getDisabledSkills() {
-<span class="nc bnc" id="L964" title="All 2 branches missed.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
+<span class="nc bnc" id="L963" title="All 2 branches missed.">        return disabledSkills == null ? null : Collections.unmodifiableList(disabledSkills);</span>
     }
 
     /**
@@ -972,8 +971,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setDisabledSkills(List&lt;String&gt; disabledSkills) {
-<span class="nc" id="L975">        this.disabledSkills = disabledSkills;</span>
-<span class="nc" id="L976">        return this;</span>
+<span class="nc" id="L974">        this.disabledSkills = disabledSkills;</span>
+<span class="nc" id="L975">        return this;</span>
     }
 
     /**
@@ -982,7 +981,7 @@ import java.util.Optional;
      * @return the infinite session config
      */
     public InfiniteSessionConfig getInfiniteSessions() {
-<span class="nc" id="L985">        return infiniteSessions;</span>
+<span class="nc" id="L984">        return infiniteSessions;</span>
     }
 
     /**
@@ -995,8 +994,8 @@ import java.util.Optional;
      * @see InfiniteSessionConfig
      */
     public ResumeSessionConfig setInfiniteSessions(InfiniteSessionConfig infiniteSessions) {
-<span class="nc" id="L998">        this.infiniteSessions = infiniteSessions;</span>
-<span class="nc" id="L999">        return this;</span>
+<span class="nc" id="L997">        this.infiniteSessions = infiniteSessions;</span>
+<span class="nc" id="L998">        return this;</span>
     }
 
     /**
@@ -1005,7 +1004,7 @@ import java.util.Optional;
      * @return the event handler, or {@code null} if not set
      */
     public Consumer&lt;SessionEvent&gt; getOnEvent() {
-<span class="nc" id="L1008">        return onEvent;</span>
+<span class="nc" id="L1007">        return onEvent;</span>
     }
 
     /**
@@ -1021,8 +1020,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setOnEvent(Consumer&lt;SessionEvent&gt; onEvent) {
-<span class="nc" id="L1024">        this.onEvent = onEvent;</span>
-<span class="nc" id="L1025">        return this;</span>
+<span class="nc" id="L1023">        this.onEvent = onEvent;</span>
+<span class="nc" id="L1024">        return this;</span>
     }
 
     /**
@@ -1031,7 +1030,7 @@ import java.util.Optional;
      * @return the list of command definitions, or {@code null}
      */
     public List&lt;CommandDefinition&gt; getCommands() {
-<span class="nc bnc" id="L1034" title="All 2 branches missed.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
+<span class="nc bnc" id="L1033" title="All 2 branches missed.">        return commands == null ? null : Collections.unmodifiableList(commands);</span>
     }
 
     /**
@@ -1046,8 +1045,8 @@ import java.util.Optional;
      * @see CommandDefinition
      */
     public ResumeSessionConfig setCommands(List&lt;CommandDefinition&gt; commands) {
-<span class="nc" id="L1049">        this.commands = commands;</span>
-<span class="nc" id="L1050">        return this;</span>
+<span class="nc" id="L1048">        this.commands = commands;</span>
+<span class="nc" id="L1049">        return this;</span>
     }
 
     /**
@@ -1056,7 +1055,7 @@ import java.util.Optional;
      * @return the elicitation handler, or {@code null}
      */
     public ElicitationHandler getOnElicitationRequest() {
-<span class="nc" id="L1059">        return onElicitationRequest;</span>
+<span class="nc" id="L1058">        return onElicitationRequest;</span>
     }
 
     /**
@@ -1071,8 +1070,8 @@ import java.util.Optional;
      * @see ElicitationHandler
      */
     public ResumeSessionConfig setOnElicitationRequest(ElicitationHandler onElicitationRequest) {
-<span class="nc" id="L1074">        this.onElicitationRequest = onElicitationRequest;</span>
-<span class="nc" id="L1075">        return this;</span>
+<span class="nc" id="L1073">        this.onElicitationRequest = onElicitationRequest;</span>
+<span class="nc" id="L1074">        return this;</span>
     }
 
     /**
@@ -1083,7 +1082,7 @@ import java.util.Optional;
      * @see #setEnableMcpApps(boolean)
      */
     public boolean isEnableMcpApps() {
-<span class="nc" id="L1086">        return enableMcpApps;</span>
+<span class="nc" id="L1085">        return enableMcpApps;</span>
     }
 
     /**
@@ -1096,8 +1095,8 @@ import java.util.Optional;
      * @return this config for method chaining
      */
     public ResumeSessionConfig setEnableMcpApps(boolean enableMcpApps) {
-<span class="nc" id="L1099">        this.enableMcpApps = enableMcpApps;</span>
-<span class="nc" id="L1100">        return this;</span>
+<span class="nc" id="L1098">        this.enableMcpApps = enableMcpApps;</span>
+<span class="nc" id="L1099">        return this;</span>
     }
 
     /**
@@ -1107,7 +1106,7 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public ExitPlanModeHandler getOnExitPlanMode() {
-<span class="nc" id="L1110">        return onExitPlanMode;</span>
+<span class="nc" id="L1109">        return onExitPlanMode;</span>
     }
 
     /**
@@ -1123,8 +1122,8 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public ResumeSessionConfig setOnExitPlanMode(ExitPlanModeHandler onExitPlanMode) {
-<span class="nc" id="L1126">        this.onExitPlanMode = onExitPlanMode;</span>
-<span class="nc" id="L1127">        return this;</span>
+<span class="nc" id="L1125">        this.onExitPlanMode = onExitPlanMode;</span>
+<span class="nc" id="L1126">        return this;</span>
     }
 
     /**
@@ -1134,7 +1133,7 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public AutoModeSwitchHandler getOnAutoModeSwitch() {
-<span class="nc" id="L1137">        return onAutoModeSwitch;</span>
+<span class="nc" id="L1136">        return onAutoModeSwitch;</span>
     }
 
     /**
@@ -1150,8 +1149,8 @@ import java.util.Optional;
      * @since 1.0.8
      */
     public ResumeSessionConfig setOnAutoModeSwitch(AutoModeSwitchHandler onAutoModeSwitch) {
-<span class="nc" id="L1153">        this.onAutoModeSwitch = onAutoModeSwitch;</span>
-<span class="nc" id="L1154">        return this;</span>
+<span class="nc" id="L1152">        this.onAutoModeSwitch = onAutoModeSwitch;</span>
+<span class="nc" id="L1153">        return this;</span>
     }
 
     /**
@@ -1161,7 +1160,7 @@ import java.util.Optional;
      * @since 1.3.0
      */
     public String getGitHubToken() {
-<span class="nc" id="L1164">        return gitHubToken;</span>
+<span class="nc" id="L1163">        return gitHubToken;</span>
     }
 
     /**
@@ -1177,8 +1176,8 @@ import java.util.Optional;
      * @since 1.3.0
      */
     public ResumeSessionConfig setGitHubToken(String gitHubToken) {
-<span class="nc" id="L1180">        this.gitHubToken = gitHubToken;</span>
-<span class="nc" id="L1181">        return this;</span>
+<span class="nc" id="L1179">        this.gitHubToken = gitHubToken;</span>
+<span class="nc" id="L1180">        return this;</span>
     }
 
     /**
@@ -1190,7 +1189,7 @@ import java.util.Optional;
      * @since 1.4.0
      */
     public String getRemoteSession() {
-<span class="nc" id="L1193">        return remoteSession;</span>
+<span class="nc" id="L1192">        return remoteSession;</span>
     }
 
     /**
@@ -1205,8 +1204,8 @@ import java.util.Optional;
      * @since 1.4.0
      */
     public ResumeSessionConfig setRemoteSession(String remoteSession) {
-<span class="nc" id="L1208">        this.remoteSession = remoteSession;</span>
-<span class="nc" id="L1209">        return this;</span>
+<span class="nc" id="L1207">        this.remoteSession = remoteSession;</span>
+<span class="nc" id="L1208">        return this;</span>
     }
 
     /**
@@ -1222,48 +1221,48 @@ import java.util.Optional;
      */
     @Override
     public ResumeSessionConfig clone() {
-<span class="nc" id="L1225">        ResumeSessionConfig copy = new ResumeSessionConfig();</span>
-<span class="nc" id="L1226">        copy.clientName = this.clientName;</span>
-<span class="nc" id="L1227">        copy.model = this.model;</span>
-<span class="nc bnc" id="L1228" title="All 2 branches missed.">        copy.tools = this.tools != null ? new ArrayList&lt;&gt;(this.tools) : null;</span>
-<span class="nc" id="L1229">        copy.systemMessage = this.systemMessage;</span>
-<span class="nc bnc" id="L1230" title="All 2 branches missed.">        copy.availableTools = this.availableTools != null ? new ArrayList&lt;&gt;(this.availableTools) : null;</span>
-<span class="nc bnc" id="L1231" title="All 2 branches missed.">        copy.excludedTools = this.excludedTools != null ? new ArrayList&lt;&gt;(this.excludedTools) : null;</span>
-<span class="nc" id="L1232">        copy.provider = this.provider;</span>
-<span class="nc" id="L1233">        copy.enableSessionTelemetry = this.enableSessionTelemetry;</span>
-<span class="nc" id="L1234">        copy.reasoningEffort = this.reasoningEffort;</span>
-<span class="nc" id="L1235">        copy.reasoningSummary = this.reasoningSummary;</span>
-<span class="nc" id="L1236">        copy.modelCapabilities = this.modelCapabilities;</span>
-<span class="nc" id="L1237">        copy.onPermissionRequest = this.onPermissionRequest;</span>
-<span class="nc" id="L1238">        copy.onUserInputRequest = this.onUserInputRequest;</span>
-<span class="nc" id="L1239">        copy.hooks = this.hooks;</span>
-<span class="nc" id="L1240">        copy.workingDirectory = this.workingDirectory;</span>
-<span class="nc" id="L1241">        copy.configDirectory = this.configDirectory;</span>
-<span class="nc" id="L1242">        copy.enableConfigDiscovery = this.enableConfigDiscovery;</span>
-<span class="nc" id="L1243">        copy.disableResume = this.disableResume;</span>
-<span class="nc" id="L1244">        copy.streaming = this.streaming;</span>
-<span class="nc" id="L1245">        copy.includeSubAgentStreamingEvents = this.includeSubAgentStreamingEvents;</span>
-<span class="nc bnc" id="L1246" title="All 2 branches missed.">        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap&lt;&gt;(this.mcpServers) : null;</span>
-<span class="nc bnc" id="L1247" title="All 2 branches missed.">        copy.customAgents = this.customAgents != null ? new ArrayList&lt;&gt;(this.customAgents) : null;</span>
-<span class="nc" id="L1248">        copy.defaultAgent = this.defaultAgent;</span>
-<span class="nc" id="L1249">        copy.agent = this.agent;</span>
-<span class="nc bnc" id="L1250" title="All 2 branches missed.">        copy.skillDirectories = this.skillDirectories != null ? new ArrayList&lt;&gt;(this.skillDirectories) : null;</span>
-<span class="nc bnc" id="L1251" title="All 2 branches missed.">        copy.instructionDirectories = this.instructionDirectories != null</span>
-<span class="nc" id="L1252">                ? new ArrayList&lt;&gt;(this.instructionDirectories)</span>
-<span class="nc" id="L1253">                : null;</span>
-<span class="nc bnc" id="L1254" title="All 2 branches missed.">        copy.pluginDirectories = this.pluginDirectories != null ? new ArrayList&lt;&gt;(this.pluginDirectories) : null;</span>
-<span class="nc" id="L1255">        copy.largeOutput = this.largeOutput;</span>
-<span class="nc bnc" id="L1256" title="All 2 branches missed.">        copy.disabledSkills = this.disabledSkills != null ? new ArrayList&lt;&gt;(this.disabledSkills) : null;</span>
-<span class="nc" id="L1257">        copy.infiniteSessions = this.infiniteSessions;</span>
-<span class="nc" id="L1258">        copy.onEvent = this.onEvent;</span>
-<span class="nc bnc" id="L1259" title="All 2 branches missed.">        copy.commands = this.commands != null ? new ArrayList&lt;&gt;(this.commands) : null;</span>
-<span class="nc" id="L1260">        copy.onElicitationRequest = this.onElicitationRequest;</span>
-<span class="nc" id="L1261">        copy.onExitPlanMode = this.onExitPlanMode;</span>
-<span class="nc" id="L1262">        copy.onAutoModeSwitch = this.onAutoModeSwitch;</span>
-<span class="nc" id="L1263">        copy.enableMcpApps = this.enableMcpApps;</span>
-<span class="nc" id="L1264">        copy.gitHubToken = this.gitHubToken;</span>
-<span class="nc" id="L1265">        copy.remoteSession = this.remoteSession;</span>
-<span class="nc" id="L1266">        return copy;</span>
+<span class="nc" id="L1224">        ResumeSessionConfig copy = new ResumeSessionConfig();</span>
+<span class="nc" id="L1225">        copy.clientName = this.clientName;</span>
+<span class="nc" id="L1226">        copy.model = this.model;</span>
+<span class="nc bnc" id="L1227" title="All 2 branches missed.">        copy.tools = this.tools != null ? new ArrayList&lt;&gt;(this.tools) : null;</span>
+<span class="nc" id="L1228">        copy.systemMessage = this.systemMessage;</span>
+<span class="nc bnc" id="L1229" title="All 2 branches missed.">        copy.availableTools = this.availableTools != null ? new ArrayList&lt;&gt;(this.availableTools) : null;</span>
+<span class="nc bnc" id="L1230" title="All 2 branches missed.">        copy.excludedTools = this.excludedTools != null ? new ArrayList&lt;&gt;(this.excludedTools) : null;</span>
+<span class="nc" id="L1231">        copy.provider = this.provider;</span>
+<span class="nc" id="L1232">        copy.enableSessionTelemetry = this.enableSessionTelemetry;</span>
+<span class="nc" id="L1233">        copy.reasoningEffort = this.reasoningEffort;</span>
+<span class="nc" id="L1234">        copy.reasoningSummary = this.reasoningSummary;</span>
+<span class="nc" id="L1235">        copy.modelCapabilities = this.modelCapabilities;</span>
+<span class="nc" id="L1236">        copy.onPermissionRequest = this.onPermissionRequest;</span>
+<span class="nc" id="L1237">        copy.onUserInputRequest = this.onUserInputRequest;</span>
+<span class="nc" id="L1238">        copy.hooks = this.hooks;</span>
+<span class="nc" id="L1239">        copy.workingDirectory = this.workingDirectory;</span>
+<span class="nc" id="L1240">        copy.configDirectory = this.configDirectory;</span>
+<span class="nc" id="L1241">        copy.enableConfigDiscovery = this.enableConfigDiscovery;</span>
+<span class="nc" id="L1242">        copy.disableResume = this.disableResume;</span>
+<span class="nc" id="L1243">        copy.streaming = this.streaming;</span>
+<span class="nc" id="L1244">        copy.includeSubAgentStreamingEvents = this.includeSubAgentStreamingEvents;</span>
+<span class="nc bnc" id="L1245" title="All 2 branches missed.">        copy.mcpServers = this.mcpServers != null ? new java.util.HashMap&lt;&gt;(this.mcpServers) : null;</span>
+<span class="nc bnc" id="L1246" title="All 2 branches missed.">        copy.customAgents = this.customAgents != null ? new ArrayList&lt;&gt;(this.customAgents) : null;</span>
+<span class="nc" id="L1247">        copy.defaultAgent = this.defaultAgent;</span>
+<span class="nc" id="L1248">        copy.agent = this.agent;</span>
+<span class="nc bnc" id="L1249" title="All 2 branches missed.">        copy.skillDirectories = this.skillDirectories != null ? new ArrayList&lt;&gt;(this.skillDirectories) : null;</span>
+<span class="nc bnc" id="L1250" title="All 2 branches missed.">        copy.instructionDirectories = this.instructionDirectories != null</span>
+<span class="nc" id="L1251">                ? new ArrayList&lt;&gt;(this.instructionDirectories)</span>
+<span class="nc" id="L1252">                : null;</span>
+<span class="nc bnc" id="L1253" title="All 2 branches missed.">        copy.pluginDirectories = this.pluginDirectories != null ? new ArrayList&lt;&gt;(this.pluginDirectories) : null;</span>
+<span class="nc" id="L1254">        copy.largeOutput = this.largeOutput;</span>
+<span class="nc bnc" id="L1255" title="All 2 branches missed.">        copy.disabledSkills = this.disabledSkills != null ? new ArrayList&lt;&gt;(this.disabledSkills) : null;</span>
+<span class="nc" id="L1256">        copy.infiniteSessions = this.infiniteSessions;</span>
+<span class="nc" id="L1257">        copy.onEvent = this.onEvent;</span>
+<span class="nc bnc" id="L1258" title="All 2 branches missed.">        copy.commands = this.commands != null ? new ArrayList&lt;&gt;(this.commands) : null;</span>
+<span class="nc" id="L1259">        copy.onElicitationRequest = this.onElicitationRequest;</span>
+<span class="nc" id="L1260">        copy.onExitPlanMode = this.onExitPlanMode;</span>
+<span class="nc" id="L1261">        copy.onAutoModeSwitch = this.onAutoModeSwitch;</span>
+<span class="nc" id="L1262">        copy.enableMcpApps = this.enableMcpApps;</span>
+<span class="nc" id="L1263">        copy.gitHubToken = this.gitHubToken;</span>
+<span class="nc" id="L1264">        copy.remoteSession = this.remoteSession;</span>
+<span class="nc" id="L1265">        return copy;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
