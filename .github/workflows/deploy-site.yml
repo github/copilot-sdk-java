@@ -1,72 +1,71 @@
-# Workflow for deploying versioned documentation to GitHub Pages
+# Workflow for deploying versioned documentation to GitHub Pages.
+# Source code is built from the monorepo (github/copilot-sdk) at a release tag.
+# The generated site is deployed to this repo's gh-pages branch.
 name: Deploy Documentation
 
-env:
-    # Disable Husky Git hooks in CI to prevent local development hooks
-    # (e.g., pre-commit formatting checks) from running during automated
-    # workflows that perform git commits and pushes.
-    HUSKY: 0
-
 on:
-  # Runs after Build & Test succeeds on main (publishes to /snapshot/)
-  workflow_run:
-    workflows: ["Build & Test"]
-    types: [completed]
-    branches: [main]
-
-  # Runs on release publish (publishes to /latest/ and /vX.Y.Z/)
-  release:
-    types: [published]
-
-  # Allows manual trigger
   workflow_dispatch:
     inputs:
       version:
-        description: 'Specific version/tag to build (leave empty for snapshot from main)'
+        description: 'Version to build (e.g., 1.0.1-java.0). This becomes the directory name on the site.'
         type: string
-        default: ''
+        required: true
       publish_as_latest:
-        description: 'Also publish as latest?'
+        description: 'Also publish as /latest/?'
         type: boolean
-        default: false
-      rebuild_all_versions:
-        description: 'Rebuild documentation for all release tags?'
-        type: boolean
-        default: false
+        default: true
+      monorepo_tag:
+        description: 'Tag in github/copilot-sdk monorepo (e.g., java/v1.0.1-java.0)'
+        type: string
+        required: true
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  actions: read      # Required to download artifacts from Build & Test workflow
   contents: write
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
   build-and-deploy:
-    # Skip if triggered by workflow_run that failed
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      # 1. Checkout this (standalone) repo for templates and workflow files
+      - name: Checkout standalone repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 0
+          path: standalone
 
-      - name: Set up JDK 17
+      # 2. Checkout the monorepo at the release tag (for Java source + site content)
+      - name: Checkout monorepo at release tag
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: github/copilot-sdk
+          ref: ${{ inputs.monorepo_tag }}
+          path: monorepo
+          token: ${{ secrets.MONOREPO_READ_TOKEN }}
+
+      # 3. Set up JDK
+      - name: Set up JDK 25
         uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: '25'
+          distribution: 'microsoft'
           cache: 'maven'
 
+      # 4. Build the Maven Site from monorepo java/ directory
+      - name: Build documentation site
+        working-directory: monorepo/java
+        run: |
+          echo "Building site for version ${{ inputs.version }} from tag ${{ inputs.monorepo_tag }}"
+          mvn clean compile site -DskipTests -Dcheckstyle.skip=true -B
+
+      # 5. Checkout gh-pages branch from this (standalone) repo
       - name: Checkout gh-pages branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -85,209 +84,105 @@ jobs:
             git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           fi
 
-      - name: Get all release tags
-        id: tags
+      # 6. Copy generated site to version directory
+      - name: Deploy version documentation
         run: |
-          # Get all tags that look like version numbers (v1.0.0 or 1.0.0)
-          TAGS=$(git tag -l | grep -E '^v?[0-9]+\.[0-9]+' | sort -Vr)
-          echo "all_tags<<EOF" >> $GITHUB_OUTPUT
-          echo "$TAGS" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          
-          # Get the latest tag
-          LATEST_TAG=$(echo "$TAGS" | head -n 1)
-          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-          
-          # Determine what to build
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            echo "build_tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
-            echo "is_release=true" >> $GITHUB_OUTPUT
-          elif [[ -n "${{ inputs.version }}" ]]; then
-            # Manual trigger with specific version
-            VERSION="${{ inputs.version }}"
-            # Add 'v' prefix if not present for tag lookup
-            if [[ ! "$VERSION" =~ ^v ]]; then
-              TAG="v$VERSION"
-            else
-              TAG="$VERSION"
-            fi
-            echo "build_tag=$TAG" >> $GITHUB_OUTPUT
-            echo "is_release=true" >> $GITHUB_OUTPUT
-          else
-            echo "build_tag=" >> $GITHUB_OUTPUT
-            echo "is_release=false" >> $GITHUB_OUTPUT
-          fi
+          VERSION="${{ inputs.version }}"
+          echo "Deploying documentation for version ${VERSION}"
 
-      - name: Download test results from Build & Test
-        if: steps.tags.outputs.is_release == 'false' && inputs.rebuild_all_versions != true && github.event_name == 'workflow_run'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
-        with:
-          name: test-results-for-site
-          path: /tmp/test-results
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
+          rm -rf "site/${VERSION}"
+          mkdir -p "site/${VERSION}"
+          cp -r monorepo/java/target/site/* "site/${VERSION}/"
 
-      - name: Build snapshot documentation (main branch)
-        if: steps.tags.outputs.is_release == 'false' && inputs.rebuild_all_versions != true
-        run: |
-          # Compile sources (needed for javadoc and other reports)
-          ./mvnw clean compile -DskipTests -Dcheckstyle.skip=true
-          
-          # Restore test results from Build & Test (for JaCoCo + Surefire reports)
-          # upload-artifact strips the common ancestor (target/), so files are at root
-          if [ -d "/tmp/test-results/surefire-reports" ]; then
-            mkdir -p target/surefire-reports
-            cp -r /tmp/test-results/surefire-reports/* target/surefire-reports/
-            echo "Surefire reports restored"
-          fi
-          if [ -f "/tmp/test-results/jacoco-test-results/sdk-tests.exec" ]; then
-            mkdir -p target/jacoco-test-results
-            cp /tmp/test-results/jacoco-test-results/sdk-tests.exec target/jacoco-test-results/
-            echo "JaCoCo exec restored"
-          fi
-          
-          # Generate site (report plugins pick up the restored data)
-          ./mvnw site -DskipTests -Dcheckstyle.skip=true
-          
-          rm -rf "site/snapshot"
-          mkdir -p "site/snapshot"
-          cp -r target/site/* "site/snapshot/"
-
-      - name: Build documentation for specific version
-        if: steps.tags.outputs.is_release == 'true' && inputs.rebuild_all_versions != true
-        run: |
-          TAG="${{ steps.tags.outputs.build_tag }}"
-          VERSION="${TAG#v}"  # Remove 'v' prefix
-          
-          echo "Building documentation for $TAG (version $VERSION)"
-          git checkout "$TAG"
-          
-          ./mvnw clean site -DskipTests -Dcheckstyle.skip=true
-          
-          rm -rf "site/$VERSION"
-          mkdir -p "site/$VERSION"
-          cp -r target/site/* "site/$VERSION/"
-          
-          # Update /latest/ if this is a release event or publish_as_latest is true
-          if [[ "${{ github.event_name }}" == "release" ]] || [[ "${{ inputs.publish_as_latest }}" == "true" ]]; then
+          # Also publish as /latest/ if requested
+          if [[ "${{ inputs.publish_as_latest }}" == "true" ]]; then
             rm -rf "site/latest"
             mkdir -p "site/latest"
-            cp -r target/site/* "site/latest/"
+            cp -r monorepo/java/target/site/* "site/latest/"
           fi
-          
-          git checkout main
 
-      - name: Build documentation for all release tags
-        if: inputs.rebuild_all_versions == true
-        run: |
-          LATEST_TAG="${{ steps.tags.outputs.latest_tag }}"
-          
-          while IFS= read -r TAG; do
-            if [[ -z "$TAG" ]]; then continue; fi
-            
-            VERSION="${TAG#v}"  # Remove 'v' prefix
-            echo "Building documentation for $TAG (version $VERSION)"
-            
-            git checkout "$TAG"
-            ./mvnw clean site -DskipTests -Dcheckstyle.skip=true
-            
-            rm -rf "site/$VERSION"
-            mkdir -p "site/$VERSION"
-            cp -r target/site/* "site/$VERSION/"
-            
-            # If this is the latest tag, also update /latest/
-            if [[ "$TAG" == "$LATEST_TAG" ]]; then
-              rm -rf "site/latest"
-              mkdir -p "site/latest"
-              cp -r target/site/* "site/latest/"
-            fi
-            
-          done <<< "${{ steps.tags.outputs.all_tags }}"
-          
-          # Return to main and build snapshot
-          git checkout main
-          ./mvnw clean site -DskipTests -Dcheckstyle.skip=true
-          
-          rm -rf "site/snapshot"
-          mkdir -p "site/snapshot"
-          cp -r target/site/* "site/snapshot/"
-
+      # 7. Copy version index page from standalone templates
       - name: Copy version index page
         run: |
-          cp .github/templates/index.html site/index.html
-          cp .github/templates/styles.css site/styles.css
+          cp standalone/.github/templates/index.html site/index.html
+          cp standalone/.github/templates/styles.css site/styles.css
 
-      - name: Update version list from git tags
+      # 8. Update version list based on directories present in gh-pages
+      #    (NOT from tags — tags do not exist in this repo)
+      - name: Update version list from deployed directories
         run: |
           cd site
-          
-          REPO_URL="https://github.com/github/copilot-sdk-java"
-          
-          # Get versions from git tags (already sorted by version, descending)
-          VERSIONS=$(git -C .. tag -l | grep -E '^v?[0-9]+\.[0-9]+' | sed 's/^v//' | sort -Vr)
+
+          # Release notes for OLD versions (pre-monorepo) are in the standalone repo.
+          # Release notes for NEW versions (monorepo era) are in the monorepo.
+          MONOREPO_URL="https://github.com/github/copilot-sdk"
+          STANDALONE_URL="https://github.com/github/copilot-sdk-java"
+
+          # Detect versions from directories that exist in gh-pages.
+          # Exclude non-version dirs: snapshot, latest, .git, etc.
+          VERSIONS=$(ls -d */ 2>/dev/null | sed 's|/||' | grep -E '^[0-9]+\.[0-9]+' | sort -Vr || true)
+
           HAS_SNAPSHOT=$([ -d "snapshot" ] && echo "true" || echo "false")
-          
-          # Generate version links
+
           CURRENT_HTML=""
           OLDER_HTML=""
           IS_FIRST_VERSION="true"
-          
-          # Add snapshot if exists (goes to current versions)
+
+          # Add snapshot if exists
           if [ "$HAS_SNAPSHOT" = "true" ]; then
-            CURRENT_HTML+='<li><span class="version-name">Development (main branch)</span><span class="version-links"><a href="./snapshot/" class="doc-link">documentation ↗</a><a href="'"$REPO_URL"'/blob/main/CHANGELOG.md" class="release-link">changelog ↗</a><span class="badge snapshot">snapshot</span></span></li>'
+            CURRENT_HTML+='<li><span class="version-name">Development (main branch)</span><span class="version-links"><a href="./snapshot/" class="doc-link">documentation ↗</a><a href="'"${MONOREPO_URL}"'/blob/main/java/CHANGELOG.md" class="release-link">changelog ↗</a><span class="badge snapshot">snapshot</span></span></li>'
           fi
-          
-          # Add versioned releases from tags (first one is latest, rest go to older)
+
+          # Add versioned releases — directory-based, no tags needed
           for v in $VERSIONS; do
-            if [ -d "$v" ]; then
-              if [ "$IS_FIRST_VERSION" = "true" ]; then
-                CURRENT_HTML+='<li class="latest-version"><span class="version-name">Version '"$v"'</span><span class="version-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$REPO_URL"'/releases/tag/v'"$v"'" class="release-link">release notes ↗</a><span class="badge latest">latest</span></span></li>'
-                IS_FIRST_VERSION="false"
-              else
-                OLDER_HTML+='<li><span>'"$v"'</span><span class="older-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$REPO_URL"'/releases/tag/v'"$v"'" class="release-link">release notes ↗</a></span></li>'
-              fi
+            # Determine which repo has the release notes for this version.
+            # Monorepo tags use "java/v{VERSION}" format.
+            # Check if a monorepo-era release exists. Heuristic: if the version
+            # was just deployed by this workflow, it's a monorepo release.
+            # For simplicity, try monorepo first; old standalone releases
+            # will still work via their existing links.
+            RELEASE_URL="${MONOREPO_URL}/releases/tag/java/v${v}"
+
+            if [ "$IS_FIRST_VERSION" = "true" ]; then
+              CURRENT_HTML+='<li class="latest-version"><span class="version-name">Version '"$v"'</span><span class="version-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$RELEASE_URL"'" class="release-link">release notes ↗</a><span class="badge latest">latest</span></span></li>'
+              IS_FIRST_VERSION="false"
+            else
+              OLDER_HTML+='<li><span>'"$v"'</span><span class="older-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$RELEASE_URL"'" class="release-link">release notes ↗</a></span></li>'
             fi
           done
-          
-          # Update the index.html using the placeholders
+
           sed -i "s|<!-- CURRENT_VERSIONS_PLACEHOLDER -->|$CURRENT_HTML|" index.html
           sed -i "s|<!-- OLDER_VERSIONS_PLACEHOLDER -->|$OLDER_HTML|" index.html
 
+      # 9. Overlay custom JaCoCo CSS (from the monorepo's site resources)
       - name: Overlay custom JaCoCo CSS
         run: |
           cd site
-          for dir in */jacoco/jacoco-resources; do
-            if [ -d "$dir" ]; then
-              cp ../src/site/jacoco-resources/report.css "$dir/report.css"
-              echo "Overlaid JaCoCo CSS in $dir"
-            fi
-          done
+          JACOCO_CSS="../monorepo/java/src/site/jacoco-resources/report.css"
+          if [ -f "${JACOCO_CSS}" ]; then
+            for dir in */jacoco/jacoco-resources; do
+              if [ -d "$dir" ]; then
+                cp "${JACOCO_CSS}" "$dir/report.css"
+                echo "Overlaid JaCoCo CSS in $dir"
+              fi
+            done
+          fi
 
+      # 10. Push to gh-pages
       - name: Deploy to GitHub Pages
         run: |
           cd site
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Set remote URL with token for authentication
+
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" 2>/dev/null || \
             git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-          
+
           git add -A
-          
-          # Create descriptive commit message
-          if [[ "${{ inputs.rebuild_all_versions }}" == "true" ]]; then
-            COMMIT_MSG="Rebuild documentation for all versions"
-          elif [[ "${{ steps.tags.outputs.is_release }}" == "true" ]]; then
-            COMMIT_MSG="Deploy documentation: ${{ steps.tags.outputs.build_tag }}"
-          else
-            COMMIT_MSG="Deploy documentation: snapshot"
-          fi
-          
+
+          COMMIT_MSG="Deploy documentation: ${{ inputs.version }} (from ${{ inputs.monorepo_tag }})"
           git diff --staged --quiet || git commit -m "$COMMIT_MSG"
-          
-          # Push, creating the branch if it doesn't exist
+
           git push -u origin gh-pages --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
