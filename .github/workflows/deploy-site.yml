@@ -84,7 +84,7 @@ jobs:
       - name: Build documentation site
         run: |
           echo "Building site for version ${{ env.DEPLOY_VERSION }}"
-          mvn site -Dsite.version=${{ env.DEPLOY_VERSION }} -B
+          mvn site -Dsite.version=${{ inputs.version }} -B
 
       # 6. Checkout gh-pages branch from this (standalone) repo
       - name: Checkout gh-pages branch
