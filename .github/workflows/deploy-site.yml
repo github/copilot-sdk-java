@@ -1,6 +1,6 @@
 # Workflow for deploying versioned documentation to GitHub Pages.
-# Source code is built from the monorepo (github/copilot-sdk) at a release tag.
-# The generated site is deployed to this repo's gh-pages branch.
+# Site content (src/site/, pom.xml) lives in THIS repo.
+# Java source code is checked out from the monorepo (github/copilot-sdk) at a release tag.
 name: Deploy Documentation
 
 on:
@@ -35,13 +35,11 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 1. Checkout this (standalone) repo for templates and workflow files
+      # 1. Checkout this (standalone) repo — has src/site/, pom.xml, templates
       - name: Checkout standalone repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          path: standalone
 
-      # 2. Checkout the monorepo at the release tag (for Java source + site content)
+      # 2. Checkout the monorepo at the release tag (for Java source code)
       - name: Checkout monorepo at release tag
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -58,14 +56,20 @@ jobs:
           distribution: 'microsoft'
           cache: 'maven'
 
-      # 4. Build the Maven Site from monorepo java/ directory
-      - name: Build documentation site
+      # 4. Compile monorepo Java source (needed for javadoc, SpotBugs, etc.)
+      - name: Compile monorepo Java source
         working-directory: monorepo/java
         run: |
-          echo "Building site for version ${{ inputs.version }} from tag ${{ inputs.monorepo_tag }}"
-          mvn clean compile site -DskipTests -Dcheckstyle.skip=true -B
+          echo "Compiling Java source from tag ${{ inputs.monorepo_tag }}"
+          mvn clean compile test -DskipTests=false -Dcheckstyle.skip=true -B
 
-      # 5. Checkout gh-pages branch from this (standalone) repo
+      # 5. Build the Maven Site using THIS repo's pom.xml + src/site/
+      - name: Build documentation site
+        run: |
+          echo "Building site for version ${{ inputs.version }}"
+          mvn site -Dsite.version=${{ inputs.version }} -B
+
+      # 6. Checkout gh-pages branch from this (standalone) repo
       - name: Checkout gh-pages branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -84,7 +88,7 @@ jobs:
             git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           fi
 
-      # 6. Copy generated site to version directory
+      # 7. Copy generated site to version directory
       - name: Deploy version documentation
         run: |
           VERSION="${{ inputs.version }}"
@@ -92,34 +96,29 @@ jobs:
 
           rm -rf "site/${VERSION}"
           mkdir -p "site/${VERSION}"
-          cp -r monorepo/java/target/site/* "site/${VERSION}/"
+          cp -r target/site/* "site/${VERSION}/"
 
           # Also publish as /latest/ if requested
           if [[ "${{ inputs.publish_as_latest }}" == "true" ]]; then
             rm -rf "site/latest"
             mkdir -p "site/latest"
-            cp -r monorepo/java/target/site/* "site/latest/"
+            cp -r target/site/* "site/latest/"
           fi
 
-      # 7. Copy version index page from standalone templates
+      # 8. Copy version index page from templates
       - name: Copy version index page
         run: |
-          cp standalone/.github/templates/index.html site/index.html
-          cp standalone/.github/templates/styles.css site/styles.css
+          cp .github/templates/index.html site/index.html
+          cp .github/templates/styles.css site/styles.css
 
-      # 8. Update version list based on directories present in gh-pages
-      #    (NOT from tags — tags do not exist in this repo)
+      # 9. Update version list based on directories present in gh-pages
       - name: Update version list from deployed directories
         run: |
           cd site
 
-          # Release notes for OLD versions (pre-monorepo) are in the standalone repo.
-          # Release notes for NEW versions (monorepo era) are in the monorepo.
           MONOREPO_URL="https://github.com/github/copilot-sdk"
           STANDALONE_URL="https://github.com/github/copilot-sdk-java"
 
-          # Detect versions from directories that exist in gh-pages.
-          # Exclude non-version dirs: snapshot, latest, .git, etc.
           VERSIONS=$(ls -d */ 2>/dev/null | sed 's|/||' | grep -E '^[0-9]+\.[0-9]+' | sort -Vr || true)
 
           HAS_SNAPSHOT=$([ -d "snapshot" ] && echo "true" || echo "false")
@@ -128,19 +127,11 @@ jobs:
           OLDER_HTML=""
           IS_FIRST_VERSION="true"
 
-          # Add snapshot if exists
           if [ "$HAS_SNAPSHOT" = "true" ]; then
             CURRENT_HTML+='<li><span class="version-name">Development (main branch)</span><span class="version-links"><a href="./snapshot/" class="doc-link">documentation ↗</a><a href="'"${MONOREPO_URL}"'/blob/main/java/CHANGELOG.md" class="release-link">changelog ↗</a><span class="badge snapshot">snapshot</span></span></li>'
           fi
 
-          # Add versioned releases — directory-based, no tags needed
           for v in $VERSIONS; do
-            # Determine which repo has the release notes for this version.
-            # Monorepo tags use "java/v{VERSION}" format.
-            # Check if a monorepo-era release exists. Heuristic: if the version
-            # was just deployed by this workflow, it's a monorepo release.
-            # For simplicity, try monorepo first; old standalone releases
-            # will still work via their existing links.
             RELEASE_URL="${MONOREPO_URL}/releases/tag/java/v${v}"
 
             if [ "$IS_FIRST_VERSION" = "true" ]; then
@@ -154,11 +145,11 @@ jobs:
           sed -i "s|<!-- CURRENT_VERSIONS_PLACEHOLDER -->|$CURRENT_HTML|" index.html
           sed -i "s|<!-- OLDER_VERSIONS_PLACEHOLDER -->|$OLDER_HTML|" index.html
 
-      # 9. Overlay custom JaCoCo CSS (from the monorepo's site resources)
+      # 10. Overlay custom JaCoCo CSS
       - name: Overlay custom JaCoCo CSS
         run: |
           cd site
-          JACOCO_CSS="../monorepo/java/src/site/jacoco-resources/report.css"
+          JACOCO_CSS="../src/site/jacoco-resources/report.css"
           if [ -f "${JACOCO_CSS}" ]; then
             for dir in */jacoco/jacoco-resources; do
               if [ -d "$dir" ]; then
@@ -168,7 +159,7 @@ jobs:
             done
           fi
 
-      # 10. Push to gh-pages
+      # 11. Push to gh-pages
       - name: Deploy to GitHub Pages
         run: |
           cd site
