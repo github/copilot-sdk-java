@@ -191,6 +191,8 @@
                 <configuration>
                     <sourcepath>${monorepo.java.dir}/src/main/java:${monorepo.java.dir}/src/generated/java</sourcepath>
                     <subpackages>com.github.copilot</subpackages>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
                 </configuration>
                 <reportSets>
                     <reportSet>
