@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to build (e.g., 1.0.1-java.0). This becomes the directory name on the site.'
+        description: 'Version to build in tag format (e.g., java/v1.0.1-java.0). The java/v prefix is stripped to form the site directory name.'
         type: string
         required: true
       publish_as_latest:
@@ -35,6 +35,27 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # 0. Validate required secrets and inputs
+      - name: Validate inputs and secrets
+        env:
+          MONOREPO_READ_TOKEN: ${{ secrets.MONOREPO_READ_TOKEN }}
+        run: |
+          if [[ -z "${MONOREPO_READ_TOKEN}" ]]; then
+            echo "::error::MONOREPO_READ_TOKEN secret is required but not configured."
+            exit 1
+          fi
+          VERSION="${{ inputs.version }}"
+          if [[ "${VERSION}" != java/v* ]]; then
+            echo "::error::VERSION must start with 'java/v' (got: '${VERSION}')"
+            exit 1
+          fi
+          if [[ "${VERSION}" == *"../"* ]]; then
+            echo "::error::VERSION must not contain '../'"
+            exit 1
+          fi
+          DEPLOY_VERSION="${VERSION#java/v}"
+          echo "DEPLOY_VERSION=${DEPLOY_VERSION}" >> "$GITHUB_ENV"
+
       # 1. Checkout this (standalone) repo — has src/site/, pom.xml, templates
       - name: Checkout standalone repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -66,8 +87,8 @@ jobs:
       # 5. Build the Maven Site using THIS repo's pom.xml + src/site/
       - name: Build documentation site
         run: |
-          echo "Building site for version ${{ inputs.version }}"
-          mvn site -Dsite.version=${{ inputs.version }} -B
+          echo "Building site for version ${{ env.DEPLOY_VERSION }}"
+          mvn site -Dsite.version=${{ env.DEPLOY_VERSION }} -B
 
       # 6. Checkout gh-pages branch from this (standalone) repo
       - name: Checkout gh-pages branch
@@ -91,12 +112,11 @@ jobs:
       # 7. Copy generated site to version directory
       - name: Deploy version documentation
         run: |
-          VERSION="${{ inputs.version }}"
-          echo "Deploying documentation for version ${VERSION}"
+          echo "Deploying documentation for version ${DEPLOY_VERSION}"
 
-          rm -rf "site/${VERSION}"
-          mkdir -p "site/${VERSION}"
-          cp -r target/site/* "site/${VERSION}/"
+          rm -rf "site/${DEPLOY_VERSION}"
+          mkdir -p "site/${DEPLOY_VERSION}"
+          cp -r target/site/* "site/${DEPLOY_VERSION}/"
 
           # Also publish as /latest/ if requested
           if [[ "${{ inputs.publish_as_latest }}" == "true" ]]; then
@@ -171,7 +191,7 @@ jobs:
 
           git add -A
 
-          COMMIT_MSG="Deploy documentation: ${{ inputs.version }} (from ${{ inputs.monorepo_tag }})"
+          COMMIT_MSG="Deploy documentation: ${DEPLOY_VERSION} (from ${{ inputs.monorepo_tag }})"
           git diff --staged --quiet || git commit -m "$COMMIT_MSG"
 
           git push -u origin gh-pages --force
