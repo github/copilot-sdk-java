@@ -83,36 +83,32 @@ jobs:
       # 5. Build the Maven Site using THIS repo's pom.xml + src/site/
       - name: Build documentation site
         run: |
-          echo "Building site for version ${{ env.DEPLOY_VERSION }}"
+          echo "Building site for version ${{ inputs.version }}"
           mvn site -Dsite.version=${{ inputs.version }} -B
 
-      # 6. Checkout gh-pages branch from this (standalone) repo
-      - name: Checkout gh-pages branch
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          ref: gh-pages
-          path: site
-        continue-on-error: true
-
-      - name: Initialize site if needed
+      # 6. Prepare gh-pages deployment directory
+      - name: Prepare gh-pages directory
         run: |
-          if [ ! -d "site/.git" ]; then
-            rm -rf site
+          # Try to clone existing gh-pages branch (shallow)
+          git clone --depth 1 --branch gh-pages \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" \
+            site 2>/dev/null || {
+            echo "No gh-pages branch exists yet, creating fresh"
             mkdir -p site
             cd site
             git init
             git checkout -b gh-pages
-            git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-          fi
+          }
 
       # 7. Copy generated site to version directory
       - name: Deploy version documentation
         run: |
-          echo "Deploying documentation for version ${DEPLOY_VERSION}"
+          VERSION="${{ inputs.version }}"
+          echo "Deploying documentation for version ${VERSION}"
 
-          rm -rf "site/${DEPLOY_VERSION}"
-          mkdir -p "site/${DEPLOY_VERSION}"
-          cp -r target/site/* "site/${DEPLOY_VERSION}/"
+          rm -rf "site/${VERSION}"
+          mkdir -p "site/${VERSION}"
+          cp -r target/site/* "site/${VERSION}/"
 
           # Also publish as /latest/ if requested
           if [[ "${{ inputs.publish_as_latest }}" == "true" ]]; then
@@ -187,10 +183,10 @@ jobs:
 
           git add -A
 
-          COMMIT_MSG="Deploy documentation: ${DEPLOY_VERSION} (from ${{ inputs.monorepo_tag }})"
+          COMMIT_MSG="Deploy documentation: ${{ inputs.version }} (from ${{ inputs.monorepo_tag }})"
           git diff --staged --quiet || git commit -m "$COMMIT_MSG"
 
-          git push -u origin gh-pages --force
+          git push origin gh-pages --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
