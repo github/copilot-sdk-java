@@ -189,7 +189,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <configuration>
-                    <sourcepath>${monorepo.java.dir}/src/main/java</sourcepath>
+                    <sourcepath>${monorepo.java.dir}/src/main/java:${monorepo.java.dir}/src/generated/java</sourcepath>
                     <subpackages>com.github.copilot</subpackages>
                 </configuration>
                 <reportSets>
