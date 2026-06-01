@@ -67,7 +67,6 @@ jobs:
           repository: github/copilot-sdk
           ref: ${{ inputs.monorepo_tag }}
           path: monorepo
-          token: ${{ secrets.MONOREPO_READ_TOKEN }}
 
       # 3. Set up JDK
       - name: Set up JDK 25
