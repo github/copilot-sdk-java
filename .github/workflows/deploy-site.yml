@@ -35,26 +35,23 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # 0. Validate required secrets and inputs
-      - name: Validate inputs and secrets
-        env:
-          MONOREPO_READ_TOKEN: ${{ secrets.MONOREPO_READ_TOKEN }}
+      # 0. Validate inputs
+      - name: Validate inputs
         run: |
-          if [[ -z "${MONOREPO_READ_TOKEN}" ]]; then
-            echo "::error::MONOREPO_READ_TOKEN secret is required but not configured."
-            exit 1
-          fi
           VERSION="${{ inputs.version }}"
-          if [[ "${VERSION}" != java/v* ]]; then
-            echo "::error::VERSION must start with 'java/v' (got: '${VERSION}')"
+          if [[ -z "${VERSION}" ]]; then
+            echo "::error::version input is required"
             exit 1
           fi
           if [[ "${VERSION}" == *"../"* ]]; then
-            echo "::error::VERSION must not contain '../'"
+            echo "::error::version must not contain '../'"
             exit 1
           fi
-          DEPLOY_VERSION="${VERSION#java/v}"
-          echo "DEPLOY_VERSION=${DEPLOY_VERSION}" >> "$GITHUB_ENV"
+          TAG="${{ inputs.monorepo_tag }}"
+          if [[ "${TAG}" != java/v* ]]; then
+            echo "::error::monorepo_tag must start with 'java/v' (got: '${TAG}')"
+            exit 1
+          fi
 
       # 1. Checkout this (standalone) repo — has src/site/, pom.xml, templates
       - name: Checkout standalone repo
