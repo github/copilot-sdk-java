@@ -31,7 +31,7 @@ For other installation methods, see the [JBang installation guide](https://www.j
 
 ## Contributing
 
-Add a new recipe by creating a markdown file in this folder and linking it above. Follow repository guidance in the [main README](https://github.com/github/copilot-sdk-java#contributing).
+Add a new recipe by creating a markdown file in this folder and linking it above. Follow repository guidance in the [main README](https://github.com/github/copilot-sdk#contributing).
 
 ## Status
 

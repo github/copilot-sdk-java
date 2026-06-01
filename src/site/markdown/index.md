@@ -8,8 +8,8 @@ Welcome to the documentation for the **GitHub Copilot SDK for Java** — a Java 
 
 ### Requirements
 
-- Java 17 or later
-- GitHub Copilot CLI 1.0.17 or later installed and in PATH (or provide custom `cliPath`)
+- Java 17 or later. **JDK 25 recommended**. The distributed jar is a multi-release jar (MR-JAR) and is compiled on JDK 25 with `maven.compiler.release` set to 17. This means, when run on JDK 25 and later, the SDK automatically uses virtual threads for its default internal executor.
+- GitHub Copilot CLI 1.0.55 or later installed and in PATH (or provide custom `cliPath`)
 
 ### Installation
 
@@ -118,6 +118,6 @@ jbang hello-copilot.java
 
 ## Source Code
 
-- [GitHub Repository](https://github.com/github/copilot-sdk-java)
-- [Issue Tracker](https://github.com/github/copilot-sdk-java/issues)
-- [Contributing Guide](https://github.com/github/copilot-sdk-java/blob/main/CONTRIBUTING.md)
+- [GitHub Repository](https://github.com/github/copilot-sdk)
+- [Issue Tracker](https://github.com/github/copilot-sdk/issues)
+- [Contributing Guide](https://github.com/github/copilot-sdk/blob/main/CONTRIBUTING.md)
