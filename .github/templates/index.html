@@ -37,14 +37,14 @@
     </div>
 
     <div class="section">
-      <h2 class="section-title">Available Versions</h2>
+      <h2 class="section-title">Available versions</h2>
       <ul class="version-list">
-        <!-- CURRENT_VERSIONS_PLACEHOLDER -->
+        <!-- CURRENT_VERSION_PLACEHOLDER -->
       </ul>
 
       <div class="collapsible">
         <button class="collapsible-toggle" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open');">
-          Older Releases
+          Older releases
         </button>
         <div class="collapsible-content">
           <ul class="older-list">
@@ -53,14 +53,21 @@
         </div>
       </div>
 
+      <div class="collapsible">
+        <button class="collapsible-toggle" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('open');">
+          Community releases
+        </button>
+        <div class="collapsible-content">
+          <ul class="older-list">
+            <!-- COMMUNITY_VERSIONS_PLACEHOLDER -->
+          </ul>
+        </div>
+      </div>
+
       <div class="legend">
         <div class="legend-item">
           <div class="legend-color latest"></div>
           <span>Latest stable release</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color snapshot"></div>
-          <span>Development snapshot</span>
         </div>
       </div>
     </div>

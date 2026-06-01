@@ -129,33 +129,44 @@ jobs:
           cd site
 
           MONOREPO_URL="https://github.com/github/copilot-sdk"
+          CURRENT_VERSION="${{ inputs.version }}"
+
+          # Community releases: versions that existed before the monorepo era.
+          # These are all versions that are NOT the current deploy version.
+          # They go into the "Community releases" collapsible section.
+          COMMUNITY_VERSIONS="1.0.9 1.0.8 1.0.7 1.0.6 1.0.5 1.0.4 1.0.3 1.0.2 1.0.1 1.0.0-beta-java.4 1.0.0-beta-java.3 1.0.0-beta-java.2 1.0.0-beta-java.1 1.0.0-beta-10-java.0 1.0.0-beta-8-java.0 0.3.0-java.2"
           STANDALONE_URL="https://github.com/github/copilot-sdk-java"
 
-          VERSIONS=$(ls -d */ 2>/dev/null | sed 's|/||' | grep -E '^[0-9]+\.[0-9]+' | sort -Vr || true)
+          # Current version (the one just deployed)
+          CURRENT_HTML='<li class="latest-version"><span class="version-name">Version '"${CURRENT_VERSION}"'</span><span class="version-links"><a href="./'"${CURRENT_VERSION}"'/" class="doc-link">documentation ↗</a><a href="'"${MONOREPO_URL}"'/releases/tag/java/v'"${CURRENT_VERSION}"'" class="release-link">release notes ↗</a><span class="badge latest">latest</span></span></li>'
 
-          HAS_SNAPSHOT=$([ -d "snapshot" ] && echo "true" || echo "false")
-
-          CURRENT_HTML=""
+          # Older releases: previous monorepo releases (all version dirs that
+          # are NOT the current version and NOT in the community list)
           OLDER_HTML=""
-          IS_FIRST_VERSION="true"
-
-          if [ "$HAS_SNAPSHOT" = "true" ]; then
-            CURRENT_HTML+='<li><span class="version-name">Development (main branch)</span><span class="version-links"><a href="./snapshot/" class="doc-link">documentation ↗</a><a href="'"${MONOREPO_URL}"'/blob/main/java/CHANGELOG.md" class="release-link">changelog ↗</a><span class="badge snapshot">snapshot</span></span></li>'
-          fi
-
-          for v in $VERSIONS; do
+          ALL_VERSIONS=$(ls -d */ 2>/dev/null | sed 's|/||' | grep -E '^[0-9]+\.[0-9]+' | sort -Vr || true)
+          for v in $ALL_VERSIONS; do
+            # Skip current version
+            [[ "$v" == "$CURRENT_VERSION" ]] && continue
+            # Skip community versions
+            echo "$COMMUNITY_VERSIONS" | tr ' ' '\n' | grep -qx "$v" && continue
+            # Skip snapshot/latest dirs
+            [[ "$v" == "snapshot" || "$v" == "latest" ]] && continue
             RELEASE_URL="${MONOREPO_URL}/releases/tag/java/v${v}"
+            OLDER_HTML+='<li><span>'"$v"'</span><span class="older-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$RELEASE_URL"'" class="release-link">release notes ↗</a></span></li>'
+          done
 
-            if [ "$IS_FIRST_VERSION" = "true" ]; then
-              CURRENT_HTML+='<li class="latest-version"><span class="version-name">Version '"$v"'</span><span class="version-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$RELEASE_URL"'" class="release-link">release notes ↗</a><span class="badge latest">latest</span></span></li>'
-              IS_FIRST_VERSION="false"
-            else
-              OLDER_HTML+='<li><span>'"$v"'</span><span class="older-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$RELEASE_URL"'" class="release-link">release notes ↗</a></span></li>'
+          # Community releases
+          COMMUNITY_HTML=""
+          for v in $COMMUNITY_VERSIONS; do
+            if [ -d "$v" ]; then
+              RELEASE_URL="${STANDALONE_URL}/releases/tag/v${v}"
+              COMMUNITY_HTML+='<li><span>'"$v"'</span><span class="older-links"><a href="./'"$v"'/" class="doc-link">documentation ↗</a><a href="'"$RELEASE_URL"'" class="release-link">release notes ↗</a></span></li>'
             fi
           done
 
-          sed -i "s|<!-- CURRENT_VERSIONS_PLACEHOLDER -->|$CURRENT_HTML|" index.html
+          sed -i "s|<!-- CURRENT_VERSION_PLACEHOLDER -->|$CURRENT_HTML|" index.html
           sed -i "s|<!-- OLDER_VERSIONS_PLACEHOLDER -->|$OLDER_HTML|" index.html
+          sed -i "s|<!-- COMMUNITY_VERSIONS_PLACEHOLDER -->|$COMMUNITY_HTML|" index.html
 
       # 10. Overlay custom JaCoCo CSS
       - name: Overlay custom JaCoCo CSS
