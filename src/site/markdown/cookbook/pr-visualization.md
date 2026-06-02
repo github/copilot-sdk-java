@@ -34,7 +34,7 @@ jbang PRVisualization.java github/copilot-sdk
 ## Full example: PRVisualization.java
 
 ```java
-//DEPS com.github:copilot-sdk-java:1.0.0-beta-8-java.0
+//DEPS com.github:copilot-sdk-java:1.0.0
 import com.github.copilot.CopilotClient;
 import com.github.copilot.generated.AssistantMessageEvent;
 import com.github.copilot.generated.ToolExecutionStartEvent;

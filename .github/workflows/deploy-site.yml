@@ -80,13 +80,25 @@ jobs:
           echo "Compiling Java source from tag ${{ inputs.monorepo_tag }}"
           mvn clean compile test -DskipTests=false -Dcheckstyle.skip=true -B
 
-      # 5. Build the Maven Site using THIS repo's pom.xml + src/site/
+      # 5. Update hardcoded version strings in site content
+      #    Cookbook files and other markdown pages embed JBang //DEPS lines with
+      #    hardcoded artifact versions for direct browsing on GitHub. Update them
+      #    to the version being released. (${project.version} references are
+      #    handled by Maven resource filtering during mvn site.)
+      - name: Update version strings in site content
+        run: |
+          VERSION="${{ inputs.version }}"
+          echo "Updating copilot-sdk-java version references to ${VERSION}"
+          find src/site/markdown -name "*.md" -type f -exec \
+            sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-[a-z][a-z0-9-]*\.[0-9][0-9]*\)*|copilot-sdk-java:${VERSION}|g" {} \;
+
+      # 6. Build the Maven Site using THIS repo's pom.xml + src/site/
       - name: Build documentation site
         run: |
           echo "Building site for version ${{ inputs.version }}"
           mvn site -Dsite.version=${{ inputs.version }} -B
 
-      # 6. Prepare gh-pages deployment directory
+      # 7. Prepare gh-pages deployment directory
       - name: Prepare gh-pages directory
         run: |
           # Try to clone existing gh-pages branch (shallow)
@@ -100,7 +112,7 @@ jobs:
             git checkout -b gh-pages
           }
 
-      # 7. Copy generated site to version directory
+      # 8. Copy generated site to version directory
       - name: Deploy version documentation
         run: |
           VERSION="${{ inputs.version }}"
@@ -117,13 +129,13 @@ jobs:
             cp -r target/site/* "site/latest/"
           fi
 
-      # 8. Copy version index page from templates
+      # 9. Copy version index page from templates
       - name: Copy version index page
         run: |
           cp .github/templates/index.html site/index.html
           cp .github/templates/styles.css site/styles.css
 
-      # 9. Update version list based on directories present in gh-pages
+      # 10. Update version list based on directories present in gh-pages
       - name: Update version list from deployed directories
         run: |
           cd site
@@ -168,7 +180,7 @@ jobs:
           sed -i "s|<!-- OLDER_VERSIONS_PLACEHOLDER -->|$OLDER_HTML|" index.html
           sed -i "s|<!-- COMMUNITY_VERSIONS_PLACEHOLDER -->|$COMMUNITY_HTML|" index.html
 
-      # 10. Overlay custom JaCoCo CSS
+      # 11. Overlay custom JaCoCo CSS
       - name: Overlay custom JaCoCo CSS
         run: |
           cd site
@@ -182,7 +194,7 @@ jobs:
             done
           fi
 
-      # 11. Push to gh-pages
+      # 12. Push to gh-pages
       - name: Deploy to GitHub Pages
         run: |
           cd site
