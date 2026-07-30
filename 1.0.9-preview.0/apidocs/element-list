@@ -1,0 +1,6 @@
+module:com.github.copilot.java
+com.github.copilot
+com.github.copilot.generated
+com.github.copilot.generated.rpc
+com.github.copilot.rpc
+com.github.copilot.tool
