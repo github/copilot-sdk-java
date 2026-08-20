@@ -1,0 +1,23 @@
+-classpath
+'/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.21.3/jackson-databind-2.21.3.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.21/jackson-annotations-2.21.jar:/home/runner/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.21.3/jackson-core-2.21.3.jar:/home/runner/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.21.3/jackson-datatype-jsr310-2.21.3.jar:/home/runner/.m2/repository/com/github/spotbugs/spotbugs-annotations/4.9.8/spotbugs-annotations-4.9.8.jar:/home/runner/.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar'
+-encoding
+'UTF-8'
+-protected
+-subpackages
+com.github.copilot
+-author
+-bottom
+'Copyright &#169; 2026. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/home/runner/work/copilot-sdk-java/copilot-sdk-java/target/site/apidocs'
+-docencoding
+'UTF-8'
+-Xdoclint:none
+-doctitle
+'GitHub Copilot SDK for Java — Documentation Site 1.0.12-preview.0 API'
+-use
+-version
+-windowtitle
+'GitHub Copilot SDK for Java — Documentation Site 1.0.12-preview.0 API'
