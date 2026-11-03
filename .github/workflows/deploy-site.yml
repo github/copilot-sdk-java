@@ -87,11 +87,13 @@ jobs:
 
       # 5. Prepare Java artifact versions and snapshot repository instructions
       - name: Prepare site artifact versions
+        env:
+          VERSION: ${{ inputs.version }}
+          ARTIFACT_VERSION_INPUT: ${{ inputs.artifact_version }}
         run: |
-          VERSION="${{ inputs.version }}"
-          ARTIFACT_VERSION="${{ inputs.artifact_version }}"
+          ARTIFACT_VERSION="${ARTIFACT_VERSION_INPUT}"
           if [[ -z "${ARTIFACT_VERSION}" ]]; then
-            if [[ "${{ inputs.publish_as_latest }}" == "false" ]]; then
+            if [[ "${VERSION}" == *-* ]]; then
               echo "::error::artifact_version is required for preview documentation"
               exit 1
             fi

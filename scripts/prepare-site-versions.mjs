@@ -87,6 +87,13 @@ repositories {
                 return `copilot-sdk-java:${artifactVersion}`;
             }
         );
+        if (snapshot) {
+            const dependency = `//DEPS com.github:copilot-sdk-java:${artifactVersion}`;
+            content = content.replaceAll(
+                dependency,
+                `//REPOS central,central-snapshots=${SNAPSHOT_REPOSITORY}\n${dependency}`
+            );
+        }
         for (const [marker, replacement] of replacements) {
             const count = content.split(marker).length - 1;
             markerCounts.set(marker, markerCounts.get(marker) + count);
