@@ -78,12 +78,15 @@ jobs:
           distribution: 'microsoft'
           cache: 'maven'
 
-      # 4. Compile monorepo Java source (needed for javadoc, SpotBugs, etc.)
+      # 4. Compile exported Java production source for documentation reports.
       - name: Compile monorepo Java source
         working-directory: monorepo/java
         run: |
           echo "Compiling Java source from tag ${{ inputs.monorepo_tag }}"
-          mvn clean compile test -DskipTests=false -Dcheckstyle.skip=true -B
+          ./mvnw -pl sdk -am clean compile \
+            -DskipTests \
+            -Dcheckstyle.skip=true \
+            -B
 
       # 5. Prepare Java artifact versions and snapshot repository instructions
       - name: Prepare site artifact versions

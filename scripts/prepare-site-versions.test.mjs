@@ -72,3 +72,22 @@ test("passes artifact inputs through the workflow environment and detects previe
     assert.match(prepareStep, /if \[\[ "\$\{VERSION\}" == \*-\* \]\]/);
     assert.doesNotMatch(prepareStep, /inputs\.publish_as_latest/);
 });
+
+test("builds documentation from the exported Java module without test harness inputs", () => {
+    const workflow = readFileSync(resolve(".github/workflows/deploy-site.yml"), "utf8");
+    const compileStep = workflow.slice(
+        workflow.indexOf("- name: Compile monorepo Java source"),
+        workflow.indexOf("# 5. Prepare Java artifact versions")
+    );
+    assert.match(compileStep, /\.\/mvnw -pl sdk -am clean compile/);
+    assert.match(compileStep, /-DskipTests/);
+    assert.doesNotMatch(compileStep, /\btest\b.*-DskipTests=false/);
+
+    const pom = readFileSync(resolve("pom.xml"), "utf8");
+    assert.match(pom, /\$\{monorepo\.java\.dir\}\/sdk\/src\/main\/java/);
+    assert.match(pom, /\$\{monorepo\.java\.dir\}\/sdk\/src\/generated\/java/);
+    assert.match(pom, /\$\{monorepo\.java\.dir\}\/sdk\/config\/spotbugs\/spotbugs-exclude\.xml/);
+    assert.match(pom, /<artifactId>jna<\/artifactId>\s*<version>5\.19\.1<\/version>/);
+    assert.doesNotMatch(pom, /jacoco-maven-plugin/);
+    assert.doesNotMatch(pom, /maven-surefire-report-plugin/);
+});

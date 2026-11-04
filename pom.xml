@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Site-only POM for github/copilot-sdk-java.
-  This POM builds the Maven Site (javadoc, JaCoCo, SpotBugs, etc.) from
+  This POM builds the Maven Site (Javadoc, SpotBugs, etc.) from
   Java source code checked out from the monorepo (github/copilot-sdk) at
   a release tag. It is NOT used for compiling/testing the SDK itself.
 
@@ -11,8 +11,10 @@
     ├── src/site/         (site content: markdown, site.xml, CSS)
     └── monorepo/         (checkout of github/copilot-sdk at release tag)
         └── java/
-            └── src/main/java/   (SDK source for javadoc)
-            └── target/          (compiled classes from monorepo build)
+            └── sdk/
+                ├── src/main/java/       (SDK source for Javadoc)
+                ├── src/generated/java/  (generated SDK source)
+                └── target/              (compiled classes from SDK build)
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -71,11 +73,17 @@
             <version>4.9.8</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.19.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <!-- Point source directory at monorepo's Java source for reports -->
-        <sourceDirectory>${monorepo.java.dir}/src/main/java</sourceDirectory>
+        <sourceDirectory>${monorepo.java.dir}/sdk/src/main/java</sourceDirectory>
 
         <plugins>
             <!-- Maven Resources Plugin — site-filtering executions -->
@@ -191,7 +199,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.11.2</version>
                 <configuration>
-                    <sourcepath>${monorepo.java.dir}/src/main/java:${monorepo.java.dir}/src/generated/java</sourcepath>
+                    <sourcepath>${monorepo.java.dir}/sdk/src/main/java:${monorepo.java.dir}/sdk/src/generated/java</sourcepath>
                     <subpackages>com.github.copilot</subpackages>
                     <failOnError>false</failOnError>
                     <failOnWarnings>false</failOnWarnings>
@@ -205,40 +213,13 @@
                     </reportSet>
                 </reportSets>
             </plugin>
-            <!-- JaCoCo coverage (from monorepo test run) -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
-                <configuration>
-                    <dataFile>${monorepo.java.dir}/target/jacoco-test-results/sdk-tests.exec</dataFile>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <!-- Surefire test results report -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>3.5.5</version>
-                <configuration>
-                    <reportsDirectories>
-                        <reportsDirectory>${monorepo.java.dir}/target/surefire-reports</reportsDirectory>
-                    </reportsDirectories>
-                </configuration>
-            </plugin>
             <!-- SpotBugs static analysis -->
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.9.8.3</version>
                 <configuration>
-                    <excludeFilterFile>${monorepo.java.dir}/config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+                    <excludeFilterFile>${monorepo.java.dir}/sdk/config/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
                 </configuration>
             </plugin>
             <!-- TODO/FIXME tag tracker -->
