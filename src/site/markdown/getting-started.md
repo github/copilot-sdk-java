@@ -29,17 +29,19 @@ copilot --version
 
 ## Step 1: Install the SDK
 
-> If you want to test a _-SNAPSHOT_ version, you may have to clone the project's repository and install the library locally with _mvn install_.
+Preview documentation can use a rolling `-SNAPSHOT` artifact version. Multiple previews of the same base SDK version update that coordinate, so an older preview's documentation directory does not guarantee an exact historical preview build.
 
 ### Apache Maven
 
 Add the dependency to your `pom.xml`:
 
+<!-- ARTIFACT_MAVEN_REPOSITORY -->
+
 ```xml
 <dependency>
     <groupId>com.github</groupId>
     <artifactId>copilot-sdk-java</artifactId>
-    <version>${project.version}</version>
+    <version>${artifact.version}</version>
 </dependency>
 ```
 
@@ -47,8 +49,10 @@ Add the dependency to your `pom.xml`:
 
 Add the dependency to your `build.gradle`:
 
+<!-- ARTIFACT_GRADLE_REPOSITORY -->
+
 ```groovy
-implementation 'com.github:copilot-sdk-java:${project.version}'
+implementation 'com.github:copilot-sdk-java:${artifact.version}'
 ```
 
 ### JBang (Quick Start)
@@ -56,7 +60,8 @@ implementation 'com.github:copilot-sdk-java:${project.version}'
 For the fastest way to try the SDK without setting up a project, use [JBang](https://www.jbang.dev/). Create a file named `HelloCopilot.java` with the following header, and then proceed to Step 2 by appending the proposed content into this same file.
 
 ```bash
-//DEPS com.github:copilot-sdk-java:${project.version}
+//ARTIFACT_REPOSITORY
+//DEPS com.github:copilot-sdk-java:${artifact.version}
 ```
 
 ## Step 2: Send Your First Message

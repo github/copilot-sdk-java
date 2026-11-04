@@ -15,22 +15,26 @@ Welcome to the documentation for the **GitHub Copilot SDK for Java** — a Java 
 
 Add the dependency to your project:
 
-> **Note:** If this is a `-SNAPSHOT` version, clone the project repository and run `./mvnw install` locally first so the artifact is available in your local Maven cache. Otherwise, the version is available on Maven Central.
+Preview documentation can use a rolling `-SNAPSHOT` artifact version. Multiple previews of the same base SDK version update that coordinate, so an older preview's documentation directory does not guarantee an exact historical preview build.
 
 **Maven:**
+
+<!-- ARTIFACT_MAVEN_REPOSITORY -->
 
 ```xml
 <dependency>
     <groupId>com.github</groupId>
     <artifactId>copilot-sdk-java</artifactId>
-    <version>${project.version}</version>
+    <version>${artifact.version}</version>
 </dependency>
 ```
 
 **Gradle:**
 
+<!-- ARTIFACT_GRADLE_REPOSITORY -->
+
 ```groovy
-implementation 'com.github:copilot-sdk-java:${project.version}'
+implementation 'com.github:copilot-sdk-java:${artifact.version}'
 ```
 
 ### Quick Example
@@ -86,7 +90,8 @@ You can quickly try the SDK without setting up a full project using [JBang](http
 
 # Create a simple script
 cat > hello-copilot.java << 'EOF'
-//DEPS com.github:copilot-sdk-java:${project.version}
+//ARTIFACT_REPOSITORY
+//DEPS com.github:copilot-sdk-java:${artifact.version}
 import com.github.copilot.CopilotClient;
 import com.github.copilot.generated.AssistantMessageEvent;
 import com.github.copilot.generated.SessionIdleEvent;

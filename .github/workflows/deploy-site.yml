@@ -18,6 +18,11 @@ on:
         description: 'Tag in github/copilot-sdk monorepo (e.g., java/v1.0.1-java.0)'
         type: string
         required: true
+      artifact_version:
+        description: 'Java Maven artifact version. Defaults to the site version for older callers.'
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -80,23 +85,29 @@ jobs:
           echo "Compiling Java source from tag ${{ inputs.monorepo_tag }}"
           mvn clean compile test -DskipTests=false -Dcheckstyle.skip=true -B
 
-      # 5. Update hardcoded version strings in site content
-      #    Cookbook files and other markdown pages embed JBang //DEPS lines with
-      #    hardcoded artifact versions for direct browsing on GitHub. Update them
-      #    to the version being released. (${project.version} references are
-      #    handled by Maven resource filtering during mvn site.)
-      - name: Update version strings in site content
+      # 5. Prepare Java artifact versions and snapshot repository instructions
+      - name: Prepare site artifact versions
+        env:
+          VERSION: ${{ inputs.version }}
+          ARTIFACT_VERSION_INPUT: ${{ inputs.artifact_version }}
         run: |
-          VERSION="${{ inputs.version }}"
-          echo "Updating copilot-sdk-java version references to ${VERSION}"
-          find src/site/markdown -name "*.md" -type f -exec \
-            sed -i "s|copilot-sdk-java:[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-[a-z][a-z0-9-]*\.[0-9][0-9]*\)*|copilot-sdk-java:${VERSION}|g" {} \;
+          ARTIFACT_VERSION="${ARTIFACT_VERSION_INPUT}"
+          if [[ -z "${ARTIFACT_VERSION}" ]]; then
+            if [[ "${VERSION}" == *-* ]]; then
+              echo "::error::artifact_version is required for preview documentation"
+              exit 1
+            fi
+            ARTIFACT_VERSION="${VERSION}"
+          fi
+          node scripts/prepare-site-versions.mjs \
+            "${VERSION}" "${ARTIFACT_VERSION}" src/site/markdown
+          echo "ARTIFACT_VERSION=${ARTIFACT_VERSION}" >> "$GITHUB_ENV"
 
       # 6. Build the Maven Site using THIS repo's pom.xml + src/site/
       - name: Build documentation site
         run: |
-          echo "Building site for version ${{ inputs.version }}"
-          mvn site -Dsite.version=${{ inputs.version }} -B
+          echo "Building site for version ${{ inputs.version }} with Java artifacts ${ARTIFACT_VERSION}"
+          mvn site -Dsite.version=${{ inputs.version }} -Dartifact.version="${ARTIFACT_VERSION}" -B
 
       # 7. Prepare gh-pages deployment directory
       - name: Prepare gh-pages directory

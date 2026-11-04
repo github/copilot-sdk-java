@@ -33,6 +33,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Overridden at build time via -Dsite.version=... -->
         <site.version>0.0.0-SNAPSHOT</site.version>
+        <!-- Overridden separately for a shared prerelease's rolling Maven snapshot. -->
+        <artifact.version>${site.version}</artifact.version>
         <!-- Path to the monorepo checkout (relative to this POM) -->
         <monorepo.java.dir>${project.basedir}/monorepo/java</monorepo.java.dir>
     </properties>
